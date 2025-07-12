@@ -48,7 +48,7 @@ git clone https://github.com/your-username/teneo-marketplace
 cd teneo-marketplace
 
 # Add upstream remote
-git remote add upstream https://github.com/TravisEric/teneo-marketplace
+git remote add upstream https://github.com/Traviseric/teneo-marketplace
 
 # Install dependencies
 npm install

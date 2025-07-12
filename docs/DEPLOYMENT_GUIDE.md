@@ -7,7 +7,7 @@ From zero to selling books in 15 minutes! This guide will walk you through deplo
 ### Option 1: Vercel (Recommended)
 
 1. **One-Click Deploy**  
-   [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/TravisEric/teneo-marketplace)
+   [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Traviseric/teneo-marketplace)
 
 2. **Configure Environment**  
    After deployment, add these environment variables in your Vercel dashboard:
@@ -32,7 +32,7 @@ From zero to selling books in 15 minutes! This guide will walk you through deplo
 ### Option 3: Render
 
 1. **One-Click Deploy**  
-   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/TravisEric/teneo-marketplace)
+   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Traviseric/teneo-marketplace)
 
 2. **Configure Environment**  
    Add environment variables in the Render dashboard.
@@ -269,8 +269,8 @@ npm run setup:db
 
 - 💬 [Join our Discord](https://discord.gg/teneebooks)
 - 📧 Email: support@teneo.ai
-- 🐛 [Report issues](https://github.com/TravisEric/teneo-marketplace/issues)
-- 📚 [Full documentation](https://github.com/TravisEric/teneo-marketplace)
+- 🐛 [Report issues](https://github.com/Traviseric/teneo-marketplace/issues)
+- 📚 [Full documentation](https://github.com/Traviseric/teneo-marketplace)
 
 ## ✅ Go-Live Checklist
 

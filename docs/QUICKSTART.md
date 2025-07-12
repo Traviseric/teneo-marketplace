@@ -12,7 +12,7 @@ Get your bookstore running in 10 minutes or less!
 
 ```bash
 # Clone the repository
-git clone https://github.com/TravisEric/teneo-marketplace
+git clone https://github.com/Traviseric/teneo-marketplace
 cd teneo-marketplace
 
 # Install dependencies and start
@@ -187,7 +187,7 @@ This is normal! Emails are simulated by default. To enable real emails:
 
 - 💬 [Join our Discord](https://discord.gg/teneebooks)
 - 📧 Email: support@teneo.ai
-- 🐛 [Report issues](https://github.com/TravisEric/teneo-marketplace/issues)
+- 🐛 [Report issues](https://github.com/Traviseric/teneo-marketplace/issues)
 
 ---
 

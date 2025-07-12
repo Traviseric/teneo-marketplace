@@ -25,7 +25,7 @@ The Docker setup includes:
 
 ### 1. Clone and Setup
 ```bash
-git clone https://github.com/TravisEric/teneo-marketplace.git
+git clone https://github.com/Traviseric/teneo-marketplace.git
 cd teneo-marketplace
 ```
 
