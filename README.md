@@ -2,20 +2,23 @@
 
 > Build your own federated bookstore in 10 minutes
 
+🔗 **Live Repository**: [github.com/Traviseric/teneo-marketplace](https://github.com/Traviseric/teneo-marketplace)
+
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Federated](https://img.shields.io/badge/Network-Federated-purple)](https://github.com/TravisEric/teneo-marketplace)
+[![Federated](https://img.shields.io/badge/Network-Federated-purple)](https://github.com/Traviseric/teneo-marketplace)
+[![Deploy Status](https://img.shields.io/badge/Deploy-Live-brightgreen)](https://github.com/Traviseric/teneo-marketplace/blob/main/DEPLOYMENT_STATUS.md)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/TravisEric/teneo-marketplace/main/docs/images/banner.png" alt="Teneo Marketplace Banner" width="800">
+  <img src="https://raw.githubusercontent.com/Traviseric/teneo-marketplace/main/docs/images/banner.png" alt="Teneo Marketplace Banner" width="800">
 </p>
 
 ## 🚀 Quick Start
 
 ```bash
 # Clone the repository
-git clone https://github.com/TravisEric/teneo-marketplace
+git clone https://github.com/Traviseric/teneo-marketplace
 cd teneo-marketplace
 
 # Install and start
@@ -27,11 +30,22 @@ npm start
 
 That's it! Your bookstore is running. Start selling in minutes, not months.
 
+## 🌐 Deployment Status
+
+| Component | Status | URL | Notes |
+|-----------|--------|-----|-------|
+| 📚 Repository | ✅ Live | [GitHub](https://github.com/Traviseric/teneo-marketplace) | Open source, ready for contributions |
+| 🎨 Frontend | ✅ Live | [Vercel](https://teneo-marketplace.vercel.app) | Auto-deploy from main branch |
+| ⚙️ Backend | 🔄 Deploying | [Render](https://teneo-marketplace-api.onrender.com) | Setting up production environment |
+| 🌍 Network | ⏳ Ready | Federation Protocol | Ready for first external store |
+
+> **Status**: Production-ready with active deployment pipeline
+
 ## 👩‍💻 For Developers (Quick Start)
 
 ```bash
 # Clone and setup
-git clone https://github.com/TravisEric/teneo-marketplace.git
+git clone https://github.com/Traviseric/teneo-marketplace.git
 cd teneo-marketplace
 
 # Copy environment template
@@ -167,13 +181,13 @@ The Teneo Book Network is a growing federation of independent bookstores. When y
 
 Launch your bookstore in minutes with these platforms:
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/TravisEric/teneo-marketplace&project-name=my-bookstore&repository-name=teneo-marketplace&env=STRIPE_SECRET_KEY,STRIPE_PUBLISHABLE_KEY,EMAIL_USER,EMAIL_PASS&envDescription=Configure%20these%20for%20payments%20and%20email%20delivery&envLink=https://github.com/TravisEric/teneo-marketplace/blob/main/PRODUCTION_SETUP.md)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Traviseric/teneo-marketplace&project-name=my-bookstore&repository-name=teneo-marketplace&env=STRIPE_SECRET_KEY,STRIPE_PUBLISHABLE_KEY,EMAIL_USER,EMAIL_PASS&envDescription=Configure%20these%20for%20payments%20and%20email%20delivery&envLink=https://github.com/Traviseric/teneo-marketplace/blob/main/PRODUCTION_SETUP.md)
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/TravisEric/teneo-marketplace)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Traviseric/teneo-marketplace)
 
 [![Deploy to Railway](https://railway.app/button.svg)](https://railway.app/template/tLkC2K?referralCode=teneo)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/TravisEric/teneo-marketplace)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Traviseric/teneo-marketplace)
 
 ### 🧙‍♂️ Quick Setup Wizard
 
