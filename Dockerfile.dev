@@ -1,0 +1,37 @@
+# Development Dockerfile with hot reload
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy package files
+COPY marketplace/backend/package*.json ./marketplace/backend/
+
+# Install all dependencies (including dev dependencies)
+WORKDIR /app/marketplace/backend
+RUN npm install
+
+# Switch back to app root
+WORKDIR /app
+
+# Copy application code
+COPY marketplace/ ./marketplace/
+
+# Create directories
+RUN mkdir -p /app/logs /app/uploads
+
+# Expose ports (app and debugger)
+EXPOSE 3001 9229
+
+# Set environment
+ENV NODE_ENV=development
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3001/api/health || exit 1
+
+# Start with nodemon for hot reload
+CMD ["npm", "run", "dev", "--prefix", "marketplace/backend"]

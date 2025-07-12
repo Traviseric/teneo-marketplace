@@ -1,0 +1,167 @@
+{
+  "BRAND_NAME": "True Earth Publications",
+  "TAGLINE": "Uncovering Hidden Knowledge • Revealing Suppressed Truths",
+  "META_DESCRIPTION": "Your source for forbidden knowledge and suppressed technologies. We publish the books they don't want you to read.",
+  
+  "PRIMARY_COLOR": "#2d5016",
+  "ACCENT_COLOR": "#d4af37",
+  "TEXT_COLOR": "#e5e5e5",
+  "BG_COLOR": "#1a1a1a",
+  "SECONDARY_BG": "#252525",
+  
+  "FONT_MAIN": "'Courier Prime', 'Courier New', monospace",
+  "FONT_HEADING": "'Orbitron', 'Arial Black', sans-serif",
+  
+  "HERO_HEADLINE": "The Truth They Don't Want You to Know",
+  "HERO_SUBHEADLINE": "Access forbidden knowledge about our hidden history, suppressed technologies, and the real truth about Earth's past.",
+  "BUTTON_TEXT": "Unlock the Truth",
+  
+  "TRUST_1": "100% Uncensored",
+  "TRUST_2": "Banned Worldwide",
+  "TRUST_3": "Underground Network",
+  
+  "FEATURES_HEADLINE": "Why Truth Seekers Choose Us",
+  "FEATURE_1_ICON": "fas fa-eye",
+  "FEATURE_1_TITLE": "Forbidden Knowledge",
+  "FEATURE_1_DESC": "Access information actively suppressed by mainstream institutions",
+  
+  "FEATURE_2_ICON": "fas fa-shield-alt",
+  "FEATURE_2_TITLE": "Protected Distribution",
+  "FEATURE_2_DESC": "Encrypted delivery networks that bypass censorship attempts",
+  
+  "FEATURE_3_ICON": "fas fa-users-cog",
+  "FEATURE_3_TITLE": "Truth Community",
+  "FEATURE_3_DESC": "Connect with researchers exposing hidden knowledge worldwide",
+  
+  "BOOKS_HEADLINE": "Suppressed Research Library",
+  "BOOK_1_TITLE": "Tartaria Unveiled: Secrets of a Lost Empire",
+  "BOOK_1_DESC": "The advanced civilization systematically erased from history books",
+  "BOOK_1_PRICE": "24.99",
+  "BOOK_1_COVER": "images/tartaria-book.jpg",
+  "BOOK_1_LINK": "/brands/true-earth/catalog.json",
+  
+  "TESTIMONIAL_1_TEXT": "This book changed everything I thought I knew about history. The evidence is undeniable!",
+  "TESTIMONIAL_1_NAME": "Sarah M.",
+  "TESTIMONIAL_1_ROLE": "Truth Seeker from Texas",
+  "TESTIMONIAL_1_IMAGE": "images/testimonial-truth-seeker.jpg",
+  
+  "CTA_HEADLINE": "Join the Resistance",
+  "CTA_SUBHEADLINE": "Knowledge is power. Truth is freedom. Don't let them keep you in the dark.",
+  "CTA_BUTTON_TEXT": "Access Forbidden Library",
+  "CTA_LINK": "/brands/true-earth/pages/free-gift.html",
+  
+  "LIBRARY_HEADLINE": "Forbidden Knowledge Archive",
+  "LIBRARY_SUBHEADLINE": "Books they're trying to ban • Research they want suppressed • Truth they fear",
+  "LIBRARY_TAGLINE": "Underground Knowledge Distribution",
+  "LIBRARY_META_DESC": "Access forbidden books about Tartaria, free energy, giants, and suppressed technologies they don't want you to know.",
+  
+  "CATEGORY_1": "Alternative History",
+  "CATEGORY_2": "Suppressed Technology", 
+  "CATEGORY_3": "Forbidden Archaeology",
+  
+  "BOOK_1_AUTHOR": "Dr. Marcus Rothschild",
+  "BOOK_1_LONG_DESC": "EXPLOSIVE REVELATION! Discover the truth about the advanced civilization that once ruled our world. Tartaria wasn't mythology - it was systematically erased from history books. This banned research exposes the greatest cover-up in human history.",
+  "BOOK_1_ORIGINAL": "39.99",
+  "BOOK_1_HARDCOVER_PRICE": "49.99",
+  "BOOK_1_BUNDLE_PRICE": "89.99",
+  "BOOK_1_BADGE": "SUPPRESSED",
+  "BOOK_1_RATING": "4.9",
+  "BOOK_1_REVIEWS": "underground",
+  "BOOK_1_GUMROAD_ID": "tartaria-unveiled",
+  "BOOK_1_LULU_URL": "https://classified.true-earth.com/tartaria",
+  
+  "BOOK_2_TITLE": "Free Energy Now: Build Your Own Power Grid",
+  "BOOK_2_AUTHOR": "Tesla Research Institute",
+  "BOOK_2_DESC": "Tesla's suppressed free energy secrets finally revealed",
+  "BOOK_2_LONG_DESC": "SUPPRESSED FOR 100+ YEARS! Tesla's free energy secrets finally revealed. Step-by-step instructions to build devices that extract unlimited power from the quantum field. The energy companies don't want you to see this!",
+  "BOOK_2_PRICE": "34.99",
+  "BOOK_2_ORIGINAL": "49.99",
+  "BOOK_2_HARDCOVER_PRICE": "59.99",
+  "BOOK_2_BUNDLE_PRICE": "79.99",
+  "BOOK_2_COVER": "images/free-energy-book.jpg",
+  "BOOK_2_BADGE": "CLASSIFIED",
+  "BOOK_2_RATING": "5.0",
+  "BOOK_2_REVIEWS": "verified",
+  "BOOK_2_GUMROAD_ID": "free-energy-secrets",
+  "BOOK_2_LULU_URL": "https://classified.true-earth.com/energy",
+  
+  "BUNDLE_1_NAME": "Truth Seeker Starter Pack",
+  "BUNDLE_1_TITLE": "Complete Forbidden Knowledge Library",
+  "BUNDLE_1_DESC": "Everything they don't want you to know in one explosive collection",
+  "BUNDLE_1_BOOKS": "6 Books",
+  "BUNDLE_1_BADGE": "Save 60%",
+  "BUNDLE_1_ITEM_1": "Tartaria Unveiled: Secrets of a Lost Empire",
+  "BUNDLE_1_ITEM_2": "Free Energy Now: Build Your Own Power Grid",
+  "BUNDLE_1_ITEM_3": "Giants Among Us: The Hidden Race Revealed",
+  "BUNDLE_1_BONUS": "CLASSIFIED: Underground Research Network Access",
+  "BUNDLE_1_PRICE": "97.99",
+  "BUNDLE_1_ORIGINAL": "238.93",
+  "BUNDLE_1_SAVINGS": "59",
+  "BUNDLE_1_GUMROAD_ID": "complete-truth-library",
+  
+  "THANK_YOU_HEADLINE": "Welcome to the Underground",
+  "THANK_YOU_SUBHEADLINE": "Your classified access codes are being transmitted",
+  "NEXT_STEPS_TITLE": "Secure Communication Protocol:",
+  "STEP_1": "Check your encrypted email for download links",
+  "STEP_2": "Whitelist our domain to ensure secure delivery",
+  "STEP_3": "Join our encrypted Telegram channel for updates",
+  
+  "OFFER_TITLE": "🔓 Classified Access Granted",
+  "OFFER_TEXT": "Welcome bonus: 50% off any book in our forbidden library",
+  "OFFER_CODE": "TRUTH50",
+  "OFFER_CTA": "Access Library",
+  
+  "SUPPORT_TEXT": "Need secure contact?",
+  "SUPPORT_EMAIL": "truth@true-earth.com",
+  "SUPPORT_LINK_TEXT": "Encrypted contact",
+  "SOCIAL_PROOF": "Join 25,000+ truth seekers in the underground network",
+  
+  "PURCHASE_HEADLINE": "Knowledge Transfer Complete",
+  "PURCHASE_SUBHEADLINE": "Your forbidden knowledge has been secured",
+  "ORDER_DETAILS_TITLE": "Classified Order Details",
+  
+  "DOWNLOAD_TITLE": "Secure Download Portal",
+  "DOWNLOAD_TEXT": "Your encrypted download links have been transmitted to your secure email address:",
+  "DOWNLOAD_BUTTON": "🔐 Access Secure Downloads",
+  
+  "SHIPPING_TITLE": "Discrete Shipping Protocol",
+  "SHIPPING_TEXT": "Physical books are printed off-grid and shipped in unmarked packages. Tracking codes sent via encrypted channels.",
+  
+  "NEXT_TITLE": "What Happens Next?",
+  "NEXT_1_TITLE": "Begin Your Research",
+  "NEXT_1_TEXT": "Download and study the forbidden knowledge",
+  "NEXT_2_TITLE": "Join the Network", 
+  "NEXT_2_TEXT": "Connect with other truth seekers worldwide",
+  "NEXT_3_TITLE": "Spread the Truth",
+  "NEXT_3_TEXT": "Share knowledge before it's suppressed again",
+  
+  "CROSSSELL_TITLE": "🔍 Classified Research Continues",
+  "CROSSSELL_TEXT": "Truth seekers who accessed this also investigated:",
+  "CROSSSELL_1_TITLE": "Advanced Suppression",
+  "CROSSSELL_1_DESC": "Next level forbidden technologies",
+  "CROSSSELL_2_TITLE": "Complete Archive",
+  "CROSSSELL_2_DESC": "Full underground research collection",
+  
+  "CONTINUE_SHOPPING": "Continue Investigation",
+  "NEED_HELP": "Secure Support",
+  "MY_ACCOUNT": "My Archives",
+  "SECURE_CHECKOUT": "Encrypted Payment",
+  "GUARANTEE": "Truth-or-Refund",
+  "SUPPORT": "Underground Network",
+  
+  "FOOTER_TAGLINE": "Preserving forbidden knowledge for future generations since the coverup began",
+  
+  "SOCIAL_FACEBOOK": "https://facebook.com/groups/trueearthpub",
+  "SOCIAL_TWITTER": "https://twitter.com/trueearthbooks",
+  "SOCIAL_INSTAGRAM": "https://gab.com/trueearthpub",
+  
+  "ANALYTICS_ID": "G-CLASSIFIED",
+  "FACEBOOK_PIXEL_ID": "ENCRYPTED",
+  "CONVERSION_ID": "truth_awakening",
+  
+  "FORM_ACTION": "https://encrypted.true-earth.com/signup",
+  
+  "SUPPORT_EMAIL": "truth@true-earth.com",
+  
+  "ANNOUNCEMENT_TEXT": "⚠️ URGENT: Government trying to shut down our distribution - Download now before it's too late!"
+}

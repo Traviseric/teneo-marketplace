@@ -1,0 +1,98 @@
+{
+  "version": "1.0",
+  "updated": "2024-01-15T12:00:00Z",
+  "network": {
+    "name": "Teneo Book Network",
+    "description": "A decentralized network of independent bookstores",
+    "protocol": "TBN/1.0",
+    "features": [
+      "federated-search",
+      "cross-store-discovery",
+      "unified-catalog",
+      "distributed-hosting"
+    ]
+  },
+  "stores": [
+    {
+      "id": "teneo-main",
+      "name": "Teneo Books",
+      "tagline": "Knowledge Beyond Boundaries™",
+      "url": "http://localhost:3001/?brand=teneo",
+      "api": "http://localhost:3001/api",
+      "brand": "teneo",
+      "specialties": ["AI", "consciousness", "paradigm-shifts", "hidden-patterns"],
+      "verified": true,
+      "featured": true,
+      "joined": "2024-01-01",
+      "owner": "Teneo AI",
+      "contact": "network@teneo.ai",
+      "features": ["digital-delivery", "ai-powered", "pattern-recognition"],
+      "status": "active",
+      "color": "#7C3AED"
+    },
+    {
+      "id": "true-earth",
+      "name": "True Earth Publications",
+      "tagline": "Uncovering Hidden Knowledge • Revealing Suppressed Truths",
+      "url": "http://localhost:3001/?brand=true-earth",
+      "api": "http://localhost:3001/api",
+      "brand": "true-earth",
+      "specialties": ["conspiracy", "forbidden-knowledge", "alternative-history", "suppressed-tech"],
+      "verified": true,
+      "joined": "2024-01-05",
+      "owner": "Truth Seekers LLC",
+      "contact": "truth@true-earth.com",
+      "features": ["uncensored-content", "underground-network", "banned-books"],
+      "status": "active",
+      "color": "#d4af37"
+    },
+    {
+      "id": "wealth-wise",
+      "name": "WealthWise",
+      "tagline": "Insider Knowledge. Real Wealth.™",
+      "url": "http://localhost:3001/?brand=wealth-wise",
+      "api": "http://localhost:3001/api",
+      "brand": "wealth-wise",
+      "specialties": ["finance", "wealth-building", "investing", "tax-strategies"],
+      "verified": true,
+      "joined": "2024-01-10",
+      "owner": "Elite Financial Publishing",
+      "contact": "concierge@wealthwise.com",
+      "features": ["institutional-grade", "elite-strategies", "wealth-protection"],
+      "status": "active",
+      "color": "#FFD700"
+    }
+  ],
+  "networkStats": {
+    "totalStores": 3,
+    "activeStores": 3,
+    "totalBooks": 18,
+    "totalCategories": 9,
+    "networkSavings": "40%",
+    "monthlySearches": 25000,
+    "lastUpdated": "2024-01-15T12:00:00Z"
+  },
+  "connections": [
+    {
+      "from": "true-earth",
+      "to": "teneo-main",
+      "type": "consciousness",
+      "strength": 0.8,
+      "description": "Truth seekers exploring consciousness revelations"
+    },
+    {
+      "from": "wealth-wise",
+      "to": "teneo-main",
+      "type": "patterns",
+      "strength": 0.7,
+      "description": "Pattern recognition in markets and reality"
+    },
+    {
+      "from": "teneo-main",
+      "to": "true-earth",
+      "type": "hidden-knowledge",
+      "strength": 0.9,
+      "description": "AI revealing suppressed information"
+    }
+  ]
+}

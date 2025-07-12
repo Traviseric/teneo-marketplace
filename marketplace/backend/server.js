@@ -6,6 +6,9 @@ const path = require('path');
 // Load environment variables
 dotenv.config();
 
+// Initialize Stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -89,6 +92,15 @@ const books = [
 
 // API Routes
 
+// Network routes
+app.use('/api', require('./routes/network'));
+
+// Download routes
+app.use('/api/download', require('./routes/download'));
+
+// Checkout routes (production-ready)
+app.use('/api/checkout', require('./routes/checkout'));
+
 // Get all books
 app.get('/api/books', (req, res) => {
     res.json({
@@ -116,7 +128,90 @@ app.get('/api/books/:id', (req, res) => {
     });
 });
 
-// Checkout endpoint (Stripe integration placeholder)
+// Create Stripe checkout session
+app.post('/api/create-checkout-session', async (req, res) => {
+    try {
+        const { bookId, quantity = 1 } = req.body;
+        
+        if (!bookId) {
+            return res.status(400).json({
+                success: false,
+                error: 'Book ID is required'
+            });
+        }
+        
+        // Find the book
+        const book = books.find(b => b.id === parseInt(bookId));
+        if (!book) {
+            return res.status(404).json({
+                success: false,
+                error: 'Book not found'
+            });
+        }
+        
+        // Check stock
+        if (book.stock < quantity) {
+            return res.status(400).json({
+                success: false,
+                error: `Only ${book.stock} copies available`
+            });
+        }
+        
+        // Check if Stripe is configured
+        if (!process.env.STRIPE_SECRET_KEY) {
+            return res.status(500).json({
+                success: false,
+                error: 'Stripe not configured. Please add STRIPE_SECRET_KEY to your .env file.'
+            });
+        }
+        
+        // Create Stripe checkout session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: book.title,
+                            description: `by ${book.author} - ${book.description}`,
+                            metadata: {
+                                bookId: book.id.toString(),
+                                genre: book.genre
+                            }
+                        },
+                        unit_amount: Math.round(book.price * 100), // Convert to cents
+                    },
+                    quantity: quantity,
+                },
+            ],
+            mode: 'payment',
+            success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${req.headers.origin}/cancel`,
+            metadata: {
+                bookId: book.id.toString(),
+                bookTitle: book.title,
+                quantity: quantity.toString()
+            }
+        });
+        
+        res.json({
+            success: true,
+            sessionId: session.id,
+            url: session.url
+        });
+        
+    } catch (error) {
+        console.error('Stripe checkout error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create checkout session',
+            details: error.message
+        });
+    }
+});
+
+// Legacy checkout endpoint (keeping for backward compatibility)
 app.post('/api/checkout', async (req, res) => {
     try {
         const { items } = req.body;
@@ -156,25 +251,15 @@ app.post('/api/checkout', async (req, res) => {
             });
         }
         
-        // In a real application, you would:
-        // 1. Create a Stripe checkout session
-        // 2. Process payment
-        // 3. Update inventory
-        // 4. Create order record
-        
-        // For now, return a mock successful response
+        // Return mock response for legacy compatibility
         res.json({
             success: true,
-            message: 'Checkout session created',
+            message: 'Use /api/create-checkout-session for Stripe integration',
             data: {
                 orderId: `ORDER-${Date.now()}`,
                 total: total.toFixed(2),
                 currency: 'USD',
                 items: orderItems,
-                // This would be a real Stripe checkout URL in production
-                checkoutUrl: process.env.STRIPE_SECRET_KEY ? 
-                    'https://checkout.stripe.com/pay/cs_test_example' : 
-                    null,
                 status: 'pending'
             }
         });

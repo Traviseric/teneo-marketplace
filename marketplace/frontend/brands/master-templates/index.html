@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{BRAND_NAME}} - {{TAGLINE}}</title>
+    <meta name="description" content="{{META_DESCRIPTION}}">
+    
+    <!-- CSS Variables for Brand Customization -->
+    <style>
+        :root {
+            /* Brand Colors - Easy to change per client */
+            --primary-color: {{PRIMARY_COLOR|#1E40AF}};
+            --accent-color: {{ACCENT_COLOR|#F59E0B}};
+            --text-color: {{TEXT_COLOR|#111827}};
+            --bg-color: {{BG_COLOR|#FFFFFF}};
+            --secondary-bg: {{SECONDARY_BG|#F3F4F6}};
+            
+            /* Brand Fonts */
+            --font-main: {{FONT_MAIN|'Inter', sans-serif}};
+            --font-heading: {{FONT_HEADING|'Inter', sans-serif}};
+            
+            /* Spacing System */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+        }
+    </style>
+    
+    <!-- Modern CSS Framework (Choose ONE) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- OR Pico CSS for classless beauty -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"> -->
+    
+    <!-- Alpine.js for interactivity without complexity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="brand-template.css">
+    
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ANALYTICS_ID}}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ANALYTICS_ID}}');
+    </script>
+</head>
+<body class="font-sans">
+    <!-- Announcement Bar (Optional) -->
+    <div class="bg-accent-color text-white text-center py-2 text-sm" x-data="{ show: true }" x-show="show">
+        <span>{{ANNOUNCEMENT_TEXT|🚀 Limited Time: 20% Off Our Premium Package}}</span>
+        <button @click="show = false" class="ml-4">×</button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 bg-white shadow-md z-50" x-data="{ mobileMenu: false }">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="text-2xl font-bold text-primary-color">{{BRAND_NAME}}</a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="hover:text-accent-color transition">Features</a>
+                    <a href="#books" class="hover:text-accent-color transition">Books</a>
+                    <a href="#about" class="hover:text-accent-color transition">About</a>
+                    <a href="#contact" class="hover:text-accent-color transition">Contact</a>
+                </div>
+                
+                <!-- CTA Button -->
+                <a href="{{CTA_LINK}}" class="hidden md:inline-block bg-accent-color text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
+                    {{CTA_TEXT|Get Started}}
+                </a>
+                
+                <!-- Mobile Menu Toggle -->
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenu" x-transition class="md:hidden pb-4">
+                <a href="#features" class="block py-2 hover:text-accent-color">Features</a>
+                <a href="#books" class="block py-2 hover:text-accent-color">Books</a>
+                <a href="#about" class="block py-2 hover:text-accent-color">About</a>
+                <a href="#contact" class="block py-2 hover:text-accent-color">Contact</a>
+                <a href="{{CTA_LINK}}" class="block mt-4 bg-accent-color text-white px-6 py-2 rounded-lg text-center">
+                    {{CTA_TEXT|Get Started}}
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Multiple Layouts -->
+    <section class="hero-{{HERO_STYLE|centered}} py-20 bg-gradient-to-br from-primary-color to-blue-600 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+                    {{HERO_HEADLINE}}
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    {{HERO_SUBHEADLINE}}
+                </p>
+                
+                <!-- Email Capture or CTA -->
+                <div class="hero-action">
+                    <!-- Option 1: Email Capture -->
+                    <form action="{{FORM_ACTION}}" method="POST" class="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
+                        <input type="email" name="email" placeholder="Enter your email" required 
+                               class="flex-1 px-6 py-3 rounded-lg text-gray-900">
+                        <button type="submit" class="bg-accent-color px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                            {{BUTTON_TEXT|Get Free Chapter}}
+                        </button>
+                    </form>
+                    
+                    <!-- Option 2: Two CTAs -->
+                    <!-- 
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <a href="#" class="bg-accent-color px-8 py-3 rounded-lg font-semibold hover:opacity-90">Primary CTA</a>
+                        <a href="#" class="bg-transparent border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-color transition">Secondary CTA</a>
+                    </div>
+                    -->
+                </div>
+                
+                <!-- Trust Indicators -->
+                <div class="mt-12 flex flex-wrap justify-center gap-8 text-sm opacity-80">
+                    <span><i class="fas fa-check-circle"></i> {{TRUST_1|30-Day Guarantee}}</span>
+                    <span><i class="fas fa-users"></i> {{TRUST_2|10,000+ Readers}}</span>
+                    <span><i class="fas fa-star"></i> {{TRUST_3|4.9/5 Rating}}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12">{{FEATURES_HEADLINE|Why Choose Us}}</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="text-center p-6 rounded-lg hover:shadow-xl transition" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                    <div class="text-5xl mb-4 text-accent-color" :class="{ 'animate-bounce': hover }">
+                        <i class="{{FEATURE_1_ICON|fas fa-rocket}}"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">{{FEATURE_1_TITLE}}</h3>
+                    <p>{{FEATURE_1_DESC}}</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="text-center p-6 rounded-lg hover:shadow-xl transition" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                    <div class="text-5xl mb-4 text-accent-color" :class="{ 'animate-bounce': hover }">
+                        <i class="{{FEATURE_2_ICON|fas fa-shield-alt}}"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">{{FEATURE_2_TITLE}}</h3>
+                    <p>{{FEATURE_2_DESC}}</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="text-center p-6 rounded-lg hover:shadow-xl transition" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                    <div class="text-5xl mb-4 text-accent-color" :class="{ 'animate-bounce': hover }">
+                        <i class="{{FEATURE_3_ICON|fas fa-chart-line}}"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">{{FEATURE_3_TITLE}}</h3>
+                    <p>{{FEATURE_3_DESC}}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Book Showcase -->
+    <section id="books" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12">{{BOOKS_HEADLINE|Our Books}}</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Book 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <img src="{{BOOK_1_COVER}}" alt="{{BOOK_1_TITLE}}" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">{{BOOK_1_TITLE}}</h3>
+                        <p class="text-gray-600 mb-4">{{BOOK_1_DESC}}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-accent-color">${{BOOK_1_PRICE}}</span>
+                            <a href="{{BOOK_1_LINK}}" class="bg-primary-color text-white px-4 py-2 rounded hover:opacity-90">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Repeat for more books -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Slider -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12">{{TESTIMONIALS_HEADLINE|What Readers Say}}</h2>
+            
+            <div class="max-w-3xl mx-auto" x-data="{ activeTestimonial: 0 }">
+                <div class="bg-white p-8 rounded-lg shadow-xl">
+                    <!-- Testimonial 1 -->
+                    <div x-show="activeTestimonial === 0" x-transition>
+                        <p class="text-lg italic mb-4">"{{TESTIMONIAL_1_TEXT}}"</p>
+                        <div class="flex items-center">
+                            <img src="{{TESTIMONIAL_1_IMAGE}}" alt="" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold">{{TESTIMONIAL_1_NAME}}</p>
+                                <p class="text-sm text-gray-600">{{TESTIMONIAL_1_ROLE}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add more testimonials -->
+                </div>
+                
+                <!-- Navigation dots -->
+                <div class="flex justify-center mt-6 space-x-2">
+                    <button @click="activeTestimonial = 0" 
+                            :class="{ 'bg-accent-color': activeTestimonial === 0, 'bg-gray-300': activeTestimonial !== 0 }"
+                            class="w-3 h-3 rounded-full"></button>
+                    <!-- Add more dots -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-primary-color to-accent-color text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-6">{{CTA_HEADLINE|Ready to Start Your Journey?}}</h2>
+            <p class="text-xl mb-8">{{CTA_SUBHEADLINE}}</p>
+            <a href="{{CTA_LINK}}" class="bg-white text-primary-color px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition inline-block">
+                {{CTA_BUTTON_TEXT|Get Started Now}}
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">{{BRAND_NAME}}</h3>
+                    <p class="text-gray-400">{{FOOTER_TAGLINE}}</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Books</a></li>
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4 text-2xl">
+                        <a href="{{SOCIAL_FACEBOOK}}" class="hover:text-accent-color"><i class="fab fa-facebook"></i></a>
+                        <a href="{{SOCIAL_TWITTER}}" class="hover:text-accent-color"><i class="fab fa-twitter"></i></a>
+                        <a href="{{SOCIAL_INSTAGRAM}}" class="hover:text-accent-color"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 {{BRAND_NAME}}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Scripts -->
+    <script src="brand-scripts.js"></script>
+</body>
+</html>
