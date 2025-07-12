@@ -1,60 +1,70 @@
-// Sample book data for the marketplace
-const sampleBooks = [
-    {
-        id: 1,
-        title: "The Midnight Library",
-        author: "Matt Haig",
-        genre: "Fiction",
-        price: "$12.99",
-        description: "A dazzling novel about all the choices that go into a life well lived, from the internationally bestselling author of Reasons to Stay Alive.",
-        cover: "📚"
-    },
-    {
-        id: 2,
-        title: "Sapiens: A Brief History of Humankind",
-        author: "Yuval Noah Harari",
-        genre: "Non-Fiction",
-        price: "$15.99",
-        description: "From a renowned historian comes a groundbreaking narrative of humanity's creation and evolution that explores the ways in which biology and history have defined us.",
-        cover: "🧠"
-    },
-    {
-        id: 3,
-        title: "Project Hail Mary",
-        author: "Andy Weir",
-        genre: "Science Fiction",
-        price: "$14.99",
-        description: "A lone astronaut must save the earth and humanity in this brilliant, funny, and absolutely gripping new novel from the author of The Martian.",
-        cover: "🚀"
-    },
-    {
-        id: 4,
-        title: "Atomic Habits",
-        author: "James Clear",
-        genre: "Self-Help",
-        price: "$13.99",
-        description: "An Easy & Proven Way to Build Good Habits & Break Bad Ones. A supremely practical and useful book that will help you build good habits and break bad ones.",
-        cover: "⚛️"
-    },
-    {
-        id: 5,
-        title: "The Seven Husbands of Evelyn Hugo",
-        author: "Taylor Jenkins Reid",
-        genre: "Fiction",
-        price: "$11.99",
-        description: "A reclusive Hollywood icon finally tells her story in this captivating and deeply emotional novel about love, ambition, and the price of fame.",
-        cover: "✨"
-    },
-    {
-        id: 6,
-        title: "Educated",
-        author: "Tara Westover",
-        genre: "Memoir",
-        price: "$13.49",
-        description: "A powerful memoir about a woman who, kept out of school, leaves her survivalist family and goes on to earn a PhD from Cambridge University.",
-        cover: "🎓"
+// API configuration
+const API_BASE_URL = window.location.origin + '/api';
+
+// Global variable to store books data
+let booksData = [];
+
+// Function to fetch books from API
+async function fetchBooks() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/books`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            booksData = result.data;
+            return booksData;
+        } else {
+            throw new Error('Invalid response format');
+        }
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        // Fallback to sample data if API fails
+        return getFallbackBooks();
     }
-];
+}
+
+// Fallback book data in case API is unavailable
+function getFallbackBooks() {
+    console.log('Using fallback book data');
+    return [
+        {
+            id: 1,
+            title: "The Midnight Library",
+            author: "Matt Haig",
+            genre: "Fiction",
+            price: 12.99,
+            currency: "USD",
+            description: "A dazzling novel about all the choices that go into a life well lived.",
+            cover: "📚",
+            stock: 10
+        },
+        {
+            id: 2,
+            title: "Sapiens: A Brief History of Humankind",
+            author: "Yuval Noah Harari",
+            genre: "Non-Fiction",
+            price: 15.99,
+            currency: "USD",
+            description: "A groundbreaking narrative of humanity's creation and evolution.",
+            cover: "🧠",
+            stock: 15
+        }
+    ];
+}
+
+// Function to format price
+function formatPrice(price, currency = 'USD') {
+    if (typeof price === 'string' && price.startsWith('$')) {
+        return price;
+    }
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency
+    }).format(price);
+}
 
 // Function to create a book card element
 function createBookCard(book) {
@@ -62,16 +72,24 @@ function createBookCard(book) {
     bookCard.className = 'book-card';
     bookCard.setAttribute('data-book-id', book.id);
     
+    const formattedPrice = formatPrice(book.price, book.currency);
+    const stockStatus = book.stock > 0 ? 
+        `<span class="stock-status in-stock">${book.stock} in stock</span>` : 
+        '<span class="stock-status out-of-stock">Out of stock</span>';
+    
     bookCard.innerHTML = `
         <div class="book-cover">${book.cover}</div>
         <div class="book-title">${book.title}</div>
         <div class="book-author">by ${book.author}</div>
         <div class="book-genre">${book.genre}</div>
         <div class="book-description">${book.description}</div>
-        <div class="book-price">${book.price}</div>
+        <div class="book-footer">
+            <div class="book-price">${formattedPrice}</div>
+            ${stockStatus}
+        </div>
     `;
     
-    // Add click event listener for future functionality
+    // Add click event listener
     bookCard.addEventListener('click', function() {
         handleBookClick(book);
     });
@@ -80,7 +98,7 @@ function createBookCard(book) {
 }
 
 // Function to render all books in the grid
-function renderBooksGrid() {
+async function renderBooksGrid() {
     const booksGrid = document.getElementById('books-grid');
     
     if (!booksGrid) {
@@ -88,33 +106,70 @@ function renderBooksGrid() {
         return;
     }
     
-    // Clear existing content
-    booksGrid.innerHTML = '';
+    // Show loading state
+    booksGrid.innerHTML = '<div class="loading">Loading books...</div>';
     
-    // Create and append book cards
-    sampleBooks.forEach(book => {
-        const bookCard = createBookCard(book);
-        booksGrid.appendChild(bookCard);
-    });
-    
-    console.log(`Rendered ${sampleBooks.length} books in the grid`);
+    try {
+        // Fetch books from API
+        const books = await fetchBooks();
+        
+        // Clear loading state
+        booksGrid.innerHTML = '';
+        
+        if (books.length === 0) {
+            booksGrid.innerHTML = '<div class="no-books">No books available at the moment.</div>';
+            return;
+        }
+        
+        // Create and append book cards
+        books.forEach(book => {
+            const bookCard = createBookCard(book);
+            booksGrid.appendChild(bookCard);
+        });
+        
+        console.log(`Rendered ${books.length} books in the grid`);
+    } catch (error) {
+        console.error('Error rendering books:', error);
+        booksGrid.innerHTML = '<div class="error">Error loading books. Please try again later.</div>';
+    }
 }
 
 // Function to handle book card clicks
 function handleBookClick(book) {
     console.log('Book clicked:', book.title);
-    // Future: Add modal, navigation to detail page, etc.
-    alert(`You clicked on "${book.title}" by ${book.author}\nPrice: ${book.price}`);
+    
+    // Check if book is in stock
+    if (book.stock === 0) {
+        alert(`Sorry, "${book.title}" is currently out of stock.`);
+        return;
+    }
+    
+    // Display book details
+    const formattedPrice = formatPrice(book.price, book.currency);
+    alert(`
+Title: ${book.title}
+Author: ${book.author}
+Genre: ${book.genre}
+Price: ${formattedPrice}
+Stock: ${book.stock} available
+
+${book.description}
+    `);
 }
 
-// Function to filter books by genre (for future use)
+// Function to filter books by genre
 function filterBooksByGenre(genre) {
-    const filteredBooks = genre === 'all' ? sampleBooks : sampleBooks.filter(book => 
+    const filteredBooks = genre === 'all' ? booksData : booksData.filter(book => 
         book.genre.toLowerCase() === genre.toLowerCase()
     );
     
     const booksGrid = document.getElementById('books-grid');
     booksGrid.innerHTML = '';
+    
+    if (filteredBooks.length === 0) {
+        booksGrid.innerHTML = `<div class="no-books">No books found in ${genre} genre.</div>`;
+        return;
+    }
     
     filteredBooks.forEach(book => {
         const bookCard = createBookCard(book);
@@ -124,9 +179,9 @@ function filterBooksByGenre(genre) {
     console.log(`Filtered books by genre: ${genre}, showing ${filteredBooks.length} books`);
 }
 
-// Function to search books by title or author (for future use)
+// Function to search books by title or author
 function searchBooks(searchTerm) {
-    const filteredBooks = sampleBooks.filter(book => 
+    const filteredBooks = booksData.filter(book => 
         book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         book.author.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -134,12 +189,23 @@ function searchBooks(searchTerm) {
     const booksGrid = document.getElementById('books-grid');
     booksGrid.innerHTML = '';
     
+    if (filteredBooks.length === 0) {
+        booksGrid.innerHTML = `<div class="no-books">No books found matching "${searchTerm}".</div>`;
+        return;
+    }
+    
     filteredBooks.forEach(book => {
         const bookCard = createBookCard(book);
         booksGrid.appendChild(bookCard);
     });
     
     console.log(`Search results for "${searchTerm}": ${filteredBooks.length} books found`);
+}
+
+// Function to refresh books from API
+async function refreshBooks() {
+    console.log('Refreshing books from API...');
+    await renderBooksGrid();
 }
 
 // Initialize the page when DOM is loaded
@@ -151,11 +217,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Export functions for potential future module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        sampleBooks,
+        fetchBooks,
         createBookCard,
         renderBooksGrid,
         handleBookClick,
         filterBooksByGenre,
-        searchBooks
+        searchBooks,
+        refreshBooks
     };
 }

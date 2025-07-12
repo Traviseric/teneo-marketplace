@@ -36,10 +36,31 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Teneo Marketplace. Open source book trading platform.</p>
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Marketplace. Open source book trading platform.</p>
+                </div>
+                <div class="newsletter-signup">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest book releases and exclusive offers</p>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input 
+                            type="email" 
+                            id="email-input"
+                            class="email-input" 
+                            placeholder="Enter your email" 
+                            required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        >
+                        <button type="submit" class="submit-btn">Subscribe</button>
+                    </form>
+                    <div id="newsletter-message" class="newsletter-message"></div>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script src="js/books.js"></script>
+    <script src="js/newsletter.js"></script>
 </body>
 </html> 
