@@ -1,0 +1,93 @@
+services:
+  - type: web
+    name: teneo-marketplace
+    runtime: node
+    plan: starter
+    buildCommand: |
+      cd marketplace/backend
+      npm install
+      node database/setup.js
+      node scripts/generate-sample-pdfs.js
+    startCommand: cd marketplace/backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: teneo-marketplace
+          property: port
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/marketplace/backend/database/marketplace.db
+      - key: SITE_URL
+        fromService:
+          type: web
+          name: teneo-marketplace
+          property: host
+      # Add these in Render dashboard:
+      # - key: STRIPE_SECRET_KEY
+      #   value: sk_live_...
+      # - key: STRIPE_PUBLISHABLE_KEY  
+      #   value: pk_live_...
+      # - key: EMAIL_USER
+      #   value: your-email@gmail.com
+      # - key: EMAIL_PASS
+      #   value: your-app-password
+    disk:
+      name: marketplace-data
+      mountPath: /opt/render/project/src/marketplace/backend/database
+      sizeGB: 1
+    healthCheckPath: /api/health
+    domains:
+      - teneo-marketplace.onrender.com
+    
+  # Static file service for PDFs and assets
+  - type: static
+    name: teneo-marketplace-static
+    staticPublishPath: marketplace/frontend
+    buildCommand: echo "No build needed for static files"
+    routes:
+      - type: rewrite
+        source: /books/*
+        destination: /books/$1
+      - type: rewrite
+        source: /brands/*
+        destination: /brands/$1
+    headers:
+      - path: /books/*.pdf
+        name: Content-Disposition
+        value: attachment
+      - path: /books/*.pdf
+        name: Cache-Control
+        value: private, max-age=300
+
+# Database backup service (optional)
+databases:
+  - name: marketplace-db-backup
+    databaseName: marketplace_backup
+    user: marketplace_user
+    plan: starter
+
+# Cron jobs for maintenance
+jobs:
+  - type: cron
+    name: cleanup-expired-tokens
+    schedule: "0 2 * * *"  # Daily at 2 AM
+    buildCommand: cd marketplace/backend && npm install
+    startCommand: |
+      cd marketplace/backend
+      node -e "
+        const db = require('./services/database-service');
+        db.run('DELETE FROM download_tokens WHERE expires_at < datetime(\"now\")')
+          .then(() => console.log('Expired tokens cleaned up'))
+          .catch(console.error);
+      "
+    
+  - type: cron
+    name: database-backup
+    schedule: "0 3 * * 0"  # Weekly on Sunday at 3 AM
+    buildCommand: cd marketplace/backend && npm install
+    startCommand: |
+      cd marketplace/backend
+      cp database/marketplace.db database/backup-$(date +%Y%m%d).db
+      echo "Database backed up"

@@ -1,0 +1,84 @@
+[build]
+  base = "."
+  publish = "marketplace/frontend"
+  command = "cd marketplace/backend && npm install"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Netlify Functions (for API)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Redirects and rewrites
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/network"
+  to = "/network.html"
+  status = 200
+
+[[redirects]]
+  from = "/downloads"
+  to = "/downloads.html"
+  status = 200
+
+[[redirects]]
+  from = "/success"
+  to = "/success.html"
+  status = 200
+
+[[redirects]]
+  from = "/cancel"
+  to = "/cancel.html"
+  status = 200
+
+# Fallback for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Cache static assets
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/*.pdf"
+  [headers.values]
+    Cache-Control = "private, max-age=300"
+    Content-Disposition = "attachment"
+
+# Environment variables (set in Netlify dashboard)
+# STRIPE_SECRET_KEY
+# STRIPE_PUBLISHABLE_KEY
+# EMAIL_USER
+# EMAIL_PASS
+# DATABASE_PATH

@@ -1,0 +1,76 @@
+{
+  "version": "1.0",
+  "updated": "2024-01-15T12:00:00Z",
+  "network": {
+    "name": "Teneo Book Network",
+    "description": "A decentralized network of independent bookstores",
+    "protocol": "TBN/1.0",
+    "features": [
+      "federated-search",
+      "cross-store-discovery",
+      "unified-catalog",
+      "distributed-hosting"
+    ]
+  },
+  "stores": [
+    {
+      "id": "teneo-main",
+      "name": "Teneo Books",
+      "tagline": "Knowledge Beyond Boundaries™",
+      "url": "http://localhost:3001",
+      "api": "http://localhost:3001/api",
+      "specialties": ["AI", "consciousness", "paradigm-shifts", "revolutionary-knowledge"],
+      "verified": true,
+      "joined": "2024-01-01",
+      "owner": "Teneo AI",
+      "contact": "network@teneo.ai",
+      "features": ["digital-delivery", "multi-brand", "ai-powered"],
+      "status": "active"
+    },
+    {
+      "id": "liberty-books",
+      "name": "Liberty Books",
+      "tagline": "Free Minds, Free Markets",
+      "url": "https://libertybooks.example.com",
+      "api": "https://libertybooks.example.com/api",
+      "specialties": ["libertarian", "economics", "philosophy", "freedom"],
+      "verified": false,
+      "joined": "2024-01-10",
+      "owner": "Freedom Press LLC",
+      "contact": "admin@libertybooks.example.com",
+      "features": ["crypto-payments", "anonymous-browsing"],
+      "status": "pending"
+    },
+    {
+      "id": "quantum-reads",
+      "name": "Quantum Reads",
+      "tagline": "Where Science Meets Consciousness",
+      "url": "https://quantumreads.example.com",
+      "api": "https://quantumreads.example.com/api",
+      "specialties": ["quantum-physics", "consciousness", "science", "spirituality"],
+      "verified": false,
+      "joined": "2024-01-12",
+      "owner": "Quantum Publishing",
+      "contact": "hello@quantumreads.example.com",
+      "features": ["academic-discounts", "research-papers"],
+      "status": "pending"
+    }
+  ],
+  "pendingApplications": [
+    {
+      "id": "underground-press",
+      "name": "Underground Press",
+      "specialties": ["alternative-history", "conspiracy", "banned-books"],
+      "applied": "2024-01-14",
+      "status": "reviewing"
+    }
+  ],
+  "networkStats": {
+    "totalStores": 3,
+    "activeStores": 1,
+    "pendingStores": 2,
+    "totalBooks": 500,
+    "monthlySearches": 10000,
+    "lastUpdated": "2024-01-15T12:00:00Z"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "BRAND_NAME": "Teneo",
+  "TAGLINE": "Knowledge Beyond Boundaries™",
+  "META_DESCRIPTION": "Revealing hidden truths through AI-powered book generation. Transform your expertise into paradigm-shifting books.",
+  
+  "PRIMARY_COLOR": "#7C3AED",
+  "ACCENT_COLOR": "#10B981",
+  "TEXT_COLOR": "#1F2937",
+  "BG_COLOR": "#FFFFFF",
+  "SECONDARY_BG": "#F9FAFB",
+  
+  "FONT_MAIN": "'Inter', sans-serif",
+  "FONT_HEADING": "'Poppins', sans-serif",
+  
+  "HERO_HEADLINE": "Reveal Hidden Truths. Create Revolutionary Books.",
+  "HERO_SUBHEADLINE": "Transform your expertise into paradigm-shifting books with AI that sees patterns humans can't",
+  "BUTTON_TEXT": "Start Free Chapter",
+  
+  "TRUST_1": "AI-Powered Insights",
+  "TRUST_2": "48-Hour Delivery",
+  "TRUST_3": "Uncensorable Platform",
+  
+  "FEATURES_HEADLINE": "Why Revolutionary Thinkers Choose Teneo",
+  "FEATURE_1_ICON": "fas fa-brain",
+  "FEATURE_1_TITLE": "AI Pattern Recognition",
+  "FEATURE_1_DESC": "Analyzes millions of data points to reveal hidden connections",
+  
+  "FEATURE_2_ICON": "fas fa-bolt",
+  "FEATURE_2_TITLE": "48-Hour Delivery",
+  "FEATURE_2_DESC": "From concept to complete manuscript in just two days",
+  
+  "FEATURE_3_ICON": "fas fa-unlock",
+  "FEATURE_3_TITLE": "Uncensorable Knowledge",
+  "FEATURE_3_DESC": "Decentralized infrastructure ensures your revelations remain free",
+  
+  "BOOKS_HEADLINE": "Paradigm-Shifting Publications",
+  "BOOK_1_TITLE": "The Consciousness Revolution",
+  "BOOK_1_DESC": "How AI is revealing the true nature of human awareness",
+  "BOOK_1_PRICE": "29.99",
+  "BOOK_1_COVER": "images/consciousness-revolution.jpg",
+  "BOOK_1_LINK": "/brands/teneo/catalog.json",
+  
+  "TESTIMONIAL_1_TEXT": "Teneo's AI helped me discover connections in my research I would have never found alone. My book is now a bestseller!",
+  "TESTIMONIAL_1_NAME": "Dr. Sarah Chen",
+  "TESTIMONIAL_1_ROLE": "Neuroscientist & Author",
+  "TESTIMONIAL_1_IMAGE": "images/testimonial-scientist.jpg",
+  
+  "CTA_HEADLINE": "Ready to Reveal Your Truth?",
+  "CTA_SUBHEADLINE": "Join thousands of revolutionary thinkers using AI to create paradigm-shifting books",
+  "CTA_BUTTON_TEXT": "Generate Your Book",
+  "CTA_LINK": "/create",
+  
+  "LIBRARY_HEADLINE": "Revolutionary Knowledge Library",
+  "LIBRARY_SUBHEADLINE": "AI-generated insights • Hidden pattern analysis • Paradigm-shifting revelations",
+  "LIBRARY_TAGLINE": "Knowledge Beyond Boundaries",
+  "LIBRARY_META_DESC": "Access revolutionary books created with AI that reveals hidden truths and patterns in human knowledge.",
+  
+  "CATEGORY_1": "AI & Consciousness",
+  "CATEGORY_2": "Hidden Patterns", 
+  "CATEGORY_3": "Future Paradigms",
+  
+  "BOOK_1_AUTHOR": "Dr. Marcus Reid & Teneo AI",
+  "BOOK_1_LONG_DESC": "REVOLUTIONARY DISCOVERY! This groundbreaking work reveals how artificial intelligence is uncovering the hidden mechanics of consciousness itself. Co-authored with Teneo's pattern-recognition AI, this book exposes truths about human awareness that mainstream science has overlooked.",
+  "BOOK_1_ORIGINAL": "49.99",
+  "BOOK_1_HARDCOVER_PRICE": "69.99",
+  "BOOK_1_BUNDLE_PRICE": "99.99",
+  "BOOK_1_BADGE": "AI ENHANCED",
+  "BOOK_1_RATING": "4.9",
+  "BOOK_1_REVIEWS": "revolutionary",
+  "BOOK_1_GUMROAD_ID": "consciousness-revolution",
+  "BOOK_1_LULU_URL": "https://teneo.ai/consciousness",
+  
+  "BOOK_2_TITLE": "The Pattern Code",
+  "BOOK_2_AUTHOR": "Alexandra Sterling & Teneo AI",
+  "BOOK_2_DESC": "Decoding the hidden algorithms that govern reality",
+  "BOOK_2_LONG_DESC": "MIND-BENDING REVELATIONS! Using advanced AI pattern recognition, this book reveals the mathematical codes underlying everything from market movements to human behavior. See the world through the lens of hidden algorithms.",
+  "BOOK_2_PRICE": "34.99",
+  "BOOK_2_ORIGINAL": "54.99",
+  "BOOK_2_HARDCOVER_PRICE": "74.99",
+  "BOOK_2_BUNDLE_PRICE": "119.99",
+  "BOOK_2_COVER": "images/pattern-code.jpg",
+  "BOOK_2_BADGE": "BESTSELLER",
+  "BOOK_2_RATING": "4.8",
+  "BOOK_2_REVIEWS": "paradigm shift",
+  "BOOK_2_GUMROAD_ID": "pattern-code",
+  "BOOK_2_LULU_URL": "https://teneo.ai/patterns",
+  
+  "BUNDLE_1_NAME": "Truth Seeker Collection",
+  "BUNDLE_1_TITLE": "Complete Revolutionary Library",
+  "BUNDLE_1_DESC": "Every paradigm-shifting book created with Teneo AI",
+  "BUNDLE_1_BOOKS": "6 Books",
+  "BUNDLE_1_BADGE": "Save 60%",
+  "BUNDLE_1_ITEM_1": "The Consciousness Revolution",
+  "BUNDLE_1_ITEM_2": "The Pattern Code",
+  "BUNDLE_1_ITEM_3": "Simulation Theory Decoded",
+  "BUNDLE_1_BONUS": "EXCLUSIVE: AI Book Generation Masterclass",
+  "BUNDLE_1_PRICE": "149.99",
+  "BUNDLE_1_ORIGINAL": "374.94",
+  "BUNDLE_1_SAVINGS": "60",
+  "BUNDLE_1_GUMROAD_ID": "truth-seeker-collection",
+  
+  "THANK_YOU_HEADLINE": "Welcome to the Revolution",
+  "THANK_YOU_SUBHEADLINE": "Your paradigm-shifting knowledge is being delivered",
+  "NEXT_STEPS_TITLE": "Your Next Steps:",
+  "STEP_1": "Check your email for instant download links",
+  "STEP_2": "Join our private AI author community",
+  "STEP_3": "Start generating your own revolutionary book",
+  
+  "OFFER_TITLE": "🎁 Exclusive Offer",
+  "OFFER_TEXT": "Get 50% off AI book generation - Today only!",
+  "OFFER_CODE": "REVEAL50",
+  "OFFER_CTA": "Start Creating",
+  
+  "SUPPORT_TEXT": "Need assistance?",
+  "SUPPORT_EMAIL": "support@teneo.ai",
+  "SUPPORT_LINK_TEXT": "Contact support",
+  "SOCIAL_PROOF": "Join 15,000+ revolutionary authors using AI",
+  
+  "PURCHASE_HEADLINE": "Knowledge Unlocked",
+  "PURCHASE_SUBHEADLINE": "Your revolutionary insights are ready",
+  "ORDER_DETAILS_TITLE": "Order Summary",
+  
+  "DOWNLOAD_TITLE": "Instant Access Portal",
+  "DOWNLOAD_TEXT": "Your paradigm-shifting books are ready for immediate download:",
+  "DOWNLOAD_BUTTON": "Download Now",
+  
+  "SHIPPING_TITLE": "Digital Delivery",
+  "SHIPPING_TEXT": "All books are delivered instantly via secure download. Physical copies available through our print partners.",
+  
+  "NEXT_TITLE": "Begin Your Journey",
+  "NEXT_1_TITLE": "Read & Discover",
+  "NEXT_1_TEXT": "Explore revolutionary insights from AI analysis",
+  "NEXT_2_TITLE": "Create Your Book",
+  "NEXT_2_TEXT": "Use Teneo AI to reveal your own hidden truths",
+  "NEXT_3_TITLE": "Join the Movement",
+  "NEXT_3_TEXT": "Connect with paradigm-shifting thinkers worldwide",
+  
+  "CROSSSELL_TITLE": "🚀 Expand Your Understanding",
+  "CROSSSELL_TEXT": "Revolutionary thinkers also explore:",
+  "CROSSSELL_1_TITLE": "AI Authorship Course",
+  "CROSSSELL_1_DESC": "Master AI-powered book creation",
+  "CROSSSELL_2_TITLE": "Pattern Recognition Toolkit",
+  "CROSSSELL_2_DESC": "Advanced AI analysis tools",
+  
+  "CONTINUE_SHOPPING": "Explore More Truths",
+  "NEED_HELP": "Get Support",
+  "MY_ACCOUNT": "My Library",
+  "SECURE_CHECKOUT": "Secure Payment",
+  "GUARANTEE": "30-Day Guarantee",
+  "SUPPORT": "24/7 AI Support",
+  
+  "FOOTER_TAGLINE": "Revealing hidden truths through AI-powered insights since 2024",
+  
+  "SOCIAL_FACEBOOK": "https://facebook.com/teneoai",
+  "SOCIAL_TWITTER": "https://twitter.com/teneoai",
+  "SOCIAL_INSTAGRAM": "https://instagram.com/teneoai",
+  
+  "ANALYTICS_ID": "G-TENEO2024",
+  "FACEBOOK_PIXEL_ID": "TENEO_PIXEL",
+  "CONVERSION_ID": "book_revelation",
+  
+  "FORM_ACTION": "https://api.teneo.ai/subscribe",
+  
+  "SUPPORT_EMAIL": "support@teneo.ai",
+  
+  "ANNOUNCEMENT_TEXT": "🚀 New: Generate your own AI-powered book - First chapter FREE!"
+}

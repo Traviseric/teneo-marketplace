@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Development version with hot reload
+  teneo-marketplace-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: teneo-marketplace-dev
+    ports:
+      - "3001:3001"
+      - "9229:9229"  # Node.js debugger port
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DEBUG=teneo:*
+      # Stripe configuration
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+    env_file:
+      - marketplace/backend/.env
+    volumes:
+      # Mount source code for hot reload
+      - ./marketplace:/app/marketplace
+      # Mount node_modules as volume for performance
+      - node_modules:/app/marketplace/backend/node_modules
+      # Mount uploads and logs
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - teneo-dev-network
+    depends_on:
+      - redis-dev
+    command: npm run dev
+
+  # Redis for development
+  redis-dev:
+    image: redis:7-alpine
+    container_name: teneo-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    restart: unless-stopped
+    networks:
+      - teneo-dev-network
+
+  # PostgreSQL for development
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: teneo-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=teneo_marketplace_dev
+      - POSTGRES_USER=teneo_dev
+      - POSTGRES_PASSWORD=dev123
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - teneo-dev-network
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  node_modules:
+
+networks:
+  teneo-dev-network:
+    driver: bridge

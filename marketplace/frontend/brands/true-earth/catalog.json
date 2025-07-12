@@ -1,0 +1,244 @@
+{
+  "books": [
+    {
+      "id": 101,
+      "title": "Tartaria Unveiled: Secrets of a Lost Empire",
+      "author": "Dr. Marcus Rothschild",
+      "genre": "Alternative History",
+      "price": 24.99,
+      "originalPrice": 39.99,
+      "currency": "USD",
+      "description": "EXPLOSIVE REVELATION! Discover the truth about the advanced civilization that once ruled our world. Tartaria wasn't mythology - it was systematically erased from history books. This banned research exposes the greatest cover-up in human history.",
+      "detailedDescription": "For centuries, evidence of an advanced global civilization has been hidden from the public. The Tartarian Empire spanned continents, built impossible architecture, and possessed technology we're only now 'rediscovering.' This book contains:\n\n• Photographic evidence of Tartarian buildings worldwide\n• The real reason for the 'Great Fire' events of the 1800s\n• How mudflood events buried entire cities\n• Advanced Tartarian technology still hidden today\n• The secret societies that orchestrated the cover-up\n\nWARNING: This information has been actively suppressed. Multiple researchers have faced harassment after exposing these truths.",
+      "cover": "🏛️",
+      "stock": 47,
+      "isbn": "978-0-TRUTH-001",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-01-15",
+      "pageCount": 432,
+      "format": "Hardcover + Digital Download",
+      "language": "English",
+      "tags": ["tartaria", "alternative history", "suppressed knowledge", "mudflood", "hidden civilization"],
+      "urgency": "⚠️ Government agents are trying to ban this book!",
+      "bonuses": [
+        "FREE Digital Archive: 500+ Tartarian photos",
+        "BONUS: Audio interviews with suppressed researchers",
+        "EXCLUSIVE: Maps showing hidden Tartarian sites"
+      ],
+      "testimonials": [
+        {
+          "name": "Sarah M., Truth Seeker",
+          "text": "This book changed everything I thought I knew about history. The evidence is undeniable!",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "title": "The Mudflood Conspiracy: Buried Cities Speak",
+      "author": "Elena Vasquez",
+      "genre": "Conspiracy Research",
+      "price": 19.99,
+      "originalPrice": 29.99,
+      "currency": "USD",
+      "description": "BANNED WORLDWIDE! The shocking truth about the global mudflood that buried advanced cities and reset human civilization. Basement windows that used to be first floors. Buildings with doors 20 feet underground. This is the evidence they tried to bury.",
+      "detailedDescription": "Across the globe, evidence points to a catastrophic mudflood event that buried the remnants of an advanced civilization. This suppressed research reveals:\n\n• Photographic proof of buried first floors in major cities\n• The timeline of the great reset (1800-1900s)\n• How 'basement' windows are actually ground-level windows\n• Advanced infrastructure found beneath modern cities\n• The psychological operation to hide our true history\n• Maps of pre-mudflood city layouts\n\nCITIES EXAMINED: San Francisco, Chicago, New York, London, Paris, St. Petersburg, and 50+ more locations worldwide.",
+      "cover": "🏙️",
+      "stock": 63,
+      "isbn": "978-0-TRUTH-002",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-02-20",
+      "pageCount": 384,
+      "format": "Paperback + Digital Download",
+      "language": "English",
+      "tags": ["mudflood", "buried cities", "alternative history", "conspiracy", "reset civilization"],
+      "urgency": "⚡ Selling fast - mainstream media trying to debunk!",
+      "bonuses": [
+        "BONUS: Interactive mudflood map",
+        "FREE: Video documentary (45 minutes)",
+        "EXCLUSIVE: Researcher contact list"
+      ],
+      "testimonials": [
+        {
+          "name": "Mike R., Independent Researcher",
+          "text": "I've been researching this for years. This book has the best evidence collection I've ever seen.",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "title": "Free Energy Now: Build Your Own Power Grid",
+      "author": "Tesla Research Institute",
+      "genre": "Suppressed Technology",
+      "price": 34.99,
+      "originalPrice": 49.99,
+      "currency": "USD",
+      "description": "SUPPRESSED FOR 100+ YEARS! Tesla's free energy secrets finally revealed. Step-by-step instructions to build devices that extract unlimited power from the quantum field. The energy companies don't want you to see this!",
+      "detailedDescription": "Nikola Tesla discovered how to harness unlimited energy from the Earth's electromagnetic field. This technology has been suppressed to maintain energy company profits. This manual contains:\n\n• Tesla's original free energy circuit diagrams\n• 12 working free energy devices you can build\n• Quantum field energy extraction methods\n• Scalar wave power generation techniques\n• How to power your entire home for FREE\n• Protection methods from energy company interference\n\nDEVICES INCLUDED:\n- Tesla Radiant Energy Receiver\n- Atmospheric Electricity Collector\n- Earth Battery Power System\n- Scalar Wave Generator\n- And 8 more suppressed technologies!\n\nWARNING: Building these devices may attract unwanted attention from energy cartels.",
+      "cover": "⚡",
+      "stock": 29,
+      "isbn": "978-0-TRUTH-003",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-03-10",
+      "pageCount": 520,
+      "format": "Technical Manual + Video Course",
+      "language": "English",
+      "tags": ["free energy", "tesla", "suppressed technology", "quantum field", "energy independence"],
+      "urgency": "🚨 Energy companies are trying to suppress this release!",
+      "bonuses": [
+        "BONUS: Video build instructions (8 hours)",
+        "FREE: Component supplier list",
+        "EXCLUSIVE: Tesla's lost patents collection"
+      ],
+      "testimonials": [
+        {
+          "name": "David K., Electrical Engineer",
+          "text": "I built the radiant energy device - IT WORKS! My electric bill is now $0.",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "title": "Giants Among Us: The Hidden Race Revealed",
+      "author": "Dr. Jonathan Smithsonian",
+      "genre": "Forbidden Archaeology",
+      "price": 22.99,
+      "originalPrice": 34.99,
+      "currency": "USD",
+      "description": "SMITHSONIAN COVER-UP EXPOSED! Giant human skeletons found worldwide - then mysteriously 'lost' by museums. Ancient newspapers, photographs, and eyewitness accounts prove giants walked the Earth. Why are they hiding our true origins?",
+      "detailedDescription": "For over 150 years, giant human skeletons (7-12 feet tall) have been discovered across America and worldwide. The Smithsonian Institution has systematically destroyed this evidence to maintain the evolution narrative. This explosive investigation reveals:\n\n• 400+ documented giant skeleton discoveries\n• Original newspaper reports from 1800s-1920s\n• Rare photographs before evidence was destroyed\n• Witness testimonies from archaeologists\n• The Smithsonian's secret destruction protocol\n• Where giants might still exist today\n\nEVIDENCE INCLUDES:\n- Nevada Cave Giants (8-10 feet tall)\n- Wisconsin Giant Burials (systematic destruction)\n- Catalina Island Giant Remains\n- Ohio Valley Giant Cities\n- Biblical and historical giant references\n\nThis is the book the Smithsonian doesn't want published!",
+      "cover": "🗿",
+      "stock": 41,
+      "isbn": "978-0-TRUTH-004",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-04-05",
+      "pageCount": 456,
+      "format": "Illustrated Hardcover + Digital",
+      "language": "English",
+      "tags": ["giants", "forbidden archaeology", "smithsonian coverup", "ancient history", "suppressed evidence"],
+      "urgency": "⚠️ Smithsonian is threatening legal action to stop sales!",
+      "bonuses": [
+        "BONUS: Photo archive of giant skeletons",
+        "FREE: Audio interviews with witnesses",
+        "EXCLUSIVE: Modern giant sighting reports"
+      ],
+      "testimonials": [
+        {
+          "name": "Dr. Patricia H., Archaeologist",
+          "text": "I've seen the evidence firsthand. This book exposes the greatest archaeological cover-up in history.",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "title": "Lost Tech Unlocked: 10 Suppressed Technologies You Can Build Today",
+      "author": "Underground Engineering Collective",
+      "genre": "Suppressed Technology",
+      "price": 29.99,
+      "originalPrice": 44.99,
+      "currency": "USD",
+      "description": "BREAKTHROUGH MANUAL! Build antigravity devices, healing frequency generators, and consciousness amplifiers using suppressed patents. These technologies exist but are hidden from the public. Reclaim your technological birthright!",
+      "detailedDescription": "Advanced technologies have been suppressed for decades to maintain corporate control. This manual provides complete build instructions for 10 revolutionary devices:\n\n1. ANTIGRAVITY LIFTER - Electrogravitics propulsion\n2. RIFE FREQUENCY HEALER - Destroy pathogens with sound\n3. CONSCIOUSNESS AMPLIFIER - Enhance psychic abilities\n4. WEATHER MODIFICATION DEVICE - Control local weather\n5. TRANSMUTATION CHAMBER - Alter atomic structure\n6. MIND READING DETECTOR - Detect psychic intrusion\n7. SCALAR WAVE COMMUNICATOR - Instant global communication\n8. TIME DISTORTION FIELD - Slow/accelerate local time\n9. DIMENSIONAL PORTAL OPENER - Access parallel realities\n10. ZERO-POINT MOTOR - Extract energy from vacuum\n\nEach device includes:\n• Complete wiring diagrams\n• Parts list with suppliers\n• Step-by-step build instructions\n• Safety protocols and warnings\n• Theoretical explanations\n\nWARNING: Some technologies may be illegal to build in certain jurisdictions.",
+      "cover": "🔧",
+      "stock": 35,
+      "isbn": "978-0-TRUTH-005",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-05-12",
+      "pageCount": 680,
+      "format": "Technical Manual + Video Series",
+      "language": "English",
+      "tags": ["suppressed technology", "antigravity", "free energy", "consciousness", "advanced physics"],
+      "urgency": "🔥 Government is monitoring purchases of this book!",
+      "bonuses": [
+        "BONUS: Video demonstrations (12 hours)",
+        "FREE: Supplier contact database",
+        "EXCLUSIVE: Advanced modification guides"
+      ],
+      "testimonials": [
+        {
+          "name": "Robert T., Electronics Expert",
+          "text": "I built 3 of these devices. They work exactly as described. This is game-changing technology!",
+          "rating": 5
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "title": "Cycles of Collapse: Earth's Hidden Reset Timeline",
+      "author": "Dr. Catherine Timewalker",
+      "genre": "Cyclical History",
+      "price": 27.99,
+      "originalPrice": 39.99,
+      "currency": "USD",
+      "description": "PROPHETIC WARNING! Earth experiences catastrophic resets every 138 years. The last one was 1902. The next is 2040. Learn the hidden patterns of civilization collapse and how to prepare for the coming reset.",
+      "detailedDescription": "History is not linear - it's cyclical. Every 138 years, Earth experiences a catastrophic reset that erases advanced civilizations and forces humanity to rebuild. This suppressed research reveals:\n\n• The 138-year reset cycle pattern\n• Evidence of previous resets (1764, 1902, 2040)\n• How each reset erases technological advancement\n• The cosmic forces driving these cycles\n• Survival strategies for the next reset\n• Signs the reset is beginning\n\nRESET EVENTS DOCUMENTED:\n- The Great Fire Era (1871-1906)\n- The Mudflood Period (1850-1900)\n- Infrastructure 'Rebuilding' (1900-1920)\n- Memory Wipe Operations (1910-1930)\n\nTHE NEXT RESET BEGINS: 2040\n\nSIGNS TO WATCH FOR:\n• Increased seismic activity\n• Atmospheric anomalies\n• Social collapse acceleration\n• Technology suppression intensifies\n• Elite underground migration\n\nThis book could save your life and preserve human knowledge through the coming reset.",
+      "cover": "♻️",
+      "stock": 52,
+      "isbn": "978-0-TRUTH-006",
+      "publisher": "True Earth Publications",
+      "publicationDate": "2024-06-01",
+      "pageCount": 398,
+      "format": "Survival Guide + Digital Archive",
+      "language": "English",
+      "tags": ["reset cycle", "collapse prediction", "survival guide", "cyclical history", "catastrophe preparation"],
+      "urgency": "⏰ Only 16 years until the next reset - prepare now!",
+      "bonuses": [
+        "BONUS: Reset survival checklist",
+        "FREE: Knowledge preservation protocols",
+        "EXCLUSIVE: Elite bunker location maps"
+      ],
+      "testimonials": [
+        {
+          "name": "Maria S., Prepper",
+          "text": "The patterns are undeniable. I'm already preparing based on this timeline. Everyone needs to read this.",
+          "rating": 5
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "truth-seeker-starter",
+      "name": "Truth Seeker Starter Pack",
+      "description": "Perfect introduction to forbidden knowledge. Get the 3 most eye-opening books for beginners.",
+      "books": [101, 102, 104],
+      "originalPrice": 89.97,
+      "bundlePrice": 49.99,
+      "savings": 39.98
+    },
+    {
+      "id": "technology-suppression",
+      "name": "Suppressed Technology Collection",
+      "description": "Master forbidden technologies with our complete technical library.",
+      "books": [103, 105],
+      "originalPrice": 94.98,
+      "bundlePrice": 54.99,
+      "savings": 39.99
+    },
+    {
+      "id": "complete-truth-library",
+      "name": "Complete Truth Library",
+      "description": "ULTIMATE COLLECTION: All 6 forbidden knowledge books + exclusive bonuses.",
+      "books": [101, 102, 103, 104, 105, 106],
+      "originalPrice": 238.93,
+      "bundlePrice": 97.99,
+      "savings": 140.94,
+      "exclusiveBonuses": [
+        "Private Truth Seeker Community Access",
+        "Monthly Underground Research Updates",
+        "Direct Contact with Authors",
+        "First Access to New Suppressed Research"
+      ]
+    }
+  ],
+  "freeGift": {
+    "title": "FREE: Tartaria Unveiled - Chapter 1",
+    "description": "Get the explosive first chapter that exposes the greatest historical cover-up of all time.",
+    "downloadUrl": "/brands/true-earth/free-chapter.pdf",
+    "emailRequired": true,
+    "ctaText": "Download Secret Chapter FREE"
+  }
+}
