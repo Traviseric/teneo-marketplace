@@ -1,0 +1,25 @@
+{
+  "name": "teneo-marketplace",
+  "version": "0.1.0",
+  "description": "An open source book marketplace platform connecting readers with authors and publishers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/teneo-marketplace.git"
+  },
+  "keywords": [
+    "marketplace",
+    "books",
+    "open-source",
+    "e-commerce"
+  ],
+  "author": "Teneo Marketplace Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-username/teneo-marketplace/issues"
+  },
+  "homepage": "https://github.com/your-username/teneo-marketplace#readme"
+}
