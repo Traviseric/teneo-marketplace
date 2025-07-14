@@ -400,7 +400,7 @@ class ShoppingCart {
     // Create Stripe checkout session (integration with existing Stripe code)
     async createStripeCheckout(checkoutData) {
         try {
-            const response = await fetch('/api/create-checkout-session', {
+            const response = await fetch(window.API_CONFIG.buildURL(window.API_CONFIG.ENDPOINTS.CHECKOUT), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

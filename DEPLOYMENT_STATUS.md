@@ -19,8 +19,8 @@
 - **SSL**: Automatic HTTPS
 
 ### ⚙️ Backend (Render)
-- **URL**: https://teneo-marketplace-api.onrender.com (pending)
-- **Status**: 🔄 Deploying
+- **URL**: https://teneo-marketplace-api.onrender.com
+- **Status**: ✅ Live
 - **Service Type**: Web Service
 - **Runtime**: Node.js 18+
 - **Database**: SQLite with persistent storage
@@ -112,6 +112,8 @@ graph LR
 - [ ] First book downloaded by customer
 - [ ] Email delivery confirmed working
 - [ ] All systems monitoring green
+- [x] Backend API deployed and live
+- [x] Frontend configured with live backend URL
 
 ### Phase 3: Network (Ready)
 - [ ] First external store connects to network
