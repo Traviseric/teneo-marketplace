@@ -64,7 +64,7 @@ class BrandManager {
     async loadDefaultData() {
         // Load default books from API
         try {
-            const response = await fetch('/api/books');
+            const response = await fetch(window.API_CONFIG.buildURL(window.API_CONFIG.ENDPOINTS.BOOKS));
             if (response.ok) {
                 const result = await response.json();
                 if (result.success && result.data) {

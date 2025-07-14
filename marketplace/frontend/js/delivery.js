@@ -138,7 +138,7 @@ class DigitalDelivery {
 
         try {
             // Request a secure download token from the backend
-            const response = await fetch('/api/download/create-token', {
+            const response = await fetch(window.API_CONFIG.buildURL(window.API_CONFIG.ENDPOINTS.DOWNLOAD_TOKEN), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

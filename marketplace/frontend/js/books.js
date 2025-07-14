@@ -1,5 +1,5 @@
-// API configuration
-const API_BASE_URL = window.location.origin + '/api';
+// API configuration - Use centralized config
+const API_BASE_URL = window.API_CONFIG ? window.API_CONFIG.API_URL : window.location.origin;
 
 // Global variable to store books data
 let booksData = [];
@@ -18,7 +18,7 @@ async function fetchBooks() {
         }
         
         // Fallback to API for default books
-        const response = await fetch(`${API_BASE_URL}/books`);
+        const response = await fetch(window.API_CONFIG.buildURL(window.API_CONFIG.ENDPOINTS.BOOKS));
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -288,7 +288,7 @@ async function handleBuyNow(bookId) {
         buyBtn.textContent = '⏳ Creating checkout...';
         
         // Create Stripe checkout session
-        const response = await fetch(`${API_BASE_URL}/create-checkout-session`, {
+        const response = await fetch(window.API_CONFIG.buildURL(window.API_CONFIG.ENDPOINTS.CHECKOUT), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

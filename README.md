@@ -36,7 +36,7 @@ That's it! Your bookstore is running. Start selling in minutes, not months.
 |-----------|--------|-----|-------|
 | 📚 Repository | ✅ Live | [GitHub](https://github.com/Traviseric/teneo-marketplace) | Open source, ready for contributions |
 | 🎨 Frontend | ✅ Live | [Vercel](https://teneo-marketplace.vercel.app) | Auto-deploy from main branch |
-| ⚙️ Backend | 🔄 Deploying | [Render](https://teneo-marketplace-api.onrender.com) | Setting up production environment |
+| ⚙️ Backend | ✅ Live | [Render](https://teneo-marketplace-api.onrender.com) | Production API ready |
 | 🌍 Network | ⏳ Ready | Federation Protocol | Ready for first external store |
 
 > **Status**: Production-ready with active deployment pipeline
