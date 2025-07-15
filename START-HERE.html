@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Marketplace - Quick Start</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #6D28D9;
+            --secondary: #10B981;
+            --accent: #FEA644;
+            --background: #0F172A;
+            --surface: #1E293B;
+            --surface-light: #334155;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: #334155;
+            --success: #10B981;
+            --error: #EF4444;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: var(--gradient);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 20s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #E0E7FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            border-color: var(--primary);
+        }
+
+        .features {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .features h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .feature:nth-child(2) .feature-icon {
+            animation-delay: 0.5s;
+        }
+
+        .feature:nth-child(3) .feature-icon {
+            animation-delay: 1s;
+        }
+
+        .feature:nth-child(4) .feature-icon {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: var(--text-muted);
+        }
+
+        .quick-start {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            border: 1px solid var(--border);
+        }
+
+        .quick-start h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .code {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            margin-top: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--surface-light);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                text-align: left;
+            }
+
+            .steps {
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>🚀 Teneo Marketplace</h1>
+            <p class="tagline">Create Your Book Marketplace in Minutes</p>
+            <div class="links">
+                <a href="/marketplace/frontend/index.html" class="btn btn-primary">View Demo Store</a>
+                <a href="/setup-wizard/index.html" class="btn btn-secondary">Brand Builder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="status">
+            <div class="status-indicator"></div>
+            <span id="serverStatus">Checking server status...</span>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">🛍️</div>
+                <h3>Live Marketplace</h3>
+                <p>Explore the fully functional Teneo marketplace with 6 AI-themed books and Stripe checkout integration.</p>
+                <a href="/marketplace/frontend/index.html" class="btn btn-primary">Open Store</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h3>Brand Builder</h3>
+                <p>Create your own branded marketplace with custom colors, books, and configuration in minutes.</p>
+                <a href="/setup-wizard/index.html" class="btn btn-primary">Create Brand</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <h3>API Documentation</h3>
+                <p>Access the backend API for books, checkout, and brand management. Full REST API with examples.</p>
+                <a href="#" onclick="showAPIDocs()" class="btn btn-primary">View API</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>What's Included</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">💳</div>
+                    <h4>Stripe Integration</h4>
+                    <p>Secure payment processing with test mode ready</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Multi-Brand Support</h4>
+                    <p>Host multiple brands on one platform</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h4>Responsive Design</h4>
+                    <p>Beautiful on all devices with dark mode</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h4>Production Ready</h4>
+                    <p>Deploy to any Node.js hosting service</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h2>Quick Start Guide</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Install Dependencies</h4>
+                        <p>Make sure all packages are installed</p>
+                        <div class="code">npm install</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Configure Environment</h4>
+                        <p>Add your Stripe keys to .env file</p>
+                        <div class="code">STRIPE_SECRET_KEY=sk_test_YOUR_KEY</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Start the Server</h4>
+                        <p>Launch the marketplace locally</p>
+                        <div class="code">npm start</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Open Marketplace</h4>
+                        <p>Visit the store in your browser</p>
+                        <div class="code">http://localhost:3001</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <h2 style="margin-bottom: 2rem;">Ready to Build?</h2>
+            <div class="links">
+                <a href="/marketplace/frontend/index.html" class="btn btn-primary">Explore Demo</a>
+                <a href="/setup-wizard/index.html" class="btn btn-primary">Create Your Brand</a>
+                <a href="https://github.com/yourusername/teneo-marketplace" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Built with ❤️ by Teneo • Open Source Book Marketplace Platform</p>
+    </footer>
+
+    <script>
+        // Check server status
+        async function checkServerStatus() {
+            const statusEl = document.getElementById('serverStatus');
+            try {
+                const response = await fetch('http://localhost:3001/api/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.textContent = `✅ Server running on port 3001 - ${data.service}`;
+                    statusEl.style.color = 'var(--success)';
+                } else {
+                    statusEl.textContent = '❌ Server not responding - Run npm start';
+                    statusEl.style.color = 'var(--error)';
+                }
+            } catch (error) {
+                statusEl.textContent = '❌ Server offline - Run npm start to begin';
+                statusEl.style.color = 'var(--error)';
+            }
+        }
+
+        // Show API documentation
+        function showAPIDocs() {
+            const apiDocs = `
+API Endpoints:
+
+GET  /api/health - Health check
+GET  /api/brands - List all brands  
+GET  /api/brands/:brandId/catalog - Get brand catalog
+GET  /api/books?brand=teneo - Get books by brand
+GET  /api/search?q=consciousness - Search books
+POST /api/checkout/create-session - Create Stripe checkout
+
+Example:
+curl http://localhost:3001/api/brands/teneo/catalog
+            `;
+            alert(apiDocs);
+        }
+
+        // Initialize
+        checkServerStatus();
+        setInterval(checkServerStatus, 5000);
+    </script>
+</body>
+</html>

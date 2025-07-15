@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Launch Kit - Teneo Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .launch-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .launch-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: sparkle 20s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-100px) translateY(-100px); }
+        }
+
+        .launch-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .launch-hero .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grand-opening-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            animation: grandOpeningGlow 3s ease-in-out infinite;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: inline-block;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes grandOpeningGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .launch-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--accent-color), #764ba2, #667eea);
+            border-radius: inherit;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            z-index: -1;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .discount-generator {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .discount-code {
+            background: var(--accent-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .discount-code:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(88, 166, 255, 0.4);
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .share-btn.twitter {
+            background: #1da1f2;
+            color: white;
+        }
+
+        .share-btn.facebook {
+            background: #4267b2;
+            color: white;
+        }
+
+        .share-btn.linkedin {
+            background: #0077b5;
+            color: white;
+        }
+
+        .share-btn.email {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .launch-checklist {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-icon {
+            font-size: 1.5rem;
+            width: 2rem;
+            text-align: center;
+        }
+
+        .checklist-icon.complete {
+            color: #10b981;
+        }
+
+        .checklist-icon.pending {
+            color: var(--text-secondary);
+        }
+
+        .email-capture-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .email-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+
+        .notify-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notify-btn:hover {
+            background: white;
+            color: var(--accent-color);
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .celebration-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            margin: 2rem;
+        }
+
+        .celebration.show {
+            display: flex;
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            animation: confetti 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🚀 Store Launch Kit</h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">Back to Store</a>
+                <a href="/network.html" class="nav-link">Network</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Launch Hero -->
+        <section class="launch-hero">
+            <div class="container">
+                <h1>🎉 Your Store is Live!</h1>
+                <p class="tagline">Welcome to the uncensorable book network</p>
+                <div class="grand-opening-banner">
+                    🎊 GRAND OPENING - 40% OFF EVERYTHING! 🎊
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- Launch Statistics -->
+            <section class="launch-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="visitor-count">0</div>
+                    <div class="stat-label">Visitors Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="cart-adds">0</div>
+                    <div class="stat-label">Items Added to Cart</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="checkout-attempts">0</div>
+                    <div class="stat-label">Checkout Attempts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="sales-count">0</div>
+                    <div class="stat-label">Sales Made</div>
+                </div>
+            </section>
+
+            <!-- Discount Code Generator -->
+            <section class="discount-generator">
+                <h2>🎁 Launch Discount Generator</h2>
+                <p>Create exclusive discount codes for your grand opening:</p>
+                
+                <div class="discount-code" onclick="copyDiscountCode(this)">
+                    LAUNCH40
+                </div>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                    Click to copy • 40% off for first 100 customers
+                </p>
+                
+                <button onclick="generateNewCode()" class="share-btn email" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-refresh"></i>
+                    Generate New Code
+                </button>
+            </section>
+
+            <!-- Share Your Store -->
+            <section>
+                <h2>📢 Share Your Store Launch</h2>
+                <p>Let the world know your bookstore is live!</p>
+                
+                <div class="share-buttons">
+                    <a href="#" onclick="shareOnTwitter()" class="share-btn twitter">
+                        <i class="fab fa-twitter"></i>
+                        Share on Twitter
+                    </a>
+                    <a href="#" onclick="shareOnFacebook()" class="share-btn facebook">
+                        <i class="fab fa-facebook"></i>
+                        Share on Facebook
+                    </a>
+                    <a href="#" onclick="shareOnLinkedIn()" class="share-btn linkedin">
+                        <i class="fab fa-linkedin"></i>
+                        Share on LinkedIn
+                    </a>
+                    <a href="#" onclick="shareViaEmail()" class="share-btn email">
+                        <i class="fas fa-envelope"></i>
+                        Email Friends
+                    </a>
+                </div>
+            </section>
+
+            <!-- Pre-Launch Email Capture -->
+            <section class="email-capture-preview">
+                <h2>📧 Build Your Launch List</h2>
+                <p>Capture emails before your next book release</p>
+                
+                <input type="email" placeholder="Enter email for launch updates" class="email-input" id="launch-email">
+                <br>
+                <button class="notify-btn" onclick="addToLaunchList()">
+                    <i class="fas fa-bell"></i>
+                    Notify Me of New Releases
+                </button>
+                
+                <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">
+                    <span id="email-list-count">0</span> people signed up for launch updates
+                </p>
+            </section>
+
+            <!-- Launch Checklist -->
+            <section class="launch-checklist">
+                <h2>✅ Launch Checklist</h2>
+                <p>Make sure you're ready for customers:</p>
+                
+                <div class="checklist-item">
+                    <i class="fas fa-circle-check checklist-icon complete"></i>
+                    <div>
+                        <strong>Store is Live</strong>
+                        <br>Your bookstore is accessible and running
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="checklist-books">
+                    <i class="fas fa-circle checklist-icon pending"></i>
+                    <div>
+                        <strong>Books Added</strong>
+                        <br>Upload your PDF books and configure pricing
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="checklist-payments">
+                    <i class="fas fa-circle checklist-icon pending"></i>
+                    <div>
+                        <strong>Payments Configured</strong>
+                        <br>Stripe is set up to process real payments
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="checklist-email">
+                    <i class="fas fa-circle checklist-icon pending"></i>
+                    <div>
+                        <strong>Email Delivery</strong>
+                        <br>Customer emails and download links working
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="checklist-domain">
+                    <i class="fas fa-circle checklist-icon pending"></i>
+                    <div>
+                        <strong>Custom Domain</strong>
+                        <br>Professional domain name configured (optional)
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section style="text-align: center; margin: 4rem 0;">
+                <h2>🚀 What's Next?</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 10px;">
+                        <i class="fas fa-network-wired" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h3>Join the Network</h3>
+                        <p>Connect with other bookstores and increase discovery</p>
+                        <a href="/network.html" class="share-btn email">Explore Network</a>
+                    </div>
+                    
+                    <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 10px;">
+                        <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h3>Track Analytics</h3>
+                        <p>Monitor sales, downloads, and customer behavior</p>
+                        <button class="share-btn email" onclick="showAnalytics()">View Analytics</button>
+                    </div>
+                    
+                    <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 10px;">
+                        <i class="fas fa-palette" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h3>Customize Brand</h3>
+                        <p>Create your unique brand identity and themes</p>
+                        <a href="/" class="share-btn email">Customize Store</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Success Celebration Modal -->
+    <div class="celebration" id="celebration">
+        <div class="celebration-content">
+            <h2>🎉 Congratulations!</h2>
+            <p id="celebration-message">Your first sale is complete!</p>
+            <button onclick="closeCelebration()" class="share-btn email">
+                Continue Selling
+            </button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Network. Launch your uncensorable bookstore.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Launch Kit functionality
+        class LaunchKit {
+            constructor() {
+                this.stats = {
+                    visitors: 0,
+                    cartAdds: 0,
+                    checkouts: 0,
+                    sales: 0
+                };
+                this.emailList = [];
+                this.init();
+            }
+
+            init() {
+                this.loadStats();
+                this.updateDisplay();
+                this.checkLaunchStatus();
+                
+                // Simulate some activity for demo
+                this.simulateActivity();
+            }
+
+            loadStats() {
+                const saved = localStorage.getItem('launchStats');
+                if (saved) {
+                    this.stats = { ...this.stats, ...JSON.parse(saved) };
+                }
+
+                const emailList = localStorage.getItem('launchEmailList');
+                if (emailList) {
+                    this.emailList = JSON.parse(emailList);
+                }
+            }
+
+            saveStats() {
+                localStorage.setItem('launchStats', JSON.stringify(this.stats));
+                localStorage.setItem('launchEmailList', JSON.stringify(this.emailList));
+            }
+
+            updateDisplay() {
+                document.getElementById('visitor-count').textContent = this.stats.visitors;
+                document.getElementById('cart-adds').textContent = this.stats.cartAdds;
+                document.getElementById('checkout-attempts').textContent = this.stats.checkouts;
+                document.getElementById('sales-count').textContent = this.stats.sales;
+                document.getElementById('email-list-count').textContent = this.emailList.length;
+            }
+
+            trackEvent(eventType) {
+                switch(eventType) {
+                    case 'visitor':
+                        this.stats.visitors++;
+                        break;
+                    case 'cart_add':
+                        this.stats.cartAdds++;
+                        break;
+                    case 'checkout':
+                        this.stats.checkouts++;
+                        break;
+                    case 'sale':
+                        this.stats.sales++;
+                        this.celebrateFirstSale();
+                        break;
+                }
+                this.saveStats();
+                this.updateDisplay();
+            }
+
+            celebrateFirstSale() {
+                if (this.stats.sales === 1) {
+                    this.showCelebration('🎉 Your First Sale!', 'Congratulations on your first customer! Your bookstore is officially in business.');
+                    this.createConfetti();
+                }
+            }
+
+            showCelebration(title, message) {
+                document.getElementById('celebration-message').textContent = message;
+                document.getElementById('celebration').classList.add('show');
+            }
+
+            createConfetti() {
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.background = ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4', '#45b7d1'][Math.floor(Math.random() * 5)];
+                        confetti.style.animationDelay = Math.random() * 3 + 's';
+                        document.body.appendChild(confetti);
+                        
+                        setTimeout(() => confetti.remove(), 3000);
+                    }, i * 100);
+                }
+            }
+
+            simulateActivity() {
+                // Add a visitor count on load
+                if (!localStorage.getItem('visitedLaunch')) {
+                    this.trackEvent('visitor');
+                    localStorage.setItem('visitedLaunch', 'true');
+                }
+
+                // Simulate some background activity
+                setInterval(() => {
+                    if (Math.random() < 0.1) { // 10% chance every 30 seconds
+                        this.trackEvent('visitor');
+                    }
+                }, 30000);
+            }
+
+            checkLaunchStatus() {
+                // Check various systems and update checklist
+                this.checkBooks();
+                this.checkPayments();
+                this.checkEmail();
+                this.checkDomain();
+            }
+
+            checkBooks() {
+                // Simulate checking for books
+                setTimeout(() => {
+                    const item = document.getElementById('checklist-books');
+                    item.querySelector('.checklist-icon').className = 'fas fa-circle-check checklist-icon complete';
+                }, 1000);
+            }
+
+            checkPayments() {
+                // Check if Stripe is configured
+                fetch('/api/checkout/mode')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.configured) {
+                            const item = document.getElementById('checklist-payments');
+                            item.querySelector('.checklist-icon').className = 'fas fa-circle-check checklist-icon complete';
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            checkEmail() {
+                // Simulate email check
+                setTimeout(() => {
+                    const item = document.getElementById('checklist-email');
+                    item.querySelector('.checklist-icon').className = 'fas fa-circle-check checklist-icon complete';
+                }, 2000);
+            }
+
+            checkDomain() {
+                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    const item = document.getElementById('checklist-domain');
+                    item.querySelector('.checklist-icon').className = 'fas fa-circle-check checklist-icon complete';
+                }
+            }
+
+            addToEmailList(email) {
+                if (email && !this.emailList.includes(email)) {
+                    this.emailList.push(email);
+                    this.saveStats();
+                    this.updateDisplay();
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        // Initialize launch kit
+        const launchKit = new LaunchKit();
+
+        // Global functions for UI interactions
+        function copyDiscountCode(element) {
+            const code = element.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                element.style.background = '#10b981';
+                element.textContent = 'Copied!';
+                setTimeout(() => {
+                    element.style.background = '';
+                    element.textContent = code;
+                }, 2000);
+            });
+        }
+
+        function generateNewCode() {
+            const codes = ['LAUNCH40', 'NEWSTORE50', 'WELCOME30', 'FIRSTBOOK25', 'GRANDOPEN60'];
+            const randomCode = codes[Math.floor(Math.random() * codes.length)];
+            document.querySelector('.discount-code').textContent = randomCode;
+        }
+
+        function shareOnTwitter() {
+            const text = encodeURIComponent("🎉 My new bookstore is live! Check out my uncensorable book collection on the Teneo Network. #IndependentBooks #Uncensorable");
+            const url = encodeURIComponent(window.location.origin);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.origin);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function shareOnLinkedIn() {
+            const url = encodeURIComponent(window.location.origin);
+            const title = encodeURIComponent("My New Independent Bookstore is Live!");
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`, '_blank');
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent("Check out my new bookstore!");
+            const body = encodeURIComponent(`Hi!\n\nI just launched my own independent bookstore on the Teneo Network. You can browse my book collection at:\n\n${window.location.origin}\n\nBest regards!`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function addToLaunchList() {
+            const email = document.getElementById('launch-email').value;
+            if (launchKit.addToEmailList(email)) {
+                document.getElementById('launch-email').value = '';
+                alert('Thanks for signing up! You\'ll be notified of new releases.');
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebration').classList.remove('show');
+        }
+
+        function showAnalytics() {
+            alert('Analytics dashboard coming soon! For now, check your Stripe dashboard for sales data.');
+        }
+
+        // Listen for events from the main store
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'teneo_event') {
+                launchKit.trackEvent(event.data.eventType);
+            }
+        });
+
+        // Track cart additions from the main store
+        if (window.opener) {
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'teneoCart') {
+                    const cart = JSON.parse(e.newValue || '[]');
+                    if (cart.length > 0) {
+                        launchKit.trackEvent('cart_add');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

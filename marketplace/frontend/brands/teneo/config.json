@@ -1,0 +1,30 @@
+{
+  "brandId": "teneo",
+  "brandName": "Teneo",
+  "tagline": "Knowledge Beyond Boundaries™",
+  "description": "Revealing hidden truths through AI-powered book generation",
+  "logo": "🧠",
+  "theme": {
+    "primaryColor": "#7C3AED",
+    "secondaryColor": "#10B981",
+    "accentColor": "#FEA644",
+    "backgroundColor": "#FFEFD6",
+    "textColor": "#1F2937",
+    "fontFamily": "Inter, sans-serif"
+  },
+  "features": {
+    "newsletter": true,
+    "reviews": true,
+    "bundles": true,
+    "networkEnabled": true
+  },
+  "payment": {
+    "processor": "stripe",
+    "currency": "USD",
+    "acceptedMethods": ["card", "paypal"]
+  },
+  "contact": {
+    "email": "support@teneo.ai",
+    "discord": "https://discord.gg/teneoai"
+  }
+}

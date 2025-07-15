@@ -1,0 +1,167 @@
+{
+  "BRAND_NAME": "Teneo Books",
+  "TAGLINE": "AI-Powered Publishing Made Simple",
+  "META_DESCRIPTION": "Create and publish professional books with AI assistance. Transform your ideas into published books in minutes.",
+  
+  "PRIMARY_COLOR": "#6366F1",
+  "ACCENT_COLOR": "#8B5CF6", 
+  "TEXT_COLOR": "#111827",
+  "BG_COLOR": "#FFFFFF",
+  "SECONDARY_BG": "#F3F4F6",
+  
+  "FONT_MAIN": "'Inter', sans-serif",
+  "FONT_HEADING": "'Poppins', sans-serif",
+  
+  "HERO_HEADLINE": "Turn Your Ideas Into Published Books",
+  "HERO_SUBHEADLINE": "Create and sell AI-generated books in minutes. Our platform handles everything from writing to publishing.",
+  "BUTTON_TEXT": "Start Creating",
+  
+  "TRUST_1": "30-Day Guarantee",
+  "TRUST_2": "5,000+ Books Created",
+  "TRUST_3": "4.8/5 Rating",
+  
+  "FEATURES_HEADLINE": "Why Authors Choose Teneo",
+  "FEATURE_1_ICON": "fas fa-robot",
+  "FEATURE_1_TITLE": "AI Book Generation",
+  "FEATURE_1_DESC": "Create complete books with AI assistance in any genre",
+  
+  "FEATURE_2_ICON": "fas fa-rocket",
+  "FEATURE_2_TITLE": "Instant Publishing",
+  "FEATURE_2_DESC": "Publish directly to Amazon, Lulu, and major platforms",
+  
+  "FEATURE_3_ICON": "fas fa-chart-line",
+  "FEATURE_3_TITLE": "Sales Analytics",
+  "FEATURE_3_DESC": "Track your book performance with detailed analytics",
+  
+  "BOOKS_HEADLINE": "Featured AI-Generated Books",
+  "BOOK_1_TITLE": "The AI Revolution in Business",
+  "BOOK_1_DESC": "How artificial intelligence is transforming modern business",
+  "BOOK_1_PRICE": "12.99",
+  "BOOK_1_COVER": "images/ai-business-book.jpg",
+  "BOOK_1_LINK": "https://amazon.com/ai-revolution",
+  
+  "TESTIMONIAL_1_TEXT": "I created and published my first book in just 2 hours. The AI writing assistant is incredible!",
+  "TESTIMONIAL_1_NAME": "Sarah Johnson",
+  "TESTIMONIAL_1_ROLE": "First-time Author",
+  "TESTIMONIAL_1_IMAGE": "images/testimonial-sarah.jpg",
+  
+  "CTA_HEADLINE": "Ready to Become a Published Author?",
+  "CTA_SUBHEADLINE": "Join thousands of authors using AI to create bestselling books",
+  "CTA_BUTTON_TEXT": "Create Your First Book",
+  "CTA_LINK": "/create-book",
+  
+  "LIBRARY_HEADLINE": "Discover Amazing Books",
+  "LIBRARY_SUBHEADLINE": "Browse our collection of AI-generated and human-authored books",
+  "LIBRARY_TAGLINE": "Books for Every Interest",
+  "LIBRARY_META_DESC": "Browse our marketplace of books created by AI and human authors across all genres",
+  
+  "CATEGORY_1": "Business",
+  "CATEGORY_2": "Technology", 
+  "CATEGORY_3": "Self-Help",
+  
+  "BOOK_1_AUTHOR": "AI Assistant",
+  "BOOK_1_LONG_DESC": "Explore how artificial intelligence is revolutionizing business operations, decision-making, and customer experiences. This comprehensive guide covers practical applications and future trends.",
+  "BOOK_1_ORIGINAL": "19.99",
+  "BOOK_1_HARDCOVER_PRICE": "24.99",
+  "BOOK_1_BUNDLE_PRICE": "34.99",
+  "BOOK_1_BADGE": "AI Generated",
+  "BOOK_1_RATING": "4.6",
+  "BOOK_1_REVIEWS": "143",
+  "BOOK_1_GUMROAD_ID": "ai-business-revolution",
+  "BOOK_1_LULU_URL": "https://www.lulu.com/shop/teneo/ai-business",
+  
+  "BOOK_2_TITLE": "Digital Marketing Mastery",
+  "BOOK_2_AUTHOR": "Marketing AI",
+  "BOOK_2_DESC": "Complete guide to modern digital marketing strategies",
+  "BOOK_2_LONG_DESC": "Master the art of digital marketing with this comprehensive guide covering SEO, social media, content marketing, and conversion optimization strategies.",
+  "BOOK_2_PRICE": "14.99",
+  "BOOK_2_ORIGINAL": "21.99",
+  "BOOK_2_HARDCOVER_PRICE": "27.99",
+  "BOOK_2_BUNDLE_PRICE": "39.99",
+  "BOOK_2_COVER": "images/marketing-book.jpg",
+  "BOOK_2_BADGE": "Bestseller",
+  "BOOK_2_RATING": "4.8",
+  "BOOK_2_REVIEWS": "267",
+  "BOOK_2_GUMROAD_ID": "digital-marketing-mastery",
+  "BOOK_2_LULU_URL": "https://www.lulu.com/shop/teneo/marketing",
+  
+  "BUNDLE_1_NAME": "Starter Bundle",
+  "BUNDLE_1_TITLE": "The Complete Business Library",
+  "BUNDLE_1_DESC": "Everything you need to succeed in modern business",
+  "BUNDLE_1_BOOKS": "2 Books",
+  "BUNDLE_1_BADGE": "Save 30%",
+  "BUNDLE_1_ITEM_1": "The AI Revolution in Business",
+  "BUNDLE_1_ITEM_2": "Digital Marketing Mastery",
+  "BUNDLE_1_ITEM_3": "",
+  "BUNDLE_1_BONUS": "BONUS: Business Templates Collection",
+  "BUNDLE_1_PRICE": "19.99",
+  "BUNDLE_1_ORIGINAL": "27.98",
+  "BUNDLE_1_SAVINGS": "28",
+  "BUNDLE_1_GUMROAD_ID": "business-starter-bundle",
+  
+  "THANK_YOU_HEADLINE": "Success! Welcome to Teneo",
+  "THANK_YOU_SUBHEADLINE": "Your free resources are on their way to your inbox",
+  "NEXT_STEPS_TITLE": "Here's what happens next:",
+  "STEP_1": "Check your email for your free book creation guide",
+  "STEP_2": "Explore our AI writing tools and templates",
+  "STEP_3": "Start creating your first book today",
+  
+  "OFFER_TITLE": "🎁 Welcome Gift",
+  "OFFER_TEXT": "As a new member, get 50% off your first book creation",
+  "OFFER_CODE": "WELCOME50",
+  "OFFER_CTA": "Start Creating",
+  
+  "SUPPORT_TEXT": "Need help getting started?",
+  "SUPPORT_EMAIL": "support@teneobooks.com",
+  "SUPPORT_LINK_TEXT": "Contact our team",
+  "SOCIAL_PROOF": "Join 15,000+ authors creating with AI",
+  
+  "PURCHASE_HEADLINE": "Order Complete!",
+  "PURCHASE_SUBHEADLINE": "Thank you for your purchase",
+  "ORDER_DETAILS_TITLE": "Order Details",
+  
+  "DOWNLOAD_TITLE": "Download Your Books",
+  "DOWNLOAD_TEXT": "Your download links have been sent to your email. You can also access them here:",
+  "DOWNLOAD_BUTTON": "Download Now",
+  
+  "SHIPPING_TITLE": "Shipping Information",
+  "SHIPPING_TEXT": "Your print books will be shipped within 2-3 business days. You'll receive tracking information via email.",
+  
+  "NEXT_TITLE": "What's Next?",
+  "NEXT_1_TITLE": "Start Reading",
+  "NEXT_1_TEXT": "Download your books and begin your journey",
+  "NEXT_2_TITLE": "Create Your Own",
+  "NEXT_2_TEXT": "Use our AI tools to write your own book",
+  "NEXT_3_TITLE": "Join Our Community",
+  "NEXT_3_TEXT": "Connect with other authors in our Discord",
+  
+  "CROSSSELL_TITLE": "📚 Recommended for You",
+  "CROSSSELL_TEXT": "Authors who bought this also love:",
+  "CROSSSELL_1_TITLE": "Advanced AI Writing",
+  "CROSSSELL_1_DESC": "Master advanced AI writing techniques",
+  "CROSSSELL_2_TITLE": "Publishing Masterclass",
+  "CROSSSELL_2_DESC": "Learn the business of book publishing",
+  
+  "CONTINUE_SHOPPING": "Browse More Books",
+  "NEED_HELP": "Need Help?",
+  "MY_ACCOUNT": "My Library",
+  "SECURE_CHECKOUT": "Secure Payment",
+  "GUARANTEE": "30-Day Guarantee",
+  "SUPPORT": "24/7 Support",
+  
+  "FOOTER_TAGLINE": "Empowering authors with AI technology since 2024",
+  
+  "SOCIAL_FACEBOOK": "https://facebook.com/teneobooks",
+  "SOCIAL_TWITTER": "https://twitter.com/teneobooks",
+  "SOCIAL_INSTAGRAM": "https://instagram.com/teneobooks",
+  
+  "ANALYTICS_ID": "G-TENEO123",
+  "FACEBOOK_PIXEL_ID": "TENEO_PIXEL",
+  "CONVERSION_ID": "book_purchase",
+  
+  "FORM_ACTION": "https://formspree.io/f/teneobooks",
+  
+  "SUPPORT_EMAIL": "support@teneobooks.com",
+  
+  "ANNOUNCEMENT_TEXT": "🚀 New: AI Book Generator 2.0 - Create better books faster"
+}

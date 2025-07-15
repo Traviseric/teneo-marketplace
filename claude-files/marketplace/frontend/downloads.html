@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Your Books - Teneo Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Download Page Specific Styles */
+        .download-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .download-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .download-header h1 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .download-header .order-id {
+            color: var(--accent-color);
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .download-status {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .status-item strong {
+            color: var(--text-primary);
+        }
+
+        .books-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .download-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .book-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            opacity: 0.8;
+        }
+
+        .book-details h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .download-info {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .download-btn {
+            background: var(--accent-color);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover:not(:disabled) {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+        }
+
+        .download-btn:disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+            border: 1px solid #ef4444;
+        }
+
+        .error-message i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .help-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .help-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .help-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .help-section a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .help-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .delivery-notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--accent-color);
+            color: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .delivery-notification.success {
+            background: #10b981;
+        }
+
+        .delivery-notification.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .download-container {
+                padding: 1rem;
+            }
+
+            .download-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .book-icon {
+                font-size: 2rem;
+            }
+
+            .download-info {
+                justify-content: center;
+            }
+
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Teneo Books</h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">Home</a>
+                <a href="#" class="nav-link">My Account</a>
+                <a href="#" class="nav-link">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="download-container" id="download-container">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading your downloads...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Marketplace. Digital delivery powered by AI.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/delivery.js"></script>
+    <script>
+        // Download page functionality
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.getElementById('download-container');
+            
+            // Get order ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order');
+            
+            if (!orderId) {
+                showError('No order ID provided. Please check your email for the correct download link.');
+                return;
+            }
+
+            // Check if delivery system is available
+            if (!window.delivery) {
+                showError('Download system is not available. Please try again later.');
+                return;
+            }
+
+            // Load order details
+            loadOrderDetails(orderId);
+        });
+
+        function loadOrderDetails(orderId) {
+            const container = document.getElementById('download-container');
+            const details = window.delivery.getPurchaseDetails(orderId);
+            
+            if (!details) {
+                showError('Order not found or download link has expired. Please contact support.');
+                return;
+            }
+
+            // Display order details
+            container.innerHTML = `
+                <div class="download-header">
+                    <h1>Your Books Are Ready!</h1>
+                    <p>Order ID: <span class="order-id">${details.orderId}</span></p>
+                </div>
+
+                <div class="download-status">
+                    <div class="status-item">
+                        <span>Purchase Date:</span>
+                        <strong>${new Date(details.purchaseDate).toLocaleDateString()}</strong>
+                    </div>
+                    <div class="status-item">
+                        <span>Downloads Expire:</span>
+                        <strong>${details.daysRemaining} days remaining</strong>
+                    </div>
+                    <div class="status-item">
+                        <span>Total Books:</span>
+                        <strong>${details.items.length}</strong>
+                    </div>
+                </div>
+
+                <div class="books-list" id="books-list">
+                    ${details.items.map(item => createBookCard(item, orderId)).join('')}
+                </div>
+
+                <div class="help-section">
+                    <h3>Need Help?</h3>
+                    <p>If you have any issues downloading your books, please contact our support team.</p>
+                    <a href="mailto:support@teneo.ai">support@teneo.ai</a>
+                </div>
+            `;
+
+            // Add download event listeners
+            addDownloadListeners(orderId);
+        }
+
+        function createBookCard(item, orderId) {
+            const canDownload = item.canDownload;
+            const buttonText = canDownload ? 
+                `Download (${item.remainingDownloads} left)` : 
+                'Download Limit Reached';
+
+            return `
+                <div class="download-card">
+                    <div class="book-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-details">
+                        <h3>${item.title}</h3>
+                        <div class="download-info">
+                            <span><i class="fas fa-download"></i> ${item.downloadCount} downloads</span>
+                            <span><i class="fas fa-file-pdf"></i> PDF Format</span>
+                            <span><i class="fas fa-shield-alt"></i> DRM-Free</span>
+                        </div>
+                    </div>
+                    <button class="download-btn" 
+                            data-book-id="${item.bookId}" 
+                            data-order-id="${orderId}"
+                            ${!canDownload ? 'disabled' : ''}>
+                        <i class="fas fa-download"></i>
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }
+
+        function addDownloadListeners(orderId) {
+            const buttons = document.querySelectorAll('.download-btn:not(:disabled)');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-book-id');
+                    processDownload(orderId, bookId, this);
+                });
+            });
+        }
+
+        async function processDownload(orderId, bookId, button) {
+            // Disable button during download
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                // Process download
+                const result = window.delivery.processDownload(orderId, bookId);
+                
+                if (result.success) {
+                    // Show success message
+                    showNotification('Download starting...', 'success');
+                    
+                    // Simulate file download (in production, this would be a real file)
+                    downloadFile(result.downloadUrl, result.fileName);
+                    
+                    // Update button
+                    button.innerHTML = `<i class="fas fa-check"></i> Downloaded! (${result.remainingDownloads} left)`;
+                    
+                    // Re-enable button if downloads remain
+                    if (result.remainingDownloads > 0) {
+                        setTimeout(() => {
+                            button.disabled = false;
+                            button.innerHTML = `<i class="fas fa-download"></i> Download (${result.remainingDownloads} left)`;
+                        }, 2000);
+                    }
+                } else {
+                    showNotification(result.error, 'error');
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                showNotification('Download failed. Please try again.', 'error');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        function downloadFile(url, fileName) {
+            // In production, this would download the actual PDF
+            // For demo, we'll show a notification
+            console.log(`Downloading: ${fileName} from ${url}`);
+            
+            // Create a dummy download link
+            const a = document.createElement('a');
+            a.href = '#'; // In production: actual file URL
+            a.download = fileName;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            
+            // Show demo notification since we don't have actual PDFs
+            setTimeout(() => {
+                showNotification(`Demo: ${fileName} would download here`, 'success');
+            }, 1000);
+            
+            document.body.removeChild(a);
+        }
+
+        function showError(message) {
+            const container = document.getElementById('download-container');
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h2>Download Error</h2>
+                    <p>${message}</p>
+                    <br>
+                    <a href="/" class="download-btn">Return Home</a>
+                </div>
+            `;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `delivery-notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

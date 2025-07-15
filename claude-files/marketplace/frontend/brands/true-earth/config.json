@@ -1,0 +1,71 @@
+{
+  "brandId": "true-earth",
+  "name": "True Earth Publications",
+  "tagline": "Uncovering Hidden Knowledge • Revealing Suppressed Truths",
+  "description": "Your source for forbidden knowledge and suppressed technologies. We publish the books they don't want you to read.",
+  "logo": "🌍",
+  "domain": "true-earth.com",
+  "contact": {
+    "email": "truth@true-earth.com",
+    "phone": "+1 (555) TRUTH-1",
+    "address": "Underground Research Facility, Location Classified"
+  },
+  "social": {
+    "telegram": "@trueearthbooks",
+    "rumble": "@trueearthpub",
+    "gab": "@trueearthpub",
+    "twitter": "@trueearthbooks"
+  },
+  "theme": {
+    "primaryColor": "#2d5016",
+    "secondaryColor": "#8b7355",
+    "accentColor": "#d4af37",
+    "backgroundColor": "#1a1a1a",
+    "surfaceColor": "#252525",
+    "textColor": "#e5e5e5",
+    "textSecondary": "#b0b0b0",
+    "borderColor": "#3a3a3a",
+    "warningColor": "#ff6b35",
+    "successColor": "#4caf50",
+    "fontFamily": "'Courier Prime', 'Courier New', monospace",
+    "headingFont": "'Orbitron', 'Arial Black', sans-serif"
+  },
+  "features": {
+    "darkMode": true,
+    "newsletter": true,
+    "freeGift": true,
+    "conspiracy": true,
+    "urgency": true,
+    "testimonials": true,
+    "secretAccess": true
+  },
+  "seo": {
+    "title": "True Earth Publications - Forbidden Knowledge & Suppressed Truths",
+    "description": "Discover the hidden truth about our world. Download forbidden knowledge about Tartaria, free energy, giants, and suppressed technologies they don't want you to know.",
+    "keywords": ["forbidden knowledge", "suppressed truth", "conspiracy books", "alternative history", "free energy", "tartaria", "hidden technology", "truth seeker"],
+    "author": "True Earth Publications"
+  },
+  "copy": {
+    "heroTitle": "The Truth They Don't Want You to Know",
+    "heroSubtitle": "Access forbidden knowledge about our hidden history, suppressed technologies, and the real truth about Earth's past.",
+    "ctaButton": "Unlock the Truth",
+    "urgencyText": "⚠️ These books are being actively suppressed. Download before they're banned!",
+    "freeGiftTitle": "FREE: Secret Chapter Reveals All",
+    "freeGiftDescription": "Get the explosive first chapter of 'Tartaria Unveiled' FREE when you join our underground network.",
+    "aboutMission": "We exist to preserve and share the knowledge that powerful forces want to keep hidden from humanity.",
+    "testimonialHeader": "What Truth Seekers Are Saying",
+    "newsletterTitle": "Join the Underground",
+    "newsletterDescription": "Get forbidden knowledge delivered directly to your inbox. No censorship. No mainstream lies."
+  },
+  "pricing": {
+    "currency": "USD",
+    "freeShipping": true,
+    "digitalDelivery": true,
+    "guaranteeText": "30-day truth-or-refund guarantee"
+  },
+  "legal": {
+    "disclaimer": "The information in these books is for educational and research purposes only. True Earth Publications does not claim responsibility for any actions taken based on this knowledge.",
+    "copyright": "© 2024 True Earth Publications. All rights reserved. Unauthorized distribution is prohibited.",
+    "privacy": "We protect your privacy from government surveillance. Your data is encrypted and secure."
+  }
+}

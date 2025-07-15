@@ -1,0 +1,167 @@
+{
+  "BRAND_NAME": "WealthWise",
+  "TAGLINE": "Insider Knowledge. Real Wealth.™",
+  "META_DESCRIPTION": "Unlock the financial strategies used by the ultra-wealthy. Build generational wealth with insider knowledge from Wall Street experts.",
+  
+  "PRIMARY_COLOR": "#003366",
+  "ACCENT_COLOR": "#FFD700",
+  "TEXT_COLOR": "#FFFFFF",
+  "BG_COLOR": "#001122",
+  "SECONDARY_BG": "#002244",
+  
+  "FONT_MAIN": "'Playfair Display', 'Times New Roman', serif",
+  "FONT_HEADING": "'Montserrat', 'Arial', sans-serif",
+  
+  "HERO_HEADLINE": "The Financial Secrets They Don't Teach You",
+  "HERO_SUBHEADLINE": "Access the same wealth-building strategies used by billionaires, hedge fund managers, and financial elites to create generational wealth.",
+  "BUTTON_TEXT": "Access Insider Knowledge",
+  
+  "TRUST_1": "Wall Street Approved",
+  "TRUST_2": "Elite Strategies",
+  "TRUST_3": "Proven Results",
+  
+  "FEATURES_HEADLINE": "Why High Net Worth Individuals Choose WealthWise",
+  "FEATURE_1_ICON": "fas fa-chart-line",
+  "FEATURE_1_TITLE": "Elite Strategies",
+  "FEATURE_1_DESC": "Learn the exact methods used by billionaires to multiply wealth",
+  
+  "FEATURE_2_ICON": "fas fa-university",
+  "FEATURE_2_TITLE": "Institutional Knowledge",
+  "FEATURE_2_DESC": "Access insights from top-tier investment banks and hedge funds",
+  
+  "FEATURE_3_ICON": "fas fa-shield-alt",
+  "FEATURE_3_TITLE": "Wealth Protection",
+  "FEATURE_3_DESC": "Safeguard your assets with proven risk management techniques",
+  
+  "BOOKS_HEADLINE": "Exclusive Financial Intelligence Library",
+  "BOOK_1_TITLE": "The Wealth Transfer Code",
+  "BOOK_1_DESC": "How the ultra-rich move billions without paying taxes",
+  "BOOK_1_PRICE": "49.99",
+  "BOOK_1_COVER": "images/wealth-transfer-code.jpg",
+  "BOOK_1_LINK": "/brands/wealth-wise/catalog.json",
+  
+  "TESTIMONIAL_1_TEXT": "This book revealed strategies I never knew existed. My portfolio has grown 400% using these techniques.",
+  "TESTIMONIAL_1_NAME": "Michael Chen",
+  "TESTIMONIAL_1_ROLE": "Investment Manager, Goldman Sachs Alumni",
+  "TESTIMONIAL_1_IMAGE": "images/testimonial-finance-pro.jpg",
+  
+  "CTA_HEADLINE": "Join the Wealth Elite",
+  "CTA_SUBHEADLINE": "Stop working for money. Make money work for you with strategies the wealthy don't want you to know.",
+  "CTA_BUTTON_TEXT": "Access Elite Library",
+  "CTA_LINK": "/brands/wealth-wise/pages/free-gift.html",
+  
+  "LIBRARY_HEADLINE": "Institutional-Grade Financial Intelligence",
+  "LIBRARY_SUBHEADLINE": "Investment strategies • Tax optimization • Wealth preservation • Elite insights",
+  "LIBRARY_TAGLINE": "Wall Street's Best Kept Secrets",
+  "LIBRARY_META_DESC": "Access financial strategies used by billionaires, hedge funds, and family offices to build and preserve wealth.",
+  
+  "CATEGORY_1": "Investment Strategy",
+  "CATEGORY_2": "Tax Optimization", 
+  "CATEGORY_3": "Wealth Preservation",
+  
+  "BOOK_1_AUTHOR": "Marcus Rothschild III",
+  "BOOK_1_LONG_DESC": "CONFIDENTIAL WEALTH STRATEGIES! Discover how the ultra-wealthy transfer billions in assets while paying minimal taxes. Learn the same legal structures used by billionaire families for generations.",
+  "BOOK_1_ORIGINAL": "89.99",
+  "BOOK_1_HARDCOVER_PRICE": "129.99",
+  "BOOK_1_BUNDLE_PRICE": "199.99",
+  "BOOK_1_BADGE": "ELITE",
+  "BOOK_1_RATING": "4.9",
+  "BOOK_1_REVIEWS": "verified",
+  "BOOK_1_GUMROAD_ID": "wealth-transfer-code",
+  "BOOK_1_LULU_URL": "https://premium.wealthwise.com/transfer-code",
+  
+  "BOOK_2_TITLE": "Market Psychology Decoded",
+  "BOOK_2_AUTHOR": "Dr. Alexandra Sterling",
+  "BOOK_2_DESC": "The behavioral patterns that drive trillion-dollar market moves",
+  "BOOK_2_LONG_DESC": "INSTITUTIONAL INTELLIGENCE! Master the psychological patterns that move billions in global markets. Learn to read market sentiment like a Wall Street veteran.",
+  "BOOK_2_PRICE": "39.99",
+  "BOOK_2_ORIGINAL": "69.99",
+  "BOOK_2_HARDCOVER_PRICE": "89.99",
+  "BOOK_2_BUNDLE_PRICE": "149.99",
+  "BOOK_2_COVER": "images/market-psychology.jpg",
+  "BOOK_2_BADGE": "BESTSELLER",
+  "BOOK_2_RATING": "4.8",
+  "BOOK_2_REVIEWS": "institutional",
+  "BOOK_2_GUMROAD_ID": "market-psychology-decoded",
+  "BOOK_2_LULU_URL": "https://premium.wealthwise.com/psychology",
+  
+  "BUNDLE_1_NAME": "Elite Wealth Mastery",
+  "BUNDLE_1_TITLE": "Complete Billionaire Blueprint",
+  "BUNDLE_1_DESC": "Everything you need to build generational wealth like the ultra-rich",
+  "BUNDLE_1_BOOKS": "6 Books",
+  "BUNDLE_1_BADGE": "Save 70%",
+  "BUNDLE_1_ITEM_1": "The Wealth Transfer Code",
+  "BUNDLE_1_ITEM_2": "Market Psychology Decoded",
+  "BUNDLE_1_ITEM_3": "Offshore Wealth Structures",
+  "BUNDLE_1_BONUS": "EXCLUSIVE: Private Family Office Playbook",
+  "BUNDLE_1_PRICE": "297.99",
+  "BUNDLE_1_ORIGINAL": "989.94",
+  "BUNDLE_1_SAVINGS": "70",
+  "BUNDLE_1_GUMROAD_ID": "elite-wealth-mastery",
+  
+  "THANK_YOU_HEADLINE": "Welcome to the Inner Circle",
+  "THANK_YOU_SUBHEADLINE": "Your exclusive financial intelligence is being delivered",
+  "NEXT_STEPS_TITLE": "Your VIP Access Protocol:",
+  "STEP_1": "Check your private email for secure download links",
+  "STEP_2": "Join our exclusive Telegram channel for market updates",
+  "STEP_3": "Schedule your complimentary wealth strategy consultation",
+  
+  "OFFER_TITLE": "💰 Elite Access Granted",
+  "OFFER_TEXT": "Exclusive bonus: 50% off any advanced wealth strategy course",
+  "OFFER_CODE": "ELITE50",
+  "OFFER_CTA": "Access Elite Library",
+  
+  "SUPPORT_TEXT": "Need private consultation?",
+  "SUPPORT_EMAIL": "concierge@wealthwise.com",
+  "SUPPORT_LINK_TEXT": "Private consultation",
+  "SOCIAL_PROOF": "Join 10,000+ high net worth individuals building generational wealth",
+  
+  "PURCHASE_HEADLINE": "Investment Secured",
+  "PURCHASE_SUBHEADLINE": "Your financial intelligence has been delivered",
+  "ORDER_DETAILS_TITLE": "Investment Summary",
+  
+  "DOWNLOAD_TITLE": "Private Access Portal",
+  "DOWNLOAD_TEXT": "Your exclusive financial intelligence has been delivered to your secure email:",
+  "DOWNLOAD_BUTTON": "🔐 Access Private Library",
+  
+  "SHIPPING_TITLE": "Confidential Delivery",
+  "SHIPPING_TEXT": "Physical materials are packaged discretely and shipped via secure channels. Tracking provided through encrypted communication.",
+  
+  "NEXT_TITLE": "Your Wealth Journey Begins",
+  "NEXT_1_TITLE": "Study the Strategies",
+  "NEXT_1_TEXT": "Master the wealth-building techniques of billionaires",
+  "NEXT_2_TITLE": "Implement & Execute", 
+  "NEXT_2_TEXT": "Apply institutional strategies to your portfolio",
+  "NEXT_3_TITLE": "Scale Your Wealth",
+  "NEXT_3_TEXT": "Build generational wealth using elite methods",
+  
+  "CROSSSELL_TITLE": "💎 Recommended by Wealth Advisors",
+  "CROSSSELL_TEXT": "Elite investors who accessed this also studied:",
+  "CROSSSELL_1_TITLE": "Advanced Tax Strategies",
+  "CROSSSELL_1_DESC": "Next-level wealth preservation techniques",
+  "CROSSSELL_2_TITLE": "Private Equity Mastery",
+  "CROSSSELL_2_DESC": "Institutional investment strategies",
+  
+  "CONTINUE_SHOPPING": "Explore Elite Library",
+  "NEED_HELP": "Private Concierge",
+  "MY_ACCOUNT": "My Investments",
+  "SECURE_CHECKOUT": "Bank-Grade Security",
+  "GUARANTEE": "Wealth-Growth Guarantee",
+  "SUPPORT": "Elite Support",
+  
+  "FOOTER_TAGLINE": "Building generational wealth through institutional-grade financial intelligence since 2024",
+  
+  "SOCIAL_FACEBOOK": "https://facebook.com/groups/wealthwiseelite",
+  "SOCIAL_TWITTER": "https://twitter.com/wealthwisehq",
+  "SOCIAL_INSTAGRAM": "https://linkedin.com/company/wealthwise",
+  
+  "ANALYTICS_ID": "G-WEALTHWISE",
+  "FACEBOOK_PIXEL_ID": "ELITE_TRACKING",
+  "CONVERSION_ID": "wealth_investment",
+  
+  "FORM_ACTION": "https://secure.wealthwise.com/elite-signup",
+  
+  "SUPPORT_EMAIL": "concierge@wealthwise.com",
+  
+  "ANNOUNCEMENT_TEXT": "🚨 MARKET ALERT: New wealth transfer strategies revealed - Elite members get first access"
+}

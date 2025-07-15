@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FREE: Tartaria Unveiled Chapter 1 - The Truth They Don't Want You to Know</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../css/theme.css">
+    <style>
+        .countdown {
+            background: linear-gradient(45deg, var(--te-danger), #ff8c42);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse-glow 1s ease-in-out infinite alternate;
+            border: 2px solid #ffffff;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+        
+        .free-gift-form {
+            background: linear-gradient(135deg, var(--te-bg-secondary), var(--te-bg-tertiary));
+            border: 3px solid var(--te-accent);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(212, 175, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .free-gift-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        .gift-preview {
+            background: var(--te-bg-primary);
+            border: 2px solid var(--te-accent);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .chapter-excerpt {
+            font-family: var(--te-font-main);
+            font-style: italic;
+            color: var(--te-text-secondary);
+            border-left: 4px solid var(--te-accent);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, var(--te-success), #66bb6a);
+            border: 3px solid #ffffff;
+            color: white;
+            font-family: var(--te-font-heading);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 1.5rem 3rem;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(76, 175, 80, 0.6);
+            transition: var(--te-transition);
+            cursor: pointer;
+            width: 100%;
+            margin: 2rem 0;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.8),
+                0 0 50px rgba(76, 175, 80, 0.8);
+        }
+        
+        .social-proof {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+            border: 2px solid var(--te-success);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .bonus-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .bonus-list li {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--te-bg-secondary);
+            border-left: 4px solid var(--te-accent);
+            border-radius: 4px;
+        }
+        
+        .bonus-list li::before {
+            content: "🎁 ";
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="true-earth-theme">
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🌍 True Earth Publications</h1>
+            <nav class="nav">
+                <a href="../../index.html?brand=true-earth" class="nav-link">Catalog</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="free-gift.html" class="nav-link">Free Gift</a>
+                <a href="about.html#contact" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            
+            <!-- Urgency Countdown -->
+            <div class="countdown" id="countdown">
+                ⚠️ LIMITED TIME: FREE CHAPTER AVAILABLE FOR NEXT <span id="timer">24:00:00</span> ⚠️
+            </div>
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">FREE: Secret Chapter Reveals All</h1>
+                <p class="hero-subtitle">
+                    Get the explosive first chapter of "Tartaria Unveiled" that exposes the greatest historical cover-up of all time.
+                </p>
+            </section>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin: 3rem 0;" class="gift-content">
+                
+                <!-- Left Column: Free Gift Form -->
+                <div class="free-gift-form">
+                    <h2 style="color: var(--te-accent); font-family: var(--te-font-heading); text-transform: uppercase; margin-bottom: 1.5rem; text-align: center;">
+                        🔓 UNLOCK FORBIDDEN KNOWLEDGE
+                    </h2>
+                    
+                    <div class="suppressed-warning" style="margin-bottom: 2rem;">
+                        <strong>⚠️ WARNING: This chapter contains classified information that has been actively suppressed by mainstream institutions!</strong>
+                    </div>
+
+                    <form id="free-gift-form" style="position: relative; z-index: 2;">
+                        <h3 style="color: var(--te-text-primary); margin-bottom: 1rem;">Enter Your Secure Email:</h3>
+                        <input 
+                            type="email" 
+                            id="gift-email"
+                            class="email-input" 
+                            placeholder="your.secure.email@domain.com" 
+                            required
+                            style="width: 100%; padding: 1rem; margin-bottom: 1rem; font-size: 1.1rem;"
+                        >
+                        
+                        <label style="display: flex; align-items: center; margin-bottom: 2rem; color: var(--te-text-secondary);">
+                            <input type="checkbox" id="terms-check" required style="margin-right: 0.5rem; transform: scale(1.2);">
+                            I understand this information is for educational purposes only and agree to keep this knowledge secure.
+                        </label>
+                        
+                        <button type="submit" class="download-btn" id="download-btn">
+                            🔥 DOWNLOAD SECRET CHAPTER FREE 🔥
+                        </button>
+                    </form>
+
+                    <div id="download-message" style="margin-top: 1rem; text-align: center; font-weight: 700;"></div>
+
+                    <div style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--te-text-secondary);">
+                        🔒 Your email is encrypted and protected from surveillance<br>
+                        📧 Instant download link sent to your email<br>
+                        🚫 No spam - only forbidden knowledge updates
+                    </div>
+                </div>
+
+                <!-- Right Column: Chapter Preview -->
+                <div class="gift-preview">
+                    <h3 style="color: var(--te-accent); font-family: var(--te-font-heading); margin-bottom: 1.5rem;">
+                        📖 CHAPTER 1 PREVIEW: "The Erased Empire"
+                    </h3>
+                    
+                    <div class="chapter-excerpt">
+                        "The year was 1893, and something extraordinary was happening in Chicago. The World's Columbian Exposition showcased architectural marvels that defied everything we knew about construction capabilities of that era. Massive domed buildings, intricate facades, and engineering feats that would challenge modern builders appeared seemingly overnight..."
+                    </div>
+                    
+                    <div class="chapter-excerpt">
+                        "But within months of the fair's closure, these magnificent structures were systematically destroyed. Official records claim they were 'temporary' buildings made of plaster and wood. The photographic evidence tells a different story entirely..."
+                    </div>
+                    
+                    <div class="chapter-excerpt">
+                        "What you're about to discover will fundamentally change how you view human history. The civilization they called 'Tartaria' wasn't a myth - it was systematically erased from our collective memory..."
+                    </div>
+
+                    <div style="text-align: center; margin: 2rem 0; padding: 1rem; background: var(--te-bg-secondary); border-radius: 8px;">
+                        <strong style="color: var(--te-accent);">🔍 In This 47-Page Chapter You'll Discover:</strong>
+                        <ul class="bonus-list" style="margin-top: 1rem;">
+                            <li>Photographic evidence of Tartarian architecture in major US cities</li>
+                            <li>The real reason for the Great Chicago Fire of 1871</li>
+                            <li>How basement windows are actually ground-level windows</li>
+                            <li>The systematic destruction of advanced infrastructure</li>
+                            <li>Maps showing the true extent of the Tartarian Empire</li>
+                            <li>Why this information has been suppressed for 150+ years</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Proof Section -->
+            <section class="social-proof">
+                <h3 style="color: var(--te-success); font-family: var(--te-font-heading); text-align: center; margin-bottom: 2rem;">
+                    🗣️ WHAT TRUTH SEEKERS ARE SAYING
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="testimonial">
+                        <p>"This chapter changed everything I thought I knew about history. The evidence is absolutely undeniable!"</p>
+                        <div class="testimonial-author">- Sarah M., Truth Seeker from Texas</div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <p>"I've been researching this for years. This is the most comprehensive evidence collection I've ever seen."</p>
+                        <div class="testimonial-author">- Mike R., Independent Researcher</div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <p>"Mind-blown! I immediately ordered the complete book after reading this chapter. Everyone needs to see this."</p>
+                        <div class="testimonial-author">- Jennifer K., History Teacher</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Content -->
+            <section style="background: var(--te-bg-secondary); padding: 2rem; border-radius: 12px; border: 2px solid var(--te-accent); margin: 3rem 0;">
+                <h3 style="color: var(--te-accent); font-family: var(--te-font-heading); text-align: center; margin-bottom: 2rem;">
+                    🎁 EXCLUSIVE BONUSES INCLUDED
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+                        <h4 style="color: var(--te-accent); margin-bottom: 0.5rem;">Photo Archive Access</h4>
+                        <p style="font-size: 0.9rem;">50+ rare historical photographs of Tartarian buildings worldwide</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
+                        <h4 style="color: var(--te-accent); margin-bottom: 0.5rem;">Audio Commentary</h4>
+                        <p style="font-size: 0.9rem;">15-minute audio breakdown by Dr. Marcus Rothschild</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+                        <h4 style="color: var(--te-accent); margin-bottom: 0.5rem;">Secret Maps</h4>
+                        <p style="font-size: 0.9rem;">High-resolution maps showing hidden Tartarian sites</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA -->
+            <section style="text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, var(--te-primary), var(--te-secondary)); border-radius: 12px; border: 2px solid var(--te-accent);">
+                <h2 style="color: var(--te-accent); font-family: var(--te-font-heading); margin-bottom: 1rem;">
+                    THE TRUTH IS WAITING
+                </h2>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem; color: white;">
+                    Don't let this forbidden knowledge slip through your fingers. Download your free chapter now before it's suppressed again.
+                </p>
+                <button onclick="document.getElementById('gift-email').focus()" class="download-btn" style="max-width: 400px;">
+                    📥 GET MY FREE CHAPTER NOW
+                </button>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                    ⏰ Limited time offer - Download expires in <span id="timer2">24:00:00</span>
+                </p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p style="font-size: 0.9rem; color: var(--te-text-secondary);">
+                        © 2024 True Earth Publications. This material is for educational and research purposes only.
+                        <br>🔒 Your privacy is protected. We use military-grade encryption.
+                    </p>
+                </div>
+                <div class="newsletter-signup">
+                    <h4>Join Our Underground Network</h4>
+                    <p>Get forbidden knowledge updates delivered securely</p>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="about.html#contact" style="color: var(--te-accent); text-decoration: none;">
+                            📧 Contact Us Securely
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Countdown timer functionality
+        function startCountdown() {
+            const endTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours from now
+            
+            function updateTimer() {
+                const now = new Date().getTime();
+                const timeLeft = endTime - now;
+                
+                if (timeLeft <= 0) {
+                    document.getElementById('timer').textContent = '00:00:00';
+                    document.getElementById('timer2').textContent = '00:00:00';
+                    return;
+                }
+                
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('timer').textContent = timeString;
+                document.getElementById('timer2').textContent = timeString;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // Free gift form handling
+        document.getElementById('free-gift-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('gift-email').value;
+            const termsCheck = document.getElementById('terms-check').checked;
+            const messageDiv = document.getElementById('download-message');
+            const downloadBtn = document.getElementById('download-btn');
+            
+            if (!email || !termsCheck) {
+                messageDiv.innerHTML = '<span style="color: var(--te-danger);">Please fill in all fields and accept the terms.</span>';
+                return;
+            }
+            
+            // Simulate download process
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = '🔄 PREPARING DOWNLOAD...';
+            messageDiv.innerHTML = '<span style="color: var(--te-accent);">🔐 Encrypting your download link...</span>';
+            
+            setTimeout(() => {
+                messageDiv.innerHTML = `
+                    <div style="color: var(--te-success); padding: 1rem; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border: 1px solid var(--te-success);">
+                        ✅ SUCCESS! Check your email for the download link.<br>
+                        📧 Sent to: ${email}<br>
+                        🔒 Link expires in 48 hours for security
+                    </div>
+                `;
+                downloadBtn.textContent = '✅ DOWNLOAD SENT TO EMAIL';
+                downloadBtn.style.background = 'linear-gradient(45deg, var(--te-success), #66bb6a)';
+                
+                // Store email for newsletter (demo purposes)
+                const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+                if (!subscribers.includes(email)) {
+                    subscribers.push(email);
+                    localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+                }
+            }, 2000);
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+            
+            // Add glitch effects to warning elements
+            const warnings = document.querySelectorAll('.suppressed-warning');
+            warnings.forEach(warning => {
+                warning.addEventListener('mouseenter', function() {
+                    this.style.animation = 'flicker 0.2s ease-in-out 3';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

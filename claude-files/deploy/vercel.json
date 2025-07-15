@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "name": "teneo-marketplace",
+  "builds": [
+    {
+      "src": "marketplace/backend/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "marketplace/frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "marketplace/backend/server.js"
+    },
+    {
+      "src": "/marketplace/frontend/(.*)",
+      "dest": "marketplace/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "marketplace/frontend/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "DATABASE_PATH": "/tmp/marketplace.db"
+  },
+  "functions": {
+    "marketplace/backend/server.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/marketplace/frontend/index.html"
+    },
+    {
+      "source": "/network",
+      "destination": "/marketplace/frontend/network.html"
+    },
+    {
+      "source": "/downloads",
+      "destination": "/marketplace/frontend/downloads.html"
+    },
+    {
+      "source": "/success",
+      "destination": "/marketplace/frontend/success.html"
+    },
+    {
+      "source": "/cancel",
+      "destination": "/marketplace/frontend/cancel.html"
+    }
+  ]
+}

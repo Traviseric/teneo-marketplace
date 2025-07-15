@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Revolutionary Library - AI-Generated Books</title>
+    <link rel="stylesheet" href="/App.css">
+    <style>
+        /* Additional marketplace-specific styles */
+        .books-hero {
+            background: linear-gradient(135deg, #1e3f54 0%, #466b80 100%);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .book-cover {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .book-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fea644;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .book-info {
+            padding: 25px;
+        }
+        
+        .book-title {
+            font-size: 22px;
+            color: #1e3f54;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .book-author {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .book-description {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .book-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .price-current {
+            font-size: 28px;
+            color: #1e3f54;
+            font-weight: bold;
+        }
+        
+        .price-original {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 18px;
+        }
+        
+        .book-formats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .format-tag {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        .book-cta {
+            background: #fea644;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .book-cta:hover {
+            background: #ff9003;
+        }
+        
+        .collection-section {
+            background: #f8f4ec;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .collection-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            border: 3px solid #fea644;
+        }
+        
+        .collection-badge {
+            background: #fea644;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .collection-price {
+            font-size: 48px;
+            color: #1e3f54;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .collection-savings {
+            color: #22c55e;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Use your existing navigation -->
+    <nav class="nav-container">
+        <div class="nav-wrapper">
+            <a href="/" class="nav-logo">TENEO</a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Custom Books</a></li>
+                <li><a href="/books" class="nav-link active">Book Library</a></li>
+                <li><a href="/brandinabox.html" class="nav-link">Brand in a Box</a></li>
+                <li><a href="/partnership.html" class="nav-link">Partnership Program</a></li>
+                <li><a href="/vision.html" class="nav-link">Vision</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Books Hero -->
+    <section class="books-hero">
+        <h1>Teneo Revolutionary Library</h1>
+        <p style="font-size: 24px; margin: 20px 0;">AI-generated books revealing hidden truths and paradigm-shifting insights</p>
+        <p style="font-size: 18px; opacity: 0.9;">Knowledge Beyond Boundaries™</p>
+    </section>
+
+    <!-- Books Grid -->
+    <section class="books-grid" id="booksGrid">
+        <!-- Books will be loaded here by JavaScript -->
+    </section>
+
+    <!-- Collections Section -->
+    <section class="collection-section">
+        <h2 style="font-size: 36px; margin-bottom: 40px;">Complete Collections</h2>
+        <div id="collectionsGrid">
+            <!-- Collections will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Your existing footer -->
+    <footer class="App-footer">
+        <p>© 2024 Teneo. All rights reserved.</p>
+        <p>Questions? Join our <a href="https://discord.gg/akY4Z3Wezh" style="color: #fea644;">Discord Community</a></p>
+    </footer>
+
+    <script>
+        // Load books from your catalog
+        const catalog = ${JSON.stringify(require('./catalog.json'), null, 2)};
+        
+        // Render books
+        function renderBooks() {
+            const booksGrid = document.getElementById('booksGrid');
+            booksGrid.innerHTML = catalog.books.map(book => `
+                <div class="book-card" onclick="window.location.href='/books/${book.id}.html'">
+                    <div class="book-cover" style="background-image: url('${book.coverImage}');">
+                        <span class="book-badge">${book.badge}</span>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <p class="book-description">${book.description}</p>
+                        <div class="book-price">
+                            <span class="price-current">$${book.price}</span>
+                            <span class="price-original">$${book.originalPrice}</span>
+                        </div>
+                        <div class="book-formats">
+                            ${book.format.map(f => `<span class="format-tag">${f}</span>`).join('')}
+                        </div>
+                        <a href="/books/${book.id}.html" class="book-cta">View Details</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render collections
+        function renderCollections() {
+            const collectionsGrid = document.getElementById('collectionsGrid');
+            collectionsGrid.innerHTML = catalog.collections.map(collection => `
+                <div class="collection-card">
+                    <span class="collection-badge">${collection.badge}</span>
+                    <h3 style="font-size: 28px; margin-bottom: 20px;">${collection.title}</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">${collection.description}</p>
+                    <div class="collection-price">$${collection.price}</div>
+                    <div class="collection-savings">Save $${(collection.originalPrice - collection.price).toFixed(2)} (${collection.savings}% OFF)</div>
+                    <p style="margin: 20px 0;"><strong>Includes:</strong> ${collection.books.length} Revolutionary Books</p>
+                    <p style="color: #fea644; font-weight: bold; margin-bottom: 20px;">${collection.bonus}</p>
+                    <a href="#" class="book-cta" onclick="purchaseCollection('${collection.id}')">Get Complete Collection</a>
+                </div>
+            `).join('');
+        }
+        
+        // Initialize
+        renderBooks();
+        renderCollections();
+        
+        // Purchase functions (integrate with your payment system)
+        function purchaseCollection(collectionId) {
+            // Integrate with Gumroad or Stripe
+            const collection = catalog.collections.find(c => c.id === collectionId);
+            if (collection.gumroadId) {
+                window.location.href = `https://gumroad.com/l/${collection.gumroadId}`;
+            }
+        }
+    </script>
+</body>
+</html>
