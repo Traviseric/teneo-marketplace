@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled - Teneo Books</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .cancel-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 3rem;
+            text-align: center;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .cancel-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #f59e0b;
+        }
+        
+        .cancel-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .cancel-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .helpful-info {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .helpful-info h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .helpful-info ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .helpful-info li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .helpful-info li::before {
+            content: "💡";
+            font-size: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--hover-bg);
+        }
+        
+        .reassurance {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            color: var(--text-accent);
+            font-size: 0.9rem;
+        }
+        
+        .contact-support {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .contact-support h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-support p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 480px) {
+            .cancel-container {
+                margin: 2rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <a href="/" style="color: var(--text-accent); text-decoration: none;">Teneo Books</a>
+            </h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">Browse</a>
+                <a href="#" class="nav-link">Categories</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="cancel-container">
+                <div class="cancel-icon">⚠️</div>
+                <h1 class="cancel-title">Payment Cancelled</h1>
+                <p class="cancel-message">
+                    No worries! Your payment was cancelled and no charge was made to your card. Your selected book is still available for purchase.
+                </p>
+                
+                <div class="reassurance">
+                    🔒 Your payment information is secure and was not stored during this process.
+                </div>
+                
+                <div class="helpful-info">
+                    <h3>What happened?</h3>
+                    <ul>
+                        <li>You clicked the back button or closed the payment window</li>
+                        <li>You decided not to complete the purchase at this time</li>
+                        <li>There may have been a technical issue with the payment process</li>
+                        <li>You want to review your order before purchasing</li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="/" class="btn btn-primary">🛍️ Continue Shopping</a>
+                    <button onclick="history.back()" class="btn btn-secondary">← Go Back</button>
+                </div>
+                
+                <div class="contact-support">
+                    <h4>Need Help?</h4>
+                    <p>
+                        If you experienced any issues during checkout or have questions about our books, 
+                        we're here to help! Feel free to reach out to our support team.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="mailto:support@teneo-books.com" class="btn btn-secondary">📧 Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Marketplace. Open source book trading platform.</p>
+                </div>
+                <div class="newsletter-signup">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest book releases and exclusive offers</p>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input 
+                            type="email" 
+                            id="email-input"
+                            class="email-input" 
+                            placeholder="Enter your email" 
+                            required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        >
+                        <button type="submit" class="submit-btn">Subscribe</button>
+                    </form>
+                    <div id="newsletter-message" class="newsletter-message"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/newsletter.js"></script>
+    <script>
+        // Optional: Track cancellation events for analytics
+        document.addEventListener('DOMContentLoaded', function() {
+            // You could send analytics data here
+            console.log('Payment cancelled - user returned to site');
+            
+            // Optional: Check if user came from a specific book page
+            const referrer = document.referrer;
+            if (referrer && referrer.includes('localhost:3001')) {
+                console.log('User cancelled payment and returned from checkout');
+            }
+        });
+        
+        // Optional: Auto-redirect after a delay (uncomment if desired)
+        // setTimeout(() => {
+        //     window.location.href = '/';
+        // }, 10000); // Redirect to home after 10 seconds
+    </script>
+</body>
+</html>

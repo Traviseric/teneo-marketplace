@@ -14,6 +14,27 @@
   <img src="https://raw.githubusercontent.com/Traviseric/teneo-marketplace/main/docs/images/banner.png" alt="Teneo Marketplace Banner" width="800">
 </p>
 
+## 📌 Project Status: Alpha Release
+
+**Current Version**: v0.5.0-alpha | **Status**: Working Marketplace | **Next**: Production Features
+
+| Feature | Status | Available Now | Notes |
+|---------|--------|--------------|-------|
+| 🛍️ **Core Marketplace** | ✅ Complete | Yes | Full shopping experience with cart |
+| 🎨 **Brand Builder** | ✅ Complete | Yes | `/setup-wizard` - Create custom stores |
+| 📚 **Book Manager** | ✅ Complete | Yes | `/manage-books.html` - Full CRUD with auth |
+| 💳 **Stripe Checkout** | ✅ Complete | Yes | Test mode ready, production keys needed |
+| 📦 **ZIP Generator** | ✅ Complete | Yes | Download complete marketplace |
+| 🔐 **Admin Panel** | ✅ Complete | Yes | Password protected book management |
+| 📊 **CSV Import** | ✅ Complete | Yes | Bulk book uploads |
+| 🌐 **Multi-Brand** | ✅ Complete | Yes | `?brand=teneo` URL switching |
+| 💾 **Backup System** | ✅ Complete | Yes | Auto-backups with restore |
+| 📧 **Email System** | 🔄 In Progress | Q1 2025 | Order confirmations |
+| 📥 **Digital Delivery** | 🔄 In Progress | Q1 2025 | Secure PDF downloads |
+| 🌍 **Federation** | 📅 Planned | Q2 2025 | Network protocol |
+| 🔍 **Network Search** | 📅 Planned | Q2 2025 | Cross-store discovery |
+| 📊 **Analytics** | 📅 Planned | Q3 2025 | Sales tracking |
+
 ## 🚀 Quick Start
 
 ```bash
@@ -30,16 +51,31 @@ npm start
 
 That's it! Your bookstore is running. Start selling in minutes, not months.
 
-## 🌐 Deployment Status
+## 🎯 What's Working Right Now
 
-| Component | Status | URL | Notes |
-|-----------|--------|-----|-------|
-| 📚 Repository | ✅ Live | [GitHub](https://github.com/Traviseric/teneo-marketplace) | Open source, ready for contributions |
-| 🎨 Frontend | ✅ Live | [Vercel](https://teneo-marketplace.vercel.app) | Auto-deploy from main branch |
-| ⚙️ Backend | ✅ Live | [Render](https://teneo-marketplace-api.onrender.com) | Production API ready |
-| 🌍 Network | ⏳ Ready | Federation Protocol | Ready for first external store |
+Visit these pages after running `npm start`:
 
-> **Status**: Production-ready with active deployment pipeline
+| Tool | URL | Purpose |
+|------|-----|---------|
+| 🛍️ **Live Store** | http://localhost:3001 | Browse and buy books |
+| 🎨 **Brand Builder** | http://localhost:3001/setup-wizard | Create your custom marketplace |
+| 📚 **Book Manager** | http://localhost:3001/manage-books.html | Add/edit books (password: admin123) |
+| 🚀 **Quick Start** | http://localhost:3001/START-HERE.html | Visual guide to get started |
+| 🛒 **Shopping Cart** | http://localhost:3001/cart.html | Review purchases |
+| 💳 **Checkout** | Via Stripe integration | Secure payments |
+
+## 🌐 Current Architecture
+
+| Component | Status | Technology | Notes |
+|-----------|--------|------------|-------|
+| 📚 **Frontend** | ✅ Alpha | Vanilla JS, CSS | No framework dependencies |
+| ⚙️ **Backend** | ✅ Alpha | Node.js, Express | RESTful API |
+| 💾 **Database** | ✅ Alpha | JSON files | Simple, portable |
+| 🔐 **Auth** | ✅ Alpha | Basic Auth | Admin panel protection |
+| 💳 **Payments** | ✅ Alpha | Stripe Checkout | Test mode configured |
+| 📦 **Storage** | ✅ Alpha | Local filesystem | Books and configs |
+
+> **Note**: Federation features planned for Q2 2025
 
 ## 👩‍💻 For Developers (Quick Start)
 

@@ -1,0 +1,500 @@
+/* True Earth Publications - Conspiracy/Truth-Seeker Theme */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+
+:root {
+    /* True Earth Brand Colors */
+    --te-primary: #2d5016;           /* Dark earth green */
+    --te-secondary: #8b7355;         /* Earth brown */
+    --te-accent: #d4af37;            /* Gold */
+    --te-bg-primary: #1a1a1a;        /* Deep black */
+    --te-bg-secondary: #252525;      /* Dark gray */
+    --te-bg-tertiary: #2f2f2f;       /* Medium gray */
+    --te-text-primary: #e5e5e5;      /* Light gray */
+    --te-text-secondary: #b0b0b0;    /* Medium gray */
+    --te-text-accent: #d4af37;       /* Gold text */
+    --te-border: #3a3a3a;            /* Dark border */
+    --te-warning: #ff6b35;           /* Orange warning */
+    --te-success: #4caf50;           /* Green success */
+    --te-danger: #e74c3c;            /* Red danger */
+    
+    /* Conspiracy Theme Effects */
+    --te-glow: 0 0 10px rgba(212, 175, 55, 0.5);
+    --te-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    --te-pulse: pulse-glow 2s ease-in-out infinite alternate;
+    
+    /* Typography */
+    --te-font-main: 'Courier Prime', 'Courier New', monospace;
+    --te-font-heading: 'Orbitron', 'Arial Black', sans-serif;
+    
+    /* Animations */
+    --te-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Override main variables when True Earth theme is active */
+body.true-earth-theme {
+    --bg-primary: var(--te-bg-primary);
+    --bg-secondary: var(--te-bg-secondary);
+    --bg-tertiary: var(--te-bg-tertiary);
+    --text-primary: var(--te-text-primary);
+    --text-secondary: var(--te-text-secondary);
+    --text-accent: var(--te-text-accent);
+    --border-color: var(--te-border);
+    --hover-bg: var(--te-bg-tertiary);
+    
+    font-family: var(--te-font-main);
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(45, 80, 22, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+        linear-gradient(135deg, var(--te-bg-primary) 0%, #0f0f0f 100%);
+    background-attachment: fixed;
+}
+
+/* Conspiracy-style animations */
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes slide-decrypt {
+    0% { 
+        transform: translateX(-10px); 
+        opacity: 0; 
+        filter: blur(2px);
+    }
+    100% { 
+        transform: translateX(0); 
+        opacity: 1; 
+        filter: blur(0);
+    }
+}
+
+/* Header styling for True Earth */
+.true-earth-theme .header {
+    background: linear-gradient(90deg, var(--te-bg-secondary) 0%, var(--te-primary) 50%, var(--te-bg-secondary) 100%);
+    border-bottom: 2px solid var(--te-accent);
+    box-shadow: var(--te-shadow);
+}
+
+.true-earth-theme .logo {
+    font-family: var(--te-font-heading);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--te-accent);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    animation: flicker 3s ease-in-out infinite;
+}
+
+.true-earth-theme .nav-link {
+    font-family: var(--te-font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--te-text-secondary);
+    transition: var(--te-transition);
+    position: relative;
+}
+
+.true-earth-theme .nav-link:hover {
+    color: var(--te-accent);
+    text-shadow: var(--te-glow);
+}
+
+.true-earth-theme .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--te-accent);
+    transition: width 0.3s ease;
+}
+
+.true-earth-theme .nav-link:hover::after {
+    width: 100%;
+}
+
+/* Hero section with conspiracy vibes */
+.true-earth-theme .hero {
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 98px,
+            rgba(212, 175, 55, 0.03) 100px
+        ),
+        var(--te-primary);
+    border: 2px solid var(--te-accent);
+    box-shadow: 
+        inset 0 0 50px rgba(212, 175, 55, 0.1),
+        var(--te-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.true-earth-theme .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.true-earth-theme .hero-title {
+    font-family: var(--te-font-heading);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--te-accent);
+    text-shadow: 
+        0 0 10px rgba(212, 175, 55, 0.8),
+        0 0 20px rgba(212, 175, 55, 0.4);
+    animation: slide-decrypt 1s ease-out;
+}
+
+.true-earth-theme .hero-subtitle {
+    font-family: var(--te-font-main);
+    color: var(--te-text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    animation: slide-decrypt 1s ease-out 0.3s both;
+}
+
+/* Book cards with conspiracy styling */
+.true-earth-theme .book-card {
+    background: 
+        linear-gradient(145deg, var(--te-bg-secondary), var(--te-bg-tertiary));
+    border: 1px solid var(--te-border);
+    box-shadow: var(--te-shadow);
+    transition: var(--te-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.true-earth-theme .book-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--te-accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.true-earth-theme .book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(212, 175, 55, 0.3);
+    border-color: var(--te-accent);
+}
+
+.true-earth-theme .book-card:hover::before {
+    opacity: 1;
+}
+
+.true-earth-theme .book-cover {
+    background: linear-gradient(135deg, var(--te-primary), var(--te-secondary));
+    border: 2px solid var(--te-accent);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    font-size: 3rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.true-earth-theme .book-title {
+    font-family: var(--te-font-heading);
+    font-weight: 700;
+    color: var(--te-accent);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+.true-earth-theme .book-author {
+    font-family: var(--te-font-main);
+    color: var(--te-text-secondary);
+    font-style: italic;
+}
+
+.true-earth-theme .book-genre {
+    background: linear-gradient(45deg, var(--te-primary), var(--te-secondary));
+    color: var(--te-accent);
+    border: 1px solid var(--te-accent);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.true-earth-theme .book-price {
+    font-family: var(--te-font-heading);
+    font-weight: 900;
+    color: var(--te-accent);
+    text-shadow: var(--te-glow);
+    font-size: 1.4rem;
+}
+
+/* Urgency and warning elements */
+.urgency-banner {
+    background: linear-gradient(45deg, var(--te-danger), #ff8c42);
+    color: white;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: var(--te-pulse);
+    border: 2px solid #ffffff;
+    margin-bottom: 1rem;
+}
+
+.suppressed-warning {
+    background: 
+        linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+    border: 2px dashed var(--te-warning);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    color: var(--te-warning);
+    font-weight: 700;
+    text-align: center;
+    animation: flicker 2s ease-in-out infinite;
+}
+
+/* Buy buttons with conspiracy styling */
+.true-earth-theme .buy-btn {
+    background: linear-gradient(45deg, var(--te-primary), var(--te-secondary));
+    border: 2px solid var(--te-accent);
+    color: var(--te-accent);
+    font-family: var(--te-font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(212, 175, 55, 0.2);
+    transition: var(--te-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.true-earth-theme .buy-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.true-earth-theme .buy-btn:hover {
+    background: linear-gradient(45deg, var(--te-secondary), var(--te-accent));
+    color: var(--te-bg-primary);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(212, 175, 55, 0.6);
+    transform: translateY(-2px);
+}
+
+.true-earth-theme .buy-btn:hover::before {
+    left: 100%;
+}
+
+/* Newsletter section styling */
+.true-earth-theme .newsletter-signup {
+    background: 
+        linear-gradient(135deg, var(--te-bg-secondary), var(--te-bg-tertiary));
+    border: 2px solid var(--te-accent);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 
+        var(--te-shadow),
+        inset 0 0 30px rgba(212, 175, 55, 0.05);
+}
+
+.true-earth-theme .newsletter-signup h4 {
+    font-family: var(--te-font-heading);
+    color: var(--te-accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: var(--te-glow);
+}
+
+.true-earth-theme .email-input {
+    background: var(--te-bg-primary);
+    border: 2px solid var(--te-border);
+    color: var(--te-text-primary);
+    font-family: var(--te-font-main);
+}
+
+.true-earth-theme .email-input:focus {
+    border-color: var(--te-accent);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.true-earth-theme .submit-btn {
+    background: linear-gradient(45deg, var(--te-primary), var(--te-accent));
+    border: 2px solid var(--te-accent);
+    font-family: var(--te-font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Testimonial styling */
+.testimonial {
+    background: 
+        linear-gradient(135deg, var(--te-bg-tertiary), var(--te-bg-secondary));
+    border-left: 4px solid var(--te-accent);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-style: italic;
+    position: relative;
+}
+
+.testimonial::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--te-accent);
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    opacity: 0.3;
+    font-family: serif;
+}
+
+.testimonial-author {
+    font-weight: 700;
+    color: var(--te-accent);
+    margin-top: 1rem;
+    text-align: right;
+}
+
+/* Bonus content styling */
+.bonus-content {
+    background: 
+        linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+    border: 2px solid var(--te-success);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.bonus-content h4 {
+    color: var(--te-success);
+    font-family: var(--te-font-heading);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+/* Special effects for classified/secret content */
+.classified {
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            var(--te-bg-secondary),
+            var(--te-bg-secondary) 10px,
+            var(--te-bg-tertiary) 10px,
+            var(--te-bg-tertiary) 20px
+        );
+    border: 3px solid var(--te-danger);
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.classified::before {
+    content: 'CLASSIFIED';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(231, 76, 60, 0.1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.classified-content {
+    position: relative;
+    z-index: 2;
+    background: rgba(26, 26, 26, 0.9);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+/* Stock status with conspiracy theme */
+.true-earth-theme .stock-status.in-stock {
+    background: linear-gradient(45deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+    color: var(--te-success);
+    border: 1px solid var(--te-success);
+}
+
+.true-earth-theme .stock-status.out-of-stock {
+    background: linear-gradient(45deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+    color: var(--te-danger);
+    border: 1px solid var(--te-danger);
+    animation: var(--te-pulse);
+}
+
+/* Loading states with decryption effect */
+.true-earth-theme .loading {
+    color: var(--te-accent);
+    font-family: var(--te-font-main);
+    text-align: center;
+    font-size: 1.2rem;
+    animation: flicker 1.5s ease-in-out infinite;
+}
+
+.true-earth-theme .loading::after {
+    content: ' [DECRYPTING...]';
+    color: var(--te-text-secondary);
+    font-size: 0.8em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .true-earth-theme .hero-title {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .true-earth-theme .book-card {
+        margin-bottom: 2rem;
+    }
+    
+    .urgency-banner {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+}
+
+/* Print styles (hidden/clean for printing) */
+@media print {
+    .true-earth-theme * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}

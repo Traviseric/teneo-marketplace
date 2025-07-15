@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Book Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Teneo Books</h1>
+            <nav class="nav">
+                <a href="#" class="nav-link">Browse</a>
+                <a href="#" class="nav-link">Categories</a>
+                <a href="/network.html" class="nav-link">Network Search</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <h2 class="hero-title">Discover Your Next Great Read</h2>
+                <p class="hero-subtitle">Open source book marketplace connecting readers and sellers</p>
+            </section>
+
+            <section class="books-section">
+                <h3 class="section-title">Featured Books</h3>
+                <div id="books-grid" class="books-grid">
+                    <!-- Books will be dynamically loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Marketplace. Open source book trading platform.</p>
+                </div>
+                <div class="newsletter-signup">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest book releases and exclusive offers</p>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input 
+                            type="email" 
+                            id="email-input"
+                            class="email-input" 
+                            placeholder="Enter your email" 
+                            required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        >
+                        <button type="submit" class="submit-btn">Subscribe</button>
+                    </form>
+                    <div id="newsletter-message" class="newsletter-message"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/template-processor.js"></script>
+    <script src="js/brand-manager.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/delivery.js"></script>
+    <script src="js/books.js"></script>
+    <script src="js/newsletter.js"></script>
+</body>
+</html> 

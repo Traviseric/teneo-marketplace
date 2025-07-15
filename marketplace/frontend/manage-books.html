@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Manager - Teneo Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #6D28D9;
+            --secondary: #10B981;
+            --accent: #FEA644;
+            --danger: #EF4444;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: var(--surface);
+            box-shadow: 0 2px 4px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Book Table */
+        .book-table-container {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr.dragging {
+            opacity: 0.5;
+        }
+
+        tr.drag-over {
+            background: var(--background);
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: var(--text-muted);
+            padding-right: 1rem;
+        }
+
+        .book-cover-small {
+            width: 60px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: var(--border);
+        }
+
+        .editable {
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .editable:hover {
+            background: var(--background);
+        }
+
+        .editable:focus {
+            outline: 2px solid var(--primary);
+            background: white;
+        }
+
+        .price-input {
+            width: 80px;
+        }
+
+        /* Add Book Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            border: none;
+            background: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: var(--background);
+        }
+
+        .image-upload.drag-over {
+            border-color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .upload-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .upload-preview img {
+            max-width: 200px;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .format-chips {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chip.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Status Messages */
+        .status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .status-message.show {
+            transform: translateX(0);
+        }
+
+        .status-success {
+            background: var(--secondary);
+        }
+
+        .status-error {
+            background: var(--danger);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Import/Export */
+        .tools-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+
+            .book-cover-small {
+                width: 40px;
+                height: 60px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>📚 Book Manager</h1>
+            <a href="/marketplace/frontend/" class="btn btn-secondary">Back to Store</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Tools Section -->
+        <div class="tools-section">
+            <h2>Quick Tools</h2>
+            <div class="tools-grid">
+                <button class="btn btn-secondary" onclick="exportCatalog()">📥 Export Catalog</button>
+                <button class="btn btn-secondary" onclick="importCatalog()">📤 Import Catalog</button>
+                <button class="btn btn-secondary" onclick="loadSampleBooks()">📖 Load Sample Books</button>
+                <button class="btn btn-secondary" onclick="clearAllBooks()">🗑️ Clear All</button>
+            </div>
+        </div>
+
+        <!-- Book Table -->
+        <div class="book-table-container">
+            <div class="table-header">
+                <h2>Your Books</h2>
+                <button class="btn btn-primary" onclick="showAddBookModal()">+ Add Book</button>
+            </div>
+            <div id="bookTableContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading books...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Book</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="bookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Title *</label>
+                    <input type="text" id="bookTitle" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookAuthor">Author *</label>
+                    <input type="text" id="bookAuthor" name="author" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookDescription">Description</label>
+                    <textarea id="bookDescription" name="description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookPrice">Price ($) *</label>
+                    <input type="number" id="bookPrice" name="price" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookOriginalPrice">Original Price ($)</label>
+                    <input type="number" id="bookOriginalPrice" name="originalPrice" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="image-upload" id="imageUpload" onclick="document.getElementById('coverFile').click()">
+                        <input type="file" id="coverFile" accept="image/*" style="display: none;">
+                        <p>🖼️ Click or drag image here</p>
+                        <p style="font-size: 0.875rem; color: var(--text-muted);">Recommended: 400x600px</p>
+                        <div class="upload-preview" id="uploadPreview">
+                            <img id="previewImage" src="" alt="Preview">
+                        </div>
+                    </div>
+                    <input type="hidden" id="bookCoverImage" name="coverImage">
+                </div>
+
+                <div class="form-group">
+                    <label>Formats Available</label>
+                    <div class="format-chips">
+                        <div class="chip selected" data-format="ebook">📱 eBook</div>
+                        <div class="chip selected" data-format="audiobook">🎧 Audiobook</div>
+                        <div class="chip selected" data-format="hardcover">📕 Hardcover</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookBadge">Badge (Optional)</label>
+                    <input type="text" id="bookBadge" name="badge" placeholder="e.g., BESTSELLER, NEW, LIMITED">
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="statusMessage" class="status-message"></div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>🔐 Admin Access Required</h2>
+            </div>
+            <form id="passwordForm" style="padding: 1rem 0;">
+                <div class="form-group">
+                    <label for="adminPassword">Enter Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter password" required autofocus>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        Default password: admin123
+                    </p>
+                </div>
+                <div id="authError" style="color: var(--danger); margin-bottom: 1rem; display: none;">
+                    Invalid password. Please try again.
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let books = [];
+        let currentEditId = null;
+        let draggedElement = null;
+        let authToken = null;
+        let catalog = null;
+        const BRAND_ID = 'teneo'; // Change this to match your brand
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupPasswordForm();
+        });
+
+        // Setup password form
+        function setupPasswordForm() {
+            const form = document.getElementById('passwordForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = document.getElementById('adminPassword').value;
+                await authenticateWithPassword(password);
+            });
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            authToken = localStorage.getItem('book_manager_auth');
+            
+            if (!authToken) {
+                // Show password modal
+                document.getElementById('passwordModal').classList.add('active');
+                document.getElementById('adminPassword').focus();
+                return;
+            }
+
+            // Verify stored token
+            try {
+                const response = await fetch(`${API_URL}/api/catalog/auth/check`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + authToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    initializeApp();
+                } else {
+                    // Token invalid, show password modal
+                    localStorage.removeItem('book_manager_auth');
+                    document.getElementById('passwordModal').classList.add('active');
+                    document.getElementById('adminPassword').focus();
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // Server not available, try local mode
+                showStatus('Server unavailable, running in local mode', 'error');
+                initializeApp(true);
+            }
+        }
+
+        // Authenticate with password
+        async function authenticateWithPassword(password) {
+            const authError = document.getElementById('authError');
+            authError.style.display = 'none';
+            
+            // Create auth token
+            authToken = btoa('admin:' + password);
+            
+            try {
+                const response = await fetch(`${API_URL}/api/catalog/auth/check`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + authToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success!
+                    localStorage.setItem('book_manager_auth', authToken);
+                    document.getElementById('passwordModal').classList.remove('active');
+                    initializeApp();
+                } else {
+                    // Wrong password
+                    authError.style.display = 'block';
+                    authError.textContent = 'Invalid password. Please try again.';
+                    document.getElementById('adminPassword').select();
+                    authToken = null;
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                // Server error - allow local mode
+                if (password === 'admin123') {
+                    localStorage.setItem('book_manager_auth', authToken);
+                    document.getElementById('passwordModal').classList.remove('active');
+                    showStatus('Server unavailable, running in local mode', 'error');
+                    initializeApp(true);
+                } else {
+                    authError.style.display = 'block';
+                    authError.textContent = 'Server error. Use default password for local mode.';
+                }
+            }
+        }
+
+        // Initialize the app
+        function initializeApp(localMode = false) {
+            if (localMode) {
+                loadBooksLocal();
+            } else {
+                loadBooks();
+            }
+            setupImageUpload();
+            setupFormats();
+            setupCSVUpload();
+            document.getElementById('bookForm').addEventListener('submit', saveBook);
+            
+            // Add logout button
+            const headerContent = document.querySelector('.header-content');
+            if (headerContent && !document.getElementById('logoutBtn')) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.id = 'logoutBtn';
+                logoutBtn.className = 'btn btn-secondary btn-small';
+                logoutBtn.textContent = 'Logout';
+                logoutBtn.style.marginLeft = '1rem';
+                logoutBtn.onclick = () => {
+                    localStorage.removeItem('book_manager_auth');
+                    window.location.reload();
+                };
+                headerContent.appendChild(logoutBtn);
+            }
+        }
+
+        // Load books from API
+        async function loadBooks() {
+            try {
+                const response = await fetch(`${API_URL}/api/catalog/${BRAND_ID}`, {
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    catalog = data.catalog;
+                    books = catalog.books || [];
+                    renderBookTable();
+                } else {
+                    throw new Error('Failed to load catalog');
+                }
+            } catch (error) {
+                console.error('Error loading books:', error);
+                // Fallback to local storage
+                loadBooksLocal();
+            }
+        }
+
+        // Fallback: Load books locally
+        async function loadBooksLocal() {
+            try {
+                const response = await fetch(`/brands/${BRAND_ID}/catalog.json`);
+                if (response.ok) {
+                    catalog = await response.json();
+                    books = catalog.books || [];
+                    renderBookTable();
+                    showStatus('Running in local mode (no server)', 'error');
+                } else {
+                    books = [];
+                    catalog = { brand: BRAND_ID, books: [], collections: [] };
+                    renderBookTable();
+                }
+            } catch (error) {
+                console.error('Error loading books:', error);
+                books = [];
+                catalog = { brand: BRAND_ID, books: [], collections: [] };
+                renderBookTable();
+            }
+        }
+
+        // Render book table
+        function renderBookTable() {
+            const container = document.getElementById('bookTableContent');
+            
+            if (books.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-muted);">No books yet. Click "Add Book" to get started!</p>';
+                return;
+            }
+
+            const table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="40"></th>
+                            <th width="80">Cover</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th width="100">Price</th>
+                            <th width="150">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookTableBody">
+                        ${books.map((book, index) => `
+                            <tr draggable="true" data-index="${index}">
+                                <td class="drag-handle">≡</td>
+                                <td>
+                                    <img src="${book.coverImage || 'https://via.placeholder.com/400x600?text=No+Cover'}" 
+                                         alt="${book.title}" class="book-cover-small">
+                                </td>
+                                <td>
+                                    <div class="editable" contenteditable="true" 
+                                         data-field="title" data-id="${book.id}">${book.title}</div>
+                                </td>
+                                <td>
+                                    <div class="editable" contenteditable="true" 
+                                         data-field="author" data-id="${book.id}">${book.author}</div>
+                                </td>
+                                <td>
+                                    <div class="editable price-input" contenteditable="true" 
+                                         data-field="price" data-id="${book.id}">$${book.price}</div>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="btn btn-small btn-secondary" 
+                                                onclick="editBook('${book.id}')">Edit</button>
+                                        <button class="btn btn-small btn-danger" 
+                                                onclick="deleteBook('${book.id}')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = table;
+            setupDragAndDrop();
+            setupInlineEditing();
+        }
+
+        // Setup drag and drop
+        function setupDragAndDrop() {
+            const rows = document.querySelectorAll('#bookTableBody tr');
+            
+            rows.forEach(row => {
+                row.addEventListener('dragstart', handleDragStart);
+                row.addEventListener('dragover', handleDragOver);
+                row.addEventListener('drop', handleDrop);
+                row.addEventListener('dragend', handleDragEnd);
+                row.addEventListener('dragenter', handleDragEnter);
+                row.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (draggedElement !== this) {
+                const draggedIndex = parseInt(draggedElement.dataset.index);
+                const targetIndex = parseInt(this.dataset.index);
+                
+                // Reorder books array
+                const [removed] = books.splice(draggedIndex, 1);
+                books.splice(targetIndex, 0, removed);
+                
+                saveCatalog();
+                renderBookTable();
+            }
+
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            const rows = document.querySelectorAll('#bookTableBody tr');
+            rows.forEach(row => {
+                row.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        // Setup inline editing
+        function setupInlineEditing() {
+            const editables = document.querySelectorAll('.editable');
+            
+            editables.forEach(el => {
+                el.addEventListener('blur', function() {
+                    const field = this.dataset.field;
+                    const id = this.dataset.id;
+                    const value = this.textContent.trim();
+                    
+                    const book = books.find(b => b.id === id);
+                    if (book) {
+                        if (field === 'price') {
+                            book[field] = parseFloat(value.replace('$', '')) || 0;
+                        } else {
+                            book[field] = value;
+                        }
+                        saveCatalog();
+                    }
+                });
+
+                el.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                });
+            });
+        }
+
+        // Image upload
+        function setupImageUpload() {
+            const upload = document.getElementById('imageUpload');
+            const fileInput = document.getElementById('coverFile');
+            
+            upload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                upload.classList.add('drag-over');
+            });
+            
+            upload.addEventListener('dragleave', () => {
+                upload.classList.remove('drag-over');
+            });
+            
+            upload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                upload.classList.remove('drag-over');
+                handleImageFile(e.dataTransfer.files[0]);
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                handleImageFile(e.target.files[0]);
+            });
+        }
+
+        function handleImageFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showStatus('Please select a valid image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Resize to standard book cover dimensions
+                    canvas.width = 400;
+                    canvas.height = 600;
+                    
+                    // Calculate scaling
+                    const scale = Math.min(
+                        canvas.width / img.width,
+                        canvas.height / img.height
+                    );
+                    
+                    const x = (canvas.width - img.width * scale) / 2;
+                    const y = (canvas.height - img.height * scale) / 2;
+                    
+                    ctx.fillStyle = '#f0f0f0';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                    
+                    const resizedImage = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('bookCoverImage').value = resizedImage;
+                    document.getElementById('previewImage').src = resizedImage;
+                    document.getElementById('uploadPreview').style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Format selection
+        function setupFormats() {
+            const chips = document.querySelectorAll('.chip');
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chip.classList.toggle('selected');
+                });
+            });
+        }
+
+        // Modal functions
+        function showAddBookModal() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Book';
+            document.getElementById('bookForm').reset();
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('bookModal').classList.add('active');
+        }
+
+        function editBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
+            
+            currentEditId = bookId;
+            document.getElementById('modalTitle').textContent = 'Edit Book';
+            
+            // Fill form
+            document.getElementById('bookTitle').value = book.title;
+            document.getElementById('bookAuthor').value = book.author;
+            document.getElementById('bookDescription').value = book.description || '';
+            document.getElementById('bookPrice').value = book.price;
+            document.getElementById('bookOriginalPrice').value = book.originalPrice || '';
+            document.getElementById('bookBadge').value = book.badge || '';
+            
+            if (book.coverImage) {
+                document.getElementById('bookCoverImage').value = book.coverImage;
+                document.getElementById('previewImage').src = book.coverImage;
+                document.getElementById('uploadPreview').style.display = 'block';
+            }
+            
+            // Set formats
+            const formats = book.format || [];
+            document.querySelectorAll('.chip').forEach(chip => {
+                const format = chip.dataset.format;
+                chip.classList.toggle('selected', formats.includes(format));
+            });
+            
+            document.getElementById('bookModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('bookModal').classList.remove('active');
+        }
+
+        // Save book
+        async function saveBook(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const selectedFormats = Array.from(document.querySelectorAll('.chip.selected'))
+                .map(chip => chip.dataset.format);
+            
+            const bookData = {
+                title: formData.get('title'),
+                author: formData.get('author'),
+                description: formData.get('description'),
+                price: parseFloat(formData.get('price')),
+                originalPrice: parseFloat(formData.get('originalPrice')) || null,
+                coverImage: formData.get('coverImage') || `https://via.placeholder.com/400x600?text=${encodeURIComponent(formData.get('title'))}`,
+                format: selectedFormats,
+                badge: formData.get('badge'),
+                rating: 4.5,
+                currency: 'USD'
+            };
+            
+            if (currentEditId) {
+                // Update existing book
+                const index = books.findIndex(b => b.id === currentEditId);
+                if (index !== -1) {
+                    books[index] = { ...books[index], ...bookData };
+                }
+            } else {
+                // Add new book
+                bookData.id = formData.get('title').toLowerCase().replace(/[^a-z0-9]/g, '-');
+                books.push(bookData);
+            }
+            
+            await saveCatalog();
+            closeModal();
+            renderBookTable();
+            showStatus(currentEditId ? 'Book updated!' : 'Book added!', 'success');
+        }
+
+        // Delete book
+        async function deleteBook(bookId) {
+            if (!confirm('Are you sure you want to delete this book?')) return;
+            
+            books = books.filter(b => b.id !== bookId);
+            await saveCatalog();
+            renderBookTable();
+            showStatus('Book deleted', 'success');
+        }
+
+        // Save catalog
+        async function saveCatalog() {
+            try {
+                const updatedCatalog = {
+                    ...catalog,
+                    books: books,
+                    collections: generateCollections()
+                };
+                
+                // Try to save to server first
+                if (authToken) {
+                    try {
+                        const response = await fetch(`${API_URL}/api/catalog/${BRAND_ID}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': 'Basic ' + authToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedCatalog)
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            showStatus('Catalog saved to server!', 'success');
+                            return;
+                        }
+                    } catch (serverError) {
+                        console.error('Server save failed:', serverError);
+                    }
+                }
+                
+                // Fallback to localStorage
+                localStorage.setItem(`catalog_${BRAND_ID}`, JSON.stringify(updatedCatalog));
+                showStatus('Catalog saved locally (server unavailable)', 'error');
+                
+            } catch (error) {
+                console.error('Error saving catalog:', error);
+                showStatus('Error saving catalog', 'error');
+            }
+        }
+
+        // Generate collections
+        function generateCollections() {
+            if (books.length < 3) return [];
+            
+            return [{
+                id: 'complete-collection',
+                name: 'Complete Collection',
+                title: 'All Books Bundle',
+                description: `Get all ${books.length} books at a discounted price`,
+                books: books.map(b => b.id),
+                price: Math.round(books.reduce((sum, b) => sum + b.price, 0) * 0.7),
+                originalPrice: Math.round(books.reduce((sum, b) => sum + b.price, 0)),
+                savings: 30,
+                badge: 'Save 30%'
+            }];
+        }
+
+        // Tools
+        function exportCatalog() {
+            const catalog = {
+                brand: BRAND_ID,
+                books: books,
+                collections: generateCollections()
+            };
+            
+            const blob = new Blob([JSON.stringify(catalog, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${BRAND_ID}-catalog.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showStatus('Catalog exported', 'success');
+        }
+
+        function importCatalog() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    const text = await file.text();
+                    const catalog = JSON.parse(text);
+                    books = catalog.books || [];
+                    await saveCatalog();
+                    renderBookTable();
+                    showStatus('Catalog imported', 'success');
+                } catch (error) {
+                    showStatus('Invalid catalog file', 'error');
+                }
+            };
+            input.click();
+        }
+
+        function loadSampleBooks() {
+            books = [
+                {
+                    id: 'sample-1',
+                    title: 'The AI Revolution',
+                    author: 'Dr. Jane Smith',
+                    description: 'Understanding artificial intelligence',
+                    price: 29.99,
+                    originalPrice: 49.99,
+                    coverImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&h=600&fit=crop',
+                    format: ['ebook', 'audiobook', 'hardcover'],
+                    badge: 'BESTSELLER',
+                    rating: 4.8
+                },
+                {
+                    id: 'sample-2',
+                    title: 'Digital Transformation',
+                    author: 'Michael Chen',
+                    description: 'Navigate the digital age',
+                    price: 34.99,
+                    originalPrice: 54.99,
+                    coverImage: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=600&fit=crop',
+                    format: ['ebook', 'audiobook'],
+                    badge: 'NEW',
+                    rating: 4.6
+                }
+            ];
+            saveCatalog();
+            renderBookTable();
+            showStatus('Sample books loaded', 'success');
+        }
+
+        function clearAllBooks() {
+            if (!confirm('Are you sure you want to delete all books?')) return;
+            books = [];
+            saveCatalog();
+            renderBookTable();
+            showStatus('All books cleared', 'success');
+        }
+
+        // Status messages
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status-message status-${type} show`;
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+
+        // Enhanced export with server backup
+        async function exportCatalog() {
+            try {
+                // Try to get latest from server
+                if (authToken) {
+                    await loadBooks();
+                }
+                
+                const catalogData = {
+                    ...catalog,
+                    books: books,
+                    collections: generateCollections(),
+                    exportDate: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(catalogData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${BRAND_ID}-catalog-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showStatus('Catalog exported with backup', 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showStatus('Export failed', 'error');
+            }
+        }
+
+        // Import catalog with server sync
+        function importCatalog() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    const text = await file.text();
+                    const importedCatalog = JSON.parse(text);
+                    
+                    if (confirm(`Import ${importedCatalog.books?.length || 0} books? This will replace current catalog.`)) {
+                        catalog = importedCatalog;
+                        books = importedCatalog.books || [];
+                        await saveCatalog();
+                        renderBookTable();
+                        showStatus('Catalog imported successfully', 'success');
+                    }
+                } catch (error) {
+                    showStatus('Invalid catalog file', 'error');
+                }
+            };
+            input.click();
+        }
+
+        // CSV Upload Setup
+        function setupCSVUpload() {
+            // Add CSV upload to tools section
+            const toolsGrid = document.querySelector('.tools-grid');
+            if (toolsGrid && !document.getElementById('csvUploadBtn')) {
+                const csvButton = document.createElement('button');
+                csvButton.id = 'csvUploadBtn';
+                csvButton.className = 'btn btn-secondary';
+                csvButton.innerHTML = '📊 Import CSV';
+                csvButton.onclick = showCSVUploadModal;
+                toolsGrid.appendChild(csvButton);
+
+                const backupButton = document.createElement('button');
+                backupButton.className = 'btn btn-secondary';
+                backupButton.innerHTML = '💾 Restore Backup';
+                backupButton.onclick = restoreBackup;
+                toolsGrid.appendChild(backupButton);
+            }
+        }
+
+        // Show CSV upload modal
+        function showCSVUploadModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Import Books from CSV</h2>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div style="padding: 1rem 0;">
+                        <p>CSV should have columns: title, author, description, price, originalPrice, coverImage, format, badge</p>
+                        <input type="file" id="csvFile" accept=".csv" style="margin: 1rem 0;">
+                        <div>
+                            <label>
+                                <input type="radio" name="importMode" value="merge" checked> Merge with existing
+                            </label>
+                            <label style="margin-left: 1rem;">
+                                <input type="radio" name="importMode" value="replace"> Replace all
+                            </label>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-primary" onclick="uploadCSV()">Upload CSV</button>
+                            <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Upload CSV
+        async function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                showStatus('Please select a CSV file', 'error');
+                return;
+            }
+
+            const mode = document.querySelector('input[name="importMode"]:checked').value;
+            const formData = new FormData();
+            formData.append('csv', file);
+            formData.append('mode', mode);
+
+            try {
+                const response = await fetch(`${API_URL}/api/catalog/${BRAND_ID}/import-csv`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showStatus(result.message, 'success');
+                    document.querySelector('.modal').remove();
+                    await loadBooks();
+                } else {
+                    const error = await response.json();
+                    showStatus(error.error || 'CSV import failed', 'error');
+                }
+            } catch (error) {
+                console.error('CSV upload error:', error);
+                showStatus('CSV upload failed', 'error');
+            }
+        }
+
+        // Restore from backup
+        async function restoreBackup() {
+            if (!confirm('Restore from the latest backup? Current changes will be lost.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/catalog/${BRAND_ID}/backup`, {
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const backupDate = new Date(parseInt(data.timestamp)).toLocaleString();
+                    
+                    if (confirm(`Restore backup from ${backupDate}?`)) {
+                        const restoreResponse = await fetch(`${API_URL}/api/catalog/${BRAND_ID}/restore`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': 'Basic ' + authToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ timestamp: data.timestamp })
+                        });
+
+                        if (restoreResponse.ok) {
+                            showStatus('Backup restored successfully', 'success');
+                            await loadBooks();
+                        } else {
+                            showStatus('Restore failed', 'error');
+                        }
+                    }
+                } else {
+                    showStatus('No backups available', 'error');
+                }
+            } catch (error) {
+                console.error('Restore error:', error);
+                showStatus('Restore failed', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

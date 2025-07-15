@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Marketplace - Brand Setup Wizard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #6D28D9;
+            --secondary: #10B981;
+            --accent: #FEA644;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: var(--surface);
+            box-shadow: 0 2px 4px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .wizard {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow);
+            overflow: hidden;
+        }
+
+        .wizard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: space-around;
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .wizard-content {
+            padding: 3rem;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .preview-section {
+            background: var(--background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .preview-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-logo {
+            font-size: 2rem;
+        }
+
+        .preview-brand {
+            flex: 1;
+        }
+
+        .preview-tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .book-item {
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .book-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 300px;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-muted);
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .book-author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-price {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .wizard-footer {
+            padding: 2rem 3rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .book-input-group {
+            background: var(--background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .add-book-btn {
+            background: var(--success);
+            color: white;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .add-book-btn:hover {
+            background: #059669;
+        }
+
+        .remove-book-btn {
+            background: var(--error);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .success-message {
+            background: #D1FAE5;
+            border: 1px solid #10B981;
+            color: #065F46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: #FEE2E2;
+            border: 1px solid #EF4444;
+            color: #991B1B;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .code-output {
+            background: #1F2937;
+            color: #F3F4F6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            float: right;
+            margin-top: -2.5rem;
+            margin-right: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .wizard-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .book-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .color-picker-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🛍️ Teneo Marketplace Setup Wizard</h1>
+            <span style="color: var(--text-muted)">Create Your Brand</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="wizard">
+            <div class="wizard-header">
+                <h2>Brand Creation Wizard</h2>
+                <p>Set up your custom marketplace brand in minutes</p>
+            </div>
+
+            <div class="wizard-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>Basic Info</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>Theme</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>Books</span>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <span>Review</span>
+                </div>
+            </div>
+
+            <div class="wizard-content">
+                <!-- Step 1: Basic Info -->
+                <div class="form-section active" data-section="1">
+                    <h3>Basic Brand Information</h3>
+                    <div class="form-group">
+                        <label for="brandId">Brand ID (lowercase, no spaces)</label>
+                        <input type="text" id="brandId" placeholder="my-brand" pattern="[a-z0-9-]+" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="brandName">Brand Name</label>
+                        <input type="text" id="brandName" placeholder="My Awesome Brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tagline">Tagline</label>
+                        <input type="text" id="tagline" placeholder="Your inspiring tagline here™">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" placeholder="Describe what makes your brand unique..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="logo">Logo Emoji</label>
+                        <input type="text" id="logo" placeholder="📚" maxlength="2">
+                    </div>
+                </div>
+
+                <!-- Step 2: Theme -->
+                <div class="form-section" data-section="2">
+                    <h3>Brand Theme Colors</h3>
+                    <div class="color-picker-group">
+                        <div class="form-group">
+                            <label for="primaryColor">Primary Color</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="primaryColor" value="#7C3AED">
+                                <input type="text" id="primaryColorHex" value="#7C3AED">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="secondaryColor">Secondary Color</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="secondaryColor" value="#10B981">
+                                <input type="text" id="secondaryColorHex" value="#10B981">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="accentColor">Accent Color</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="accentColor" value="#FEA644">
+                                <input type="text" id="accentColorHex" value="#FEA644">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="backgroundColor">Background Color</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="backgroundColor" value="#FFEFD6">
+                                <input type="text" id="backgroundColorHex" value="#FFEFD6">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h4>Preview</h4>
+                        <div class="preview-card" id="themePreview">
+                            <div class="preview-header">
+                                <span class="preview-logo" id="previewLogo">📚</span>
+                                <div class="preview-brand">
+                                    <h3 id="previewBrandName">Your Brand</h3>
+                                    <p class="preview-tagline" id="previewTagline">Your tagline here</p>
+                                </div>
+                            </div>
+                            <p id="previewDescription">Your brand description...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Books -->
+                <div class="form-section" data-section="3">
+                    <h3>Add Your Books</h3>
+                    <div id="booksContainer">
+                        <div class="book-input-group">
+                            <h4>Book 1</h4>
+                            <div class="book-input-grid">
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input type="text" class="book-title-input" placeholder="Book Title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Author</label>
+                                    <input type="text" class="book-author-input" placeholder="Author Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Price</label>
+                                    <input type="text" class="book-price-input" placeholder="29.99">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cover Image URL</label>
+                                    <input type="url" class="book-cover-input" placeholder="https://...">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="book-description-input" placeholder="Book description..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn add-book-btn" onclick="addBookInput()">+ Add Another Book</button>
+                </div>
+
+                <!-- Step 4: Review & Generate -->
+                <div class="form-section" data-section="4">
+                    <h3>Review Your Brand</h3>
+                    <div class="success-message" id="successMessage">
+                        ✅ Brand files created successfully!
+                    </div>
+                    <div class="error-message" id="errorMessage">
+                        ❌ Error creating brand files. Please check your inputs.
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h4>Brand Summary</h4>
+                        <div id="brandSummary"></div>
+                    </div>
+
+                    <div class="book-grid" id="bookPreviewGrid">
+                        <!-- Book previews will be inserted here -->
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h4>Generated Configuration</h4>
+                        <button class="btn copy-btn" onclick="copyConfig()">Copy</button>
+                        <div class="code-output" id="configOutput"></div>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <h4>Generated Catalog</h4>
+                        <button class="btn copy-btn" onclick="copyCatalog()">Copy</button>
+                        <div class="code-output" id="catalogOutput"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousStep()" disabled>Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let brandData = {
+            brandId: '',
+            brandName: '',
+            tagline: '',
+            description: '',
+            logo: '📚',
+            theme: {
+                primaryColor: '#7C3AED',
+                secondaryColor: '#10B981',
+                accentColor: '#FEA644',
+                backgroundColor: '#FFEFD6',
+                textColor: '#1F2937',
+                fontFamily: 'Inter, sans-serif'
+            },
+            books: []
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupColorPickers();
+            setupInputListeners();
+            updatePreview();
+        });
+
+        function setupColorPickers() {
+            const colorInputs = document.querySelectorAll('input[type="color"]');
+            colorInputs.forEach(input => {
+                const hexInput = document.getElementById(input.id + 'Hex');
+                input.addEventListener('input', (e) => {
+                    hexInput.value = e.target.value;
+                    updateThemeColor(input.id, e.target.value);
+                });
+                hexInput.addEventListener('input', (e) => {
+                    if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+                        input.value = e.target.value;
+                        updateThemeColor(input.id, e.target.value);
+                    }
+                });
+            });
+        }
+
+        function setupInputListeners() {
+            document.getElementById('brandId').addEventListener('input', (e) => {
+                brandData.brandId = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                e.target.value = brandData.brandId;
+            });
+
+            document.getElementById('brandName').addEventListener('input', (e) => {
+                brandData.brandName = e.target.value;
+                updatePreview();
+            });
+
+            document.getElementById('tagline').addEventListener('input', (e) => {
+                brandData.tagline = e.target.value;
+                updatePreview();
+            });
+
+            document.getElementById('description').addEventListener('input', (e) => {
+                brandData.description = e.target.value;
+                updatePreview();
+            });
+
+            document.getElementById('logo').addEventListener('input', (e) => {
+                brandData.logo = e.target.value || '📚';
+                updatePreview();
+            });
+        }
+
+        function updateThemeColor(colorType, value) {
+            const key = colorType.replace('Color', 'Color');
+            brandData.theme[key] = value;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('themePreview');
+            preview.style.setProperty('--primary', brandData.theme.primaryColor);
+            preview.style.setProperty('--secondary', brandData.theme.secondaryColor);
+            preview.style.setProperty('--accent', brandData.theme.accentColor);
+            preview.style.backgroundColor = brandData.theme.backgroundColor;
+            
+            document.getElementById('previewLogo').textContent = brandData.logo;
+            document.getElementById('previewBrandName').textContent = brandData.brandName || 'Your Brand';
+            document.getElementById('previewTagline').textContent = brandData.tagline || 'Your tagline here';
+            document.getElementById('previewDescription').textContent = brandData.description || 'Your brand description...';
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                if (validateCurrentStep()) {
+                    if (currentStep === 3) {
+                        collectBooks();
+                    }
+                    currentStep++;
+                    updateWizard();
+                    if (currentStep === 4) {
+                        showReview();
+                    }
+                }
+            } else {
+                generateBrand();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizard();
+            }
+        }
+
+        function updateWizard() {
+            // Update steps
+            document.querySelectorAll('.step').forEach(step => {
+                const stepNum = parseInt(step.dataset.step);
+                step.classList.toggle('active', stepNum === currentStep);
+                step.classList.toggle('completed', stepNum < currentStep);
+            });
+
+            // Update sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.toggle('active', parseInt(section.dataset.section) === currentStep);
+            });
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Generate Brand' : 'Next';
+        }
+
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    if (!brandData.brandId || !brandData.brandName) {
+                        alert('Please fill in Brand ID and Brand Name');
+                        return false;
+                    }
+                    return true;
+                case 2:
+                    return true;
+                case 3:
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        function addBookInput() {
+            const container = document.getElementById('booksContainer');
+            const bookCount = container.children.length + 1;
+            
+            const bookInput = document.createElement('div');
+            bookInput.className = 'book-input-group';
+            bookInput.innerHTML = `
+                <h4>Book ${bookCount}</h4>
+                <div class="book-input-grid">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="book-title-input" placeholder="Book Title">
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" class="book-author-input" placeholder="Author Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="text" class="book-price-input" placeholder="29.99">
+                    </div>
+                    <div class="form-group">
+                        <label>Cover Image URL</label>
+                        <input type="url" class="book-cover-input" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="book-description-input" placeholder="Book description..."></textarea>
+                </div>
+                <button class="btn remove-book-btn" onclick="this.parentElement.remove()">Remove Book</button>
+            `;
+            
+            container.appendChild(bookInput);
+        }
+
+        function collectBooks() {
+            brandData.books = [];
+            const bookGroups = document.querySelectorAll('.book-input-group');
+            
+            bookGroups.forEach((group, index) => {
+                const title = group.querySelector('.book-title-input').value;
+                const author = group.querySelector('.book-author-input').value;
+                const price = parseFloat(group.querySelector('.book-price-input').value) || 29.99;
+                const coverImage = group.querySelector('.book-cover-input').value || 
+                    `https://via.placeholder.com/400x600?text=${encodeURIComponent(title || 'Book')}`;
+                const description = group.querySelector('.book-description-input').value;
+                
+                if (title && author) {
+                    brandData.books.push({
+                        id: title.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+                        title,
+                        author,
+                        price,
+                        originalPrice: price * 1.5,
+                        coverImage,
+                        description,
+                        format: ['ebook', 'audiobook', 'hardcover'],
+                        rating: 4.5 + Math.random() * 0.5,
+                        badge: index === 0 ? 'BESTSELLER' : index === 1 ? 'NEW' : ''
+                    });
+                }
+            });
+        }
+
+        function showReview() {
+            // Update brand summary
+            const summary = document.getElementById('brandSummary');
+            summary.innerHTML = `
+                <p><strong>Brand ID:</strong> ${brandData.brandId}</p>
+                <p><strong>Brand Name:</strong> ${brandData.brandName}</p>
+                <p><strong>Tagline:</strong> ${brandData.tagline}</p>
+                <p><strong>Description:</strong> ${brandData.description}</p>
+                <p><strong>Books:</strong> ${brandData.books.length} books</p>
+            `;
+
+            // Update book preview
+            const bookGrid = document.getElementById('bookPreviewGrid');
+            bookGrid.innerHTML = brandData.books.map(book => `
+                <div class="book-item">
+                    <div class="book-cover" style="background: url('${book.coverImage}') center/cover">
+                        ${book.coverImage.includes('placeholder') ? '📖' : ''}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">${book.author}</div>
+                        <div class="book-price">$${book.price}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Generate config and catalog
+            const config = {
+                brandId: brandData.brandId,
+                brandName: brandData.brandName,
+                tagline: brandData.tagline,
+                description: brandData.description,
+                logo: brandData.logo,
+                theme: brandData.theme,
+                features: {
+                    newsletter: true,
+                    reviews: true,
+                    bundles: true,
+                    networkEnabled: true
+                },
+                payment: {
+                    processor: 'stripe',
+                    currency: 'USD',
+                    acceptedMethods: ['card', 'paypal']
+                },
+                contact: {
+                    email: `support@${brandData.brandId}.com`,
+                    website: `https://${brandData.brandId}.com`
+                }
+            };
+
+            const catalog = {
+                brand: brandData.brandId,
+                name: brandData.brandName,
+                description: brandData.description,
+                books: brandData.books,
+                collections: brandData.books.length > 2 ? [{
+                    id: 'complete-collection',
+                    name: 'Complete Collection',
+                    title: `All ${brandData.brandName} Books`,
+                    description: `Get all ${brandData.books.length} books at a discounted price`,
+                    books: brandData.books.map(b => b.id),
+                    price: Math.round(brandData.books.reduce((sum, b) => sum + b.price, 0) * 0.7),
+                    originalPrice: Math.round(brandData.books.reduce((sum, b) => sum + b.price, 0)),
+                    savings: 30,
+                    badge: 'Save 30%'
+                }] : []
+            };
+
+            document.getElementById('configOutput').textContent = JSON.stringify(config, null, 2);
+            document.getElementById('catalogOutput').textContent = JSON.stringify(catalog, null, 2);
+        }
+
+        function generateBrand() {
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Generate and download ZIP file
+            generateMarketplaceZip();
+            
+            // Scroll to top of review section
+            document.querySelector('.form-section.active').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate complete marketplace ZIP file
+        async function generateMarketplaceZip() {
+            const zip = new JSZip();
+            const brandFolder = brandData.brandId + '-marketplace';
+            
+            // Create folder structure
+            const root = zip.folder(brandFolder);
+            const frontend = root.folder('frontend');
+            const brands = frontend.folder('brands');
+            const brandDir = brands.folder(brandData.brandId);
+            const css = frontend.folder('css');
+            const js = frontend.folder('js');
+            const images = frontend.folder('images');
+            
+            // Generate config.json
+            const config = generateConfig();
+            brandDir.file('config.json', JSON.stringify(config, null, 2));
+            
+            // Generate catalog.json
+            const catalog = generateCatalog();
+            brandDir.file('catalog.json', JSON.stringify(catalog, null, 2));
+            
+            // Generate customized HTML
+            frontend.file('index.html', generateIndexHTML());
+            frontend.file('book-detail.html', generateBookDetailHTML());
+            frontend.file('cart.html', generateCartHTML());
+            frontend.file('success.html', generateSuccessHTML());
+            
+            // Generate CSS with brand colors
+            css.file('marketplace.css', generateMarketplaceCSS());
+            
+            // Generate JavaScript
+            js.file('marketplace.js', generateMarketplaceJS());
+            js.file('cart.js', generateCartJS());
+            
+            // Add README with deployment instructions
+            root.file('README.md', generateReadme());
+            
+            // Add package.json for npm deployment
+            root.file('package.json', generatePackageJSON());
+            
+            // Add netlify.toml for easy deployment
+            root.file('netlify.toml', generateNetlifyConfig());
+            
+            // Add _redirects for Netlify
+            frontend.file('_redirects', '/* /index.html 200');
+            
+            // Generate and download ZIP
+            zip.generateAsync({ type: 'blob' }).then(function(content) {
+                saveAs(content, `${brandData.brandId}-marketplace.zip`);
+            });
+        }
+
+        // Template generators
+        function generateConfig() {
+            return {
+                brandId: brandData.brandId,
+                brandName: brandData.brandName,
+                tagline: brandData.tagline,
+                description: brandData.description,
+                logo: brandData.logo,
+                theme: brandData.theme,
+                features: {
+                    newsletter: true,
+                    reviews: true,
+                    bundles: true,
+                    networkEnabled: false
+                },
+                payment: {
+                    processor: 'stripe',
+                    currency: 'USD',
+                    acceptedMethods: ['card']
+                },
+                contact: {
+                    email: `support@${brandData.brandId}.com`,
+                    website: `https://${brandData.brandId}.com`
+                }
+            };
+        }
+
+        function generateCatalog() {
+            return {
+                brand: brandData.brandId,
+                name: brandData.brandName,
+                description: brandData.description,
+                books: brandData.books,
+                collections: brandData.books.length > 2 ? [{
+                    id: 'complete-collection',
+                    name: 'Complete Collection',
+                    title: `All ${brandData.brandName} Books`,
+                    description: `Get all ${brandData.books.length} books at a discounted price`,
+                    books: brandData.books.map(b => b.id),
+                    price: Math.round(brandData.books.reduce((sum, b) => sum + b.price, 0) * 0.7),
+                    originalPrice: Math.round(brandData.books.reduce((sum, b) => sum + b.price, 0)),
+                    savings: 30,
+                    badge: 'Save 30%'
+                }] : []
+            };
+        }
+
+        function generateIndexHTML() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${brandData.brandName} - ${brandData.tagline}</title>
+    <link rel="stylesheet" href="css/marketplace.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">${brandData.logo} ${brandData.brandName}</a>
+                <nav>
+                    <a href="/cart.html">Cart <span data-cart-count></span></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>${brandData.brandName}</h1>
+            <p class="tagline">${brandData.tagline}</p>
+            <p class="description">${brandData.description}</p>
+        </div>
+    </section>
+
+    <section class="books-section">
+        <div class="container">
+            <h2 class="section-title">Our Books</h2>
+            <div id="books-grid" class="books-grid"></div>
+        </div>
+    </section>
+
+    <section class="newsletter-section">
+        <div class="container">
+            <h2>Stay Updated</h2>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ${brandData.brandName}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/marketplace.js"></script>
+</body>
+</html>`;
+        }
+
+        function generateBookDetailHTML() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details - ${brandData.brandName}</title>
+    <link rel="stylesheet" href="css/marketplace.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">${brandData.logo} ${brandData.brandName}</a>
+                <nav>
+                    <a href="/">Books</a>
+                    <a href="/cart.html">Cart <span data-cart-count></span></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="book-detail-section">
+        <div class="container">
+            <div id="book-detail" class="book-detail-grid"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ${brandData.brandName}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/marketplace.js"></script>
+    <script>
+        // Load book details
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('id');
+        MarketplaceStandalone.loadBookDetail(bookId);
+    </script>
+</body>
+</html>`;
+        }
+
+        function generateCartHTML() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - ${brandData.brandName}</title>
+    <link rel="stylesheet" href="css/marketplace.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">${brandData.logo} ${brandData.brandName}</a>
+                <nav>
+                    <a href="/">Continue Shopping</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="cart-section">
+        <div class="container">
+            <h1>Shopping Cart</h1>
+            <div id="cart-items"></div>
+            <div id="cart-summary"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ${brandData.brandName}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/cart.js"></script>
+</body>
+</html>`;
+        }
+
+        function generateSuccessHTML() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Complete - ${brandData.brandName}</title>
+    <link rel="stylesheet" href="css/marketplace.css">
+</head>
+<body>
+    <div class="success-page">
+        <div class="container">
+            <div class="success-content">
+                <h1>🎉 Order Complete!</h1>
+                <p>Thank you for your purchase. Check your email for download links.</p>
+                <a href="/" class="btn btn-primary">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+
+        function generateMarketplaceCSS() {
+            return `:root {
+    --primary-color: ${brandData.theme.primaryColor};
+    --secondary-color: ${brandData.theme.secondaryColor};
+    --accent-color: ${brandData.theme.accentColor};
+    --background-color: ${brandData.theme.backgroundColor};
+    --text-color: ${brandData.theme.textColor};
+    --font-family: ${brandData.theme.fontFamily};
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+header {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    gap: 2rem;
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.tagline {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+/* Books Grid */
+.books-section {
+    padding: 4rem 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.book-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.book-cover {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.book-info {
+    padding: 1.5rem;
+}
+
+.book-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.book-author {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.book-price {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.current-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Newsletter */
+.newsletter-section {
+    background: var(--primary-color);
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 500px;
+    margin: 2rem auto 0;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+}
+
+.newsletter-form button {
+    padding: 1rem 2rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Footer */
+footer {
+    background: #1f2937;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .books-grid { grid-template-columns: 1fr; }
+    .newsletter-form { flex-direction: column; }
+}`;
+        }
+
+        function generateMarketplaceJS() {
+            return `// Standalone Marketplace JavaScript
+const MarketplaceStandalone = (function() {
+    'use strict';
+
+    // Brand configuration
+    const BRAND_ID = '${brandData.brandId}';
+    let catalog = null;
+    let cart = [];
+
+    // Initialize
+    async function init() {
+        loadCart();
+        await loadCatalog();
+        renderBooks();
+        updateCartUI();
+        setupEventListeners();
+    }
+
+    // Load catalog
+    async function loadCatalog() {
+        try {
+            const response = await fetch(\`/brands/\${BRAND_ID}/catalog.json\`);
+            catalog = await response.json();
+        } catch (error) {
+            console.error('Error loading catalog:', error);
+            // Use embedded catalog as fallback
+            catalog = ${JSON.stringify(generateCatalog())};
+        }
+    }
+
+    // Render books
+    function renderBooks() {
+        const grid = document.getElementById('books-grid');
+        if (!grid || !catalog) return;
+
+        grid.innerHTML = catalog.books.map(book => \`
+            <div class="book-card">
+                <a href="/book-detail.html?id=\${book.id}">
+                    <img src="\${book.coverImage}" alt="\${book.title}" class="book-cover">
+                </a>
+                <div class="book-info">
+                    <h3 class="book-title">\${book.title}</h3>
+                    <p class="book-author">\${book.author}</p>
+                    <div class="book-price">
+                        <span class="current-price">$\${book.price}</span>
+                        \${book.originalPrice ? \`<span class="original-price">$\${book.originalPrice}</span>\` : ''}
+                    </div>
+                    <button class="btn btn-primary" onclick="MarketplaceStandalone.addToCart('\${book.id}')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        \`).join('');
+    }
+
+    // Cart operations
+    function loadCart() {
+        const saved = localStorage.getItem('marketplace_cart');
+        cart = saved ? JSON.parse(saved) : [];
+    }
+
+    function saveCart() {
+        localStorage.setItem('marketplace_cart', JSON.stringify(cart));
+        updateCartUI();
+    }
+
+    function addToCart(bookId) {
+        const book = catalog.books.find(b => b.id === bookId);
+        if (!book) return;
+
+        const existing = cart.find(item => item.id === bookId);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                id: bookId,
+                title: book.title,
+                price: book.price,
+                quantity: 1
+            });
+        }
+
+        saveCart();
+        alert('Added to cart!');
+    }
+
+    function updateCartUI() {
+        const countElements = document.querySelectorAll('[data-cart-count]');
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        countElements.forEach(el => {
+            el.textContent = count > 0 ? \`(\${count})\` : '';
+        });
+    }
+
+    function loadBookDetail(bookId) {
+        const book = catalog.books.find(b => b.id === bookId);
+        if (!book) {
+            window.location.href = '/';
+            return;
+        }
+
+        const container = document.getElementById('book-detail');
+        container.innerHTML = \`
+            <div class="book-detail">
+                <img src="\${book.coverImage}" alt="\${book.title}" class="detail-cover">
+                <div class="detail-info">
+                    <h1>\${book.title}</h1>
+                    <p class="detail-author">by \${book.author}</p>
+                    <p class="detail-description">\${book.description}</p>
+                    <div class="detail-price">
+                        <span class="current-price">$\${book.price}</span>
+                        \${book.originalPrice ? \`<span class="original-price">$\${book.originalPrice}</span>\` : ''}
+                    </div>
+                    <button class="btn btn-primary" onclick="MarketplaceStandalone.addToCart('\${book.id}')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        \`;
+    }
+
+    function setupEventListeners() {
+        const newsletterForm = document.getElementById('newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Thank you for subscribing!');
+                e.target.reset();
+            });
+        }
+    }
+
+    // Public API
+    return {
+        init,
+        addToCart,
+        loadBookDetail
+    };
+})();
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', MarketplaceStandalone.init);
+} else {
+    MarketplaceStandalone.init();
+}`;
+        }
+
+        function generateCartJS() {
+            return `// Shopping Cart JavaScript
+(function() {
+    'use strict';
+
+    let cart = [];
+
+    function init() {
+        loadCart();
+        renderCart();
+    }
+
+    function loadCart() {
+        const saved = localStorage.getItem('marketplace_cart');
+        cart = saved ? JSON.parse(saved) : [];
+    }
+
+    function renderCart() {
+        const itemsContainer = document.getElementById('cart-items');
+        const summaryContainer = document.getElementById('cart-summary');
+
+        if (cart.length === 0) {
+            itemsContainer.innerHTML = '<p>Your cart is empty</p>';
+            summaryContainer.innerHTML = '';
+            return;
+        }
+
+        itemsContainer.innerHTML = cart.map(item => \`
+            <div class="cart-item">
+                <h3>\${item.title}</h3>
+                <p>$\${item.price} x \${item.quantity}</p>
+                <button onclick="removeFromCart('\${item.id}')">Remove</button>
+            </div>
+        \`).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        summaryContainer.innerHTML = \`
+            <div class="cart-total">
+                <h2>Total: $\${total.toFixed(2)}</h2>
+                <button class="btn btn-primary" onclick="checkout()">Checkout</button>
+            </div>
+        \`;
+    }
+
+    window.removeFromCart = function(id) {
+        cart = cart.filter(item => item.id !== id);
+        localStorage.setItem('marketplace_cart', JSON.stringify(cart));
+        renderCart();
+    };
+
+    window.checkout = function() {
+        alert('Checkout would process here with Stripe or Gumroad');
+        // In production, integrate with payment processor
+    };
+
+    init();
+})();`;
+        }
+
+        function generateReadme() {
+            return `# ${brandData.brandName} Marketplace
+
+Welcome to your custom book marketplace! This package contains everything you need to launch your online bookstore.
+
+## 🚀 Quick Start
+
+### Option 1: Deploy to Netlify (Recommended)
+1. Create a free account at [netlify.com](https://netlify.com)
+2. Drag and drop this entire folder to Netlify
+3. Your site will be live in seconds!
+
+### Option 2: Deploy to Vercel
+1. Install Vercel CLI: \`npm i -g vercel\`
+2. Run \`vercel\` in this directory
+3. Follow the prompts
+
+### Option 3: Static Hosting (GitHub Pages, S3)
+1. Upload the \`frontend\` folder to your hosting service
+2. Set the root directory to \`frontend\`
+3. No server required!
+
+## 📁 Structure
+\`\`\`
+${brandData.brandId}-marketplace/
+├── frontend/               # Your website files
+│   ├── index.html         # Homepage
+│   ├── book-detail.html   # Book details page
+│   ├── cart.html          # Shopping cart
+│   ├── success.html       # Order success page
+│   ├── css/               # Styles
+│   ├── js/                # JavaScript
+│   └── brands/${brandData.brandId}/     # Your brand config
+├── README.md              # This file
+├── package.json           # NPM configuration
+└── netlify.toml          # Netlify config
+\`\`\`
+
+## 💳 Payment Setup
+
+### Stripe Integration
+1. Create a Stripe account at [stripe.com](https://stripe.com)
+2. Get your publishable key
+3. Add to your site's JavaScript
+4. Use Stripe Payment Links for no-backend checkout
+
+### Gumroad Integration
+1. Create products on [gumroad.com](https://gumroad.com)
+2. Get embed codes
+3. Replace checkout buttons with Gumroad overlays
+
+## 🎨 Customization
+
+Your brand colors and settings are in:
+\`frontend/brands/${brandData.brandId}/config.json\`
+
+To change colors, fonts, or content, edit this file.
+
+## 📚 Adding Books
+
+Edit \`frontend/brands/${brandData.brandId}/catalog.json\` to:
+- Add new books
+- Update prices
+- Create bundles
+- Modify descriptions
+
+## 🌐 Custom Domain
+
+### Netlify
+1. Go to Site Settings > Domain Management
+2. Add your custom domain
+3. Update DNS records
+
+### Other Hosts
+Follow your hosting provider's custom domain instructions.
+
+## 📧 Newsletter
+
+To collect emails:
+1. Sign up for [ConvertKit](https://convertkit.com) or [Mailchimp](https://mailchimp.com)
+2. Replace the newsletter form action
+3. Add your form ID
+
+## 🆘 Support
+
+Need help? 
+- Documentation: [github.com/teneo-marketplace/docs](https://github.com)
+- Issues: [github.com/teneo-marketplace/issues](https://github.com)
+
+---
+Built with ❤️ using Teneo Marketplace
+`;
+        }
+
+        function generatePackageJSON() {
+            return JSON.stringify({
+                name: `${brandData.brandId}-marketplace`,
+                version: '1.0.0',
+                description: brandData.description,
+                scripts: {
+                    start: 'npx http-server frontend -p 8080',
+                    deploy: 'netlify deploy --dir=frontend'
+                },
+                keywords: ['marketplace', 'books', brandData.brandId],
+                author: brandData.brandName,
+                license: 'MIT'
+            }, null, 2);
+        }
+
+        function generateNetlifyConfig() {
+            return `[build]
+  publish = "frontend"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"`;
+        }
+
+        function copyConfig() {
+            const configText = document.getElementById('configOutput').textContent;
+            navigator.clipboard.writeText(configText).then(() => {
+                alert('Configuration copied to clipboard!');
+            });
+        }
+
+        function copyCatalog() {
+            const catalogText = document.getElementById('catalogOutput').textContent;
+            navigator.clipboard.writeText(catalogText).then(() => {
+                alert('Catalog copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

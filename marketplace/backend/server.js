@@ -1,305 +1,300 @@
+// marketplace/backend/server.js
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const path = require('path');
-
-// Load environment variables
-dotenv.config();
-
-// Initialize Stripe
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const fs = require('fs').promises;
+const bodyParser = require('body-parser');
+const brandRoutes = require('./routes/brandRoutes');
+const checkoutRoutes = require('./routes/checkout');
+const catalogRoutes = require('./routes/catalogRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// Sample book data (same as frontend for consistency)
-const books = [
-    {
-        id: 1,
-        title: "The Midnight Library",
-        author: "Matt Haig",
-        genre: "Fiction",
-        price: 12.99,
-        currency: "USD",
-        description: "A dazzling novel about all the choices that go into a life well lived.",
-        cover: "📚",
-        stock: 10
-    },
-    {
-        id: 2,
-        title: "Sapiens: A Brief History of Humankind",
-        author: "Yuval Noah Harari",
-        genre: "Non-Fiction",
-        price: 15.99,
-        currency: "USD",
-        description: "A groundbreaking narrative of humanity's creation and evolution.",
-        cover: "🧠",
-        stock: 15
-    },
-    {
-        id: 3,
-        title: "Project Hail Mary",
-        author: "Andy Weir",
-        genre: "Science Fiction",
-        price: 14.99,
-        currency: "USD",
-        description: "A lone astronaut must save the earth and humanity.",
-        cover: "🚀",
-        stock: 8
-    },
-    {
-        id: 4,
-        title: "Atomic Habits",
-        author: "James Clear",
-        genre: "Self-Help",
-        price: 13.99,
-        currency: "USD",
-        description: "An Easy & Proven Way to Build Good Habits & Break Bad Ones.",
-        cover: "⚛️",
-        stock: 20
-    },
-    {
-        id: 5,
-        title: "The Seven Husbands of Evelyn Hugo",
-        author: "Taylor Jenkins Reid",
-        genre: "Fiction",
-        price: 11.99,
-        currency: "USD",
-        description: "A captivating novel about love, ambition, and the price of fame.",
-        cover: "✨",
-        stock: 12
-    },
-    {
-        id: 6,
-        title: "Educated",
-        author: "Tara Westover",
-        genre: "Memoir",
-        price: 13.49,
-        currency: "USD",
-        description: "A powerful memoir about education and self-invention.",
-        cover: "🎓",
-        stock: 18
-    }
-];
-
-// API Routes
-
-// Network routes
-app.use('/api', require('./routes/network'));
-
-// Download routes
-app.use('/api/download', require('./routes/download'));
-
-// Checkout routes (production-ready)
-app.use('/api/checkout', require('./routes/checkout'));
-
-// Get all books
-app.get('/api/books', (req, res) => {
-    res.json({
-        success: true,
-        data: books,
-        count: books.length
-    });
-});
-
-// Get single book by ID
-app.get('/api/books/:id', (req, res) => {
-    const bookId = parseInt(req.params.id);
-    const book = books.find(b => b.id === bookId);
-    
-    if (!book) {
-        return res.status(404).json({
-            success: false,
-            error: 'Book not found'
-        });
-    }
-    
-    res.json({
-        success: true,
-        data: book
-    });
-});
-
-// Create Stripe checkout session
-app.post('/api/create-checkout-session', async (req, res) => {
-    try {
-        const { bookId, quantity = 1 } = req.body;
-        
-        if (!bookId) {
-            return res.status(400).json({
-                success: false,
-                error: 'Book ID is required'
-            });
-        }
-        
-        // Find the book
-        const book = books.find(b => b.id === parseInt(bookId));
-        if (!book) {
-            return res.status(404).json({
-                success: false,
-                error: 'Book not found'
-            });
-        }
-        
-        // Check stock
-        if (book.stock < quantity) {
-            return res.status(400).json({
-                success: false,
-                error: `Only ${book.stock} copies available`
-            });
-        }
-        
-        // Check if Stripe is configured
-        if (!process.env.STRIPE_SECRET_KEY) {
-            return res.status(500).json({
-                success: false,
-                error: 'Stripe not configured. Please add STRIPE_SECRET_KEY to your .env file.'
-            });
-        }
-        
-        // Create Stripe checkout session
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [
-                {
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: book.title,
-                            description: `by ${book.author} - ${book.description}`,
-                            metadata: {
-                                bookId: book.id.toString(),
-                                genre: book.genre
-                            }
-                        },
-                        unit_amount: Math.round(book.price * 100), // Convert to cents
-                    },
-                    quantity: quantity,
-                },
-            ],
-            mode: 'payment',
-            success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.headers.origin}/cancel`,
-            metadata: {
-                bookId: book.id.toString(),
-                bookTitle: book.title,
-                quantity: quantity.toString()
-            }
-        });
-        
-        res.json({
-            success: true,
-            sessionId: session.id,
-            url: session.url
-        });
-        
-    } catch (error) {
-        console.error('Stripe checkout error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to create checkout session',
-            details: error.message
-        });
-    }
-});
-
-// Legacy checkout endpoint (keeping for backward compatibility)
-app.post('/api/checkout', async (req, res) => {
-    try {
-        const { items } = req.body;
-        
-        if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid checkout data'
-            });
-        }
-        
-        // Calculate total
-        let total = 0;
-        const orderItems = [];
-        
-        for (const item of items) {
-            const book = books.find(b => b.id === item.bookId);
-            if (!book) {
-                return res.status(400).json({
-                    success: false,
-                    error: `Book with ID ${item.bookId} not found`
-                });
-            }
-            
-            if (book.stock < item.quantity) {
-                return res.status(400).json({
-                    success: false,
-                    error: `Insufficient stock for ${book.title}`
-                });
-            }
-            
-            total += book.price * item.quantity;
-            orderItems.push({
-                ...book,
-                quantity: item.quantity,
-                subtotal: book.price * item.quantity
-            });
-        }
-        
-        // Return mock response for legacy compatibility
-        res.json({
-            success: true,
-            message: 'Use /api/create-checkout-session for Stripe integration',
-            data: {
-                orderId: `ORDER-${Date.now()}`,
-                total: total.toFixed(2),
-                currency: 'USD',
-                items: orderItems,
-                status: 'pending'
-            }
-        });
-        
-    } catch (error) {
-        console.error('Checkout error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to create checkout session'
-        });
-    }
-});
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/api/brands', brandRoutes);
+app.use('/api/checkout', checkoutRoutes);
+app.use('/api/catalog', catalogRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Server is running',
+    res.json({ 
+        status: 'healthy', 
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development'
+        service: 'teneo-marketplace-api'
     });
 });
 
-// Serve frontend for all other routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+// Note: /api/brands is handled by brandRoutes router
+
+// Get books (optionally filtered by brand)
+app.get('/api/books', async (req, res) => {
+    try {
+        const { brand, limit, offset } = req.query;
+        const brandsPath = path.join(__dirname, '..', 'frontend', 'brands');
+        let allBooks = [];
+
+        if (brand && brand !== 'all') {
+            // Get books from specific brand
+            const catalogPath = path.join(brandsPath, brand, 'catalog.json');
+            try {
+                const catalogContent = await fs.readFile(catalogPath, 'utf8');
+                const catalog = JSON.parse(catalogContent);
+                allBooks = catalog.books || [];
+            } catch (error) {
+                console.error(`Error loading catalog for brand ${brand}:`, error);
+            }
+        } else {
+            // Get books from all brands
+            const brandDirs = await fs.readdir(brandsPath);
+            
+            for (const brandDir of brandDirs) {
+                const brandPath = path.join(brandsPath, brandDir);
+                const stat = await fs.stat(brandPath);
+                
+                if (stat.isDirectory()) {
+                    const catalogPath = path.join(brandPath, 'catalog.json');
+                    try {
+                        const catalogContent = await fs.readFile(catalogPath, 'utf8');
+                        const catalog = JSON.parse(catalogContent);
+                        if (catalog.books) {
+                            // Add brand info to each book
+                            const brandedBooks = catalog.books.map(book => ({
+                                ...book,
+                                brand: brandDir,
+                                brandName: catalog.name || brandDir
+                            }));
+                            allBooks = allBooks.concat(brandedBooks);
+                        }
+                    } catch (error) {
+                        // Skip brands with invalid catalogs
+                    }
+                }
+            }
+        }
+
+        // Apply pagination if requested
+        let result = allBooks;
+        if (limit) {
+            const start = parseInt(offset) || 0;
+            const end = start + parseInt(limit);
+            result = allBooks.slice(start, end);
+        }
+
+        res.json({
+            success: true,
+            data: result,
+            total: allBooks.length,
+            limit: limit ? parseInt(limit) : null,
+            offset: offset ? parseInt(offset) : 0
+        });
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch books',
+            message: error.message 
+        });
+    }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        error: 'Something went wrong!'
+// Search across all brands
+app.get('/api/search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Search query is required' 
+            });
+        }
+
+        const searchTerm = q.toLowerCase();
+        const brandsPath = path.join(__dirname, '..', 'frontend', 'brands');
+        const brandDirs = await fs.readdir(brandsPath);
+        let searchResults = [];
+
+        for (const brandDir of brandDirs) {
+            const brandPath = path.join(brandsPath, brandDir);
+            const stat = await fs.stat(brandPath);
+            
+            if (stat.isDirectory()) {
+                const catalogPath = path.join(brandPath, 'catalog.json');
+                try {
+                    const catalogContent = await fs.readFile(catalogPath, 'utf8');
+                    const catalog = JSON.parse(catalogContent);
+                    
+                    if (catalog.books) {
+                        const matches = catalog.books.filter(book => {
+                            return (
+                                book.title?.toLowerCase().includes(searchTerm) ||
+                                book.author?.toLowerCase().includes(searchTerm) ||
+                                book.description?.toLowerCase().includes(searchTerm) ||
+                                book.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
+                            );
+                        });
+
+                        if (matches.length > 0) {
+                            const brandedMatches = matches.map(book => ({
+                                ...book,
+                                brand: brandDir,
+                                brandName: catalog.name || brandDir
+                            }));
+                            searchResults = searchResults.concat(brandedMatches);
+                        }
+                    }
+                } catch (error) {
+                    // Skip brands with invalid catalogs
+                }
+            }
+        }
+
+        res.json({
+            success: true,
+            query: q,
+            results: searchResults,
+            count: searchResults.length
+        });
+    } catch (error) {
+        console.error('Error searching books:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Search failed',
+            message: error.message 
+        });
+    }
+});
+
+// Get specific brand catalog
+app.get('/api/brands/:brandId/catalog', async (req, res) => {
+    try {
+        const { brandId } = req.params;
+        const catalogPath = path.join(__dirname, '..', 'frontend', 'brands', brandId, 'catalog.json');
+        
+        const catalogContent = await fs.readFile(catalogPath, 'utf8');
+        const catalog = JSON.parse(catalogContent);
+        
+        res.json({
+            success: true,
+            brand: brandId,
+            catalog: catalog
+        });
+    } catch (error) {
+        console.error(`Error fetching catalog for brand ${req.params.brandId}:`, error);
+        res.status(404).json({ 
+            success: false,
+            error: 'Brand catalog not found',
+            message: error.message 
+        });
+    }
+});
+
+// Network API endpoints
+app.get('/api/network/search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        // For now, return results from local search
+        // In future, this will aggregate from network stores
+        const localResults = await searchBooks(q);
+        
+        res.json({
+            success: true,
+            query: q,
+            results: localResults,
+            stores: [{
+                id: 'teneo-main',
+                name: 'Teneo Marketplace',
+                resultCount: localResults.length
+            }]
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            success: false,
+            error: 'Network search failed',
+            message: error.message 
+        });
+    }
+});
+
+// Helper function for searching books
+async function searchBooks(query) {
+    if (!query) return [];
+    
+    const searchTerm = query.toLowerCase();
+    const brandsPath = path.join(__dirname, '..', 'frontend', 'brands');
+    const brandDirs = await fs.readdir(brandsPath);
+    let results = [];
+
+    for (const brandDir of brandDirs) {
+        const catalogPath = path.join(brandsPath, brandDir, 'catalog.json');
+        try {
+            const catalogContent = await fs.readFile(catalogPath, 'utf8');
+            const catalog = JSON.parse(catalogContent);
+            
+            if (catalog.books) {
+                const matches = catalog.books.filter(book => {
+                    return (
+                        book.title?.toLowerCase().includes(searchTerm) ||
+                        book.author?.toLowerCase().includes(searchTerm) ||
+                        book.description?.toLowerCase().includes(searchTerm)
+                    );
+                });
+                results = results.concat(matches.map(book => ({
+                    ...book,
+                    brand: brandDir
+                })));
+            }
+        } catch (error) {
+            // Skip invalid catalogs
+        }
+    }
+    
+    return results;
+}
+
+// Error handling for undefined routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ 
+        error: 'API endpoint not found',
+        path: req.originalUrl
     });
 });
 
-// Start server
+// Serve static files in development
+if (process.env.NODE_ENV !== 'production') {
+    // Serve frontend files
+    app.use(express.static(path.join(__dirname, '..', 'frontend')));
+    
+    // Specific routes for admin and setup
+    app.get('/setup', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'setup.html'));
+    });
+    
+    app.get('/admin', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
+    });
+}
+
+// Static file serving - MUST BE LAST
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '..', 'frontend')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+    });
+}
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`📚 API available at http://localhost:${PORT}/api`);
-    console.log(`🔐 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
+    console.log(`🌍 API available at http://localhost:${PORT}/api`);
 });
+
+module.exports = app;

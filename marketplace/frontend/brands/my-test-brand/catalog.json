@@ -1,0 +1,13 @@
+{
+  "name": "My Test Brand",
+  "description": "A test brand for the marketplace",
+  "books": [
+    {
+      "id": "test-book-1",
+      "title": "Test Book One",
+      "author": "Test Author",
+      "price": 9.99,
+      "description": "This is a test book"
+    }
+  ]
+}

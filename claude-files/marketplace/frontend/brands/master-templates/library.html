@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{BRAND_NAME}} Library - {{LIBRARY_TAGLINE|Transformative Books for Growth}}</title>
+    <meta name="description" content="{{LIBRARY_META_DESC|Browse our collection of books designed to transform your life and business}}">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Gumroad for digital sales -->
+    <script src="https://gumroad.com/js/gumroad.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary-color: {{PRIMARY_COLOR|#1E40AF}};
+            --accent-color: {{ACCENT_COLOR|#F59E0B}};
+            --text-color: {{TEXT_COLOR|#111827}};
+            --bg-color: {{BG_COLOR|#FFFFFF}};
+            --secondary-bg: {{SECONDARY_BG|#F3F4F6}};
+        }
+        
+        .book-card {
+            transition: all 0.3s ease;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gumroad-button {
+            background-color: var(--accent-color) !important;
+            border-radius: 0.5rem !important;
+            padding: 0.5rem 1.5rem !important;
+        }
+    </style>
+    
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ANALYTICS_ID}}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ANALYTICS_ID}}');
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation (Same as index.html) -->
+    <nav class="sticky top-0 bg-white shadow-md z-50" x-data="{ mobileMenu: false }">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="text-2xl font-bold" style="color: var(--primary-color)">{{BRAND_NAME}}</a>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="hover:opacity-70 transition">Home</a>
+                    <a href="/library.html" class="font-semibold" style="color: var(--accent-color)">Library</a>
+                    <a href="#bundles" class="hover:opacity-70 transition">Bundles</a>
+                    <a href="#contact" class="hover:opacity-70 transition">Contact</a>
+                    <div class="relative">
+                        <i class="fas fa-shopping-cart text-xl cursor-pointer"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </div>
+                </div>
+                
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-16 bg-gradient-to-br from-blue-50 to-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--primary-color)">
+                {{LIBRARY_HEADLINE|Transform Your Life Through Reading}}
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                {{LIBRARY_SUBHEADLINE|Instant downloads, beautiful hardcovers, and life-changing insights}}
+            </p>
+            
+            <!-- Email Capture Bar -->
+            <div class="bg-blue-600 text-white p-4 rounded-lg max-w-2xl mx-auto">
+                <form action="{{FORM_ACTION}}" method="POST" class="flex flex-col md:flex-row gap-4">
+                    <span class="text-lg font-semibold">Get 20% off your first book:</span>
+                    <input type="email" name="email" placeholder="Enter your email" required 
+                           class="flex-1 px-4 py-2 rounded text-gray-900">
+                    <button type="submit" class="px-6 py-2 rounded font-semibold transition hover:opacity-90" 
+                            style="background-color: var(--accent-color)">
+                        Get My Discount
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 bg-white border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div class="flex flex-wrap gap-2" x-data="{ activeFilter: 'all' }">
+                    <button @click="activeFilter = 'all'; filterBooks('all')" 
+                            :class="activeFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                            class="px-4 py-2 rounded-full transition">
+                        All Books
+                    </button>
+                    <button @click="activeFilter = 'mindset'; filterBooks('mindset')" 
+                            :class="activeFilter === 'mindset' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                            class="px-4 py-2 rounded-full transition">
+                        {{CATEGORY_1|Mindset}}
+                    </button>
+                    <button @click="activeFilter = 'business'; filterBooks('business')" 
+                            :class="activeFilter === 'business' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                            class="px-4 py-2 rounded-full transition">
+                        {{CATEGORY_2|Business}}
+                    </button>
+                    <button @click="activeFilter = 'health'; filterBooks('health')" 
+                            :class="activeFilter === 'health' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                            class="px-4 py-2 rounded-full transition">
+                        {{CATEGORY_3|Health}}
+                    </button>
+                    <button @click="activeFilter = 'bundles'; filterBooks('bundles')" 
+                            :class="activeFilter === 'bundles' ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                            class="px-4 py-2 rounded-full transition">
+                        Bundles
+                    </button>
+                </div>
+                
+                <select class="px-4 py-2 border rounded-lg">
+                    <option>Sort by: Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest First</option>
+                    <option>Best Sellers</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Book Grid -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="bookGrid">
+                
+                <!-- Book 1 -->
+                <div class="book-card bg-white rounded-lg shadow-lg overflow-hidden" data-category="mindset">
+                    <div class="relative">
+                        <img src="{{BOOK_1_COVER|images/book-1-cover.jpg}}" 
+                             alt="{{BOOK_1_TITLE}}" 
+                             class="w-full h-80 object-cover">
+                        <span class="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            {{BOOK_1_BADGE|Bestseller}}
+                        </span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">{{BOOK_1_TITLE|The Success Mindset}}</h3>
+                        <p class="text-gray-600 text-sm mb-1">{{BOOK_1_AUTHOR|John Smith}}</p>
+                        <p class="text-gray-700 mb-4 line-clamp-2">{{BOOK_1_DESC|Transform your thinking and unlock your potential}}</p>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold" style="color: var(--accent-color)">${{BOOK_1_PRICE|19.99}}</span>
+                                <span class="text-gray-400 line-through ml-2">${{BOOK_1_ORIGINAL|29.99}}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1">{{BOOK_1_RATING|4.8}} ({{BOOK_1_REVIEWS|127}})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="openBookModal('book1')" 
+                                    class="flex-1 py-2 rounded font-semibold text-white transition hover:opacity-90"
+                                    style="background-color: var(--primary-color)">
+                                View Details
+                            </button>
+                            <a class="gumroad-button flex-1 text-center" 
+                               href="https://gum.co/{{BOOK_1_GUMROAD_ID|demo}}"
+                               data-gumroad-single-product="true">
+                                Quick Buy
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book 2 -->
+                <div class="book-card bg-white rounded-lg shadow-lg overflow-hidden" data-category="business">
+                    <div class="relative">
+                        <img src="{{BOOK_2_COVER|images/book-2-cover.jpg}}" 
+                             alt="{{BOOK_2_TITLE}}" 
+                             class="w-full h-80 object-cover">
+                        <span class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            {{BOOK_2_BADGE|New Release}}
+                        </span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">{{BOOK_2_TITLE|Scale Your Business}}</h3>
+                        <p class="text-gray-600 text-sm mb-1">{{BOOK_2_AUTHOR|Sarah Johnson}}</p>
+                        <p class="text-gray-700 mb-4 line-clamp-2">{{BOOK_2_DESC|Proven strategies for exponential growth}}</p>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold" style="color: var(--accent-color)">${{BOOK_2_PRICE|24.99}}</span>
+                                <span class="text-gray-400 line-through ml-2">${{BOOK_2_ORIGINAL|34.99}}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1">{{BOOK_2_RATING|4.9}} ({{BOOK_2_REVIEWS|89}})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="openBookModal('book2')" 
+                                    class="flex-1 py-2 rounded font-semibold text-white transition hover:opacity-90"
+                                    style="background-color: var(--primary-color)">
+                                View Details
+                            </button>
+                            <a class="gumroad-button flex-1 text-center" 
+                               href="https://gum.co/{{BOOK_2_GUMROAD_ID|demo2}}"
+                               data-gumroad-single-product="true">
+                                Quick Buy
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bundle -->
+                <div class="book-card bg-white rounded-lg shadow-lg overflow-hidden border-2 border-yellow-400" data-category="bundles">
+                    <div class="relative">
+                        <div class="h-80 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fas fa-gift text-6xl mb-4"></i>
+                                <h3 class="text-2xl font-bold">{{BUNDLE_1_NAME|Success Bundle}}</h3>
+                                <p class="mt-2">{{BUNDLE_1_BOOKS|3 Books}} + Bonus Content</p>
+                            </div>
+                        </div>
+                        <span class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
+                            {{BUNDLE_1_BADGE|Save 40%}}
+                        </span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">{{BUNDLE_1_TITLE|The Complete Success Library}}</h3>
+                        <p class="text-gray-700 mb-4">{{BUNDLE_1_DESC|Everything you need to transform your life and business}}</p>
+                        
+                        <ul class="text-sm text-gray-600 mb-4 space-y-1">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>{{BUNDLE_1_ITEM_1|The Success Mindset}}</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>{{BUNDLE_1_ITEM_2|Scale Your Business}}</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>{{BUNDLE_1_ITEM_3|Peak Performance}}</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>{{BUNDLE_1_BONUS|BONUS: Workbook Collection}}</li>
+                        </ul>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold" style="color: var(--accent-color)">${{BUNDLE_1_PRICE|49.99}}</span>
+                                <span class="text-gray-400 line-through ml-2">${{BUNDLE_1_ORIGINAL|84.99}}</span>
+                            </div>
+                            <div class="text-green-600 font-semibold">
+                                Save ${{BUNDLE_1_SAVINGS|35}}!
+                            </div>
+                        </div>
+                        
+                        <a class="gumroad-button w-full text-center block" 
+                           href="https://gum.co/{{BUNDLE_1_GUMROAD_ID|bundle1}}"
+                           data-gumroad-single-product="true">
+                            Get This Bundle
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Add more books as needed -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Book Detail Modal -->
+    <div id="bookModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
+        <div class="min-h-screen px-4 text-center">
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-white">
+                    <div class="flex justify-between items-center p-4 border-b">
+                        <h3 class="text-2xl font-bold">Book Details</h3>
+                        <button onclick="closeBookModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <img id="modalBookCover" src="" alt="" class="w-full rounded-lg shadow-lg">
+                            </div>
+                            <div>
+                                <h2 id="modalBookTitle" class="text-3xl font-bold mb-2"></h2>
+                                <p id="modalBookAuthor" class="text-gray-600 mb-4"></p>
+                                <p id="modalBookDescription" class="text-gray-700 mb-6 leading-relaxed"></p>
+                                
+                                <div class="border-t pt-6">
+                                    <h4 class="font-bold mb-4">Choose Your Format:</h4>
+                                    
+                                    <div class="space-y-3">
+                                        <label class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                                            <div>
+                                                <input type="radio" name="format" value="digital" checked class="mr-3">
+                                                <span class="font-semibold">Digital Bundle (PDF + EPUB)</span>
+                                                <p class="text-sm text-gray-600 ml-6">Instant download, read anywhere</p>
+                                            </div>
+                                            <span class="text-xl font-bold">$19.99</span>
+                                        </label>
+                                        
+                                        <label class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                                            <div>
+                                                <input type="radio" name="format" value="hardcover" class="mr-3">
+                                                <span class="font-semibold">Premium Hardcover</span>
+                                                <p class="text-sm text-gray-600 ml-6">Ships in 3-5 days via Lulu</p>
+                                            </div>
+                                            <span class="text-xl font-bold">$34.99</span>
+                                        </label>
+                                        
+                                        <label class="flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer hover:border-blue-500 transition bg-yellow-50">
+                                            <div>
+                                                <input type="radio" name="format" value="complete" class="mr-3">
+                                                <span class="font-semibold">Complete Bundle</span>
+                                                <p class="text-sm text-gray-600 ml-6">Digital + Hardcover + Workbook</p>
+                                            </div>
+                                            <span class="text-xl font-bold">$44.99</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex gap-4 mt-6">
+                                        <button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white transition hover:opacity-90"
+                                                style="background-color: var(--primary-color)">
+                                            Add to Cart
+                                        </button>
+                                        <button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold transition"
+                                                style="background-color: var(--accent-color); color: white;">
+                                            Buy Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Why Choose {{BRAND_NAME}}</h2>
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <i class="fas fa-bolt text-4xl mb-4" style="color: var(--accent-color)"></i>
+                    <h3 class="font-bold mb-2">Instant Downloads</h3>
+                    <p class="text-gray-600">Get your books immediately after purchase</p>
+                </div>
+                <div>
+                    <i class="fas fa-globe text-4xl mb-4" style="color: var(--accent-color)"></i>
+                    <h3 class="font-bold mb-2">Worldwide Shipping</h3>
+                    <p class="text-gray-600">Hardcovers printed and shipped globally</p>
+                </div>
+                <div>
+                    <i class="fas fa-lock text-4xl mb-4" style="color: var(--accent-color)"></i>
+                    <h3 class="font-bold mb-2">Secure Checkout</h3>
+                    <p class="text-gray-600">Safe payments via Stripe & PayPal</p>
+                </div>
+                <div>
+                    <i class="fas fa-gem text-4xl mb-4" style="color: var(--accent-color)"></i>
+                    <h3 class="font-bold mb-2">Premium Quality</h3>
+                    <p class="text-gray-600">Professional editing and design</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Same as index.html) -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p>&copy; 2024 {{BRAND_NAME}}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Book data store
+        const books = {
+            book1: {
+                title: '{{BOOK_1_TITLE|The Success Mindset}}',
+                author: '{{BOOK_1_AUTHOR|John Smith}}',
+                description: '{{BOOK_1_LONG_DESC|This transformative book reveals the hidden psychological patterns that separate high achievers from everyone else. Based on 10 years of research, you\'ll discover the exact mental frameworks that create extraordinary results.}}',
+                cover: '{{BOOK_1_COVER|images/book-1-cover.jpg}}',
+                digitalPrice: '{{BOOK_1_PRICE|19.99}}',
+                hardcoverPrice: '{{BOOK_1_HARDCOVER_PRICE|34.99}}',
+                bundlePrice: '{{BOOK_1_BUNDLE_PRICE|44.99}}',
+                gumroadId: '{{BOOK_1_GUMROAD_ID|demo}}',
+                luluUrl: '{{BOOK_1_LULU_URL|https://www.lulu.com/shop/your-book}}'
+            },
+            book2: {
+                title: '{{BOOK_2_TITLE|Scale Your Business}}',
+                author: '{{BOOK_2_AUTHOR|Sarah Johnson}}',
+                description: '{{BOOK_2_LONG_DESC|Learn the proven strategies that have helped hundreds of entrepreneurs scale their businesses to 7 figures and beyond. This practical guide gives you the exact playbook for exponential growth.}}',
+                cover: '{{BOOK_2_COVER|images/book-2-cover.jpg}}',
+                digitalPrice: '{{BOOK_2_PRICE|24.99}}',
+                hardcoverPrice: '{{BOOK_2_HARDCOVER_PRICE|39.99}}',
+                bundlePrice: '{{BOOK_2_BUNDLE_PRICE|54.99}}',
+                gumroadId: '{{BOOK_2_GUMROAD_ID|demo2}}',
+                luluUrl: '{{BOOK_2_LULU_URL|https://www.lulu.com/shop/your-book2}}'
+            }
+        };
+
+        let currentBook = null;
+
+        function openBookModal(bookId) {
+            currentBook = books[bookId];
+            document.getElementById('modalBookTitle').textContent = currentBook.title;
+            document.getElementById('modalBookAuthor').textContent = currentBook.author;
+            document.getElementById('modalBookDescription').textContent = currentBook.description;
+            document.getElementById('modalBookCover').src = currentBook.cover;
+            document.getElementById('bookModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookModal() {
+            document.getElementById('bookModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            currentBook = null;
+        }
+
+        function filterBooks(category) {
+            const books = document.querySelectorAll('.book-card');
+            books.forEach(book => {
+                if (category === 'all' || book.dataset.category === category) {
+                    book.style.display = 'block';
+                } else {
+                    book.style.display = 'none';
+                }
+            });
+        }
+
+        function addToCart() {
+            const selectedFormat = document.querySelector('input[name="format"]:checked').value;
+            alert(`Added to cart: ${currentBook.title} (${selectedFormat} format)`);
+            // Implement actual cart functionality
+        }
+
+        function buyNow() {
+            const selectedFormat = document.querySelector('input[name="format"]:checked').value;
+            
+            if (selectedFormat === 'digital') {
+                // Gumroad checkout
+                Gumroad.openOverlay(currentBook.gumroadId);
+            } else if (selectedFormat === 'hardcover') {
+                // Redirect to Lulu
+                window.open(currentBook.luluUrl, '_blank');
+            } else {
+                // Bundle - you might want to create a special Gumroad product for this
+                alert('Bundle checkout - implement based on your setup');
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('bookModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBookModal();
+            }
+        });
+    </script>
+</body>
+</html>

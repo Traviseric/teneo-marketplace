@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Teneo Books</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .success-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 3rem;
+            text-align: center;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #10b981;
+            animation: successPulse 0.5s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .processing {
+            display: none;
+            margin: 2rem 0;
+            color: var(--text-secondary);
+        }
+
+        .processing i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .order-details {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .order-details h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--hover-bg);
+        }
+        
+        .email-notification {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .success-container {
+                margin: 2rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <a href="/" style="color: var(--text-accent); text-decoration: none;">Teneo Books</a>
+            </h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">Browse</a>
+                <a href="#" class="nav-link">Categories</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="success-container">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1 class="success-title">Payment Successful!</h1>
+                <p class="success-message">
+                    Thank you for your purchase! Your order has been confirmed and you'll receive an email receipt shortly.
+                </p>
+                
+                <div class="email-notification">
+                    <i class="fas fa-envelope"></i> A confirmation email has been sent with your order details and download instructions.
+                </div>
+                
+                <div class="order-details" id="order-details">
+                    <h3>Order Summary</h3>
+                    <div class="order-item">
+                        <span>Order ID:</span>
+                        <span id="order-id">Loading...</span>
+                    </div>
+                    <div class="order-item">
+                        <span>Book:</span>
+                        <span id="book-title">Loading...</span>
+                    </div>
+                    <div class="order-item">
+                        <span>Amount:</span>
+                        <span id="amount">Loading...</span>
+                    </div>
+                    <div class="order-item">
+                        <span>Status:</span>
+                        <span style="color: #10b981;">✓ Completed</span>
+                    </div>
+                </div>
+                
+                <div class="processing" id="processing">
+                    <i class="fas fa-spinner"></i>
+                    <p>Preparing your downloads...</p>
+                </div>
+                
+                <div class="action-buttons" id="action-buttons" style="display: none;">
+                    <a href="#" class="btn btn-primary" id="download-btn">
+                        <i class="fas fa-download"></i>
+                        Download Your Books
+                    </a>
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Marketplace. Open source book trading platform.</p>
+                </div>
+                <div class="newsletter-signup">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest book releases and exclusive offers</p>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <input 
+                            type="email" 
+                            id="email-input"
+                            class="email-input" 
+                            placeholder="Enter your email" 
+                            required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        >
+                        <button type="submit" class="submit-btn">Subscribe</button>
+                    </form>
+                    <div id="newsletter-message" class="newsletter-message"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/delivery.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/newsletter.js"></script>
+    <script>
+        // Parse session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        // Load order details
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!sessionId) {
+                showError('Invalid payment session');
+                return;
+            }
+
+            // Show processing state
+            document.getElementById('processing').style.display = 'block';
+
+            // Simulate processing delay
+            setTimeout(() => {
+                processSuccessfulPayment(sessionId);
+            }, 2000);
+        });
+
+        function processSuccessfulPayment(sessionId) {
+            if (!window.delivery) {
+                showError('Delivery system not available');
+                return;
+            }
+
+            try {
+                // Handle the successful payment
+                const orderId = window.delivery.handleStripeSuccess(sessionId);
+                
+                // Update UI
+                document.getElementById('order-id').textContent = orderId;
+                document.getElementById('processing').style.display = 'none';
+                document.getElementById('action-buttons').style.display = 'flex';
+                
+                // Update download button
+                const downloadBtn = document.getElementById('download-btn');
+                downloadBtn.href = `/downloads.html?order=${orderId}`;
+                
+                // Clear cart
+                if (window.cart) {
+                    window.cart.clearCart(false); // Don't show confirmation
+                }
+                
+                // Update order details with actual data
+                if (window.cart && window.cart.cart.length > 0) {
+                    const items = window.cart.cart;
+                    document.getElementById('book-title').textContent = items.map(item => item.title).join(', ');
+                    document.getElementById('amount').textContent = `$${window.cart.getCartTotal().toFixed(2)}`;
+                } else {
+                    document.getElementById('book-title').textContent = 'Your Books';
+                    document.getElementById('amount').textContent = 'Paid';
+                }
+                
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                showError('There was an error processing your order. Please contact support.');
+            }
+        }
+
+        function showError(message) {
+            const container = document.querySelector('.success-container');
+            container.innerHTML = `
+                <div class="success-icon" style="color: #ef4444;">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h1 class="success-title">Payment Error</h1>
+                <p class="success-message">${message}</p>
+                <br>
+                <div class="action-buttons">
+                    <a href="/" class="btn btn-primary">Return Home</a>
+                </div>
+            `;
+        }
+        
+        // Optional: Fetch real order details from Stripe
+        async function fetchOrderDetails(sessionId) {
+            try {
+                // This would call your backend to retrieve session details
+                const response = await fetch(`/api/checkout-session/${sessionId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('book-title').textContent = data.bookTitle || 'Book purchase';
+                    document.getElementById('amount').textContent = `$${data.amount || '0.00'}`;
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+            }
+        }
+    </script>
+</body>
+</html>

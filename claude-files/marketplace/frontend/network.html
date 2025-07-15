@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Discovery - Teneo Book Network</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Network Page Specific Styles */
+        .network-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .network-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .network-hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent-color);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .network-search-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .network-search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .network-search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .network-search-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .network-search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .results-section {
+            margin-bottom: 3rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .store-results {
+            margin-bottom: 3rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .store-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .store-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .store-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .store-badge {
+            background: var(--accent-color);
+            color: var(--bg-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .store-badge.verified {
+            background: #10b981;
+        }
+
+        .store-badge.offline {
+            background: #ef4444;
+        }
+
+        .visit-store-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .visit-store-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent-color);
+        }
+
+        .network-books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .network-book-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .network-book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent-color);
+        }
+
+        .network-store-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .network-store-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .network-store-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent-color);
+        }
+
+        .store-specialties {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .specialty-tag {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+            border: 1px solid #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .network-hero h1 {
+                font-size: 2rem;
+            }
+
+            .network-search-form {
+                flex-direction: column;
+            }
+
+            .network-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Teneo Network</h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">Local Store</a>
+                <a href="/network.html" class="nav-link active">Network Search</a>
+                <a href="#join" class="nav-link">Join Network</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Network Hero -->
+        <section class="network-hero">
+            <div class="container">
+                <h1>Teneo Book Network</h1>
+                <p>Search across all decentralized bookstores in the uncensorable network</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- Network Statistics -->
+            <div class="network-stats" id="network-stats">
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Network Stores</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Active Stores</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search the Network</h2>
+                <form id="network-search-form" class="network-search-form">
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        class="network-search-input" 
+                        placeholder="Search for books across all stores..."
+                        required
+                    >
+                    <button type="submit" class="network-search-btn">
+                        <i class="fas fa-search"></i>
+                        Search Network
+                    </button>
+                </form>
+                <div class="search-filters">
+                    <select id="category-filter" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="AI & Consciousness">AI & Consciousness</option>
+                        <option value="Hidden Patterns">Hidden Patterns</option>
+                        <option value="Alternative History">Alternative History</option>
+                        <option value="Investment Strategy">Investment Strategy</option>
+                    </select>
+                    <select id="price-filter" class="filter-select">
+                        <option value="">Any Price</option>
+                        <option value="25">Under $25</option>
+                        <option value="50">Under $50</option>
+                        <option value="100">Under $100</option>
+                    </select>
+                </div>
+                
+                <!-- Demo Search Suggestions -->
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
+                    <p style="margin-bottom: 0.5rem; font-weight: 600;">🔍 Try these cross-network searches:</p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button onclick="demoSearch('hidden')" class="filter-select" style="cursor: pointer;">
+                            "hidden" - Teneo + True Earth
+                        </button>
+                        <button onclick="demoSearch('wealth')" class="filter-select" style="cursor: pointer;">
+                            "wealth" - WealthWise + Teneo
+                        </button>
+                        <button onclick="demoSearch('elite')" class="filter-select" style="cursor: pointer;">
+                            "elite" - All stores
+                        </button>
+                        <button onclick="demoSearch('consciousness')" class="filter-select" style="cursor: pointer;">
+                            "consciousness" - Teneo + True Earth
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Results -->
+            <section id="results-section" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>Search Results</h2>
+                    <span class="results-count" id="results-count"></span>
+                </div>
+                <div id="search-results"></div>
+            </section>
+
+            <!-- Network Explorer -->
+            <section class="network-stores" style="margin-bottom: 3rem;">
+                <h2>Network Explorer</h2>
+                
+                <!-- Network Connections Visualization -->
+                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 1.5rem;">Cross-Store Connections</h3>
+                    <div id="network-connections" style="display: grid; gap: 1rem;">
+                        <!-- Connections will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Network Insights -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7C3AED; border-radius: 8px; padding: 1.5rem;">
+                        <h4 style="color: #7C3AED; margin-bottom: 0.5rem;">Popular Cross-Network Paths</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                            "Tartaria Unveiled" readers → "Simulation Theory Decoded"<br>
+                            "Wealth Transfer Code" readers → "The Pattern Code"<br>
+                            "Consciousness Revolution" → Both stores!
+                        </p>
+                    </div>
+                    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 1.5rem;">
+                        <h4 style="color: #FFD700; margin-bottom: 0.5rem;">Network Savings</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                            Average bundle discount: 60%<br>
+                            Cross-store collections: Coming soon<br>
+                            Network exclusive deals: 40% off
+                        </p>
+                    </div>
+                    <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; border-radius: 8px; padding: 1.5rem;">
+                        <h4 style="color: #d4af37; margin-bottom: 0.5rem;">Discovery Insights</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                            Pattern seekers visit 3 stores<br>
+                            Truth seekers explore all networks<br>
+                            Elite readers cross boundaries
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Network Stores</h3>
+                <div id="network-store-list" class="network-store-list">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading network stores...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Join Network Section -->
+            <section id="join" class="search-section" style="margin-top: 3rem;">
+                <h2>Join the Network</h2>
+                <p>Connect your bookstore to the decentralized Teneo Network and reach readers worldwide.</p>
+                <button onclick="showJoinForm()" class="network-search-btn" style="margin-top: 1rem;">
+                    <i class="fas fa-plus-circle"></i>
+                    Register Your Store
+                </button>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Teneo Network. Building the uncensorable book marketplace.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/network-client.js"></script>
+    <script>
+        // Network page functionality
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeNetworkPage();
+        });
+
+        async function initializeNetworkPage() {
+            // Load network statistics
+            await loadNetworkStats();
+            
+            // Load network stores
+            await loadNetworkStores();
+            
+            // Set up search form
+            const searchForm = document.getElementById('network-search-form');
+            searchForm.addEventListener('submit', handleNetworkSearch);
+        }
+
+        async function loadNetworkStats() {
+            try {
+                // Use registry stats for accurate counts
+                const registry = networkClient.networkStores;
+                const registryStats = networkClient.registryData?.networkStats || {};
+                
+                // Update stat cards with real network data
+                const statCards = document.querySelectorAll('.stat-value');
+                statCards[0].textContent = registryStats.totalStores || 3;
+                statCards[1].textContent = registryStats.totalBooks || 18;
+                statCards[2].textContent = registryStats.activeStores || 3;
+                statCards[3].textContent = registryStats.totalCategories || 9;
+                
+                // Load network connections visualization
+                loadNetworkConnections();
+                
+            } catch (error) {
+                console.error('Error loading network stats:', error);
+            }
+        }
+
+        async function loadNetworkStores() {
+            const container = document.getElementById('network-store-list');
+            
+            try {
+                await networkClient.loadNetworkRegistry();
+                const stores = networkClient.networkStores;
+                
+                if (stores.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-store-slash"></i>
+                            <p>No network stores available yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = stores.map(store => createStoreCard(store)).join('');
+                
+            } catch (error) {
+                console.error('Error loading network stores:', error);
+                container.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Failed to load network stores</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createStoreCard(store) {
+            const isVerified = store.verified;
+            const isFeatured = store.featured;
+            
+            return `
+                <div class="network-store-card" style="border-color: ${store.color || 'var(--border-color)'};">
+                    <div class="store-header">
+                        <div class="store-info">
+                            <h3 class="store-name" style="color: ${store.color || 'var(--text-primary)'};">${store.name}</h3>
+                            ${isVerified ? '<span class="store-badge verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                            ${isFeatured ? '<span class="store-badge" style="background: #7C3AED;">Featured</span>' : ''}
+                        </div>
+                    </div>
+                    <p>${store.tagline || 'A member of the Teneo Book Network'}</p>
+                    <div class="store-specialties">
+                        ${(store.specialties || []).map(spec => 
+                            `<span class="specialty-tag">${spec}</span>`
+                        ).join('')}
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">
+                            <i class="fas fa-calendar"></i> Joined ${new Date(store.joined).toLocaleDateString()}
+                        </span>
+                        <a href="${store.url}" class="visit-store-btn">
+                            <i class="fas fa-store"></i>
+                            Visit Store
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleNetworkSearch(e) {
+            e.preventDefault();
+            
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+            
+            const category = document.getElementById('category-filter').value;
+            const maxPrice = document.getElementById('price-filter').value;
+            
+            const resultsSection = document.getElementById('results-section');
+            const resultsContainer = document.getElementById('search-results');
+            const resultsCount = document.getElementById('results-count');
+            
+            // Show loading state
+            resultsSection.style.display = 'block';
+            resultsContainer.innerHTML = `
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner"></i>
+                    <p>Searching across the network...</p>
+                </div>
+            `;
+            
+            try {
+                // Search the network
+                const results = await networkClient.searchNetwork(query, {
+                    category,
+                    maxPrice: maxPrice ? Number(maxPrice) : null
+                });
+                
+                // Update results count
+                resultsCount.textContent = `${results.totalResults} results from ${results.stores.length} stores`;
+                
+                // Display results by store
+                if (results.totalResults === 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <p>No results found for "${query}"</p>
+                        </div>
+                    `;
+                } else {
+                    resultsContainer.innerHTML = results.stores
+                        .filter(store => store.resultCount > 0)
+                        .map(store => createStoreResults(store, query))
+                        .join('');
+                }
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsContainer.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Search failed. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createStoreResults(store, query) {
+            return `
+                <div class="store-results">
+                    <div class="store-header">
+                        <div class="store-info">
+                            <span class="store-name">${store.name}</span>
+                            <span class="results-count">${store.resultCount} results</span>
+                        </div>
+                        <a href="${store.url}" target="_blank" class="visit-store-btn">
+                            <i class="fas fa-store"></i>
+                            Visit Store
+                        </a>
+                    </div>
+                    <div class="network-books-grid">
+                        ${store.results.slice(0, 3).map(book => createBookResult(book, store)).join('')}
+                    </div>
+                    ${store.resultCount > 3 ? `
+                        <p style="text-align: center; margin-top: 1rem;">
+                            <a href="${store.url}/search?q=${encodeURIComponent(query)}" target="_blank" style="color: var(--accent-color);">
+                                View all ${store.resultCount} results at ${store.name} →
+                            </a>
+                        </p>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function createBookResult(book, store) {
+            const price = networkClient.formatNetworkPrice(book.price);
+            
+            return `
+                <div class="network-book-card">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">${book.title}</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">by ${book.author}</p>
+                    <p style="font-size: 0.85rem; margin-bottom: 1rem;">${book.description}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">${price}</span>
+                        <a href="${store.url}/?brand=${book.brand || 'default'}" 
+                           target="_blank" 
+                           style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
+                            View Book →
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showJoinForm() {
+            // In production, this would show a registration form
+            alert('Network registration coming soon! For now, contact network@teneo.ai to join.');
+        }
+
+        // Demo search function
+        function demoSearch(query) {
+            document.getElementById('search-input').value = query;
+            document.getElementById('network-search-form').dispatchEvent(new Event('submit'));
+        }
+
+        // Load network connections visualization
+        function loadNetworkConnections() {
+            const container = document.getElementById('network-connections');
+            
+            if (networkClient.registryData && networkClient.registryData.connections) {
+                const connections = networkClient.registryData.connections;
+                
+                container.innerHTML = connections.map(conn => {
+                    const fromStore = networkClient.networkStores.find(s => s.id === conn.from);
+                    const toStore = networkClient.networkStores.find(s => s.id === conn.to);
+                    
+                    if (!fromStore || !toStore) return '';
+                    
+                    const connectionStrength = Math.round(conn.strength * 100);
+                    const arrowStyle = `opacity: ${conn.strength}; color: var(--text-secondary);`;
+                    
+                    return `
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px; position: relative;">
+                            <span style="color: ${fromStore.color}; font-weight: 600;">${fromStore.name.split(' ')[0]}</span>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <span style="${arrowStyle}">→</span>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">${conn.type}</span>
+                                <span style="${arrowStyle}">→</span>
+                            </div>
+                            <span style="color: ${toStore.color}; font-weight: 600;">${toStore.name.split(' ')[0]}</span>
+                            <div style="position: absolute; bottom: -0.5rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: var(--text-secondary); background: var(--bg-secondary); padding: 0 0.5rem; border-radius: 10px;">
+                                ${connectionStrength}% match
+                            </div>
+                        </div>
+                    `;
+                }).filter(html => html).join('');
+                
+                // Add tooltip with descriptions
+                container.innerHTML += `
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(88, 166, 255, 0.05); border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary);">
+                        <strong>Connection Types:</strong><br>
+                        • <strong>consciousness:</strong> Truth seekers exploring consciousness revelations<br>
+                        • <strong>patterns:</strong> Pattern recognition in markets and reality<br>
+                        • <strong>hidden-knowledge:</strong> AI revealing suppressed information
+                    </div>
+                `;
+            } else {
+                // Fallback static visualization
+                container.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+                        <span style="color: #d4af37;">True Earth</span>
+                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ consciousness exploration →</span>
+                        <span style="color: #7C3AED;">Teneo</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+                        <span style="color: #FFD700;">WealthWise</span>
+                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ pattern recognition →</span>
+                        <span style="color: #7C3AED;">Teneo</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+                        <span style="color: #7C3AED;">Teneo</span>
+                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ hidden knowledge →</span>
+                        <span style="color: #d4af37;">True Earth</span>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
