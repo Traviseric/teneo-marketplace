@@ -40,12 +40,4 @@
     "email": "support@teneo.ai",
     "discord": "https://discord.gg/teneoai"
   },
-  "network_enabled": false,
-  "share_catalog": false,
-  "accept_referrals": false,
-  "referral_percentage": 0,
-  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvEvVYlzSkbeitLc/Efqu\nmmRFdzRLriqBahfGAFnuq26X4vFOcfccxfKdIDRmeSIaxjh/mm3XzwgNBUMKBxZK\njA0G6ToedAm+QftMV9PwZixOvN91vbMjuSUzrfG8YW6ex9zpykF7xQLT/34BaKOW\n9DafMfx7E19v3lttbzzAlneKbC9eAz7LR2CqCabK5c9nNH631iBexBTpbcbFINk3\n6eh7kWnqis5lLfmJfEqLVC2Yjleu/6xhXm9br5ycAN44qnyVSwWYUaEVWpvm0CS3\nGGXi7U117/wBSVUvyjNOKI0xuaDTC0kDyQeNiiIpkxZGHAaZtvl8TuX5r3E3rJ+H\nqwIDAQAB\n-----END PUBLIC KEY-----\n",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8S9ViXNKRt6K0\ntz8R+q6aZEV3NEuuKoFqF8YAWe6rbpfi8U5x9xzF8p0gNGZ5IhrGOH+abdfPCA0F\nQwoHFkqMDQbpOh50Cb5B+0xX0/BmLE6833W9syO5JTOt8bxhbp7H3OnKQXvFAtP/\nfgFoo5b0Np8x/HsTX2/eW21vPMCWd4psL14DPstHYKoJpsrlz2c0frfWIF7EFOlt\nxsUg2Tfp6HuRaeqKzmUt+Yl8SotULZiOV67/rGFeb1uvnJwA3jiqfJVLBZhRoRVa\nm+bQJLcYZeLtTXXv/AFJVS/KM04ojTG5oNMLSQPJB42KIimTFkYcBpm2+XxO5fmv\ncTesn4erAgMBAAECggEADMwClorEbM7UKgACM1CcKTYDWpSdSBrvbKxs8n0qMVB0\n1iGcOTaYKAPTFes5w6XDuBEC6xXoAtQDPoZN2ilzq4z/GT6v7ybyXT2c9KMcxXTh\nbQiq0deo595VYs75BI4mEGM9KFfG9563lbeUlO35RmOn8he8rZZg3fXMvDCezhr3\nsKUQekDc4D4qtfI8a3PlPeMjinRKqT+jK+mJMRyRy5qTFBvT+z67pS6EmudzXjlT\niUn/eXEC7u8eJXEJtgnDyP5Z3MS/tF3cuOYOFhhTu+f5ClAf2tz9omZppFuSX/V+\nAV3N0WmE5f/ia5LWsSU+ckS5TbMsFZLLBIOPUvY/UQKBgQD1R1AKVOEHY4Q10Dhs\n9pPnbuEDhIM9rPpVA6Fy2dc9ZPNdjpcN3YPd09+gDQ4hv35l5peR4k2c4hxk7Rc4\nhJXvqF92d9kUDKqRxLPjAEgWZ4Z8JPJ/082rc5OLYJbuPUmpSxEP9Q8bL7tEQeN/\nOkHZfbimivjc3DFHBFFLvIBzBQKBgQDEhuJASxW9Y6D39CzSoSlL8NEBlyt94jVW\n8NRyMnHj+ohyk7okWIeh6TVIazWdVAp79bcagMbHP2Vowsw/ju9SZAu2nP732QwQ\nA6RARL6/8dZ+6APuskLErz6X9A8rpHXiY/8ywEeR87iMN0Y8rtF1f24L3MXHhhUc\nAU5fNKhu7wKBgQDtH5ozwsciG4VvePNz9BYdAcarXep7L8V7dt0YaZ16jyPv6LAE\nCYk4ZWKmGrj0y2ppHTqfIIckCjylHcj7LMK/RKm1oDvO9EfaUK4P4O/QKRmM3zNJ\nfPwyqrOTZTfE7p9N+XJvWNzXzZdfb8t97lZG6xIef/ADpSRGodfuPjh3+QKBgA4T\ncyUTu6zi8+aOkJ9Nd72+s9mfUDgl+ZgOi8jaIBoqGZfLSOvNg3lvUKetNhvcpxuV\nz9WQH6ypt8O3IBX1UOLf047y07hAzYJgIGWSBu+MjMZuK8nu7qVTv/H2QxfnIaJj\ncyXZa8biY/d3BgrWop390I389BWEXwKwfUKIbP/1AoGAHvacl8Jwd7mxWSQjnots\nOACS4ctlUsqQUBYwa4TcIYNDYU+F6cU3GkB4frHb9hdsHiUHQUd+KaS02yCt0VXR\nuiWXfuqkivXQ2d8H9d3/2St7AkEWvodBk/3hmb3V/FzV112e9wgu6z9V7fpPlAKT\nRNF98iykCDC5rsbUrxmBbQA=\n-----END PRIVATE KEY-----\n",
-  "network_peers": [],
-  "trusted_stores": []
 }
