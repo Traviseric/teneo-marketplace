@@ -1,0 +1,91 @@
+{
+  "name": "Advanced Bookstore Example",
+  "description": "Full-featured bookstore with all capabilities enabled",
+  "features": {
+    "payments": true,
+    "email_notifications": true,
+    "previews": true,
+    "analytics": true,
+    "federation": true,
+    "reviews": true,
+    "wishlists": true,
+    "author_profiles": true,
+    "book_bundles": true,
+    "discount_codes": true,
+    "affiliate_program": true,
+    "multi_language": true,
+    "advanced_search": true
+  },
+  "branding": {
+    "store_name": "Premium Book Market",
+    "tagline": "Discover Amazing Books from Independent Authors",
+    "primary_color": "#4F46E5",
+    "secondary_color": "#7C3AED",
+    "logo": "assets/logo.svg",
+    "favicon": "assets/favicon.ico",
+    "social": {
+      "twitter": "@premiumbookmarket",
+      "facebook": "premiumbookmarket",
+      "instagram": "premiumbookmarket"
+    }
+  },
+  "stripe": {
+    "mode": "live",
+    "currency": "USD",
+    "supported_currencies": ["USD", "EUR", "GBP", "CAD", "AUD"],
+    "payment_methods": ["card", "apple_pay", "google_pay", "link"],
+    "tax_collection": true
+  },
+  "email": {
+    "provider": "sendgrid",
+    "templates": {
+      "purchase_confirmation": "d-abc123",
+      "author_welcome": "d-def456",
+      "weekly_digest": "d-ghi789"
+    },
+    "lists": {
+      "newsletter": true,
+      "new_releases": true,
+      "author_updates": true
+    }
+  },
+  "analytics": {
+    "google_analytics": "G-XXXXXXXXXX",
+    "facebook_pixel": "XXXXXXXXXXXXXXX",
+    "custom_events": true
+  },
+  "federation": {
+    "enabled": true,
+    "share_catalog": true,
+    "accept_network_books": true,
+    "commission_rate": 0.10,
+    "quality_threshold": "high"
+  },
+  "storage": {
+    "provider": "s3",
+    "cdn_enabled": true,
+    "image_optimization": true
+  },
+  "security": {
+    "two_factor_auth": true,
+    "ip_whitelist": [],
+    "rate_limiting": {
+      "api": 1000,
+      "downloads": 100
+    }
+  },
+  "localization": {
+    "default_language": "en",
+    "supported_languages": ["en", "es", "fr", "de", "pt", "ja"],
+    "auto_translate": true
+  },
+  "advanced": {
+    "api_access": true,
+    "webhooks": true,
+    "custom_domains": true,
+    "white_label": true,
+    "bulk_operations": true,
+    "scheduled_releases": true,
+    "pre_orders": true
+  }
+}

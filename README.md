@@ -1,326 +1,211 @@
-# 🧠 Teneo Marketplace - The Uncensorable Book Network
+# 📚 Open Book Marketplace - Self-Hosted Digital Bookstore
 
-> Build your own federated bookstore in 10 minutes
-
-🔗 **Live Repository**: [github.com/Traviseric/teneo-marketplace](https://github.com/Traviseric/teneo-marketplace)
+> Build your own digital bookstore with print-on-demand support in 10 minutes
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Federated](https://img.shields.io/badge/Network-Federated-purple)](https://github.com/Traviseric/teneo-marketplace)
-[![Deploy Status](https://img.shields.io/badge/Deploy-Live-brightgreen)](https://github.com/Traviseric/teneo-marketplace/blob/main/DEPLOYMENT_STATUS.md)
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Traviseric/teneo-marketplace/main/docs/images/banner.png" alt="Teneo Marketplace Banner" width="800">
-</p>
-
-## 📌 Project Status: Alpha Release
-
-**Current Version**: v0.5.0-alpha | **Status**: Working Marketplace | **Next**: Production Features
-
-| Feature | Status | Available Now | Notes |
-|---------|--------|--------------|-------|
-| 🛍️ **Core Marketplace** | ✅ Complete | Yes | Full shopping experience with cart |
-| 🎨 **Brand Builder** | ✅ Complete | Yes | `/setup-wizard` - Create custom stores |
-| 📚 **Book Manager** | ✅ Complete | Yes | `/manage-books.html` - Full CRUD with auth |
-| 💳 **Stripe Checkout** | ✅ Complete | Yes | Test mode ready, production keys needed |
-| 📦 **ZIP Generator** | ✅ Complete | Yes | Download complete marketplace |
-| 🔐 **Admin Panel** | ✅ Complete | Yes | Password protected book management |
-| 📊 **CSV Import** | ✅ Complete | Yes | Bulk book uploads |
-| 🌐 **Multi-Brand** | ✅ Complete | Yes | `?brand=teneo` URL switching |
-| 💾 **Backup System** | ✅ Complete | Yes | Auto-backups with restore |
-| 📧 **Email System** | 🔄 In Progress | Q1 2025 | Order confirmations |
-| 📥 **Digital Delivery** | 🔄 In Progress | Q1 2025 | Secure PDF downloads |
-| 🌍 **Federation** | 📅 Planned | Q2 2025 | Network protocol |
-| 🔍 **Network Search** | 📅 Planned | Q2 2025 | Cross-store discovery |
-| 📊 **Analytics** | 📅 Planned | Q3 2025 | Sales tracking |
 
 ## 🚀 Quick Start
 
 ```bash
 # Clone the repository
 git clone https://github.com/Traviseric/teneo-marketplace
-cd teneo-marketplace
+cd book-marketplace
 
-# Install and start
+# Install dependencies
+cd marketplace/backend
 npm install
+
+# Configure your store
+cp .env.example .env
+# Edit .env with your settings
+
+# Start the server
 npm start
 
 # Open http://localhost:3001
 ```
 
-That's it! Your bookstore is running. Start selling in minutes, not months.
-
-## 🎯 What's Working Right Now
-
-Visit these pages after running `npm start`:
-
-| Tool | URL | Purpose |
-|------|-----|---------|
-| 🛍️ **Live Store** | http://localhost:3001 | Browse and buy books |
-| 🎨 **Brand Builder** | http://localhost:3001/setup-wizard | Create your custom marketplace |
-| 📚 **Book Manager** | http://localhost:3001/manage-books.html | Add/edit books (password: admin123) |
-| 🚀 **Quick Start** | http://localhost:3001/START-HERE.html | Visual guide to get started |
-| 🛒 **Shopping Cart** | http://localhost:3001/cart.html | Review purchases |
-| 💳 **Checkout** | Via Stripe integration | Secure payments |
-
-## 🌐 Current Architecture
-
-| Component | Status | Technology | Notes |
-|-----------|--------|------------|-------|
-| 📚 **Frontend** | ✅ Alpha | Vanilla JS, CSS | No framework dependencies |
-| ⚙️ **Backend** | ✅ Alpha | Node.js, Express | RESTful API |
-| 💾 **Database** | ✅ Alpha | JSON files | Simple, portable |
-| 🔐 **Auth** | ✅ Alpha | Basic Auth | Admin panel protection |
-| 💳 **Payments** | ✅ Alpha | Stripe Checkout | Test mode configured |
-| 📦 **Storage** | ✅ Alpha | Local filesystem | Books and configs |
-
-> **Note**: Federation features planned for Q2 2025
-
-## 👩‍💻 For Developers (Quick Start)
-
-```bash
-# Clone and setup
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
-
-# Copy environment template
-cp .env.example marketplace/backend/.env
-
-# Install and start
-npm install
-npm start
-
-# Configure for production
-npm run setup:wizard    # Interactive setup
-npm run pre-launch     # Verify everything works
-npm run generate:pdfs  # Create sample books
-```
-
-**Development URLs:**
-- Main store: http://localhost:3001
-- Network search: http://localhost:3001/network.html  
-- Launch kit: http://localhost:3001/launch.html
-- Store showcase: http://localhost:3001/showcase.html
+Your bookstore is now running! 🎉
 
 ## ✨ Features
 
-### For Store Owners
-- **💳 Instant Payments** - Stripe integration ready out of the box
-- **📚 Digital Delivery** - Automatic PDF delivery with download protection
-- **🎨 Multi-Brand Support** - Run multiple storefronts from one codebase
-- **📧 Email Automation** - Order confirmations and download links
-- **📊 Built-in Analytics** - Track sales, downloads, and customer behavior
-- **🔒 Secure by Default** - Token-based downloads, webhook verification
+### Core Features (Available Now)
+- 🛍️ **Full E-commerce Experience** - Shopping cart, checkout, order management
+- 💳 **Stripe Integration** - Secure payment processing
+- 📚 **Digital Downloads** - Automated PDF delivery with secure tokens
+- 🖨️ **Print-on-Demand** - Lulu.com integration for physical books
+- 🔐 **Admin Dashboard** - Manage books, orders, and settings
+- 📧 **Email Notifications** - Order confirmations and download links
+- 🎨 **White-Label Ready** - Fully customizable branding
+- 📱 **Mobile Responsive** - Works on all devices
 
-### For the Network
-- **🌐 Federated Architecture** - Connect with other bookstores
-- **🔍 Cross-Store Search** - Customers discover books across the network
-- **🤝 Shared Discovery** - Increase sales through network effects
-- **🚫 Uncensorable** - No central authority can take down the network
-- **💰 Keep 100% Revenue** - No middleman fees, direct creator-to-reader
+### Security Features
+- 🔒 **Secure Authentication** - bcrypt password hashing, session management
+- 🛡️ **CSRF Protection** - Prevents cross-site request forgery
+- ⚡ **Rate Limiting** - Protects against brute force attacks
+- 📋 **Audit Trail** - Logs all admin actions
 
-### For Developers
-- **📦 Batteries Included** - Everything you need in one package
-- **🛠 Easy Customization** - Clean code structure, well documented
-- **🐳 Docker Ready** - One-command deployment
-- **⚡ Modern Stack** - Node.js, Express, SQLite, Vanilla JS
-- **🧪 Production Tested** - Running live stores since 2024
+### Coming Soon
+- 🌐 **Federation Support** - Connect multiple marketplaces
+- 🔍 **Network Search** - Discover books across federated stores
+- 📊 **Advanced Analytics** - Sales tracking and insights
 
-## 🏪 Demo Stores
+## 🛠️ Configuration
 
-Experience the three included brand examples:
+### Environment Variables
 
-### [Teneo Books](http://localhost:3001/?brand=teneo) - Knowledge Beyond Boundaries™
-AI consciousness, paradigm shifts, and hidden patterns
+Create a `.env` file in `marketplace/backend/` with:
 
-### [True Earth Publications](http://localhost:3001/?brand=true-earth) - Uncovering Hidden Truths
-Alternative history, suppressed knowledge, forbidden archaeology
+```env
+# Server Configuration
+PORT=3001
+NODE_ENV=development
 
-### [WealthWise](http://localhost:3001/?brand=wealth-wise) - Insider Knowledge. Real Wealth.™
-Elite financial strategies, wealth building, tax optimization
+# Branding (Customize these!)
+MARKETPLACE_NAME=My Book Store
+MARKETPLACE_TAGLINE=Great Books, Great Prices
+MARKETPLACE_DESCRIPTION=Your favorite digital bookstore
+SUPPORT_EMAIL=support@yourdomain.com
+PUBLIC_URL=https://yourdomain.com
 
-## 📖 Documentation
+# Admin Security
+ADMIN_PASSWORD_HASH=your-bcrypt-hash-here
+SESSION_SECRET=your-random-64-char-string
 
-| Guide | Description |
-|-------|------------|
-| [🚀 Quick Start](docs/QUICKSTART.md) | Get running in 10 minutes |
-| [💰 Selling Books](docs/SELLING_BOOKS.md) | Add products and process payments |
-| [🎨 Customization](docs/CUSTOMIZATION.md) | Create your own brand |
-| [🌐 Join Network](docs/JOIN_NETWORK.md) | Connect to other stores |
-| [🔧 Production](PRODUCTION_SETUP.md) | Deploy to the internet |
-| [📚 API Reference](docs/API.md) | Complete API documentation |
+# Stripe (Get keys from https://stripe.com)
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
 
-## 🛠 Tech Stack
+# Email (Gmail example)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
 
-- **Backend**: Node.js, Express.js
-- **Database**: SQLite (upgradeable to PostgreSQL)
-- **Payments**: Stripe Checkout
-- **Email**: Nodemailer (Gmail, SendGrid, SMTP)
-- **Frontend**: Vanilla JavaScript, CSS Grid
-- **PDFs**: PDFKit for generation
+# Optional: Lulu Print-on-Demand
+LULU_CLIENT_KEY=your-lulu-key
+LULU_CLIENT_SECRET=your-lulu-secret
+```
+
+### Generate Admin Password
+
+```bash
+cd marketplace/backend
+node scripts/generate-password-hash.js --generate
+# Or use your own password:
+node scripts/generate-password-hash.js "YourSecurePassword123!"
+```
 
 ## 📁 Project Structure
 
 ```
-teneo-marketplace/
-├── marketplace/
-│   ├── frontend/           # Static frontend files
-│   │   ├── brands/        # Brand configurations
-│   │   ├── books/         # PDF storage
-│   │   ├── js/           # JavaScript modules
-│   │   └── index.html    # Main entry point
-│   └── backend/           # Node.js server
-│       ├── routes/        # API endpoints
-│       ├── services/      # Business logic
-│       ├── database/      # SQLite database
-│       └── server.js      # Express server
-├── docs/                  # Documentation
-└── docker-compose.yml     # Docker configuration
+marketplace/
+├── backend/
+│   ├── server.js           # Express server
+│   ├── routes/             # API endpoints
+│   ├── services/           # Business logic
+│   ├── middleware/         # Auth & security
+│   └── database/           # SQLite database
+├── frontend/
+│   ├── index.html          # Main store page
+│   ├── admin.html          # Admin dashboard
+│   ├── js/                 # Frontend JavaScript
+│   └── css/                # Styles
+└── shared/
+    └── brands/             # Multi-brand support
 ```
 
-## 🌟 Why Teneo Marketplace?
+## 🎨 Customization
 
-### The Problem
-- Amazon takes 30-65% of book sales
-- Platforms can ban books and authors
-- Centralized control limits free speech
-- Authors struggle to connect with readers
+### Basic Branding
 
-### Our Solution
-- **Keep 100% of revenue** (minus payment processing)
-- **Own your platform** - No deplatforming risk
-- **Join a network** - Benefit from shared discovery
-- **Direct relationships** - Build your audience
+1. Update environment variables in `.env`
+2. Replace logo/favicon in `frontend/assets/`
+3. Customize colors in CSS variables
 
-## 🤝 Join the Network
+### Advanced Customization
 
-The Teneo Book Network is a growing federation of independent bookstores. When you join:
+- Modify email templates in `services/email-service.js`
+- Add custom pages in `frontend/`
+- Extend API endpoints in `routes/`
 
-- Your books appear in network-wide searches
-- Readers discover you through related stores  
-- You maintain complete autonomy
-- No fees, no gatekeepers
+## 🚀 Deployment
 
-[Learn how to join →](docs/JOIN_NETWORK.md)
-
-## 💡 Use Cases
-
-- **Independent Authors**: Sell directly to readers
-- **Niche Publishers**: Serve specific communities
-- **Banned Books**: Publish what others won't
-- **Regional Stores**: Focus on local authors
-- **Special Interests**: Academic, technical, hobby books
-- **Private Libraries**: Members-only content
-
-## 🚀 One-Click Deployment
-
-Launch your bookstore in minutes with these platforms:
-
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Traviseric/teneo-marketplace&project-name=my-bookstore&repository-name=teneo-marketplace&env=STRIPE_SECRET_KEY,STRIPE_PUBLISHABLE_KEY,EMAIL_USER,EMAIL_PASS&envDescription=Configure%20these%20for%20payments%20and%20email%20delivery&envLink=https://github.com/Traviseric/teneo-marketplace/blob/main/PRODUCTION_SETUP.md)
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Traviseric/teneo-marketplace)
-
-[![Deploy to Railway](https://railway.app/button.svg)](https://railway.app/template/tLkC2K?referralCode=teneo)
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Traviseric/teneo-marketplace)
-
-### 🧙‍♂️ Quick Setup Wizard
-
-After deployment, run the setup wizard to configure your store:
+### Development
 
 ```bash
-node deploy/setup-wizard.js
+npm start
+# Visit http://localhost:3001
 ```
 
-This interactive tool will:
-- Configure your store settings
-- Set up Stripe payments  
-- Configure email delivery
-- Test all connections
-- Generate your environment file
+### Production
 
-### Traditional Hosting
-- DigitalOcean Droplet
-- AWS EC2 / Lightsail  
-- Linode / Vultr
-- Any VPS with Node.js
+1. Set `NODE_ENV=production` in `.env`
+2. Use a process manager like PM2:
+   ```bash
+   npm install -g pm2
+   pm2 start server.js --name bookstore
+   ```
+3. Set up reverse proxy (nginx/Apache)
+4. Configure SSL certificate
+5. Set secure environment variables
 
-### Docker
-```bash
-docker-compose up -d
-```
+### Recommended Hosting
 
-## 📊 Performance
+- **VPS**: DigitalOcean, Linode, Vultr
+- **PaaS**: Heroku, Railway, Render
+- **Cloud**: AWS EC2, Google Cloud, Azure
 
-- **Page Load**: < 1 second
-- **Checkout Time**: < 3 seconds
-- **Download Speed**: Native browser speed
-- **Concurrent Users**: 1000+ on basic VPS
-- **Database Size**: Scales to millions of orders
+## 🔧 Admin Dashboard
 
-## 🔒 Security
+Access the admin dashboard at `/admin`
 
-- Stripe webhook signature verification
-- Token-based download authentication
-- SQL injection protection
-- XSS prevention
-- Rate limiting ready
-- HTTPS enforced in production
+Features:
+- 📚 Visual book manager with drag-and-drop
+- 📊 Sales analytics and order management
+- 🎨 Store settings and branding
+- 📧 Email template customization
+- 🌐 Network configuration (federation)
 
 ## 🤝 Contributing
 
-We love contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-### Areas we need help:
-- Frontend themes and templates
-- Payment gateway integrations
-- Language translations
-- Mobile responsive improvements
-- Federation protocol enhancements
+### Development Setup
 
-## 📜 License
+```bash
+# Fork and clone the repo
+git clone https://github.com/Traviseric/teneo-marketplace
+cd book-marketplace
 
-MIT License - see [LICENSE](LICENSE) for details.
+# Create a branch
+git checkout -b feature/your-feature
 
-You can:
-- Use commercially
-- Modify freely
-- Distribute
-- Use privately
+# Make changes and test
+npm test
+
+# Submit a pull request
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-Built with inspiration from:
-- The IndieWeb movement
-- Fediverse protocols
-- DWeb principles
-- Cypherpunk manifestos
+Built with:
+- Node.js & Express
+- Stripe for payments
+- Lulu for print-on-demand
+- SQLite for data storage
 
-## 💬 Community
+## 📞 Support
 
-- **Discord**: [Join our server](https://discord.gg/teneebooks)
-- **Twitter**: [@TeneoNetwork](https://twitter.com/teneonetwork)
-- **Email**: network@teneo.ai
-
-## 🎯 Roadmap
-
-- [ ] Mobile apps (React Native)
-- [ ] Cryptocurrency payments
-- [ ] IPFS book storage
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-- [ ] Print-on-demand integration
-- [ ] Audiobook support
-- [ ] Enhanced federation protocol
+- 📧 Email: support@yourdomain.com
+- 💬 Discord: [Join our community](#)
+- 📖 Docs: [Documentation](#)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/book-marketplace/issues)
 
 ---
 
-<p align="center">
-  <strong>Ready to start your uncensorable bookstore?</strong><br>
-  <a href="docs/QUICKSTART.md">Get Started →</a>
-</p>
-
-<p align="center">
-  Made with ❤️ by the Teneo Network Community
-</p>
+Made with ❤️ by the Open Source Community

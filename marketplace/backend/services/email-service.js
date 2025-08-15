@@ -11,7 +11,7 @@ const emailConfig = {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
-    from: process.env.EMAIL_FROM || 'Teneo Books <noreply@teneo.ai>'
+    from: `${process.env.EMAIL_FROM_NAME || process.env.MARKETPLACE_NAME || 'Book Marketplace'} <${process.env.EMAIL_FROM_ADDRESS || process.env.EMAIL_USER || 'noreply@example.com'}>`
 };
 
 // Create reusable transporter object
@@ -44,50 +44,22 @@ function initializeTransporter() {
     return transporter;
 }
 
-// Brand-specific email configurations
-const brandEmailConfig = {
-    'teneo': {
-        name: 'Teneo Books',
-        tagline: 'Knowledge Beyond Boundaries™',
-        primaryColor: '#7C3AED',
-        secondaryColor: '#6D28D9',
-        logo: '🧠',
-        supportEmail: 'support@teneo.ai'
-    },
-    'true-earth': {
-        name: 'True Earth Publications',
-        tagline: 'Uncovering Hidden Truths',
-        primaryColor: '#d4af37',
-        secondaryColor: '#b8941f',
-        logo: '🔍',
-        supportEmail: 'truth@true-earth.com'
-    },
-    'wealth-wise': {
-        name: 'WealthWise',
-        tagline: 'Insider Knowledge. Real Wealth.™',
-        primaryColor: '#FFD700',
-        secondaryColor: '#FFC700',
-        logo: '💰',
-        supportEmail: 'concierge@wealthwise.com'
-    },
-    'default': {
-        name: 'Teneo Books',
-        tagline: 'Books for the Curious Mind',
-        primaryColor: '#58A6FF',
-        secondaryColor: '#388BFD',
-        logo: '📚',
-        supportEmail: 'support@teneo.ai'
-    }
-};
-
-// Get brand configuration
-function getBrandConfig(brand = 'default') {
-    return brandEmailConfig[brand] || brandEmailConfig.default;
+// Get marketplace configuration
+function getMarketplaceConfig() {
+    return {
+        name: process.env.MARKETPLACE_NAME || 'Book Marketplace',
+        tagline: process.env.MARKETPLACE_TAGLINE || 'Your Digital Bookstore',
+        primaryColor: process.env.PRIMARY_COLOR || '#7C3AED',
+        secondaryColor: process.env.SECONDARY_COLOR || '#6D28D9',
+        logo: process.env.MARKETPLACE_LOGO || '📚',
+        supportEmail: process.env.SUPPORT_EMAIL || process.env.EMAIL_USER || 'support@example.com',
+        websiteUrl: process.env.PUBLIC_URL || 'http://localhost:3001'
+    };
 }
 
 // Create HTML email template
-function createEmailTemplate(brand, title, content) {
-    const config = getBrandConfig(brand);
+function createEmailTemplate(title, content) {
+    const config = getMarketplaceConfig();
     
     return `
 <!DOCTYPE html>
@@ -190,7 +162,7 @@ function createEmailTemplate(brand, title, content) {
             ${content}
         </div>
         <div class="footer">
-            <p>© ${new Date().getFullYear()} ${config.name}. All rights reserved.</p>
+            <p>© ${process.env.COPYRIGHT_YEAR || new Date().getFullYear()} ${process.env.COPYRIGHT_HOLDER || config.name}. All rights reserved.</p>
             <p>Questions? Contact us at <a href="mailto:${config.supportEmail}">${config.supportEmail}</a></p>
             <p style="font-size: 10px; color: #999;">
                 You received this email because you made a purchase at ${config.name}.
@@ -203,8 +175,7 @@ function createEmailTemplate(brand, title, content) {
 
 // Send order confirmation email
 async function sendOrderConfirmation(customerEmail, orderDetails) {
-    const brand = orderDetails.brand || 'default';
-    const config = getBrandConfig(brand);
+    const config = getMarketplaceConfig();
     
     const content = `
         <h2>Thank you for your order!</h2>
@@ -241,10 +212,10 @@ async function sendOrderConfirmation(customerEmail, orderDetails) {
         <p>Thank you for choosing ${config.name}!</p>
     `;
     
-    const html = createEmailTemplate(brand, 'Order Confirmation', content);
+    const html = createEmailTemplate('Order Confirmation', content);
     
     const mailOptions = {
-        from: config.supportEmail,
+        from: emailConfig.from,
         to: customerEmail,
         subject: `Order Confirmation - ${orderDetails.orderId}`,
         html: html,
@@ -255,8 +226,8 @@ async function sendOrderConfirmation(customerEmail, orderDetails) {
 }
 
 // Send download links email
-async function sendDownloadLinks(customerEmail, books, downloadTokens, brand = 'default') {
-    const config = getBrandConfig(brand);
+async function sendDownloadLinks(customerEmail, books, downloadTokens) {
+    const config = getMarketplaceConfig();
     
     const content = `
         <h2>Your Download Links Are Ready!</h2>
@@ -294,10 +265,10 @@ async function sendDownloadLinks(customerEmail, books, downloadTokens, brand = '
         <p>If you have any issues downloading your books, please contact our support team.</p>
     `;
     
-    const html = createEmailTemplate(brand, 'Your Download Links', content);
+    const html = createEmailTemplate('Your Download Links', content);
     
     const mailOptions = {
-        from: config.supportEmail,
+        from: emailConfig.from,
         to: customerEmail,
         subject: 'Your Download Links - ' + config.name,
         html: html,
@@ -308,8 +279,8 @@ async function sendDownloadLinks(customerEmail, books, downloadTokens, brand = '
 }
 
 // Send welcome email
-async function sendWelcomeEmail(customerEmail, customerName, brand = 'default') {
-    const config = getBrandConfig(brand);
+async function sendWelcomeEmail(customerEmail, customerName) {
+    const config = getMarketplaceConfig();
     
     const content = `
         <h2>Welcome to ${config.name}!</h2>
@@ -325,7 +296,7 @@ async function sendWelcomeEmail(customerEmail, customerName, brand = 'default') 
         </ul>
         
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.SITE_URL || 'http://localhost:3001'}" class="button">
+            <a href="${config.websiteUrl}" class="button">
                 Explore More Books
             </a>
         </div>
@@ -343,10 +314,10 @@ async function sendWelcomeEmail(customerEmail, customerName, brand = 'default') 
         <p>Happy reading,<br>The ${config.name} Team</p>
     `;
     
-    const html = createEmailTemplate(brand, 'Welcome!', content);
+    const html = createEmailTemplate('Welcome!', content);
     
     const mailOptions = {
-        from: config.supportEmail,
+        from: emailConfig.from,
         to: customerEmail,
         subject: `Welcome to ${config.name}!`,
         html: html,

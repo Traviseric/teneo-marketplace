@@ -1,28 +1,125 @@
 // marketplace/backend/server.js
 require('dotenv').config();
 
+// Environment variable validation
+function validateEnvironment() {
+    const requiredEnvVars = [
+        'ADMIN_PASSWORD_HASH',
+        'SESSION_SECRET'
+    ];
+    
+    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    
+    if (missingVars.length > 0) {
+        console.error('🔴 CRITICAL: Missing required environment variables:');
+        missingVars.forEach(varName => {
+            console.error(`  - ${varName}`);
+        });
+        console.error('\nPlease check your .env file configuration.');
+        console.error('Use: node scripts/generate-password-hash.js to generate ADMIN_PASSWORD_HASH');
+        process.exit(1);
+    }
+    
+    // Warn about optional but important variables
+    const importantVars = [
+        'STRIPE_SECRET_KEY',
+        'STRIPE_PUBLISHABLE_KEY',
+        'EMAIL_USER'
+    ];
+    
+    const missingImportant = importantVars.filter(varName => !process.env[varName]);
+    if (missingImportant.length > 0) {
+        console.warn('⚠️  WARNING: Missing optional environment variables:');
+        missingImportant.forEach(varName => {
+            console.warn(`  - ${varName}`);
+        });
+        console.warn('Some features may not work properly.\n');
+    }
+}
+
+validateEnvironment();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs').promises;
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const csurf = require('csurf');
+const crypto = require('crypto');
 const brandRoutes = require('./routes/brandRoutes');
-const checkoutRoutes = require('./routes/checkout');
+const checkoutRoutes = process.env.NODE_ENV === 'production' 
+  ? require('./routes/checkoutProduction')
+  : require('./routes/checkout');
 const catalogRoutes = require('./routes/catalogRoutes');
+const downloadRoutes = require('./routes/downloadRoutes');
+const luluAdminRoutes = require('./routes/luluAdmin');
+const adminRoutes = require('./routes/adminRoutes');
+const networkRoutes = require('./routes/networkRoutes');
+const configRoutes = require('./routes/configRoutes');
 
 const app = express();
 
+// Import auth middleware
+const { requireHTTPS } = require('./middleware/auth');
+
+// Force HTTPS in production
+app.use(requireHTTPS);
+
+// Session configuration
+const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
+app.use(session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        httpOnly: true, // Prevent XSS attacks
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'strict' // CSRF protection
+    },
+    name: 'teneo.sid' // Custom session name
+}));
+
 // Middleware
 app.use(cors({
-    origin: '*',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true, // Allow cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// CSRF protection for all POST/PUT/DELETE routes except specific endpoints
+const csrfProtection = csurf({ cookie: false });
+const csrfExcludePaths = ['/api/checkout/webhook', '/api/lulu/webhook']; // Webhook endpoints need to be excluded
+
+app.use((req, res, next) => {
+    // Skip CSRF for webhook endpoints
+    if (csrfExcludePaths.some(path => req.path.startsWith(path))) {
+        return next();
+    }
+    // Skip CSRF for GET requests and public API endpoints
+    if (req.method === 'GET' || req.path.startsWith('/api/health') || req.path.startsWith('/api/network/status')) {
+        return next();
+    }
+    // Apply CSRF protection to all other routes
+    csrfProtection(req, res, next);
+});
+
+// Endpoint to get CSRF token
+app.get('/api/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken ? req.csrfToken() : null });
+});
 app.use('/api/brands', brandRoutes);
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/catalog', catalogRoutes);
+app.use('/api/download', downloadRoutes);
+app.use('/api/lulu', luluAdminRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/network', networkRoutes);
+app.use('/api/config', configRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -291,10 +388,22 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
+// Initialize database on startup
+const initDatabase = async () => {
+    try {
+        await require('./database/init');
+        console.log('📊 Database initialized');
+    } catch (error) {
+        console.error('Failed to initialize database:', error);
+    }
+};
+
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await initDatabase();
     console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
     console.log(`🌍 API available at http://localhost:${PORT}/api`);
+    console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app;

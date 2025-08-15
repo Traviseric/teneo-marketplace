@@ -279,6 +279,109 @@
             box-shadow: 0 4px 6px var(--shadow);
         }
 
+        /* PDF Upload Styles */
+        .file-info {
+            margin-top: 0.5rem;
+        }
+
+        .upload-status {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .upload-status.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            display: block;
+        }
+
+        .upload-status.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .upload-status.uploading {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            display: block;
+        }
+
+        .existing-file-info {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .existing-file-info.show {
+            display: block;
+        }
+
+        .existing-file-info .file-actions {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .existing-file-info .file-actions button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .existing-file-info .file-actions .btn-view {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .existing-file-info .file-actions .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .pdf-manager-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .pdf-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .pdf-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .pdf-item .pdf-info {
+            flex: 1;
+        }
+
+        .pdf-item .pdf-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
         .format-chips {
             display: flex;
             gap: 0.5rem;
@@ -412,6 +515,18 @@
             </div>
         </div>
 
+        <!-- PDF Manager Section -->
+        <div class="pdf-manager-section">
+            <h2>📚 PDF Files</h2>
+            <p>Manage your book PDF files for secure delivery</p>
+            <div id="pdfList" class="pdf-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading PDF files...</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Book Table -->
         <div class="book-table-container">
             <div class="table-header">
@@ -479,6 +594,16 @@
                         <div class="chip selected" data-format="ebook">📱 eBook</div>
                         <div class="chip selected" data-format="audiobook">🎧 Audiobook</div>
                         <div class="chip selected" data-format="hardcover">📕 Hardcover</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookPdf">PDF File (eBook)</label>
+                    <input type="file" id="bookPdf" accept=".pdf" class="form-control">
+                    <div class="file-info">
+                        <small>Upload the PDF file for this book (max 50MB)</small>
+                        <div id="pdfUploadStatus" class="upload-status"></div>
+                        <div id="existingPdfInfo" class="existing-file-info"></div>
                     </div>
                 </div>
 
@@ -639,6 +764,8 @@
             setupImageUpload();
             setupFormats();
             setupCSVUpload();
+            setupPdfUpload();
+            loadPdfFiles();
             document.getElementById('bookForm').addEventListener('submit', saveBook);
             
             // Add logout button
@@ -996,6 +1123,20 @@
                 rating: 4.5,
                 currency: 'USD'
             };
+
+            // Generate book ID
+            const bookId = currentEditId || formData.get('title').toLowerCase().replace(/[^a-z0-9]/g, '-');
+            bookData.id = bookId;
+
+            // Handle PDF upload if file is selected
+            const pdfFile = document.getElementById('bookPdf').files[0];
+            if (pdfFile) {
+                const uploadResult = await uploadPdf(bookId, pdfFile);
+                if (!uploadResult) {
+                    showStatus('PDF upload failed. Book not saved.', 'error');
+                    return;
+                }
+            }
             
             if (currentEditId) {
                 // Update existing book
@@ -1005,7 +1146,6 @@
                 }
             } else {
                 // Add new book
-                bookData.id = formData.get('title').toLowerCase().replace(/[^a-z0-9]/g, '-');
                 books.push(bookData);
             }
             
@@ -1358,6 +1498,195 @@
                 console.error('Restore error:', error);
                 showStatus('Restore failed', 'error');
             }
+        }
+
+        // PDF Upload Functions
+        function setupPdfUpload() {
+            const pdfInput = document.getElementById('bookPdf');
+            if (pdfInput) {
+                pdfInput.addEventListener('change', handlePdfFileSelect);
+            }
+        }
+
+        function handlePdfFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('pdfUploadStatus');
+            
+            // Validate file type
+            if (file.type !== 'application/pdf') {
+                status.textContent = 'Please select a PDF file';
+                status.className = 'upload-status error';
+                return;
+            }
+
+            // Validate file size (50MB limit)
+            if (file.size > 50 * 1024 * 1024) {
+                status.textContent = 'File size must be less than 50MB';
+                status.className = 'upload-status error';
+                return;
+            }
+
+            status.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
+            status.className = 'upload-status success';
+        }
+
+        async function uploadPdf(bookId, file) {
+            if (!file || !bookId) return null;
+
+            const formData = new FormData();
+            formData.append('pdf', file);
+            formData.append('bookId', bookId);
+
+            const status = document.getElementById('pdfUploadStatus');
+            status.textContent = 'Uploading PDF...';
+            status.className = 'upload-status uploading';
+
+            try {
+                const response = await fetch(`${API_URL}/api/download/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    status.textContent = `PDF uploaded successfully: ${result.filename}`;
+                    status.className = 'upload-status success';
+                    loadPdfFiles(); // Refresh PDF list
+                    return result;
+                } else {
+                    status.textContent = `Upload failed: ${result.error}`;
+                    status.className = 'upload-status error';
+                    return null;
+                }
+            } catch (error) {
+                console.error('PDF upload error:', error);
+                status.textContent = 'Upload failed. Please try again.';
+                status.className = 'upload-status error';
+                return null;
+            }
+        }
+
+        async function loadPdfFiles() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/download/list`, {
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderPdfList(result.files);
+                } else {
+                    console.error('Failed to load PDF files:', result.error);
+                }
+            } catch (error) {
+                console.error('Error loading PDF files:', error);
+            }
+        }
+
+        function renderPdfList(files) {
+            const pdfList = document.getElementById('pdfList');
+            
+            if (!files || files.length === 0) {
+                pdfList.innerHTML = '<p>No PDF files uploaded yet.</p>';
+                return;
+            }
+
+            pdfList.innerHTML = files.map(file => `
+                <div class="pdf-item">
+                    <div class="pdf-info">
+                        <strong>${file.bookId}</strong><br>
+                        <small>Size: ${formatFileSize(file.size)} | Created: ${new Date(file.created).toLocaleDateString()}</small>
+                    </div>
+                    <div class="pdf-actions">
+                        <button class="btn-view" onclick="viewPdf('${file.bookId}')">View</button>
+                        <button class="btn-delete" onclick="deletePdf('${file.bookId}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewPdf(bookId) {
+            // For now, just show info that this would open the PDF
+            alert(`This would open the PDF for ${bookId}. In production, this would generate a temporary download link.`);
+        }
+
+        async function deletePdf(bookId) {
+            if (!confirm(`Are you sure you want to delete the PDF for ${bookId}?`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/download/${bookId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Basic ' + authToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('PDF deleted successfully', 'success');
+                    loadPdfFiles(); // Refresh list
+                } else {
+                    showStatus(`Delete failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting PDF:', error);
+                showStatus('Delete failed. Please try again.', 'error');
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function checkExistingPdf(bookId) {
+            if (!bookId) return;
+
+            const existingInfo = document.getElementById('existingPdfInfo');
+            
+            // Check if PDF exists for this book
+            fetch(`${API_URL}/api/download/list`, {
+                headers: {
+                    'Authorization': 'Basic ' + authToken
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const existingFile = result.files.find(f => f.bookId === bookId);
+                    if (existingFile) {
+                        existingInfo.innerHTML = `
+                            <strong>Existing PDF:</strong> ${existingFile.filename}<br>
+                            <small>Size: ${formatFileSize(existingFile.size)} | Created: ${new Date(existingFile.created).toLocaleDateString()}</small>
+                            <div class="file-actions">
+                                <button class="btn-view" onclick="viewPdf('${bookId}')">View</button>
+                                <button class="btn-delete" onclick="deletePdf('${bookId}')">Delete</button>
+                            </div>
+                        `;
+                        existingInfo.className = 'existing-file-info show';
+                    } else {
+                        existingInfo.className = 'existing-file-info';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking existing PDF:', error);
+            });
         }
     </script>
 </body>

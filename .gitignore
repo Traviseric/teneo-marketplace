@@ -85,3 +85,10 @@ playwright-report/
 # Lock files (optional - uncomment if you want to ignore)
 # package-lock.json
 # yarn.lock
+
+# ================================================
+# CRITICAL: Private SaaS folder - NEVER commit!
+# ================================================
+teneo-express/
+# This folder contains proprietary SaaS code
+# It must NEVER be pushed to public GitHub

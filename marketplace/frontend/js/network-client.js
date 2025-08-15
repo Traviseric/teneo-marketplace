@@ -49,7 +49,6 @@ class NetworkClient {
             // Cache the registry
             this.setCache('registry', data);
             
-            console.log(`Loaded ${this.networkStores.length} stores from network registry`);
             return this.networkStores;
         } catch (error) {
             console.error('Failed to load network registry:', error);
@@ -67,7 +66,6 @@ class NetworkClient {
         try {
             // In production, this would POST to a central registry API
             // For now, we'll simulate success
-            console.log('Registering store with network:', storeData);
             
             const registration = {
                 ...storeData,
@@ -299,7 +297,6 @@ class NetworkClient {
                     }
                 })
                 .catch(error => {
-                    console.log(`Store ${store.id} stats unavailable`);
                 });
 
             statsPromises.push(promise);
@@ -402,7 +399,6 @@ class NetworkClient {
                         allBooks.push(...catalog.books);
                     }
                 } catch (error) {
-                    console.log(`Failed to get trending from ${store.id}`);
                 }
             }
 
@@ -425,7 +421,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     networkClient = new NetworkClient();
     window.networkClient = networkClient; // Make globally available
     
-    console.log('Network client initialized');
     
     // Load network data
     await networkClient.init();

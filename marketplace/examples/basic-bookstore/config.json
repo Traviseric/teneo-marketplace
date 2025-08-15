@@ -1,0 +1,21 @@
+{
+  "name": "Basic Bookstore Example",
+  "description": "Minimal configuration to get started",
+  "features": {
+    "payments": true,
+    "email_notifications": false,
+    "previews": false,
+    "analytics": false,
+    "federation": false
+  },
+  "branding": {
+    "store_name": "Simple Books",
+    "tagline": "Great books, simple process",
+    "primary_color": "#000000",
+    "logo": "logo.png"
+  },
+  "stripe": {
+    "mode": "test",
+    "currency": "USD"
+  }
+}

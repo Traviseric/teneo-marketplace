@@ -12,7 +12,6 @@ async function fetchBooks() {
             const brandBooks = window.brandManager.getBooksData();
             if (brandBooks && brandBooks.length > 0) {
                 booksData = brandBooks;
-                console.log(`Loaded ${brandBooks.length} books from ${window.brandManager.currentBrand} brand`);
                 return booksData;
             }
         }
@@ -39,7 +38,6 @@ async function fetchBooks() {
 
 // Fallback book data in case API is unavailable
 function getFallbackBooks() {
-    console.log('Using fallback book data');
     return [
         {
             id: 1,
@@ -191,7 +189,6 @@ async function renderBooksGrid() {
             booksGrid.appendChild(bookCard);
         });
         
-        console.log(`Rendered ${books.length} books in the grid`);
     } catch (error) {
         console.error('Error rendering books:', error);
         booksGrid.innerHTML = '<div class="error">Error loading books. Please try again later.</div>';
@@ -200,7 +197,6 @@ async function renderBooksGrid() {
 
 // Function to handle book card clicks
 function handleBookClick(book) {
-    console.log('Book clicked:', book.title);
     
     // Check if book is in stock
     if (book.stock === 0) {
@@ -240,7 +236,6 @@ function filterBooksByGenre(genre) {
         booksGrid.appendChild(bookCard);
     });
     
-    console.log(`Filtered books by genre: ${genre}, showing ${filteredBooks.length} books`);
 }
 
 // Function to search books by title or author
@@ -263,7 +258,6 @@ function searchBooks(searchTerm) {
         booksGrid.appendChild(bookCard);
     });
     
-    console.log(`Search results for "${searchTerm}": ${filteredBooks.length} books found`);
 }
 
 // Function to handle buy now button
@@ -329,7 +323,6 @@ async function handleBuyNow(bookId) {
 
 // Function to refresh books from API
 async function refreshBooks() {
-    console.log('Refreshing books from API...');
     await renderBooksGrid();
 }
 
@@ -409,7 +402,6 @@ window.addToCart = addToCart;
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Teneo Books Marketplace loaded');
     renderBooksGrid();
 });
 

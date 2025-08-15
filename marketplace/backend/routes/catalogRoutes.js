@@ -6,7 +6,13 @@ const multer = require('multer');
 const { parse } = require('csv-parse/sync');
 
 // Simple password check middleware
-const AUTH_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const AUTH_PASSWORD = process.env.ADMIN_PASSWORD;
+
+if (!AUTH_PASSWORD) {
+    console.error('CRITICAL: ADMIN_PASSWORD environment variable is not set!');
+    console.error('Please set ADMIN_PASSWORD in your .env file for security.');
+    process.exit(1);
+}
 
 function checkAuth(req, res, next) {
     const authHeader = req.headers.authorization;

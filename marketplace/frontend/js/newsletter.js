@@ -30,7 +30,6 @@ function handleNewsletterSubmit(event) {
     // Simulate API call for newsletter subscription
     setTimeout(() => {
         // In a real application, you would send this to your backend
-        console.log('Newsletter subscription:', email);
         
         // Simulate successful subscription
         showMessage('Thank you for subscribing! Check your email for confirmation.', 'success');

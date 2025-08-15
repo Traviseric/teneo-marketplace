@@ -1,0 +1,61 @@
+{
+  "name": "Network Store Example",
+  "description": "Bookstore optimized for federation network participation",
+  "features": {
+    "payments": true,
+    "email_notifications": true,
+    "previews": true,
+    "analytics": true,
+    "federation": true,
+    "network_discovery": true,
+    "cross_promotion": true,
+    "referral_tracking": true
+  },
+  "branding": {
+    "store_name": "Connected Books Hub",
+    "tagline": "Your gateway to the book network",
+    "primary_color": "#10B981",
+    "secondary_color": "#6366F1",
+    "network_badge": true
+  },
+  "federation": {
+    "enabled": true,
+    "mode": "full",
+    "share_catalog": true,
+    "share_percentage": 100,
+    "accept_network_books": true,
+    "display_network_books": true,
+    "network_section_prominent": true,
+    "commission_rate": 0.10,
+    "auto_sync": true,
+    "sync_interval": 3600,
+    "quality_filter": "medium",
+    "categories_shared": ["all"],
+    "cross_promotion": {
+      "enabled": true,
+      "reciprocal": true,
+      "featured_partners": 5
+    }
+  },
+  "network_features": {
+    "unified_search": true,
+    "network_recommendations": true,
+    "partner_showcase": true,
+    "commission_dashboard": true,
+    "referral_analytics": true,
+    "network_leaderboard": true,
+    "bulk_import_from_network": true
+  },
+  "monetization": {
+    "local_books_margin": 0.97,
+    "network_books_commission": 0.10,
+    "referral_bonus": 0.02,
+    "volume_discounts": true
+  },
+  "discovery": {
+    "network_books_homepage": true,
+    "mixed_results": true,
+    "network_badge_display": true,
+    "partner_store_links": true
+  }
+}
