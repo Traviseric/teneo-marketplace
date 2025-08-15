@@ -10,7 +10,7 @@ class EmailService {
     try {
       // Configure email transporter based on environment
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        this.transporter = nodemailer.createTransporter({
+        this.transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
             user: process.env.EMAIL_USER,
