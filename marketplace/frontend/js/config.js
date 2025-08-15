@@ -44,7 +44,6 @@ window.API_CONFIG = {
 // For backwards compatibility, also set as global
 window.API_URL = window.API_CONFIG.API_URL;
 
-console.log('API Config loaded:', {
     API_URL: window.API_CONFIG.API_URL,
     Environment: window.API_CONFIG.IS_DEVELOPMENT ? 'Development' : 'Production'
 });

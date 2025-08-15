@@ -157,7 +157,6 @@ class TemplateProcessor {
             // Update page content with brand variables
             this.updatePageContent(variables);
             
-            console.log(`Template theme applied for brand: ${brandId}`);
         } catch (error) {
             console.error('Error applying template theme:', error);
         }
@@ -294,7 +293,6 @@ class TemplateProcessor {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             
-            console.log(`Template downloaded: ${a.download}`);
         } catch (error) {
             console.error('Error downloading template:', error);
         }
@@ -306,7 +304,6 @@ class TemplateProcessor {
     clearCache() {
         this.templatesCache.clear();
         this.variablesCache.clear();
-        console.log('Template processor cache cleared');
     }
 
     /**
@@ -325,7 +322,6 @@ class TemplateProcessor {
             previewWindow.document.write(processedHTML);
             previewWindow.document.close();
             
-            console.log(`Template preview opened for ${brandId}`);
         } catch (error) {
             console.error('Error previewing template:', error);
         }

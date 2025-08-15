@@ -18,6 +18,16 @@
     "bundles": true,
     "networkEnabled": true
   },
+  "network": {
+    "network_enabled": false,
+    "share_catalog": false,
+    "accept_referrals": false,
+    "referral_percentage": 5,
+    "public_key": null,
+    "private_key": null,
+    "network_peers": [],
+    "trusted_stores": []
+  },
   "payment": {
     "processor": "stripe",
     "currency": "USD",

@@ -34,7 +34,6 @@ class BrandManager {
 
     async loadBrand(brandId) {
         try {
-            console.log(`Loading brand: ${brandId}`);
             
             // Load brand configuration
             const configResponse = await fetch(`/brands/${brandId}/config.json`);
@@ -51,7 +50,6 @@ class BrandManager {
             this.brandCatalog = await catalogResponse.json();
             
             this.currentBrand = brandId;
-            console.log(`Brand ${brandId} loaded successfully`);
             
         } catch (error) {
             console.error('Error loading brand:', error);
@@ -108,7 +106,6 @@ class BrandManager {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = brandCSSPath;
-        link.onload = () => console.log(`Brand CSS loaded: ${brandCSSPath}`);
         link.onerror = () => console.error(`Failed to load brand CSS: ${brandCSSPath}`);
         document.head.appendChild(link);
     }

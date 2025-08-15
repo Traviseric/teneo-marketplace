@@ -65,7 +65,6 @@ class ShoppingCart {
             this.animateCartIcon();
             this.showAddedMessage(bookData.title);
             
-            console.log(`Added "${bookData.title}" to cart`);
             return true;
         } catch (error) {
             console.error('Error adding item to cart:', error);
@@ -391,7 +390,6 @@ class ShoppingCart {
         };
 
         // For now, redirect to a placeholder checkout page or integrate with Stripe
-        console.log('Proceeding to checkout with:', checkoutData);
         
         // You can integrate this with your existing Stripe checkout
         this.createStripeCheckout(checkoutData);
@@ -453,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cart = new ShoppingCart();
     window.cart = cart; // Make globally available
     
-    console.log('Shopping cart system initialized');
 });
 
 // Export for module use

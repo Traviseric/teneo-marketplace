@@ -1,0 +1,365 @@
+{
+  "brand": "teneo",
+  "name": "Teneo Books",
+  "description": "Knowledge Beyond Boundaries™ - Exploring AI, consciousness, and the future of human potential",
+  "books": [
+    {
+      "id": "advanced-ai-consciousness",
+      "title": "Advanced AI Consciousness",
+      "author": "Dr. Sarah Chen",
+      "description": "A groundbreaking exploration of artificial consciousness, machine learning ethics, and the future of human-AI collaboration. This comprehensive guide delves into the philosophical and technical aspects of creating truly conscious artificial beings.",
+      "coverImage": "/brands/teneo/assets/covers/advanced-ai-consciousness.jpg",
+      "badge": "BESTSELLER",
+      "rating": 4.8,
+      "category": "Technology",
+      "formats": {
+        "digital_pdf": {
+          "price": 29.99,
+          "originalPrice": 39.99,
+          "format": "PDF",
+          "pages": 324,
+          "fileSize": "8.5 MB",
+          "available": true
+        },
+        "print_digest": {
+          "price": 24.99,
+          "originalPrice": 34.99,
+          "format": "Paperback 5.5x8.5",
+          "pod_package_id": "0550X0850BWSTDPB060UW444MXX",
+          "pages": 324,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/advanced-ai-consciousness",
+          "cover_url": "https://assets.lulu.com/cover/advanced-ai-consciousness-digest.pdf",
+          "interior_url": "https://assets.lulu.com/interior/advanced-ai-consciousness-digest.pdf"
+        },
+        "print_trade": {
+          "price": 27.99,
+          "originalPrice": 37.99,
+          "format": "Paperback 6x9",
+          "pod_package_id": "0600X0900BWSTDPB060UW444MXX",
+          "pages": 280,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/advanced-ai-consciousness-trade",
+          "cover_url": "https://assets.lulu.com/cover/advanced-ai-consciousness-trade.pdf",
+          "interior_url": "https://assets.lulu.com/interior/advanced-ai-consciousness-trade.pdf"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-digest",
+          "name": "PDF + Paperback 5.5x8.5",
+          "formats": ["digital_pdf", "print_digest"],
+          "price": 49.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        },
+        {
+          "id": "pdf-trade",
+          "name": "PDF + Paperback 6x9",
+          "formats": ["digital_pdf", "print_trade"],
+          "price": 52.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    },
+    {
+      "id": "hidden-patterns",
+      "title": "Hidden Patterns: Decoding Reality",
+      "author": "Marcus Webb",
+      "description": "Uncover the mathematical patterns that govern reality. From fractals in nature to synchronicities in daily life, this book reveals the hidden order underlying chaos.",
+      "coverImage": "/brands/teneo/assets/covers/hidden-patterns.jpg",
+      "badge": "NEW",
+      "rating": 4.7,
+      "category": "Science",
+      "formats": {
+        "digital_pdf": {
+          "price": 24.99,
+          "originalPrice": 34.99,
+          "format": "PDF",
+          "pages": 256,
+          "fileSize": "12.3 MB",
+          "available": true
+        },
+        "print_digest": {
+          "price": 19.99,
+          "originalPrice": 29.99,
+          "format": "Paperback 5.5x8.5",
+          "pod_package_id": "0550X0850BWSTDPB060UW444MXX",
+          "pages": 256,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/hidden-patterns",
+          "cover_url": "https://assets.lulu.com/cover/hidden-patterns-digest.pdf",
+          "interior_url": "https://assets.lulu.com/interior/hidden-patterns-digest.pdf"
+        },
+        "print_trade": {
+          "price": 22.99,
+          "originalPrice": 32.99,
+          "format": "Paperback 6x9",
+          "pod_package_id": "0600X0900BWSTDPB060UW444MXX",
+          "pages": 224,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/hidden-patterns-trade",
+          "cover_url": "https://assets.lulu.com/cover/hidden-patterns-trade.pdf",
+          "interior_url": "https://assets.lulu.com/interior/hidden-patterns-trade.pdf"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-digest",
+          "name": "PDF + Paperback 5.5x8.5",
+          "formats": ["digital_pdf", "print_digest"],
+          "price": 39.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    },
+    {
+      "id": "quantum-psychology",
+      "title": "Quantum Psychology",
+      "author": "Dr. Elena Kowalski",
+      "description": "Where consciousness meets quantum mechanics. Explore the intersection of mind and matter through cutting-edge research in quantum cognition and consciousness studies.",
+      "coverImage": "/brands/teneo/assets/covers/quantum-psychology.jpg",
+      "badge": "AWARD WINNER",
+      "rating": 4.9,
+      "category": "Psychology",
+      "formats": {
+        "digital_pdf": {
+          "price": 34.99,
+          "originalPrice": 44.99,
+          "format": "PDF",
+          "pages": 412,
+          "fileSize": "15.7 MB",
+          "available": true
+        },
+        "print_digest": {
+          "price": 29.99,
+          "originalPrice": 39.99,
+          "format": "Paperback 5.5x8.5",
+          "pod_package_id": "0550X0850BWSTDPB060UW444MXX",
+          "pages": 412,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/quantum-psychology",
+          "cover_url": "https://assets.lulu.com/cover/quantum-psychology-digest.pdf",
+          "interior_url": "https://assets.lulu.com/interior/quantum-psychology-digest.pdf"
+        },
+        "print_trade": {
+          "price": 32.99,
+          "originalPrice": 42.99,
+          "format": "Paperback 6x9",
+          "pod_package_id": "0600X0900BWSTDPB060UW444MXX",
+          "pages": 356,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/quantum-psychology-trade",
+          "cover_url": "https://assets.lulu.com/cover/quantum-psychology-trade.pdf",
+          "interior_url": "https://assets.lulu.com/interior/quantum-psychology-trade.pdf"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-digest",
+          "name": "PDF + Paperback 5.5x8.5",
+          "formats": ["digital_pdf", "print_digest"],
+          "price": 59.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        },
+        {
+          "id": "pdf-trade",
+          "name": "PDF + Paperback 6x9",
+          "formats": ["digital_pdf", "print_trade"],
+          "price": 62.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    },
+    {
+      "id": "future-human-evolution",
+      "title": "The Future of Human Evolution",
+      "author": "Prof. James Mitchell",
+      "description": "A visionary look at humanity's next evolutionary leap. Examining genetic engineering, cybernetic enhancements, and consciousness expansion technologies shaping our species' future.",
+      "coverImage": "/brands/teneo/assets/covers/future-human-evolution.jpg",
+      "rating": 4.6,
+      "category": "Futurism",
+      "formats": {
+        "digital_pdf": {
+          "price": 27.99,
+          "originalPrice": 37.99,
+          "format": "PDF",
+          "pages": 298,
+          "fileSize": "9.8 MB",
+          "available": true
+        },
+        "print_digest": {
+          "price": 22.99,
+          "originalPrice": 32.99,
+          "format": "Paperback 5.5x8.5",
+          "pod_package_id": "0550X0850BWSTDPB060UW444MXX",
+          "pages": 298,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/future-human-evolution",
+          "cover_url": "https://assets.lulu.com/cover/future-human-evolution-digest.pdf",
+          "interior_url": "https://assets.lulu.com/interior/future-human-evolution-digest.pdf"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-digest",
+          "name": "PDF + Paperback",
+          "formats": ["digital_pdf", "print_digest"],
+          "price": 45.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    },
+    {
+      "id": "collective-intelligence",
+      "title": "Collective Intelligence: The Network Effect",
+      "author": "Dr. Raj Patel",
+      "description": "How networked minds create emergent intelligence. From ant colonies to global human networks, discover the principles of collective problem-solving and decision-making.",
+      "coverImage": "/brands/teneo/assets/covers/collective-intelligence.jpg",
+      "badge": "LIMITED",
+      "rating": 4.7,
+      "category": "Technology",
+      "formats": {
+        "digital_pdf": {
+          "price": 32.99,
+          "originalPrice": 42.99,
+          "format": "PDF",
+          "pages": 342,
+          "fileSize": "11.2 MB",
+          "available": true
+        },
+        "print_trade": {
+          "price": 29.99,
+          "originalPrice": 39.99,
+          "format": "Paperback 6x9",
+          "pod_package_id": "0600X0900BWSTDPB060UW444MXX",
+          "pages": 296,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/collective-intelligence-trade",
+          "cover_url": "https://assets.lulu.com/cover/collective-intelligence-trade.pdf",
+          "interior_url": "https://assets.lulu.com/interior/collective-intelligence-trade.pdf"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-trade",
+          "name": "PDF + Paperback",
+          "formats": ["digital_pdf", "print_trade"],
+          "price": 57.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    },
+    {
+      "id": "emergence-theory",
+      "title": "Emergence: From Chaos to Order",
+      "author": "Dr. Lisa Zhang",
+      "description": "Understanding how complex systems self-organize. A deep dive into emergence theory, exploring how simple rules create sophisticated behaviors in nature, society, and technology.",
+      "coverImage": "/brands/teneo/assets/covers/emergence-theory.jpg",
+      "rating": 4.8,
+      "category": "Science",
+      "formats": {
+        "digital_pdf": {
+          "price": 28.99,
+          "originalPrice": 38.99,
+          "format": "PDF",
+          "pages": 276,
+          "fileSize": "7.9 MB",
+          "available": true
+        },
+        "print_digest": {
+          "price": 23.99,
+          "originalPrice": 33.99,
+          "format": "Paperback 5.5x8.5",
+          "pod_package_id": "0550X0850BWSTDPB060UW444MXX",
+          "pages": 276,
+          "available": true,
+          "lulu_product_url": "https://www.lulu.com/shop/product-preview/emergence-theory",
+          "cover_url": "https://assets.lulu.com/cover/emergence-theory-digest.pdf",
+          "interior_url": "https://assets.lulu.com/interior/emergence-theory-digest.pdf"
+        },
+        "print_trade": {
+          "price": 26.99,
+          "originalPrice": 36.99,
+          "format": "Paperback 6x9",
+          "pod_package_id": "0600X0900BWSTDPB060UW444MXX",
+          "pages": 240,
+          "available": false,
+          "availableDate": "2025-02-01"
+        }
+      },
+      "bundles": [
+        {
+          "id": "pdf-digest",
+          "name": "PDF + Paperback",
+          "formats": ["digital_pdf", "print_digest"],
+          "price": 47.99,
+          "savings": 5.00,
+          "badge": "SAVE $5"
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "consciousness-trilogy",
+      "name": "The Consciousness Trilogy",
+      "title": "Essential Consciousness Collection",
+      "description": "Three groundbreaking books exploring the nature of consciousness from AI, quantum, and emergent perspectives.",
+      "books": ["advanced-ai-consciousness", "quantum-psychology", "emergence-theory"],
+      "formats": {
+        "digital_bundle": {
+          "price": 79.99,
+          "originalPrice": 92.97,
+          "savings": 12.98,
+          "format": "PDF Bundle",
+          "badge": "SAVE $13"
+        },
+        "print_bundle_digest": {
+          "price": 69.99,
+          "originalPrice": 77.97,
+          "savings": 7.98,
+          "format": "3 Paperbacks (5.5x8.5)",
+          "badge": "SAVE $8"
+        }
+      }
+    },
+    {
+      "id": "complete-teneo-collection",
+      "name": "Complete Teneo Collection",
+      "title": "All 6 Books - Ultimate Knowledge Bundle",
+      "description": "Get every book in the Teneo library at our best price. Includes all current and upcoming releases.",
+      "books": ["advanced-ai-consciousness", "hidden-patterns", "quantum-psychology", "future-human-evolution", "collective-intelligence", "emergence-theory"],
+      "formats": {
+        "digital_bundle": {
+          "price": 149.99,
+          "originalPrice": 181.94,
+          "savings": 31.95,
+          "format": "PDF Bundle",
+          "badge": "SAVE $32"
+        },
+        "print_bundle_digest": {
+          "price": 129.99,
+          "originalPrice": 154.94,
+          "savings": 24.95,
+          "format": "6 Paperbacks (5.5x8.5)",
+          "badge": "SAVE $25"
+        },
+        "ultimate_bundle": {
+          "price": 259.99,
+          "originalPrice": 336.88,
+          "savings": 76.89,
+          "format": "PDF + Print Bundle",
+          "badge": "BEST VALUE - SAVE $77",
+          "includes": ["All 6 PDFs", "All 6 Paperbacks (5.5x8.5)"]
+        }
+      }
+    }
+  ]
+}

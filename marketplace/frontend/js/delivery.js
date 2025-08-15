@@ -180,7 +180,6 @@ class DigitalDelivery {
 
     // Simulate sending confirmation email
     sendConfirmationEmail(purchase) {
-        console.log('Sending confirmation email to:', purchase.customerEmail);
         
         // In a real system, this would send an actual email
         // For demo, we'll show a console message and create a notification
@@ -206,7 +205,6 @@ The Teneo Team
             `
         };
 
-        console.log('Email content:', emailContent);
 
         // Show notification to user
         if (window.showNotification) {
@@ -350,7 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
     delivery = new DigitalDelivery();
     window.delivery = delivery; // Make globally available
     
-    console.log('Digital delivery system initialized');
 });
 
 // Show notification helper
