@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Marketplace - Next Generation Digital Books</title>
+    
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Modern Theme CSS -->
+    <link rel="stylesheet" href="css/modern-theme.css">
+    
+    <style>
+        /* Page Specific Styles */
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 5s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-books {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .floating-book {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(240, 147, 251, 0.3));
+            border-radius: 5px;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(10px) rotate(-5deg); }
+            75% { transform: translateY(-10px) rotate(3deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="modern-bg"></div>
+    
+    <!-- Modern Navigation -->
+    <nav class="nav-modern">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2 style="margin: 0;">📚 Teneo</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#books" class="nav-link">Books</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+            </ul>
+            <button class="btn-modern btn-primary glow">Get Started</button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-modern" id="home">
+        <div class="floating-books">
+            <div class="floating-book" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+            <div class="floating-book" style="top: 20%; right: 15%; animation-delay: 2s;"></div>
+            <div class="floating-book" style="bottom: 20%; left: 20%; animation-delay: 4s;"></div>
+            <div class="floating-book" style="bottom: 30%; right: 10%; animation-delay: 6s;"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Next Generation Digital Books</h1>
+            <p class="hero-subtitle">Experience the future of reading with our AI-powered marketplace</p>
+            
+            <div class="stats-container">
+                <div class="stat-card glass-card">
+                    <div class="stat-number">10K+</div>
+                    <p>Digital Books</p>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-number">97%</div>
+                    <p>Author Revenue</p>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-number">24/7</div>
+                    <p>Instant Access</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <button class="btn-modern btn-primary glow">Browse Books</button>
+                <button class="btn-modern btn-secondary">Learn More</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="modern-grid" id="features" style="max-width: 1400px; margin: 0 auto;">
+        <h2 style="text-align: center; grid-column: 1/-1;">Why Choose Teneo?</h2>
+        
+        <div class="glass-card scroll-reveal">
+            <div class="feature-icon">🚀</div>
+            <h3>Instant Delivery</h3>
+            <p style="color: var(--text-secondary);">Get your books immediately after purchase. No waiting, no shipping.</p>
+        </div>
+        
+        <div class="glass-card scroll-reveal">
+            <div class="feature-icon">💎</div>
+            <h3>Premium Quality</h3>
+            <p style="color: var(--text-secondary);">High-quality digital formats with perfect formatting on all devices.</p>
+        </div>
+        
+        <div class="glass-card scroll-reveal">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure & Private</h3>
+            <p style="color: var(--text-secondary);">Your data is encrypted and your privacy is our top priority.</p>
+        </div>
+        
+        <div class="glass-card scroll-reveal">
+            <div class="feature-icon">🌍</div>
+            <h3>Global Access</h3>
+            <p style="color: var(--text-secondary);">Available worldwide, 24/7. Read anywhere, anytime.</p>
+        </div>
+    </section>
+    
+    <!-- Books Grid -->
+    <section id="books" style="padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;">
+        <h2 style="text-align: center; margin-bottom: 3rem;">Featured Books</h2>
+        
+        <div class="modern-grid grid-responsive">
+            <!-- Book Card 1 -->
+            <div class="book-card-modern scroll-reveal">
+                <img src="https://via.placeholder.com/300x400/667eea/ffffff?text=Book+1" alt="Book Cover" class="book-cover">
+                <div class="book-info">
+                    <h3 class="book-title">The Consciousness Revolution</h3>
+                    <p class="book-author">by Teneo AI</p>
+                    <p class="book-price">$19.99</p>
+                    <button class="btn-modern btn-primary" style="width: 100%; margin-top: 1rem;">Add to Cart</button>
+                </div>
+            </div>
+            
+            <!-- Book Card 2 -->
+            <div class="book-card-modern scroll-reveal">
+                <img src="https://via.placeholder.com/300x400/764ba2/ffffff?text=Book+2" alt="Book Cover" class="book-cover">
+                <div class="book-info">
+                    <h3 class="book-title">Pattern Recognition</h3>
+                    <p class="book-author">by Teneo AI</p>
+                    <p class="book-price">$24.99</p>
+                    <button class="btn-modern btn-primary" style="width: 100%; margin-top: 1rem;">Add to Cart</button>
+                </div>
+            </div>
+            
+            <!-- Book Card 3 -->
+            <div class="book-card-modern scroll-reveal">
+                <img src="https://via.placeholder.com/300x400/f093fb/ffffff?text=Book+3" alt="Book Cover" class="book-cover">
+                <div class="book-info">
+                    <h3 class="book-title">Future Human</h3>
+                    <p class="book-author">by Teneo AI</p>
+                    <p class="book-price">$29.99</p>
+                    <button class="btn-modern btn-primary" style="width: 100%; margin-top: 1rem;">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section style="padding: 6rem 2rem; text-align: center;">
+        <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Start Reading?</h2>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 2rem;">
+                Join thousands of readers discovering extraordinary books
+            </p>
+            <form class="form-group" style="max-width: 500px; margin: 0 auto;">
+                <input type="email" class="form-control" placeholder=" " required>
+                <label class="form-label">Enter your email</label>
+            </form>
+            <button class="btn-modern btn-primary glow" style="font-size: 1.2rem; padding: 15px 40px;">
+                Start Free Trial
+            </button>
+        </div>
+    </section>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <span style="font-size: 1.5rem;">🌙</span>
+    </div>
+    
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Theme Toggle (Example)
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('light-mode');
+            this.innerHTML = document.body.classList.contains('light-mode') ? 
+                '<span style="font-size: 1.5rem;">☀️</span>' : 
+                '<span style="font-size: 1.5rem;">🌙</span>';
+        });
+    </script>
+</body>
+</html>
