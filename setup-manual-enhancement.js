@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 
 async function setupManualEnhancement() {
     console.log('🚀 Setting up Manual Book Enhancement System...\n');
@@ -26,7 +26,7 @@ async function setupManualEnhancement() {
         }
         
         // Open database connection
-        const db = new Database(dbPath);
+        const db = new sqlite3.Database(dbPath);
         
         // Read and execute schema
         const schemaPath = path.join(__dirname, 'marketplace', 'backend', 'database', 'manual-enhancement-schema.sql');
@@ -37,35 +37,44 @@ async function setupManualEnhancement() {
         
         console.log('📊 Creating manual enhancement tables...');
         
-        for (const command of commands) {
-            if (command.trim()) {
-                try {
-                    db.exec(command + ';');
-                } catch (error) {
-                    if (!error.message.includes('already exists')) {
-                        console.error('Error executing command:', command.substring(0, 50) + '...');
-                        console.error(error.message);
-                    }
-                }
-            }
-        }
-        
-        // Verify setup
-        const tables = db.prepare(`
-            SELECT name FROM sqlite_master 
-            WHERE type='table' AND name LIKE '%enhancement%'
-        `).all();
-        
-        console.log('✅ Manual enhancement tables created:');
-        tables.forEach(table => {
-            console.log(`   - ${table.name}`);
-        });
-        
-        // Check sample data
-        const sampleData = db.prepare(`
-            SELECT asin, actual_title, bestseller_rank 
-            FROM manual_book_enhancements
-        `).all();
+        return new Promise((resolve, reject) => {
+            let completed = 0;
+            const totalCommands = commands.length;
+            
+            for (const command of commands) {
+                if (command.trim()) {
+                    db.exec(command + ';', (err) => {
+                        if (err && !err.message.includes('already exists')) {
+                            console.error('Error executing command:', command.substring(0, 50) + '...');
+                            console.error(err.message);
+                        }
+                        completed++;
+                        
+                        if (completed === totalCommands) {
+                            // Verify setup
+                            db.all(`
+                                SELECT name FROM sqlite_master 
+                                WHERE type='table' AND name LIKE '%enhancement%'
+                            `, [], (err, tables) => {
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                
+                                console.log('✅ Manual enhancement tables created:');
+                                tables.forEach(table => {
+                                    console.log(`   - ${table.name}`);
+                                });
+                                
+                                // Check sample data
+                                db.all(`
+                                    SELECT asin, actual_title, bestseller_rank 
+                                    FROM manual_book_enhancements
+                                `, [], (err, sampleData) => {
+                                    if (err) {
+                                        reject(err);
+                                        return;
+                                    }
         
         if (sampleData.length > 0) {
             console.log('\n📚 Sample enhanced books:');
