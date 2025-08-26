@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Book Enhancement - Teneo Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #fea644 0%, #f39c12 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .form-section {
+            padding: 40px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #fea644;
+            box-shadow: 0 0 0 3px rgba(254, 166, 68, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #fea644 0%, #f39c12 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .quick-examples {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quick-examples h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .example-book {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .example-book:hover {
+            background: #e9ecef;
+            border-color: #fea644;
+        }
+
+        .example-book strong {
+            color: #fea644;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .header, .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Manual Book Enhancement</h1>
+            <p>Smart backup for when Amazon API fails - Add real book data manually</p>
+        </div>
+
+        <div class="form-section">
+            <div class="quick-examples">
+                <h3>🚀 Quick Fill - Travis's Published Books</h3>
+                <div class="example-book" onclick="fillTravisBook1()">
+                    <strong>The Hidden Triggers of Elite Habits</strong> - ASIN: B0FHF78VGF<br>
+                    <small>BSR: #1,637 | 4.2⭐ (23 reviews) | $9.99</small>
+                </div>
+                <div class="example-book" onclick="fillTravisBook2()">
+                    <strong>Mastering Micro-Habits</strong> - ASIN: B0FHFTYS7D<br>
+                    <small>BSR: #2,851 | 4.1⭐ (15 reviews) | $9.99</small>
+                </div>
+            </div>
+
+            <form id="enhancementForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="asin">Amazon ASIN *</label>
+                        <input type="text" id="asin" name="asin" required placeholder="B0FHF78VGF" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="source">Data Source</label>
+                        <select id="source" name="source">
+                            <option value="manual_entry">Manual Entry</option>
+                            <option value="amazon_search">Amazon Search</option>
+                            <option value="author_data">Author's Real Data</option>
+                            <option value="third_party">Third Party</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Actual Title *</label>
+                        <input type="text" id="title" name="actual_title" required placeholder="The Hidden Triggers of Elite Habits">
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" id="author" name="actual_author" placeholder="Travis Eric">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bestseller_rank">Bestseller Rank</label>
+                        <input type="number" id="bestseller_rank" name="bestseller_rank" placeholder="1637">
+                    </div>
+                    <div class="form-group">
+                        <label for="current_price">Current Price ($)</label>
+                        <input type="number" id="current_price" name="current_price" step="0.01" placeholder="9.99">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rating_average">Rating Average</label>
+                        <input type="number" id="rating_average" name="rating_average" step="0.1" min="0" max="5" placeholder="4.2">
+                    </div>
+                    <div class="form-group">
+                        <label for="rating_count">Rating Count</label>
+                        <input type="number" id="rating_count" name="rating_count" placeholder="23">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="primary_category">Primary Category</label>
+                        <input type="text" id="primary_category" name="primary_category" placeholder="Business & Money">
+                    </div>
+                    <div class="form-group">
+                        <label for="publication_date">Publication Date</label>
+                        <input type="date" id="publication_date" name="publication_date">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="cover_image_url">Cover Image URL</label>
+                        <input type="url" id="cover_image_url" name="cover_image_url" placeholder="https://images-na.ssl-images-amazon.com/images/I/...">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="Book description from Amazon or your own description..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes" placeholder="Any additional notes about this data..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">💾 Save Enhancement</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
+                    <button type="button" class="btn btn-secondary" onclick="viewEnhanced()">👀 View All Enhanced</button>
+                </div>
+            </form>
+
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // Quick fill functions for Travis's books
+        function fillTravisBook1() {
+            document.getElementById('asin').value = 'B0FHF78VGF';
+            document.getElementById('title').value = 'The Hidden Triggers of Elite Habits';
+            document.getElementById('author').value = 'Travis Eric';
+            document.getElementById('bestseller_rank').value = '1637';
+            document.getElementById('current_price').value = '9.99';
+            document.getElementById('rating_average').value = '4.2';
+            document.getElementById('rating_count').value = '23';
+            document.getElementById('primary_category').value = 'Business & Money';
+            document.getElementById('source').value = 'author_data';
+            document.getElementById('notes').value = 'Real performance data from Travis Eric - actual Amazon metrics';
+        }
+
+        function fillTravisBook2() {
+            document.getElementById('asin').value = 'B0FHFTYS7D';
+            document.getElementById('title').value = 'Mastering Micro-Habits';
+            document.getElementById('author').value = 'Travis Eric';
+            document.getElementById('bestseller_rank').value = '2851';
+            document.getElementById('current_price').value = '9.99';
+            document.getElementById('rating_average').value = '4.1';
+            document.getElementById('rating_count').value = '15';
+            document.getElementById('primary_category').value = 'Self-Help';
+            document.getElementById('source').value = 'author_data';
+            document.getElementById('notes').value = 'Real performance data from Travis Eric - actual Amazon metrics';
+        }
+
+        function clearForm() {
+            document.getElementById('enhancementForm').reset();
+            hideStatus();
+        }
+
+        function showStatus(message, isError = false) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            statusEl.style.display = 'block';
+        }
+
+        function hideStatus() {
+            document.getElementById('statusMessage').style.display = 'none';
+        }
+
+        function viewEnhanced() {
+            // Open enhanced books list (would integrate with actual API)
+            window.open('/api/manual-enhancement/books', '_blank');
+        }
+
+        // Form submission
+        document.getElementById('enhancementForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                asin: formData.get('asin'),
+                manual_data: {
+                    actual_title: formData.get('actual_title'),
+                    actual_author: formData.get('actual_author'),
+                    bestseller_rank: formData.get('bestseller_rank') ? parseInt(formData.get('bestseller_rank')) : null,
+                    current_price: formData.get('current_price') ? parseFloat(formData.get('current_price')) : null,
+                    rating_average: formData.get('rating_average') ? parseFloat(formData.get('rating_average')) : null,
+                    rating_count: formData.get('rating_count') ? parseInt(formData.get('rating_count')) : null,
+                    primary_category: formData.get('primary_category'),
+                    publication_date: formData.get('publication_date'),
+                    cover_image_url: formData.get('cover_image_url'),
+                    description: formData.get('description')
+                },
+                source: formData.get('source'),
+                notes: formData.get('notes')
+            };
+
+            try {
+                const response = await fetch('/api/manual-enhancement/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus(`✅ Book enhancement ${result.action} successfully! (ID: ${result.enhancement_id})`);
+                    // Optionally clear form after successful submission
+                    // clearForm();
+                } else {
+                    showStatus(`❌ Error: ${result.error}`, true);
+                }
+            } catch (error) {
+                showStatus(`❌ Network error: ${error.message}`, true);
+            }
+        });
+
+        // Auto-hide status messages after 5 seconds
+        setInterval(() => {
+            const statusEl = document.getElementById('statusMessage');
+            if (statusEl.style.display === 'block') {
+                setTimeout(() => hideStatus(), 5000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
