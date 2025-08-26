@@ -56,6 +56,10 @@ const luluAdminRoutes = require('./routes/luluAdmin');
 const adminRoutes = require('./routes/adminRoutes');
 const networkRoutes = require('./routes/networkRoutes');
 const configRoutes = require('./routes/configRoutes');
+const publishedBooksRoutes = require('./routes/publishedBooks');
+const publisherProfileRoutes = require('./routes/publisherProfiles');
+const bookAnalyticsRoutes = require('./routes/bookAnalytics');
+const digestRoutes = require('./routes/digestRoutes');
 
 const app = express();
 
@@ -80,9 +84,15 @@ app.use(session({
     name: 'teneo.sid' // Custom session name
 }));
 
-// Middleware
+// Middleware - Updated CORS for Teneo domains
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+        'https://teneo.io',
+        'https://www.teneo.io', 
+        'https://staging.teneo.io',
+        'http://localhost:3333',  // Teneo development
+        process.env.FRONTEND_URL || 'http://localhost:3000'  // Keep backward compatibility
+    ],
     credentials: true, // Allow cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
@@ -119,6 +129,10 @@ app.use('/api/lulu', luluAdminRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/network', networkRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api/published', publishedBooksRoutes);
+app.use('/api/publishers', publisherProfileRoutes);
+app.use('/api/books', bookAnalyticsRoutes);
+app.use('/api/digest', digestRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -377,6 +391,18 @@ if (process.env.NODE_ENV !== 'production') {
     app.get('/admin', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
     });
+    
+    app.get('/published', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'published.html'));
+    });
+    
+    app.get('/published/profile/:userId', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'publisher-profile.html'));
+    });
+    
+    app.get('/rewards', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'rewards.html'));
+    });
 }
 
 // Static file serving - MUST BE LAST
@@ -397,12 +423,18 @@ const initDatabase = async () => {
     }
 };
 
+// Initialize cron jobs
+const CronJobService = require('./services/cronJobs');
+const cronService = new CronJobService();
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, async () => {
     await initDatabase();
+    cronService.start();
     console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
     console.log(`🌍 API available at http://localhost:${PORT}/api`);
     console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📈 Published books dashboard: http://localhost:${PORT}/published`);
 });
 
 module.exports = app;
