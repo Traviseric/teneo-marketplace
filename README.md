@@ -200,12 +200,23 @@ curl "http://localhost:3001/api/published/books?sort=best_bsr&limit=5"
 curl "http://localhost:3001/api/published/leaderboards"
 ```
 
-### **Sample Data**
-The repository includes a comprehensive sample data generator with 30 realistic books across 6 genres, complete with:
-- Realistic BSR rankings and trends
-- Review counts and ratings
-- Publisher profiles and achievements
-- Historical performance data
+### **Authentic Data Approach**
+**🎯 Quality Over Fake Quantity**: This marketplace prioritizes authentic data over fabricated success stories.
+
+**Real Data Only**:
+- Only genuine Teneo-generated books are featured
+- Real Amazon ASINs with actual performance metrics
+- Authentic publisher profiles and achievements
+- No fake sample data or misleading representations
+
+**Setup**:
+```bash
+# Initialize with authentic data
+cd marketplace/backend/scripts
+node create-real-data.js
+```
+
+**Empty State Design**: When no books are submitted, the marketplace shows inspiring empty states encouraging real user participation rather than fake data.
 
 ---
 

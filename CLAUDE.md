@@ -23,6 +23,9 @@ npm run dev
 # Initialize/reset database
 node marketplace/backend/database/init.js
 
+# Setup authentic data (real Teneo books only)
+node marketplace/backend/scripts/create-real-data.js
+
 # Generate admin password hash
 node marketplace/backend/scripts/generate-password-hash.js "YourPassword123!"
 node marketplace/backend/scripts/generate-password-hash.js --generate  # Auto-generate secure password

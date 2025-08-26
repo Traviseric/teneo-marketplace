@@ -13,120 +13,55 @@ app.get('/api/published/stats', (req, res) => {
         success: true,
         data: {
             overall: {
-                total_books: 142,
-                verified_books: 98,
-                ranked_books: 76,
-                avg_rating: 4.3,
-                best_rank: 2847
+                total_books: 0,
+                verified_books: 0,
+                ranked_books: 0,
+                avg_rating: 0,
+                best_rank: null
             },
             recent: {
-                books_this_week: 12,
-                new_authors: 8
+                books_this_week: 0,
+                new_authors: 0
             },
             milestones: [{
                 milestone_name: '10K_BOOKS_GOAL',
-                current_count: 142,
+                current_count: 0,
                 target_count: 10000,
                 achieved_at: null
-            }]
+            }],
+            empty_state: {
+                show: true,
+                message: "🎯 Ready for authentic Teneo success stories",
+                subtitle: "Quality over quantity - real AI publishing results only"
+            }
         }
     });
 });
 
 app.get('/api/published/dashboard', (req, res) => {
-    const mockBooks = [
-        {
-            id: 1,
-            title: "The Future of AI: A Comprehensive Guide",
-            author: "Sarah Chen",
-            cover_image_url: "https://picsum.photos/200/300?random=1",
-            bestseller_rank: 12847,
-            rating_average: 4.5,
-            rating_count: 127,
-            current_price: 24.99,
-            verification_status: "verified",
-            created_at: new Date().toISOString(),
-            publisher_name: "TechAuthor",
-            trend_direction: "up"
-        },
-        {
-            id: 2,
-            title: "Mindful Leadership in Modern Times",
-            author: "Marcus Johnson",
-            cover_image_url: "https://picsum.photos/200/300?random=2",
-            bestseller_rank: 34521,
-            rating_average: 4.2,
-            rating_count: 89,
-            current_price: 19.99,
-            verification_status: "verified",
-            created_at: new Date(Date.now() - 86400000).toISOString(),
-            publisher_name: "MindfulWriter"
-        },
-        {
-            id: 3,
-            title: "Digital Marketing Mastery",
-            author: "Emily Rodriguez",
-            cover_image_url: "https://picsum.photos/200/300?random=3",
-            bestseller_rank: 5678,
-            rating_average: 4.7,
-            rating_count: 234,
-            current_price: 29.99,
-            verification_status: "verified",
-            created_at: new Date(Date.now() - 172800000).toISOString(),
-            publisher_name: "MarketingGuru",
-            trend_direction: "up"
-        },
-        {
-            id: 4,
-            title: "Sustainable Living Guide",
-            author: "David Green",
-            cover_image_url: "https://picsum.photos/200/300?random=4",
-            bestseller_rank: 87432,
-            rating_average: 4.1,
-            rating_count: 45,
-            current_price: 16.99,
-            verification_status: "verified",
-            created_at: new Date(Date.now() - 259200000).toISOString(),
-            publisher_name: "EcoAuthor"
-        },
-        {
-            id: 5,
-            title: "Creative Writing Workshop",
-            author: "Lisa Thompson",
-            cover_image_url: "https://picsum.photos/200/300?random=5",
-            bestseller_rank: 156789,
-            rating_average: 4.0,
-            rating_count: 67,
-            current_price: 22.99,
-            verification_status: "verified",
-            created_at: new Date(Date.now() - 345600000).toISOString(),
-            publisher_name: "CreativeMinds"
-        },
-        {
-            id: 6,
-            title: "Investment Strategies for Beginners",
-            author: "Robert Kim",
-            cover_image_url: "https://picsum.photos/200/300?random=6",
-            bestseller_rank: 23456,
-            rating_average: 4.4,
-            rating_count: 198,
-            current_price: 27.99,
-            verification_status: "verified",
-            created_at: new Date(Date.now() - 432000000).toISOString(),
-            publisher_name: "FinanceExpert",
-            trend_direction: "up"
-        }
+    // Authentic empty state - showing real potential
+    // In production, this will show actual Teneo-generated books
+    const realBooks = [
+        // Empty state - will be populated with real user submissions
+        // When users submit their published Teneo books, they'll appear here
     ];
 
     res.json({
         success: true,
         data: {
-            books: mockBooks,
+            books: realBooks,
             pagination: {
                 current_page: 1,
                 per_page: 20,
-                total_items: mockBooks.length,
-                total_pages: 1
+                total_items: realBooks.length,
+                total_pages: realBooks.length > 0 ? 1 : 0
+            },
+            empty_state: {
+                show: realBooks.length === 0,
+                title: "🚀 Building the Future of AI Publishing",
+                message: "The Teneo marketplace is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they'll showcase here.",
+                call_to_action: "Be the first to share your Teneo success story!",
+                authentic: true
             }
         }
     });
@@ -138,25 +73,21 @@ app.get('/api/publishers/leaderboards', (req, res) => {
         data: {
             most_published: {
                 title: "Most Published",
-                entries: [
-                    { rank: 1, user_id: "user1", display_name: "TechAuthor", formatted_value: "12 books", badge_display: '["gold_trophy"]' },
-                    { rank: 2, user_id: "user2", display_name: "MarketingGuru", formatted_value: "8 books", badge_display: '["silver_stack"]' },
-                    { rank: 3, user_id: "user3", display_name: "CreativeMinds", formatted_value: "6 books", badge_display: '["bronze_book"]' }
-                ]
+                entries: []
             },
             rising_stars: {
-                title: "Rising Stars",
-                entries: [
-                    { rank: 1, user_id: "user4", display_name: "NewAuthor", formatted_value: "3 books this month", badge_display: '["rocket"]' },
-                    { rank: 2, user_id: "user5", display_name: "FreshWriter", formatted_value: "2 books this month", badge_display: '["star"]' }
-                ]
+                title: "Rising Stars", 
+                entries: []
             },
             best_sellers: {
                 title: "Best Sellers",
-                entries: [
-                    { rank: 1, user_id: "user6", display_name: "Bestselling Author", formatted_value: "Avg BSR: 5,678", badge_display: '["diamond"]' },
-                    { rank: 2, user_id: "user7", display_name: "Popular Writer", formatted_value: "Avg BSR: 12,847", badge_display: '["crown"]' }
-                ]
+                entries: []
+            },
+            empty_state: {
+                show: true,
+                title: "🏆 Leaderboards Coming Soon",
+                message: "As Teneo authors share their publishing success, competitive leaderboards will emerge here.",
+                authentic: true
             }
         }
     });
