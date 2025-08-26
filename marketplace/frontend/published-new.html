@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teneo Books - AI-Generated Publishing Success Stories</title>
+    <meta name="description" content="Discover successful AI-generated books published by Teneo authors. Real results, verified performance, authentic success stories.">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@400;500;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://images-na.ssl-images-amazon.com">
+    
+    <style>
+        :root {
+            /* Amazon-inspired color system */
+            --amazon-orange: #FF9900;
+            --amazon-orange-dark: #E47911;
+            --amazon-blue: #007185;
+            --amazon-blue-dark: #004F5C;
+            --amazon-dark: #232F3E;
+            --amazon-light-blue: #007EB9;
+            --text-primary: #0F1111;
+            --text-secondary: #565959;
+            --border-light: #D5D9D9;
+            --bg-light: #F7F8F8;
+            --success-green: #067D62;
+            --rating-gold: #FFA41C;
+            --shadow-light: rgba(15, 17, 17, 0.15);
+            --shadow-medium: rgba(15, 17, 17, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Amazon Ember", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--text-primary);
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER - Ultra-optimized like Amazon */
+        .header {
+            background: linear-gradient(to bottom, #37475A, #232F3E);
+            padding: 0;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .header-main {
+            padding: 8px 0;
+        }
+
+        .header-content {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .logo:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .logo-text {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: var(--amazon-orange);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        /* SEARCH - Center stage like Amazon */
+        .search-container {
+            flex: 1;
+            max-width: 800px;
+            position: relative;
+        }
+
+        .search-form {
+            display: flex;
+            height: 40px;
+            box-shadow: 0 2px 4px var(--shadow-light);
+        }
+
+        .search-category {
+            background: #F3F3F3;
+            border: 1px solid #CDCDCD;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding: 0 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: 1px solid #CDCDCD;
+            border-left: none;
+            border-right: none;
+            padding: 0 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--amazon-orange);
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.2);
+        }
+
+        .search-btn {
+            background: var(--amazon-orange);
+            border: 1px solid #A88734;
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            width: 45px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: var(--amazon-orange-dark);
+        }
+
+        /* HEADER NAV - Secondary actions */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.2;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item-main {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* BREADCRUMB - SEO optimized */
+        .breadcrumb {
+            background: #F7F8F8;
+            border-bottom: 1px solid var(--border-light);
+            padding: 10px 0;
+            font-size: 12px;
+        }
+
+        .breadcrumb-content {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: var(--amazon-blue);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--amazon-orange);
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-secondary);
+        }
+
+        /* MAIN CONTAINER - Optimized layout */
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        /* SIDEBAR - Conversion optimized filters */
+        .sidebar {
+            background: #fff;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+
+        .filter-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .filter-option:hover {
+            background: #F7F8F8;
+            margin: 0 -8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+        }
+
+        .filter-option a {
+            color: var(--amazon-blue);
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .filter-option a:hover {
+            color: var(--amazon-orange);
+            text-decoration: underline;
+        }
+
+        .filter-count {
+            color: var(--text-secondary);
+            font-size: 11px;
+            background: #F7F8F8;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        /* PRICE RANGE SLIDER */
+        .price-range {
+            margin: 10px 0;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .price-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            background: #fff;
+        }
+
+        .results-header {
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .results-count {
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .results-subtext {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .sort-select {
+            padding: 6px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 12px;
+            background: #fff;
+            min-width: 150px;
+        }
+
+        /* BOOKS GRID - Ultra-optimized cards */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .book-card {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 18px;
+            background: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            box-shadow: 0 4px 12px var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        /* Book badges - Trust signals */
+        .book-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 2;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .badge-verified {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .badge-ai {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .badge-bestseller {
+            background: var(--amazon-orange);
+            color: #000;
+        }
+
+        .badge-new {
+            background: #E47911;
+            color: white;
+        }
+
+        /* Book cover with optimization */
+        .book-cover-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover .book-cover {
+            transform: scale(1.05);
+        }
+
+        .book-cover-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-align: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Book info hierarchy */
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .book-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--amazon-blue);
+            text-decoration: none;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .book-title:hover {
+            color: var(--amazon-orange);
+            text-decoration: underline;
+        }
+
+        .book-author {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .book-author-link {
+            color: var(--amazon-blue);
+            text-decoration: none;
+        }
+
+        .book-author-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Rating system - Social proof */
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .stars {
+            display: flex;
+            gap: 1px;
+        }
+
+        .star {
+            color: var(--rating-gold);
+            font-size: 14px;
+        }
+
+        .star.empty {
+            color: #ddd;
+        }
+
+        .rating-text {
+            color: var(--amazon-blue);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .rating-text:hover {
+            text-decoration: underline;
+        }
+
+        .rating-count {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* Pricing - Value proposition */
+        .book-pricing {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 10px 0;
+        }
+
+        .book-price-main {
+            font-size: 18px;
+            font-weight: 700;
+            color: #B12704;
+        }
+
+        .book-price-format {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .book-price-savings {
+            font-size: 12px;
+            color: var(--success-green);
+            font-weight: 500;
+        }
+
+        /* Performance metrics */
+        .book-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px;
+            background: #F7F8F8;
+            border-radius: 4px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .metric-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Call to action buttons */
+        .book-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-primary {
+            background: var(--amazon-orange);
+            color: #000;
+            border: 1px solid #A88734;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--amazon-orange-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #F7F8F8;
+            border-color: var(--amazon-blue);
+        }
+
+        /* Loading states */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .book-card-skeleton {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 18px;
+            background: #fff;
+        }
+
+        .skeleton-cover {
+            width: 100%;
+            height: 220px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .skeleton-title {
+            height: 20px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-author {
+            height: 14px;
+            width: 60%;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-rating {
+            height: 12px;
+            width: 40%;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Empty state - Inspirational */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            color: var(--amazon-blue);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state h2 {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .empty-state-cta {
+            background: var(--amazon-orange);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state-cta:hover {
+            background: var(--amazon-orange-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 260px 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .sidebar {
+                position: static;
+                background: #F7F8F8;
+                padding: 15px;
+                border-radius: 8px;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .search-container {
+                order: -1;
+                width: 100%;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .book-cover-container {
+                height: 180px;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for keyboard navigation */
+        a:focus, button:focus, input:focus, select:focus {
+            outline: 3px solid var(--amazon-orange);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ultra-optimized Header -->
+    <header class="header" role="banner">
+        <div class="header-main">
+            <div class="header-content">
+                <!-- Logo with brand identity -->
+                <a href="#" class="logo" aria-label="Teneo Books - AI-Generated Publishing Success Stories">
+                    <span class="logo-text">Teneo Books</span>
+                    <span class="logo-badge">AI Verified</span>
+                </a>
+
+                <!-- Search - Center stage -->
+                <div class="search-container" role="search">
+                    <form class="search-form" onsubmit="return false;">
+                        <select class="search-category" aria-label="Search category">
+                            <option>All Books</option>
+                            <option>Business</option>
+                            <option>Self-Help</option>
+                            <option>Technology</option>
+                            <option>Fiction</option>
+                        </select>
+                        <input type="text" class="search-input" 
+                               placeholder="Search AI-generated books, authors, topics..." 
+                               aria-label="Search books">
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="#333">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="header-nav" role="navigation">
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-main">Success Stories</div>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-main">Publishers</div>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <div class="nav-item-main">Analytics</div>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="#">Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="#">Books</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>AI-Generated Books</span>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar" role="complementary">
+            <!-- Category Filter -->
+            <div class="filter-section">
+                <h3 class="filter-title">
+                    📚 Category
+                </h3>
+                <div class="filter-options" id="categoryFilters">
+                    <div class="filter-option">
+                        <a href="#" data-filter="category:business">Business & Investing</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="category:self-help">Self-Help</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="category:technology">Technology</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="category:fiction">Fiction</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="category:health">Health & Fitness</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-section">
+                <h3 class="filter-title">💰 Price Range</h3>
+                <div class="price-range">
+                    <div class="price-inputs">
+                        <input type="number" class="price-input" placeholder="Min" min="0">
+                        <input type="number" class="price-input" placeholder="Max" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Rating -->
+            <div class="filter-section">
+                <h3 class="filter-title">⭐ Customer Rating</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <a href="#" data-filter="rating:4+">★★★★☆ & up</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="rating:3+">★★★☆☆ & up</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="rating:2+">★★☆☆☆ & up</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Seller Rank -->
+            <div class="filter-section">
+                <h3 class="filter-title">🏆 Best Seller Rank</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <a href="#" data-filter="bsr:10000">Top 10,000</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="bsr:50000">Top 50,000</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="bsr:100000">Top 100,000</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Model -->
+            <div class="filter-section">
+                <h3 class="filter-title">🤖 AI Model Used</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <a href="#" data-filter="model:teneo">Teneo Generated</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                    <div class="filter-option">
+                        <a href="#" data-filter="verified:true">Verified Authors</a>
+                        <span class="filter-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" role="main">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-info">
+                    <div class="results-count">
+                        <span id="resultsCount">0</span> results for <strong>"AI-generated books"</strong>
+                    </div>
+                    <div class="results-subtext" id="resultsSubtext">
+                        Showing verified Teneo publishing success stories
+                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <label for="sortSelect">Sort by:</label>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="relevance">Featured</option>
+                        <option value="bsr">Best Seller Rank</option>
+                        <option value="rating">Customer Rating</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Publication Date</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Books Grid -->
+            <div class="books-grid" id="booksGrid">
+                <!-- Loading skeletons -->
+                <div class="book-card-skeleton">
+                    <div class="skeleton skeleton-cover"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-author"></div>
+                    <div class="skeleton skeleton-rating"></div>
+                </div>
+                <div class="book-card-skeleton">
+                    <div class="skeleton skeleton-cover"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-author"></div>
+                    <div class="skeleton skeleton-rating"></div>
+                </div>
+                <div class="book-card-skeleton">
+                    <div class="skeleton skeleton-cover"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-author"></div>
+                    <div class="skeleton skeleton-rating"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Application state
+        let booksData = [];
+        let filteredBooks = [];
+        let isLoading = true;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadBooks();
+            setupEventListeners();
+        });
+
+        // Load books with error handling
+        async function loadBooks() {
+            try {
+                const response = await fetch('/api/published/dashboard');
+                const data = await response.json();
+                
+                if (data.success) {
+                    booksData = data.data.books || [];
+                    filteredBooks = [...booksData];
+                    
+                    displayBooks(filteredBooks);
+                    updateResultsCount(filteredBooks.length);
+                    updateFilterCounts();
+                    
+                    // Show empty state if needed
+                    if (booksData.length === 0 && data.data.empty_state?.show) {
+                        showEmptyState(data.data.empty_state);
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load books');
+                }
+            } catch (error) {
+                console.error('Error loading books:', error);
+                showEmptyState({
+                    title: "Unable to Load Books",
+                    message: "We're having trouble loading the books right now. Please check your connection and try again.",
+                    call_to_action: "Refresh Page"
+                });
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // Display books with ultra-optimized cards
+        function displayBooks(books) {
+            const grid = document.getElementById('booksGrid');
+            
+            if (books.length === 0 && !isLoading) {
+                return; // Empty state handled separately
+            }
+
+            grid.innerHTML = books.map(book => `
+                <article class="book-card" itemscope itemtype="http://schema.org/Book">
+                    <!-- Trust signal badges -->
+                    <div class="book-badges">
+                        ${book.verification_status === 'verified' ? 
+                            '<span class="badge badge-verified">✓ Verified</span>' : ''}
+                        <span class="badge badge-ai">AI Generated</span>
+                        ${book.bestseller_rank && book.bestseller_rank < 10000 ? 
+                            '<span class="badge badge-bestseller">Bestseller</span>' : ''}
+                        ${isRecentlyPublished(book.created_at) ? 
+                            '<span class="badge badge-new">New Release</span>' : ''}
+                    </div>
+
+                    <!-- Book cover with lazy loading -->
+                    <div class="book-cover-container">
+                        ${book.cover_image_url ? 
+                            `<img src="${book.cover_image_url}" 
+                                 alt="Cover of ${book.title}" 
+                                 class="book-cover"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="book-cover-placeholder" style="display:none;">
+                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="#ccc">
+                                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 19V5h14v14H5z"/>
+                                     <path d="m13.5 9-2 3-1.5-2-3 4h12l-5.5-5z"/>
+                                 </svg>
+                                 <span>AI-Generated Book</span>
+                             </div>` : 
+                            `<div class="book-cover-placeholder">
+                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="#ccc">
+                                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 19V5h14v14H5z"/>
+                                     <path d="m13.5 9-2 3-1.5-2-3 4h12l-5.5-5z"/>
+                                 </svg>
+                                 <span>AI-Generated Book</span>
+                             </div>`
+                        }
+                    </div>
+
+                    <!-- Book information hierarchy -->
+                    <div class="book-info">
+                        <a href="#" class="book-title" onclick="viewBook('${book.id}')" itemprop="name">
+                            ${book.title}
+                        </a>
+                        
+                        <div class="book-author" itemprop="author">
+                            by <a href="#" class="book-author-link" onclick="viewAuthor('${book.publisher_name}')">${book.author}</a>
+                        </div>
+
+                        ${book.rating_average ? `
+                            <div class="book-rating" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                                <div class="stars" aria-label="Rating: ${book.rating_average} out of 5 stars">
+                                    ${generateStars(book.rating_average)}
+                                </div>
+                                <a href="#" class="rating-text" onclick="showReviews('${book.id}')">
+                                    <span itemprop="ratingValue">${book.rating_average}</span>
+                                </a>
+                                <span class="rating-count">
+                                    (<span itemprop="reviewCount">${(book.rating_count || 0).toLocaleString()}</span>)
+                                </span>
+                                <meta itemprop="bestRating" content="5">
+                            </div>
+                        ` : ''}
+
+                        ${book.current_price ? `
+                            <div class="book-pricing" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                <div class="book-price-main">
+                                    <span itemprop="price" content="${book.current_price}">$${book.current_price}</span>
+                                    <meta itemprop="priceCurrency" content="USD">
+                                </div>
+                                <div class="book-price-format">Kindle Edition</div>
+                                ${book.list_price && book.list_price > book.current_price ? 
+                                    `<div class="book-price-savings">
+                                        Save $${(book.list_price - book.current_price).toFixed(2)} (${Math.round((1 - book.current_price/book.list_price) * 100)}%)
+                                    </div>` : ''
+                                }
+                                <link itemprop="availability" href="http://schema.org/InStock">
+                            </div>
+                        ` : ''}
+
+                        <!-- Performance metrics -->
+                        <div class="book-metrics">
+                            ${book.bestseller_rank ? `
+                                <div class="metric">
+                                    <div class="metric-value">#${book.bestseller_rank.toLocaleString()}</div>
+                                    <div class="metric-label">BSR</div>
+                                </div>
+                            ` : ''}
+                            
+                            ${book.review_count ? `
+                                <div class="metric">
+                                    <div class="metric-value">${book.review_count.toLocaleString()}</div>
+                                    <div class="metric-label">Reviews</div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="metric">
+                                <div class="metric-value">${formatPublishDate(book.created_at)}</div>
+                                <div class="metric-label">Published</div>
+                            </div>
+                        </div>
+
+                        <!-- Call to action buttons -->
+                        <div class="book-actions">
+                            <a href="https://amazon.com/dp/${book.amazon_asin || ''}" 
+                               target="_blank" 
+                               class="btn-primary"
+                               onclick="trackClick('view_on_amazon', '${book.id}')">
+                                View on Amazon
+                            </a>
+                            <a href="#" class="btn-secondary" onclick="addToWishlist('${book.id}')">
+                                Add to Wishlist
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Show inspirational empty state
+        function showEmptyState(emptyState) {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚀</div>
+                    <h2>${emptyState.title || 'Building the Future of AI Publishing'}</h2>
+                    <p>${emptyState.message || 'The Teneo marketplace is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they\'ll showcase here.'}</p>
+                    <p><strong>Why this approach?</strong> We believe in authenticity over fabricated success stories. Every book you see here represents real AI publishing achievement.</p>
+                    ${emptyState.call_to_action ? 
+                        `<a href="#" class="empty-state-cta" onclick="showSubmissionForm()">
+                            ${emptyState.call_to_action}
+                        </a>` : ''
+                    }
+                </div>
+            `;
+        }
+
+        // Generate optimized star rating
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '';
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<span class="star">★</span>';
+            }
+            if (hasHalfStar) {
+                stars += '<span class="star">☆</span>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<span class="star empty">☆</span>';
+            }
+            
+            return stars;
+        }
+
+        // Utility functions
+        function isRecentlyPublished(dateString) {
+            const publishDate = new Date(dateString);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            return publishDate > thirtyDaysAgo;
+        }
+
+        function formatPublishDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 30) return `${diffDays}d ago`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+            return `${Math.floor(diffDays / 365)}yr ago`;
+        }
+
+        function updateResultsCount(count) {
+            document.getElementById('resultsCount').textContent = count.toLocaleString();
+            
+            const subtext = document.getElementById('resultsSubtext');
+            if (count === 0) {
+                subtext.textContent = 'Try adjusting your filters or search terms';
+            } else if (count === 1) {
+                subtext.textContent = 'Showing 1 verified Teneo success story';
+            } else {
+                subtext.textContent = `Showing ${count.toLocaleString()} verified Teneo success stories`;
+            }
+        }
+
+        function updateFilterCounts() {
+            // Update filter counts based on current data
+            const categoryFilters = document.getElementById('categoryFilters');
+            const options = categoryFilters.querySelectorAll('.filter-count');
+            
+            // This would be implemented with actual filtering logic
+            options.forEach(option => {
+                option.textContent = '0'; // Placeholder
+            });
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            // Sort functionality
+            document.getElementById('sortSelect').addEventListener('change', handleSort);
+            
+            // Filter functionality
+            document.querySelectorAll('[data-filter]').forEach(filter => {
+                filter.addEventListener('click', handleFilter);
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', debounce(handleSearch, 300));
+        }
+
+        function handleSort(e) {
+            const sortBy = e.target.value;
+            let sortedBooks = [...filteredBooks];
+            
+            switch(sortBy) {
+                case 'bsr':
+                    sortedBooks.sort((a, b) => (a.bestseller_rank || 999999) - (b.bestseller_rank || 999999));
+                    break;
+                case 'rating':
+                    sortedBooks.sort((a, b) => (b.rating_average || 0) - (a.rating_average || 0));
+                    break;
+                case 'price-low':
+                    sortedBooks.sort((a, b) => (a.current_price || 0) - (b.current_price || 0));
+                    break;
+                case 'price-high':
+                    sortedBooks.sort((a, b) => (b.current_price || 0) - (a.current_price || 0));
+                    break;
+                case 'newest':
+                    sortedBooks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                default:
+                    // Keep featured/relevance order
+                    break;
+            }
+            
+            displayBooks(sortedBooks);
+        }
+
+        function handleFilter(e) {
+            e.preventDefault();
+            // Implement filtering logic
+            console.log('Filter clicked:', e.target.dataset.filter);
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            if (!query) {
+                filteredBooks = [...booksData];
+            } else {
+                filteredBooks = booksData.filter(book => 
+                    book.title.toLowerCase().includes(query) ||
+                    book.author.toLowerCase().includes(query) ||
+                    (book.description && book.description.toLowerCase().includes(query))
+                );
+            }
+            
+            displayBooks(filteredBooks);
+            updateResultsCount(filteredBooks.length);
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Action handlers
+        function viewBook(bookId) {
+            console.log('View book details:', bookId);
+            // Could open modal or navigate to detail page
+        }
+
+        function viewAuthor(authorName) {
+            console.log('View author profile:', authorName);
+            // Navigate to author profile page
+        }
+
+        function showReviews(bookId) {
+            console.log('Show reviews for book:', bookId);
+            // Navigate to Amazon reviews or show local reviews
+        }
+
+        function addToWishlist(bookId) {
+            console.log('Add to wishlist:', bookId);
+            // Implement wishlist functionality
+        }
+
+        function showSubmissionForm() {
+            console.log('Show book submission form');
+            // Show modal or navigate to submission page
+        }
+
+        function trackClick(action, bookId) {
+            console.log(`Tracking: ${action} for book ${bookId}`);
+            // Implement analytics tracking
+        }
+    </script>
+</body>
+</html>
