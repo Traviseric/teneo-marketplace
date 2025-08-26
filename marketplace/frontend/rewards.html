@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Rewards - Teneo Publishing Network</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .rewards-summary {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reward-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reward-stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-value.highlight {
+            color: #27ae60;
+        }
+
+        .next-milestone {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .milestone-progress {
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .available-rewards {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .reward-card {
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .reward-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .reward-card.available {
+            border-color: #27ae60;
+            background: #f8fff8;
+        }
+
+        .reward-card.claimed {
+            border-color: #95a5a6;
+            background: #f8f9fa;
+            opacity: 0.8;
+        }
+
+        .reward-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reward-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .reward-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .reward-value {
+            background: #3498db;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .reward-value.available {
+            background: #27ae60;
+        }
+
+        .reward-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .reward-date {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        .claim-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .claim-btn:hover {
+            background: #219a52;
+        }
+
+        .claim-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .reward-history {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .history-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .history-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/published" class="logo">
+                <i class="fas fa-book"></i> Teneo Publishing Network
+            </a>
+            <nav class="nav-links">
+                <a href="/published"><i class="fas fa-chart-bar"></i> Dashboard</a>
+                <a href="/rewards"><i class="fas fa-gift"></i> My Rewards</a>
+                <a href="#" onclick="goToProfile()"><i class="fas fa-user"></i> Profile</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-gift"></i> My Rewards</h1>
+            <p class="page-subtitle">Track your earnings and claim free book generations</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Loading your rewards...</p>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle fa-2x"></i>
+            <h3>Unable to Load Rewards</h3>
+            <p>Please make sure you're logged into your Teneo account.</p>
+            <button onclick="window.location.reload()" class="claim-btn" style="width: auto; margin-top: 1rem;">
+                Try Again
+            </button>
+        </div>
+
+        <div id="rewardsContent" style="display: none;">
+            <div class="rewards-grid">
+                <div class="rewards-summary">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-pie"></i> Rewards Summary
+                    </h2>
+                    
+                    <div id="summaryStats"></div>
+                    
+                    <div id="nextMilestone" class="next-milestone" style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-target"></i>
+                            <strong>Next Milestone</strong>
+                        </div>
+                        <div id="milestoneContent"></div>
+                    </div>
+                </div>
+
+                <div class="available-rewards">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i> Available Rewards
+                    </h2>
+                    <div id="availableRewardsList"></div>
+                </div>
+            </div>
+
+            <div class="reward-history">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i> Reward History
+                </h2>
+                <div id="rewardHistoryList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/rewards.js"></script>
+</body>
+</html>
