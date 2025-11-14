@@ -1,0 +1,74 @@
+{
+  "brand": "information_asymmetry",
+  "name": "Asymmetry Books Catalog",
+  "description": "Uncensored truth Amazon won't publish",
+
+  "collections": [
+    {
+      "id": "institutional-crime",
+      "name": "Institutional Crime Exposure",
+      "description": "How hospitals, banks, pharma companies, and insurance firms systematically defraud you",
+      "tier": 2,
+      "books": []
+    },
+    {
+      "id": "criminal-tactics",
+      "name": "Know Your Enemy Series",
+      "description": "Individual criminal tactics exposed for victim protection",
+      "tier": 2,
+      "books": []
+    },
+    {
+      "id": "foundation-layer",
+      "name": "The Foundation Layer",
+      "description": "No false hope. The complete truth about systemic control.",
+      "tier": 3,
+      "prerequisite": "Complete 5+ books from previous tiers",
+      "books": []
+    }
+  ],
+
+  "books": [
+    {
+      "id": "demo-book-101",
+      "title": "Hospital Billing Fraud: The Full Exposure (DEMO)",
+      "author": "Information Asymmetry Series",
+      "description": "How hospitals systematically defraud patients through chargemaster pricing, upcoding, and unbundling. Named institutions. Full exposure.",
+      "longDescription": "The Amazon version told you how to protect yourself. This version names the institutions, documents the schemes, and exposes the full scope of medical billing fraud.",
+
+      "tier": 2,
+      "category": "Institutional Crime",
+      "collection": "institutional-crime",
+
+      "price": 9.99,
+      "priceBTC": "0.00015",
+      "priceXMR": "0.065",
+      "currency": "USD",
+
+      "format": ["digital"],
+      "pages": 187,
+      "fileSize": "2.3 MB",
+
+      "coverImage": "/brands/information_asymmetry/assets/covers/demo-cover.jpg",
+      "digitalFile": "/brands/information_asymmetry/pdfs/demo-book.pdf",
+
+      "contentWarnings": [
+        "Exposes institutional fraud",
+        "Names specific corporations",
+        "Documents criminal tactics"
+      ],
+
+      "prerequisites": null,
+      "recommendedReading": [],
+
+      "disclaimer": "This book exposes criminal fraud for educational and victim protection purposes. It is not instructional. All information is documented from public records.",
+
+      "metadata": {
+        "publishDate": "2025-01",
+        "lastUpdated": "2025-01",
+        "version": "1.0",
+        "isDemoContent": true
+      }
+    }
+  ]
+}

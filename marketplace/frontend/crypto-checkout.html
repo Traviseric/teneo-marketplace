@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Checkout - Asymmetry Books</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        .warning-box {
+            background: #FF3B30;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .book-details {
+            background: #1C1C1E;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            background: #2C2C2E;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #FFD60A;
+        }
+
+        .payment-method.selected {
+            border-color: #FFD60A;
+            background: #3A3A3C;
+        }
+
+        .payment-address {
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+        }
+
+        button {
+            background: #FFD60A;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #FFC700;
+        }
+
+        .instructions {
+            background: #1C1C1E;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+        }
+
+        #payment-details {
+            display: none;
+        }
+
+        h1, h2, h3 { margin-bottom: 15px; }
+
+        .price {
+            color: #FFD60A;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .status.success { background: #10B981; }
+        .status.pending { background: #F59E0B; }
+        .status.error { background: #EF4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complete Your Purchase</h1>
+
+        <div class="warning-box">
+            <strong>⚠️ Educational Content Disclaimer</strong>
+            <p>This content exposes institutional fraud and criminal tactics for educational purposes only. By proceeding, you acknowledge this material is for informed consent and victim protection, not instruction.</p>
+        </div>
+
+        <div class="book-details" id="book-details">
+            <h2 id="book-title">Loading...</h2>
+            <p id="book-author"></p>
+            <p class="price" id="book-price"></p>
+        </div>
+
+        <h2>Select Payment Method</h2>
+
+        <div class="payment-method" data-method="bitcoin">
+            <h3>₿ Bitcoin</h3>
+            <p>On-chain payment • Confirmation in ~10-60 min</p>
+            <p class="price" id="btc-price"></p>
+        </div>
+
+        <div class="payment-method" data-method="lightning">
+            <h3>⚡ Lightning Network</h3>
+            <p>Instant payment • Low fees</p>
+            <p class="price" id="ln-price">Coming soon</p>
+        </div>
+
+        <div class="payment-method" data-method="monero">
+            <h3>🔒 Monero</h3>
+            <p>Maximum privacy • Untraceable</p>
+            <p class="price" id="xmr-price">Coming soon</p>
+        </div>
+
+        <div id="payment-details">
+            <h2>Payment Instructions</h2>
+
+            <div class="payment-address">
+                <p><strong>Send to:</strong></p>
+                <div id="address"></div>
+                <button onclick="copyAddress()">Copy Address</button>
+            </div>
+
+            <div class="instructions">
+                <h3>How to Complete Payment:</h3>
+                <ol>
+                    <li>Send <strong id="amount"></strong> to the address above</li>
+                    <li>Email proof of transaction to: <strong>orders@asymmetrybooks.com</strong></li>
+                    <li>Include your order ID: <strong id="order-id"></strong></li>
+                    <li>Download link sent within 1-24 hours after verification</li>
+                </ol>
+                <p><strong>Important:</strong> Send exact amount. Incorrect amounts may delay processing.</p>
+            </div>
+
+            <div id="status" class="status pending" style="display:none;">
+                <strong>Status:</strong> <span id="status-text">Awaiting payment...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get book ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('book') || 'demo-book-101';
+        const brand = urlParams.get('brand') || 'information_asymmetry';
+
+        // Load book details
+        async function loadBookDetails() {
+            try {
+                const response = await fetch(`/brands/${brand}/catalog.json`);
+                const catalog = await response.json();
+                const book = catalog.books.find(b => b.id === bookId);
+
+                if (book) {
+                    document.getElementById('book-title').textContent = book.title;
+                    document.getElementById('book-author').textContent = `by ${book.author}`;
+                    document.getElementById('book-price').textContent = `$${book.price} USD`;
+                    document.getElementById('btc-price').textContent = `${book.priceBTC} BTC`;
+                }
+            } catch (error) {
+                console.error('Error loading book:', error);
+            }
+        }
+
+        loadBookDetails();
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', () => {
+                const paymentMethod = method.dataset.method;
+
+                // Only Bitcoin is enabled for now
+                if (paymentMethod !== 'bitcoin') {
+                    alert('This payment method is coming soon. Please use Bitcoin for now.');
+                    return;
+                }
+
+                document.querySelectorAll('.payment-method').forEach(m =>
+                    m.classList.remove('selected')
+                );
+                method.classList.add('selected');
+
+                createOrder(paymentMethod);
+            });
+        });
+
+        async function createOrder(paymentMethod) {
+            const email = prompt('Enter your email for order confirmation:');
+            if (!email) return;
+
+            try {
+                // For MVP, create a simple order ID
+                const orderId = 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+                // Get payment address (placeholder for now)
+                const addresses = {
+                    'bitcoin': 'CONFIGURE_PRODUCTION_BTC_ADDRESS',
+                    'lightning': 'CONFIGURE_LIGHTNING_ADDRESS',
+                    'monero': 'CONFIGURE_MONERO_ADDRESS'
+                };
+
+                const amounts = {
+                    'bitcoin': document.getElementById('btc-price').textContent,
+                    'lightning': document.getElementById('btc-price').textContent,
+                    'monero': document.getElementById('xmr-price').textContent
+                };
+
+                // Display payment details
+                document.getElementById('payment-details').style.display = 'block';
+                document.getElementById('address').textContent = addresses[paymentMethod];
+                document.getElementById('amount').textContent = amounts[paymentMethod];
+                document.getElementById('order-id').textContent = orderId;
+
+                // Show status
+                document.getElementById('status').style.display = 'block';
+                document.getElementById('status-text').textContent = 'Awaiting payment...';
+
+                // In production, this would call the backend API:
+                // const response = await fetch('/api/crypto/create-order', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ bookId, email, paymentMethod })
+                // });
+
+            } catch (error) {
+                alert('Error creating order: ' + error.message);
+            }
+        }
+
+        function copyAddress() {
+            const address = document.getElementById('address').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                alert('Address copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>

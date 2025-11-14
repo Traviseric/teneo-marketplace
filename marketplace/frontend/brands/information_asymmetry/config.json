@@ -1,0 +1,64 @@
+{
+  "brand": "information_asymmetry",
+  "name": "Asymmetry Books",
+  "tagline": "Information They Don't Want You to Have",
+  "description": "Uncensored books exposing institutional crime and systemic control. What Amazon refuses to publish.",
+
+  "theme": {
+    "primaryColor": "#0A0A0A",
+    "secondaryColor": "#FF3B30",
+    "accentColor": "#FFD60A",
+    "backgroundColor": "#FFFFFF",
+    "textColor": "#1C1C1E",
+    "font": "system-ui, -apple-system, sans-serif"
+  },
+
+  "features": {
+    "enableStripe": false,
+    "enableCrypto": true,
+    "cryptoOnly": true,
+    "showReviews": false,
+    "requireAgeVerification": true,
+    "requireInformedConsent": true,
+    "enableSharing": false
+  },
+
+  "payments": {
+    "bitcoin": {
+      "enabled": true,
+      "address": "CONFIGURE_YOUR_BTC_ADDRESS",
+      "network": "mainnet"
+    },
+    "lightning": {
+      "enabled": false,
+      "address": ""
+    },
+    "monero": {
+      "enabled": false,
+      "address": ""
+    }
+  },
+
+  "legal": {
+    "disclaimer": "All content is provided for educational and informational purposes only. This material exposes criminal tactics and systemic fraud for victim protection and informed consent. It is not instructional and does not promote illegal activity.",
+    "ageVerification": "You must be 18+ and acknowledge the educational nature of this content.",
+    "jurisdictionWarning": "Content may be controversial. By purchasing, you acknowledge this is for personal education only."
+  },
+
+  "contact": {
+    "email": "info@asymmetrybooks.com",
+    "pgp": "",
+    "telegram": "",
+    "session": ""
+  },
+
+  "social": {
+    "showSocial": false
+  },
+
+  "branding": {
+    "logo": "/brands/information_asymmetry/assets/logo.png",
+    "favicon": "/brands/information_asymmetry/assets/favicon.ico",
+    "aboutText": "We publish the books that challenge power. Our content exposes institutional crime, documents systemic control, and provides complete truth for those ready to see it. No false hope. No gatekeepers. No censorship."
+  }
+}

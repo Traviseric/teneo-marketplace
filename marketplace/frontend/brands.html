@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Book Networks - Teneo Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .brand-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .brand-header {
+            padding: 30px;
+            color: white;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .brand-tagline {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .brand-body {
+            padding: 25px 30px;
+            flex: 1;
+        }
+
+        .brand-description {
+            color: #4B5563;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-badge {
+            background: #F3F4F6;
+            color: #374151;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .feature-badge.crypto {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .feature-badge.stripe {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .feature-badge.censorship-resistant {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .brand-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid #E5E7EB;
+            font-size: 0.9rem;
+            color: #6B7280;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #1F2937;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 15px;
+            transition: opacity 0.3s;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 60px;
+        }
+
+        .network-info {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .network-info h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .network-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .network-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .brands-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Book Networks</h1>
+            <p>Explore independent publisher networks powered by the Teneo Marketplace protocol</p>
+        </div>
+
+        <div id="brands-grid" class="brands-grid">
+            <div class="loading">Loading book networks...</div>
+        </div>
+
+        <div class="network-info">
+            <h2>Federated Marketplace Network</h2>
+            <p>Each network operates independently while sharing commerce infrastructure. Publishers keep control of their content and brand.</p>
+            <div class="network-badge">
+                <span>🌐</span>
+                <span>Censorship Resistant</span>
+            </div>
+            <div class="network-badge">
+                <span>🔒</span>
+                <span>Privacy First</span>
+            </div>
+            <div class="network-badge">
+                <span>💰</span>
+                <span>Multiple Payment Options</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BRANDS = [
+            'teneo',
+            'information_asymmetry',
+            'true-earth',
+            'wealth-wise'
+        ];
+
+        // Load all brand configurations
+        async function loadBrands() {
+            const grid = document.getElementById('brands-grid');
+            const brandData = [];
+
+            // Load configs in parallel
+            const promises = BRANDS.map(async brandId => {
+                try {
+                    // Load config
+                    const configResponse = await fetch(`/brands/${brandId}/config.json`);
+                    const config = await configResponse.json();
+
+                    // Load catalog to count books
+                    const catalogResponse = await fetch(`/brands/${brandId}/catalog.json`);
+                    const catalog = await catalogResponse.json();
+
+                    return {
+                        id: brandId,
+                        config,
+                        catalog,
+                        bookCount: catalog.books ? catalog.books.length : 0
+                    };
+                } catch (error) {
+                    console.error(`Error loading brand ${brandId}:`, error);
+                    return null;
+                }
+            });
+
+            const results = await Promise.all(promises);
+            const validBrands = results.filter(b => b !== null);
+
+            if (validBrands.length === 0) {
+                grid.innerHTML = '<div class="loading">No networks available</div>';
+                return;
+            }
+
+            displayBrands(validBrands);
+        }
+
+        // Display brand cards
+        function displayBrands(brands) {
+            const grid = document.getElementById('brands-grid');
+
+            grid.innerHTML = brands.map(brand => {
+                const config = brand.config;
+                const brandName = config.name || config.brandName || brand.id;
+                const tagline = config.tagline || '';
+                const description = config.description || '';
+                const theme = config.theme || {};
+
+                // Determine payment methods
+                const features = config.features || {};
+                const payments = config.payments || {};
+                const paymentBadges = [];
+
+                if (features.enableCrypto || features.cryptoOnly) {
+                    paymentBadges.push('<span class="feature-badge crypto">₿ Crypto</span>');
+                }
+                if (features.enableStripe !== false && !features.cryptoOnly) {
+                    paymentBadges.push('<span class="feature-badge stripe">💳 Credit Card</span>');
+                }
+                if (features.cryptoOnly || features.requireInformedConsent) {
+                    paymentBadges.push('<span class="feature-badge censorship-resistant">🔒 Censorship Resistant</span>');
+                }
+
+                // Get theme colors
+                const primaryColor = theme.primaryColor || '#667eea';
+                const secondaryColor = theme.secondaryColor || '#764ba2';
+                const bgColor = theme.backgroundColor || '#FFEFD6';
+
+                return `
+                    <a href="/store.html?brand=${brand.id}" class="brand-card">
+                        <div class="brand-header" style="background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor || primaryColor} 100%);">
+                            <div class="brand-logo">${getBrandEmoji(brand.id)}</div>
+                            <div class="brand-name">${brandName}</div>
+                            <div class="brand-tagline">${tagline}</div>
+                        </div>
+                        <div class="brand-body">
+                            <p class="brand-description">${description}</p>
+
+                            <div class="brand-features">
+                                ${paymentBadges.join('')}
+                            </div>
+
+                            <div class="brand-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">${brand.bookCount}</div>
+                                    <div class="stat-label">Books</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${getNetworkStatus(config)}</div>
+                                    <div class="stat-label">Status</div>
+                                </div>
+                            </div>
+
+                            <div class="cta-button">Browse Catalog →</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // Get brand emoji/icon
+        function getBrandEmoji(brandId) {
+            const emojis = {
+                'teneo': '📘',
+                'information_asymmetry': '⚠️',
+                'true-earth': '🌍',
+                'wealth-wise': '💰'
+            };
+            return emojis[brandId] || '📚';
+        }
+
+        // Get network status
+        function getNetworkStatus(config) {
+            if (config.network_enabled) {
+                return '🟢 Live';
+            }
+            return '🟡 Active';
+        }
+
+        // Initialize
+        loadBrands();
+    </script>
+</body>
+</html>

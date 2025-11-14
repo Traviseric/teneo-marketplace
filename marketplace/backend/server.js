@@ -47,9 +47,10 @@ const session = require('express-session');
 const csurf = require('csurf');
 const crypto = require('crypto');
 const brandRoutes = require('./routes/brandRoutes');
-const checkoutRoutes = process.env.NODE_ENV === 'production' 
+const checkoutRoutes = process.env.NODE_ENV === 'production'
   ? require('./routes/checkoutProduction')
   : require('./routes/checkout');
+const cryptoCheckoutRoutes = require('./routes/cryptoCheckout');
 const catalogRoutes = require('./routes/catalogRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const luluAdminRoutes = require('./routes/luluAdmin');
@@ -124,6 +125,7 @@ app.get('/api/csrf-token', (req, res) => {
 });
 app.use('/api/brands', brandRoutes);
 app.use('/api/checkout', checkoutRoutes);
+app.use('/api/crypto', cryptoCheckoutRoutes);
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/download', downloadRoutes);
 app.use('/api/lulu', luluAdminRoutes);
