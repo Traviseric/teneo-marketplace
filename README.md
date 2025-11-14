@@ -1,10 +1,69 @@
-# 📚 Teneo Marketplace - Open Source Publisher Tracking Platform
+# 📚 Teneo Marketplace - Censorship-Resistant Book Network
 
-**An open-source marketplace backend for tracking AI-generated books published on Amazon and building publisher communities.**
+**The first dual-mode, federated marketplace designed to be uncensorable. Operates with standard payments (Stripe) for ease of use, automatically falls back to crypto + offshore infrastructure when attacked, and enables anyone to deploy network nodes for true distributed resilience.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-blue.svg)](https://sqlite.org/)
+[![Network](https://img.shields.io/badge/Network-Federated-blueviolet.svg)](./DUAL_MODE_ARCHITECTURE.md)
+[![Payments](https://img.shields.io/badge/Payments-Stripe%20%7C%20Crypto-success.svg)](./INFORMATION_ASYMMETRY_IMPLEMENTATION.md)
+
+---
+
+## ⚡ **What Makes This Different**
+
+### 🔄 Dual-Mode Operation
+- **PRIMARY MODE**: Stripe checkout, mainstream hosting, easy UX
+- **FALLBACK MODE**: Crypto payments, offshore VPS, Tor backup
+- **AUTOMATIC FAILOVER**: Switches modes when primary is taken down
+
+### 🌐 Federated Network
+- **OPEN SOURCE**: Anyone can deploy their own marketplace node
+- **CROSS-NODE DISCOVERY**: Find books across the entire network
+- **REVENUE SHARING**: Nodes earn 10-20% referral fees
+- **DISTRIBUTED**: Can't shut down a network
+
+### 🛡️ Censorship Resistant
+- **Offshore Hosting**: Iceland, Romania, Netherlands (DMCA-resistant)
+- **Crypto Payments**: Bitcoin, Lightning, Monero (no payment processor)
+- **Tor Hidden Service**: .onion backup (survives domain seizure)
+- **IPFS Storage**: Permanent, distributed content hosting
+
+**→ Read the complete architecture: [DUAL_MODE_ARCHITECTURE.md](./DUAL_MODE_ARCHITECTURE.md)**
+
+---
+
+## 📖 **Documentation**
+
+**→ START HERE: [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete documentation catalog
+
+### Quick Links
+- **[Dual-Mode Architecture](./DUAL_MODE_ARCHITECTURE.md)** - How the system stays online under attack
+- **[48-Hour Launch Guide](./MVP_48_HOUR_LAUNCH.md)** - Deploy your own node this weekend
+- **[Censorship-Resistant MVP](./CENSORSHIP_RESISTANT_MVP.md)** - Infrastructure that can't be taken down
+- **[Information Asymmetry Brand](./INFORMATION_ASYMMETRY_IMPLEMENTATION.md)** - Publishing books Amazon won't allow
+
+---
+
+## 🎯 **Use Cases**
+
+### For Publishers
+- **Amazon-Safe Books**: Track performance, analytics, community
+- **Censored Content**: Publish what Amazon won't (institutional crime exposure, systemic critiques)
+- **Crypto Payments**: Accept Bitcoin/Monero when Stripe bans you
+- **Multiple Channels**: Amazon + backend marketplace simultaneously
+
+### For Network Operators
+- **Deploy Your Own Node**: One-click deployment, earn referral fees
+- **Join Federation**: Cross-promote books, share revenue (10-20%)
+- **Build Community**: Your brand, your audience, network benefits
+- **Censorship Insurance**: If your node goes down, network continues
+
+### For Readers
+- **Uncensored Access**: Find books mainstream platforms ban
+- **Network Discovery**: Browse books across all federated nodes
+- **Multiple Payment Options**: Card, Bitcoin, Lightning, Monero
+- **Permanent Access**: IPFS ensures books never disappear
 
 ---
 
@@ -12,13 +71,13 @@
 
 The Teneo Marketplace is an open-source platform designed to:
 
-- **Track Published Books**: Monitor books published by community members on Amazon
-- **Build Publisher Networks**: Create communities of AI-assisted publishers  
-- **Provide Analytics**: Track performance metrics, trends, and achievements
-- **Enable Growth**: Support publishers with data-driven insights and rewards
-- **Foster Community**: Leaderboards, milestones, and success sharing
+- **Democratize Publishing**: Bypass traditional gatekeepers
+- **Enable Censorship Resistance**: Automatic failover to offshore + crypto
+- **Build Decentralized Networks**: Federated nodes with revenue sharing
+- **Publish Dangerous Knowledge**: Books that expose institutional crime
+- **Track Publisher Success**: Analytics, leaderboards, community growth
 
-Perfect for AI content creators, publishing communities, and platforms wanting to track their members' publishing success.
+Perfect for controversial content, independent publishers, and anyone who needs infrastructure that can't be shut down.
 
 ---
 
@@ -276,23 +335,81 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 🚀 **Roadmap**
 
-### **Phase 1: Foundation** ✅
-- ✅ Core API endpoints for book tracking
-- ✅ Publisher statistics and leaderboards  
-- ✅ Achievement system with badges
-- ✅ Historical data tracking
+### **Phase 1: Dual-Mode Foundation** ✅
+- ✅ Primary mode (Stripe + standard hosting)
+- ✅ Fallback mode (crypto + offshore VPS)
+- ✅ Automatic health monitoring
+- ✅ Failover system architecture
 
-### **Phase 2: Enhancement** 🚧
-- Advanced analytics and reporting
-- Email notifications for milestones
-- Publisher collaboration features
-- Mobile app API support
+### **Phase 2: Federation Network** 🚧 (Current)
+- 🚧 Open source marketplace code
+- 🚧 Network registry protocol
+- 🚧 Cross-node discovery
+- 🚧 Revenue sharing implementation
+- 🚧 One-click node deployment
 
-### **Phase 3: Marketplace** 🔮
-- Direct sales integration
-- Print-on-demand support  
-- Revenue sharing systems
-- Multi-platform federation
+### **Phase 3: Distributed Infrastructure** 🔮
+- IPFS content integration
+- ENS .eth domains
+- Smart contract revenue sharing
+- DAO governance (optional)
+- 100+ active network nodes
+
+### **Phase 4: Content Expansion** 🔮
+- Information Asymmetry brand (40 books)
+- Community content submissions
+- Multi-language support
+- Video/audio content
+- Decentralized comments/reviews
+
+## 🌐 **Deploy Your Own Node**
+
+### Why Run a Node?
+
+**Earn Revenue:**
+- 15-20% referral fees on network sales
+- 100% of your own book sales
+- Passive income from network discovery
+
+**Build Community:**
+- Your brand, your curation
+- Your audience, your rules
+- Network benefits without network overhead
+
+**Censorship Insurance:**
+- If your node goes down, network continues
+- If primary node is attacked, yours stays up
+- True distributed resilience
+
+### Quick Deploy (5 minutes)
+
+```bash
+# Clone repository
+git clone https://github.com/Traviseric/teneo-marketplace.git
+cd teneo-marketplace
+
+# Configure your node
+cp .env.example .env
+nano .env  # Set NODE_ID, payment keys, etc.
+
+# Deploy with Docker
+docker-compose up -d
+
+# Register with network
+npm run register-node
+```
+
+**Full guide:** [DUAL_MODE_ARCHITECTURE.md - Deploy Your Own Node](./DUAL_MODE_ARCHITECTURE.md#one-click-node-deployment)
+
+### Deployment Options
+
+- **Docker**: One command, works everywhere
+- **Railway**: One-click deploy from GitHub
+- **Render**: Free tier available
+- **VPS**: Full control, offshore options
+- **Kubernetes**: Enterprise scale
+
+**See:** [MVP_48_HOUR_LAUNCH.md](./MVP_48_HOUR_LAUNCH.md) for step-by-step deployment
 
 ---
 
