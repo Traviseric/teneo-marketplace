@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+            background-color: var(--background-color, #FFEFD6);
+            color: var(--text-color, #1F2937);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--surface-color, white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color, #667eea);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color, #1F2937);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-color, #667eea);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color, #667eea) 0%, var(--secondary-color, #764ba2) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            opacity: 0.95;
+            margin-bottom: 1rem;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Books Grid */
+        .books-section {
+            padding: 2rem 0 4rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color, #667eea);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-button {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color, #667eea);
+            background: transparent;
+            color: var(--primary-color, #667eea);
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-button:hover,
+        .filter-button.active {
+            background: var(--primary-color, #667eea);
+            color: white;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: var(--surface-color, white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+
+        .book-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .book-badge {
+            display: inline-block;
+            background-color: var(--accent-color, #FEA644);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .book-badge.warning {
+            background-color: #EF4444;
+        }
+
+        .book-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-description {
+            font-size: 0.9rem;
+            color: #4B5563;
+            margin-bottom: 1rem;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-price {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color, #667eea);
+        }
+
+        .crypto-price {
+            font-size: 0.9rem;
+            color: #6B7280;
+            font-family: monospace;
+        }
+
+        .cta-button {
+            background: var(--primary-color, #667eea);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: opacity 0.3s;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--primary-color, #667eea);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state h2 {
+            font-size: 2rem;
+            color: var(--text-color, #1F2937);
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background-color: var(--surface-color, #1F2937);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/brands.html" class="logo">
+                    <span id="brand-emoji">📚</span>
+                    <span id="brand-logo">Loading...</span>
+                </a>
+                <nav>
+                    <a href="/brands.html">All Networks</a>
+                    <a href="/cart.html">Cart</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 id="brand-name">Loading...</h1>
+            <p class="tagline" id="brand-tagline"></p>
+            <p class="description" id="brand-description"></p>
+        </div>
+    </section>
+
+    <!-- Books Section -->
+    <section class="books-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Catalog</h2>
+                <div class="filter-controls" id="filter-controls" style="display: none;">
+                    <button class="filter-button active" data-filter="all">All Books</button>
+                </div>
+            </div>
+            <div id="books-grid" class="books-grid">
+                <div class="loading">Loading catalog...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 <span id="footer-brand">Marketplace</span>. Part of the Teneo Network.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get brand from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const BRAND_ID = urlParams.get('brand') || 'teneo';
+
+        let brandConfig = null;
+        let catalogData = null;
+
+        // Brand emojis
+        const BRAND_EMOJIS = {
+            'teneo': '📘',
+            'information_asymmetry': '⚠️',
+            'true-earth': '🌍',
+            'wealth-wise': '💰'
+        };
+
+        // Load brand configuration
+        async function loadBrandConfig() {
+            try {
+                const response = await fetch(`/brands/${BRAND_ID}/config.json`);
+                brandConfig = await response.json();
+                applyBrandTheme(brandConfig);
+                updateBrandInfo(brandConfig);
+            } catch (error) {
+                console.error('Error loading brand config:', error);
+            }
+        }
+
+        // Apply brand theme
+        function applyBrandTheme(config) {
+            const root = document.documentElement;
+            const theme = config.theme || {};
+
+            if (theme.primaryColor) root.style.setProperty('--primary-color', theme.primaryColor);
+            if (theme.secondaryColor) root.style.setProperty('--secondary-color', theme.secondaryColor);
+            if (theme.accentColor) root.style.setProperty('--accent-color', theme.accentColor);
+            if (theme.backgroundColor) root.style.setProperty('--background-color', theme.backgroundColor);
+            if (theme.textColor) root.style.setProperty('--text-color', theme.textColor);
+            if (theme.surfaceColor) root.style.setProperty('--surface-color', theme.surfaceColor);
+            if (theme.fontFamily) root.style.setProperty('--font-family', theme.fontFamily);
+        }
+
+        // Update brand info
+        function updateBrandInfo(config) {
+            const brandName = config.name || config.brandName || BRAND_ID;
+
+            document.getElementById('brand-emoji').textContent = BRAND_EMOJIS[BRAND_ID] || '📚';
+            document.getElementById('brand-logo').textContent = brandName;
+            document.getElementById('brand-name').textContent = brandName;
+            document.getElementById('brand-tagline').textContent = config.tagline || '';
+            document.getElementById('brand-description').textContent = config.description || '';
+            document.getElementById('footer-brand').textContent = brandName;
+            document.title = `${brandName} - Book Catalog`;
+        }
+
+        // Load catalog
+        async function loadCatalog() {
+            try {
+                const response = await fetch(`/brands/${BRAND_ID}/catalog.json`);
+                catalogData = await response.json();
+
+                displayBooks(catalogData.books || []);
+                setupFilters(catalogData);
+            } catch (error) {
+                console.error('Error loading catalog:', error);
+                document.getElementById('books-grid').innerHTML =
+                    '<div class="empty-state"><h2>Unable to load catalog</h2><p>Please try again later.</p></div>';
+            }
+        }
+
+        // Setup filter controls
+        function setupFilters(catalog) {
+            if (!catalog.collections || catalog.collections.length === 0) return;
+
+            const filterControls = document.getElementById('filter-controls');
+            filterControls.style.display = 'flex';
+
+            // Add collection filters
+            catalog.collections.forEach(collection => {
+                const button = document.createElement('button');
+                button.className = 'filter-button';
+                button.dataset.filter = collection.id;
+                button.textContent = collection.name;
+                button.addEventListener('click', () => filterBooks(collection.id));
+                filterControls.appendChild(button);
+            });
+        }
+
+        // Filter books by collection
+        function filterBooks(collectionId) {
+            const allBooks = catalogData.books || [];
+            const filtered = collectionId === 'all'
+                ? allBooks
+                : allBooks.filter(book => book.collection === collectionId);
+
+            displayBooks(filtered);
+
+            // Update active button
+            document.querySelectorAll('.filter-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === collectionId);
+            });
+        }
+
+        // Display books
+        function displayBooks(books) {
+            const grid = document.getElementById('books-grid');
+
+            if (books.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><h2>No books available</h2><p>Check back soon for new releases.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = books.map(book => {
+                const badges = [];
+
+                // Add tier badge
+                if (book.tier) {
+                    badges.push(`<span class="book-badge">Tier ${book.tier}</span>`);
+                }
+
+                // Add content warnings
+                if (book.contentWarnings && book.contentWarnings.length > 0) {
+                    badges.push(`<span class="book-badge warning">⚠️ ${book.contentWarnings[0]}</span>`);
+                }
+
+                // Check if crypto pricing is available
+                const cryptoPrice = book.priceBTC
+                    ? `<span class="crypto-price">₿ ${book.priceBTC}</span>`
+                    : book.priceXMR
+                    ? `<span class="crypto-price">Ɱ ${book.priceXMR}</span>`
+                    : '';
+
+                return `
+                    <div class="book-card">
+                        <img src="${book.coverImage || 'https://via.placeholder.com/400x600?text=' + encodeURIComponent(book.title)}"
+                             alt="${book.title}"
+                             class="book-cover"
+                             onerror="this.src='https://via.placeholder.com/400x600?text=Book+Cover'">
+                        <div class="book-info">
+                            ${badges.length > 0 ? `<div class="book-badges">${badges.join('')}</div>` : ''}
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">${book.author}</p>
+                            <p class="book-description">${book.description}</p>
+                            <div class="book-price">
+                                <span class="current-price">$${book.price}</span>
+                                ${cryptoPrice}
+                            </div>
+                            <button class="cta-button" onclick="viewBook('${book.id}')">
+                                ${getBuyButtonText()}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get buy button text based on brand config
+        function getBuyButtonText() {
+            if (!brandConfig) return 'View Details';
+
+            const features = brandConfig.features || {};
+            if (features.cryptoOnly) return 'Purchase with Crypto';
+            return 'Purchase Now';
+        }
+
+        // View book details
+        function viewBook(bookId) {
+            // Check if crypto-only brand
+            const features = brandConfig?.features || {};
+            if (features.cryptoOnly) {
+                window.location.href = `/crypto-checkout.html?book=${bookId}&brand=${BRAND_ID}`;
+            } else {
+                window.location.href = `/book-detail.html?id=${bookId}&brand=${BRAND_ID}`;
+            }
+        }
+
+        // Initialize
+        async function init() {
+            await loadBrandConfig();
+            await loadCatalog();
+        }
+
+        init();
+    </script>
+</body>
+</html>
