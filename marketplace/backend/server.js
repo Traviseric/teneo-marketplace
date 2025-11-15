@@ -62,6 +62,7 @@ const publisherProfileRoutes = require('./routes/publisherProfiles');
 const bookAnalyticsRoutes = require('./routes/bookAnalytics');
 const digestRoutes = require('./routes/digestRoutes');
 const manualEnhancementRoutes = require('./routes/manualEnhancement');
+const webhookRoutes = require('./routes/webhooks');
 
 const app = express();
 
@@ -104,7 +105,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // CSRF protection for all POST/PUT/DELETE routes except specific endpoints
 const csrfProtection = csurf({ cookie: false });
-const csrfExcludePaths = ['/api/checkout/webhook', '/api/lulu/webhook']; // Webhook endpoints need to be excluded
+const csrfExcludePaths = [
+    '/api/checkout/webhook',
+    '/api/lulu/webhook',
+    '/webhooks' // Orchestrator webhooks
+]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
     // Skip CSRF for webhook endpoints
@@ -137,6 +142,7 @@ app.use('/api/publishers', publisherProfileRoutes);
 app.use('/api/books', bookAnalyticsRoutes);
 app.use('/api/digest', digestRoutes);
 app.use('/api/manual-enhancement', manualEnhancementRoutes);
+app.use('/webhooks', webhookRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
