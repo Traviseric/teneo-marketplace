@@ -5,15 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teneo Marketplace</title>
     <style>
-        :root {
-            --primary-color: #7C3AED;
-            --secondary-color: #10B981;
-            --accent-color: #FEA644;
-            --background-color: #FFEFD6;
-            --text-color: #1F2937;
-            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -21,23 +12,28 @@
         }
 
         body {
-            font-family: var(--font-family);
-            background-color: var(--background-color);
-            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #111827;
             line-height: 1.6;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         /* Header */
         header {
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 0;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
         }
 
         .header-content {
@@ -47,125 +43,213 @@
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
             text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: #4B5563;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #111827;
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 4rem 0;
+            padding: 6rem 0 4rem 0;
             text-align: center;
         }
 
         .hero h1 {
             font-size: 3rem;
+            font-weight: 300;
+            color: #111827;
             margin-bottom: 1rem;
+            letter-spacing: -0.02em;
         }
 
         .hero .tagline {
-            font-size: 1.5rem;
-            opacity: 0.9;
+            font-size: 1.25rem;
+            color: #4B5563;
             margin-bottom: 2rem;
+            font-weight: 400;
         }
 
         .hero-description {
-            font-size: 1.1rem;
+            font-size: 1rem;
+            color: #6B7280;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto 2rem;
         }
 
-        /* Books Grid */
+        .hero-cta {
+            display: inline-flex;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background-color: #111827;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #374151;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background-color: #F9FAFB;
+            color: #111827;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        /* Books Section */
         .books-section {
             padding: 4rem 0;
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            text-align: center;
+        .section-header {
             margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: #6B7280;
         }
 
         .books-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
-            margin-bottom: 4rem;
         }
 
         .book-card {
-            background: white;
-            border-radius: 12px;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
             text-decoration: none;
-            color: var(--text-color);
+            color: inherit;
+            display: flex;
+            flex-direction: column;
         }
 
         .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
         }
 
         .book-cover {
             width: 100%;
-            height: 400px;
+            height: 360px;
             object-fit: cover;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
         }
 
         .book-info {
             padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .book-badge {
             display: inline-block;
-            background-color: var(--accent-color);
-            color: white;
+            background-color: #E5E7EB;
+            color: #374151;
             padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            border-radius: 0.25rem;
             font-size: 0.75rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .book-title {
-            font-size: 1.25rem;
-            font-weight: bold;
+            font-size: 1.125rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
+            color: #111827;
         }
 
         .book-author {
             color: #6B7280;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
         }
 
         .book-description {
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #4B5563;
             margin-bottom: 1rem;
+            flex: 1;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            line-height: 1.5;
         }
 
         .book-price {
             display: flex;
-            align-items: center;
+            align-items: baseline;
             gap: 0.5rem;
+            margin-top: auto;
         }
 
         .current-price {
             font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-weight: 600;
+            color: #111827;
         }
 
         .original-price {
@@ -174,158 +258,182 @@
             text-decoration: line-through;
         }
 
-        /* Collections Section */
-        .collections-section {
-            background-color: white;
+        /* Featured Section */
+        .featured-section {
+            background-color: #F9FAFB;
             padding: 4rem 0;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
         }
 
-        .collections-grid {
+        .featured-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
         }
 
-        .collection-card {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
+        .feature-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
             padding: 2rem;
-            border-radius: 16px;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: block;
-            transition: transform 0.3s;
+            transition: all 0.3s;
         }
 
-        .collection-card:hover {
-            transform: scale(1.02);
+        .feature-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
         }
 
-        .collection-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background-color: var(--accent-color);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        .collection-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .collection-description {
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-
-        .collection-price {
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: #111827;
+            border-radius: 0.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .collection-current-price {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .collection-original-price {
+            justify-content: center;
+            margin-bottom: 1.5rem;
             font-size: 1.5rem;
-            text-decoration: line-through;
-            opacity: 0.7;
         }
 
-        .collection-bonus {
-            background-color: rgba(255,255,255,0.2);
-            padding: 1rem;
-            border-radius: 8px;
-            font-weight: 500;
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.75rem;
         }
 
-        /* Newsletter Section */
-        .newsletter-section {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 3rem 0;
+        .feature-description {
+            font-size: 0.9375rem;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
             text-align: center;
         }
 
-        .newsletter-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
         }
 
-        .newsletter-form {
-            display: flex;
-            gap: 1rem;
-            max-width: 500px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            justify-content: center;
+        .stat-item {
+            padding: 1.5rem;
         }
 
-        .newsletter-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 0.5rem;
         }
 
-        .newsletter-button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .newsletter-button:hover {
-            background-color: #E8993A;
+        .stat-label {
+            font-size: 0.9375rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
         }
 
         /* Footer */
         footer {
-            background-color: #1F2937;
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
+            background-color: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            padding: 3rem 0 2rem 0;
+            margin-top: 4rem;
         }
 
-        /* Loading State */
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #6B7280;
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: #111827;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #E5E7EB;
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
         .loading {
             text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: var(--primary-color);
+            padding: 3rem;
+            color: #6B7280;
+        }
+
+        .loading-spinner {
+            border: 2px solid #E5E7EB;
+            border-top-color: #111827;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
             .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.125rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .stat-value {
                 font-size: 2rem;
             }
-            
-            .hero .tagline {
-                font-size: 1.2rem;
-            }
-            
-            .books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
-            }
-            
-            .collections-grid {
-                grid-template-columns: 1fr;
+
+            nav {
+                gap: 1rem;
             }
         }
     </style>
@@ -335,9 +443,11 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="/" class="logo" id="brand-logo">Marketplace</a>
+                <a href="/" class="logo" id="brand-logo">Teneo Marketplace</a>
                 <nav>
-                    <a href="/cart.html" style="text-decoration: none; color: var(--primary-color); font-weight: 500;">Cart</a>
+                    <a href="/brands.html">Browse Networks</a>
+                    <a href="/network.html">Network Search</a>
+                    <a href="/cart.html">Cart</a>
                 </nav>
             </div>
         </div>
@@ -346,110 +456,144 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1 id="brand-name">Loading...</h1>
-            <p class="tagline" id="brand-tagline">...</p>
-            <p class="hero-description" id="brand-description">...</p>
+            <h1 id="brand-name">Censorship-Resistant Book Network</h1>
+            <p class="tagline" id="brand-tagline">Discover books from independent publishers across a federated marketplace</p>
+            <p class="hero-description" id="brand-description">Built on open-source infrastructure. No gatekeepers. No censorship.</p>
+            <div class="hero-cta">
+                <a href="/brands.html" class="btn-primary">Explore Networks</a>
+                <a href="/network.html" class="btn-secondary">Search Catalog</a>
+            </div>
         </div>
     </section>
 
-    <!-- Books Section -->
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-networks">4</div>
+                    <div class="stat-label">Book Networks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-books">12</div>
+                    <div class="stat-label">Available Books</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Always Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Books -->
     <section class="books-section">
         <div class="container">
-            <h2 class="section-title">Featured Books</h2>
+            <div class="section-header">
+                <h2 class="section-title">Featured Books</h2>
+                <p class="section-subtitle">Discover curated titles from across the network</p>
+            </div>
             <div id="books-grid" class="books-grid">
-                <div class="loading">Loading books...</div>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading books...</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Collections Section -->
-    <section class="collections-section">
+    <!-- Features Section -->
+    <section class="featured-section">
         <div class="container">
-            <h2 class="section-title">Bundle Deals</h2>
-            <div id="collections-grid" class="collections-grid">
-                <div class="loading">Loading collections...</div>
+            <div class="section-header">
+                <h2 class="section-title">Why Use Teneo Marketplace</h2>
+                <p class="section-subtitle">A new model for digital book distribution</p>
             </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="newsletter-section">
-        <div class="container">
-            <h2 class="newsletter-title">Get Free AI Book Generation Guide</h2>
-            <p style="margin-bottom: 2rem;">Join our newsletter and receive exclusive content</p>
-            <form class="newsletter-form" id="newsletter-form">
-                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
-                <button type="submit" class="newsletter-button">Subscribe</button>
-            </form>
+            <div class="featured-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">Federated Network</h3>
+                    <p class="feature-description">Search across multiple independent bookstores. Each maintains full control of their catalog and pricing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Censorship Resistant</h3>
+                    <p class="feature-description">No single point of failure. Distributed infrastructure ensures books remain available even if individual nodes go down.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Multiple Payment Options</h3>
+                    <p class="feature-description">Support for traditional credit cards and cryptocurrency payments. Publishers choose their preferred methods.</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 Teneo Marketplace. All rights reserved.</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Marketplace</h4>
+                    <ul>
+                        <li><a href="/brands.html">Browse Networks</a></li>
+                        <li><a href="/network.html">Search Books</a></li>
+                        <li><a href="/published">Published Books</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Network</h4>
+                    <ul>
+                        <li><a href="/network.html">Join Network</a></li>
+                        <li><a href="https://github.com/Traviseric/teneo-marketplace">Open Source</a></li>
+                        <li><a href="/api/network/status">Network Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/docs">Documentation</a></li>
+                        <li><a href="/admin">Admin Panel</a></li>
+                        <li><a href="https://github.com/Traviseric/teneo-marketplace/issues">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Teneo Marketplace. Part of the censorship-resistant book network.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Configuration
         const BRAND_ID = 'teneo';
-        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '';
 
-        // Load brand configuration
         async function loadBrandConfig() {
             try {
                 const response = await fetch(`/brands/${BRAND_ID}/config.json`);
                 const config = await response.json();
-                
-                // Apply brand theme
-                applyBrandTheme(config);
-                
-                // Update UI with brand info
-                updateBrandInfo(config);
-                
+
+                document.getElementById('brand-logo').textContent = config.name || config.brandName || 'Teneo Marketplace';
+                document.title = `${config.name || 'Teneo'} Marketplace`;
+
                 return config;
             } catch (error) {
                 console.error('Error loading brand config:', error);
             }
         }
 
-        // Apply brand theme colors
-        function applyBrandTheme(config) {
-            const root = document.documentElement;
-            const theme = config.theme;
-            
-            if (theme) {
-                root.style.setProperty('--primary-color', theme.primaryColor);
-                root.style.setProperty('--secondary-color', theme.secondaryColor);
-                root.style.setProperty('--accent-color', theme.accentColor);
-                root.style.setProperty('--background-color', theme.backgroundColor);
-                root.style.setProperty('--text-color', theme.textColor);
-                
-                if (theme.fontFamily) {
-                    root.style.setProperty('--font-family', theme.fontFamily);
-                }
-            }
-        }
-
-        // Update brand information
-        function updateBrandInfo(config) {
-            document.getElementById('brand-logo').textContent = config.brandName || 'Marketplace';
-            document.getElementById('brand-name').textContent = config.brandName || 'Marketplace';
-            document.getElementById('brand-tagline').textContent = config.tagline || '';
-            document.getElementById('brand-description').textContent = config.description || '';
-            document.title = `${config.brandName} Marketplace`;
-        }
-
-        // Load catalog
         async function loadCatalog() {
             try {
                 const response = await fetch(`/brands/${BRAND_ID}/catalog.json`);
                 const catalog = await response.json();
-                
+
                 displayBooks(catalog.books || []);
-                displayCollections(catalog.collections || []);
-                
+
+                // Update stats
+                const statBooks = document.getElementById('stat-books');
+                if (statBooks) {
+                    statBooks.textContent = catalog.books?.length || 0;
+                }
+
                 return catalog;
             } catch (error) {
                 console.error('Error loading catalog:', error);
@@ -457,18 +601,23 @@
             }
         }
 
-        // Display books
         function displayBooks(books) {
             const grid = document.getElementById('books-grid');
-            
+
             if (books.length === 0) {
                 grid.innerHTML = '<p class="loading">No books available</p>';
                 return;
             }
-            
-            grid.innerHTML = books.map(book => `
+
+            // Show first 6 books
+            const featured = books.slice(0, 6);
+
+            grid.innerHTML = featured.map(book => `
                 <a href="/book-detail.html?id=${book.id}" class="book-card">
-                    <img src="${book.coverImage}" alt="${book.title}" class="book-cover" onerror="this.src='https://via.placeholder.com/400x600?text=${encodeURIComponent(book.title)}'">
+                    <img src="${book.coverImage || 'https://via.placeholder.com/400x600/F3F4F6/374151?text=' + encodeURIComponent(book.title)}"
+                         alt="${book.title}"
+                         class="book-cover"
+                         onerror="this.src='https://via.placeholder.com/400x600/F3F4F6/374151?text=Book+Cover'">
                     <div class="book-info">
                         ${book.badge ? `<span class="book-badge">${book.badge}</span>` : ''}
                         <h3 class="book-title">${book.title}</h3>
@@ -482,43 +631,6 @@
                 </a>
             `).join('');
         }
-
-        // Display collections
-        function displayCollections(collections) {
-            const grid = document.getElementById('collections-grid');
-            
-            if (collections.length === 0) {
-                grid.innerHTML = '';
-                return;
-            }
-            
-            grid.innerHTML = collections.map(collection => `
-                <a href="/collection.html?id=${collection.id}" class="collection-card">
-                    <span class="collection-badge">${collection.badge}</span>
-                    <h3 class="collection-title">${collection.title}</h3>
-                    <p class="collection-description">${collection.description}</p>
-                    <div class="collection-price">
-                        <span class="collection-current-price">$${collection.price}</span>
-                        <span class="collection-original-price">$${collection.originalPrice}</span>
-                    </div>
-                    ${collection.bonus ? `<div class="collection-bonus">${collection.bonus}</div>` : ''}
-                </a>
-            `).join('');
-        }
-
-        // Newsletter form handler
-        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = e.target.querySelector('input[type="email"]').value;
-            
-            try {
-                // In a real app, this would send to an API
-                alert(`Thank you for subscribing! Check ${email} for your free guide.`);
-                e.target.reset();
-            } catch (error) {
-                alert('Error subscribing. Please try again.');
-            }
-        });
 
         // Initialize
         async function init() {
