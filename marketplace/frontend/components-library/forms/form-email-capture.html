@@ -1,0 +1,225 @@
+<!--
+Component: Email Capture Form
+Category: forms
+Used In: All funnels, lead magnets
+Variables:
+- {{HEADLINE}}: Form headline
+- {{DESCRIPTION}}: Supporting text
+- {{PLACEHOLDER}}: Input placeholder text
+- {{BUTTON_TEXT}}: Submit button text
+- {{FORM_ACTION}}: Form submission URL
+- {{TRUST_TEXT}}: Trust signal below button
+Features:
+- Single email input
+- Inline validation
+- GDPR consent checkbox (optional)
+- Success/error states
+- Analytics tracking
+-->
+
+<style>
+.email-capture {
+    --form-bg: var(--brand-bg, #FFFFFF);
+    --form-border: var(--brand-border-light, #E5E7EB);
+    --form-text: var(--brand-text, #111827);
+    --form-accent: var(--brand-accent, #fea644);
+    --form-padding: var(--spacing-xl, 2rem);
+}
+
+.email-capture {
+    background: var(--form-bg);
+    border: 1px solid var(--form-border);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--form-padding);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.email-capture__headline {
+    font-size: var(--text-2xl, 1.5rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--form-text);
+    margin-bottom: var(--spacing-sm, 0.5rem);
+    text-align: center;
+}
+
+.email-capture__description {
+    font-size: var(--text-base, 1rem);
+    color: var(--brand-text-secondary, #4B5563);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    text-align: center;
+}
+
+.email-capture__input {
+    width: 100%;
+    padding: var(--spacing-md, 1rem);
+    border: 2px solid var(--form-border);
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-base, 1rem);
+    margin-bottom: var(--spacing-md, 1rem);
+    transition: border-color var(--transition-base, 0.2s);
+    font-family: inherit;
+}
+
+.email-capture__input:focus {
+    outline: none;
+    border-color: var(--form-accent);
+}
+
+.email-capture__input.error {
+    border-color: var(--brand-error, #EF4444);
+}
+
+.email-capture__error-message {
+    color: var(--brand-error, #EF4444);
+    font-size: var(--text-sm, 0.875rem);
+    margin-top: calc(var(--spacing-xs, 0.25rem) * -1);
+    margin-bottom: var(--spacing-md, 1rem);
+    display: none;
+}
+
+.email-capture__error-message.visible {
+    display: block;
+}
+
+.email-capture__button {
+    width: 100%;
+    padding: var(--spacing-md, 1rem);
+    background: var(--brand-primary, #111827);
+    color: var(--brand-text-light, #FFFFFF);
+    border: none;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: var(--font-weight-semibold, 600);
+    cursor: pointer;
+    transition: all var(--transition-base, 0.2s);
+    font-family: inherit;
+}
+
+.email-capture__button:hover {
+    background: var(--brand-secondary, #374151);
+    transform: translateY(-1px);
+}
+
+.email-capture__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.email-capture__trust {
+    text-align: center;
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--brand-text-muted, #9CA3AF);
+    margin-top: var(--spacing-sm, 0.75rem);
+}
+
+.email-capture__success {
+    display: none;
+    text-align: center;
+    padding: var(--spacing-lg, 1.5rem);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-md, 0.5rem);
+    color: var(--brand-success, #10B981);
+    font-weight: var(--font-weight-medium, 500);
+}
+
+.email-capture__success.visible {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .email-capture {
+        padding: var(--spacing-lg, 1.5rem);
+    }
+}
+</style>
+
+<div class="email-capture">
+    <h3 class="email-capture__headline">{{HEADLINE|Get Instant Access}}</h3>
+    <p class="email-capture__description">{{DESCRIPTION|Enter your email to download your free chapter}}</p>
+
+    <form class="email-capture__form" id="emailCaptureForm" onsubmit="return handleEmailSubmit(event)">
+        <input
+            type="email"
+            name="email"
+            class="email-capture__input"
+            placeholder="{{PLACEHOLDER|Enter your email address}}"
+            required
+            id="emailInput"
+        >
+        <div class="email-capture__error-message" id="emailError">
+            Please enter a valid email address
+        </div>
+
+        <button type="submit" class="email-capture__button">
+            {{BUTTON_TEXT|Get Free Access}}
+        </button>
+
+        <p class="email-capture__trust">
+            {{TRUST_TEXT|✓ No spam · Unsubscribe anytime · We respect your privacy}}
+        </p>
+    </form>
+
+    <div class="email-capture__success" id="emailSuccess">
+        ✓ Success! Check your email for your download link.
+    </div>
+</div>
+
+<script>
+function handleEmailSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const emailInput = document.getElementById('emailInput');
+    const errorMessage = document.getElementById('emailError');
+    const successMessage = document.getElementById('emailSuccess');
+    const button = form.querySelector('.email-capture__button');
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value)) {
+        emailInput.classList.add('error');
+        errorMessage.classList.add('visible');
+        return false;
+    }
+
+    // Remove error state
+    emailInput.classList.remove('error');
+    errorMessage.classList.remove('visible');
+
+    // Disable button
+    button.disabled = true;
+    button.textContent = 'Submitting...';
+
+    // Submit to API
+    const formData = new FormData(form);
+
+    fetch('{{FORM_ACTION|/api/email-capture}}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Show success
+        form.style.display = 'none';
+        successMessage.classList.add('visible');
+
+        // Track conversion
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'generate_lead', {
+                event_category: 'Email Capture',
+                event_label: emailInput.value
+            });
+        }
+    })
+    .catch(error => {
+        // Show error
+        errorMessage.textContent = 'Something went wrong. Please try again.';
+        errorMessage.classList.add('visible');
+        button.disabled = false;
+        button.textContent = '{{BUTTON_TEXT|Get Free Access}}';
+    });
+
+    return false;
+}
+</script>

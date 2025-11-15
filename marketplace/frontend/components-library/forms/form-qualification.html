@@ -1,0 +1,38 @@
+<!-- Qualification Form (filters leads before application) -->
+<style>
+.qualification-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: var(--spacing-xl, 2rem);
+    background: var(--brand-bg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+.qualification-form__question {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+}
+.qualification-form__options { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.qualification-form__option {
+    padding: var(--spacing-md);
+    background: var(--brand-bg-secondary);
+    border: 2px solid var(--brand-border-light);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+.qualification-form__option:hover { background: var(--brand-bg-tertiary); border-color: var(--brand-accent); }
+</style>
+
+<div class="qualification-form">
+    <h3 class="qualification-form__question">{{QUESTION|Are you ready to invest $5K-$10K in your publishing business?}}</h3>
+    <div class="qualification-form__options">
+        <div class="qualification-form__option" onclick="window.location.href='/application'">
+            Yes, I'm ready to invest
+        </div>
+        <div class="qualification-form__option" onclick="window.location.href='/self-service'">
+            Not yet, show me self-service options
+        </div>
+    </div>
+</div>
