@@ -1,0 +1,38 @@
+{
+  "heroHeadline": "Science That Makes Sense",
+  "heroSubheadline": "Complex topics explained for curious minds",
+  "ctaButtonText": "Explore Books",
+  "features": [
+    {
+      "title": "Evidence-Based Content",
+      "description": "Every fact backed by peer-reviewed research"
+    },
+    {
+      "title": "Conversational Style",
+      "description": "No boring textbooks - we talk like real people"
+    },
+    {
+      "title": "Practical Applications",
+      "description": "See how science applies to your everyday life"
+    }
+  ],
+  "socialProof": {
+    "headline": "Trusted by 10,000+ Students",
+    "testimonials": [
+      {
+        "quote": "Finally, quantum physics that actually makes sense!",
+        "author": "Sarah, 17"
+      }
+    ]
+  },
+  "faq": [
+    {
+      "question": "Are these books suitable for beginners?",
+      "answer": "Absolutely! We start with the basics and build up gradually."
+    },
+    {
+      "question": "What format are the books?",
+      "answer": "Digital PDF and ePub, plus print-on-demand options."
+    }
+  ]
+}
