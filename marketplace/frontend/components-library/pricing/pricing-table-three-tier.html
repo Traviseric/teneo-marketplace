@@ -1,0 +1,63 @@
+<!-- 3-Tier Pricing Table - See book-sales-page.html pricing section or DEMO-brand-swap.html for full implementation -->
+<style>
+.pricing-3tier {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg, 1.5rem);
+    padding: var(--spacing-xl, 2rem);
+}
+.pricing-tier {
+    background: var(--brand-bg);
+    border: 2px solid var(--brand-border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+.pricing-tier--popular {
+    border-color: var(--brand-accent);
+    transform: scale(1.05);
+}
+.pricing-tier__name {
+    font-size: var(--text-xl);
+    font-weight: 600;
+}
+.pricing-tier__price {
+    font-size: var(--text-5xl);
+    font-weight: 700;
+    color: var(--brand-accent);
+}
+.pricing-tier__cta {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    .pricing-3tier { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="pricing-3tier">
+    <div class="pricing-tier">
+        <div class="pricing-tier__name">Starter</div>
+        <div class="pricing-tier__price">$10</div>
+        <p>/month</p>
+        <button class="pricing-tier__cta">Get Started</button>
+    </div>
+    <div class="pricing-tier pricing-tier--popular">
+        <div class="pricing-tier__name">Pro</div>
+        <div class="pricing-tier__price">$49</div>
+        <p>/month</p>
+        <button class="pricing-tier__cta">Get Pro</button>
+    </div>
+    <div class="pricing-tier">
+        <div class="pricing-tier__name">Enterprise</div>
+        <div class="pricing-tier__price">$199</div>
+        <p>/month</p>
+        <button class="pricing-tier__cta">Contact Sales</button>
+    </div>
+</div>

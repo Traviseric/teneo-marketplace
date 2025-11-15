@@ -1,0 +1,383 @@
+<!--
+Component: Multi-Step Wizard Form
+Category: forms
+Used In: Brand Builder funnel, Application forms
+Variables:
+- {{STEP_COUNT}}: Total number of steps
+- {{FORM_ACTION}}: Form submission URL
+Features:
+- Progress bar visualization
+- Step-by-step navigation
+- Auto-save to sessionStorage
+- Field validation per step
+- Back/Next navigation
+- Mobile responsive
+-->
+
+<style>
+.wizard-form {
+    --wizard-bg: var(--brand-bg, #FFFFFF);
+    --wizard-border: var(--brand-border-light, #E5E7EB);
+    --wizard-text: var(--brand-text, #111827);
+    --wizard-accent: var(--brand-accent, #fea644);
+    --wizard-padding: var(--spacing-xl, 2rem);
+}
+
+.wizard-form {
+    background: var(--wizard-bg);
+    border: 1px solid var(--wizard-border);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--wizard-padding);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Progress Bar */
+.wizard-form__progress {
+    margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.wizard-form__progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--brand-bg-secondary, #F3F4F6);
+    border-radius: var(--radius-full, 9999px);
+    overflow: hidden;
+}
+
+.wizard-form__progress-fill {
+    height: 100%;
+    background: var(--wizard-accent);
+    transition: width var(--transition-slow, 0.3s);
+    border-radius: var(--radius-full, 9999px);
+}
+
+.wizard-form__progress-text {
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--brand-text-secondary, #4B5563);
+    text-align: center;
+    margin-top: var(--spacing-sm, 0.5rem);
+}
+
+/* Steps */
+.wizard-form__step {
+    display: none;
+}
+
+.wizard-form__step.active {
+    display: block;
+    animation: fadeIn var(--transition-base, 0.2s);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-form__step-title {
+    font-size: var(--text-2xl, 1.5rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--wizard-text);
+    margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.wizard-form__step-description {
+    font-size: var(--text-base, 1rem);
+    color: var(--brand-text-secondary, #4B5563);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+}
+
+/* Form Fields */
+.wizard-form__field {
+    margin-bottom: var(--spacing-lg, 1.5rem);
+}
+
+.wizard-form__label {
+    display: block;
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--wizard-text);
+    margin-bottom: var(--spacing-xs, 0.5rem);
+}
+
+.wizard-form__input,
+.wizard-form__textarea,
+.wizard-form__select {
+    width: 100%;
+    padding: var(--spacing-md, 1rem);
+    border: 2px solid var(--wizard-border);
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-base, 1rem);
+    font-family: inherit;
+    transition: border-color var(--transition-base, 0.2s);
+}
+
+.wizard-form__textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.wizard-form__input:focus,
+.wizard-form__textarea:focus,
+.wizard-form__select:focus {
+    outline: none;
+    border-color: var(--wizard-accent);
+}
+
+/* Navigation Buttons */
+.wizard-form__nav {
+    display: flex;
+    gap: var(--spacing-md, 1rem);
+    margin-top: var(--spacing-xl, 2rem);
+}
+
+.wizard-form__btn {
+    flex: 1;
+    padding: var(--spacing-md, 1rem);
+    border: none;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-base, 1rem);
+    font-weight: var(--font-weight-semibold, 600);
+    cursor: pointer;
+    transition: all var(--transition-base, 0.2s);
+    font-family: inherit;
+}
+
+.wizard-form__btn--back {
+    background: var(--brand-bg-secondary, #F3F4F6);
+    color: var(--wizard-text);
+}
+
+.wizard-form__btn--back:hover {
+    background: var(--brand-bg-tertiary, #E5E7EB);
+}
+
+.wizard-form__btn--next,
+.wizard-form__btn--submit {
+    background: var(--brand-primary, #111827);
+    color: var(--brand-text-light, #FFFFFF);
+}
+
+.wizard-form__btn--next:hover,
+.wizard-form__btn--submit:hover {
+    background: var(--brand-secondary, #374151);
+}
+
+@media (max-width: 768px) {
+    .wizard-form {
+        padding: var(--spacing-lg, 1.5rem);
+    }
+}
+</style>
+
+<div class="wizard-form">
+    <!-- Progress Bar -->
+    <div class="wizard-form__progress">
+        <div class="wizard-form__progress-bar">
+            <div class="wizard-form__progress-fill" id="wizardProgress" style="width: 25%"></div>
+        </div>
+        <p class="wizard-form__progress-text">
+            Step <span id="currentStep">1</span> of <span id="totalSteps">4</span>
+        </p>
+    </div>
+
+    <form id="wizardForm" onsubmit="return handleWizardSubmit(event)">
+        <!-- Step 1 -->
+        <div class="wizard-form__step active" data-step="1">
+            <h3 class="wizard-form__step-title">Basic Information</h3>
+            <p class="wizard-form__step-description">Let's start with the basics</p>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Brand Name</label>
+                <input type="text" name="brand_name" class="wizard-form__input" required>
+            </div>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Mission Statement</label>
+                <textarea name="mission" class="wizard-form__textarea" required></textarea>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="wizard-form__step" data-step="2">
+            <h3 class="wizard-form__step-title">Target Audience</h3>
+            <p class="wizard-form__step-description">Who are you serving?</p>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Target Audience</label>
+                <input type="text" name="target_audience" class="wizard-form__input" required>
+            </div>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Voice & Tone</label>
+                <select name="voice_tone" class="wizard-form__select" required>
+                    <option value="">Select...</option>
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual & Friendly</option>
+                    <option value="authoritative">Authoritative</option>
+                    <option value="inspirational">Inspirational</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="wizard-form__step" data-step="3">
+            <h3 class="wizard-form__step-title">Brand Values</h3>
+            <p class="wizard-form__step-description">What drives your brand?</p>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Core Values (comma-separated)</label>
+                <input type="text" name="core_values" class="wizard-form__input"
+                       placeholder="e.g., Transparency, Innovation, Quality" required>
+            </div>
+
+            <div class="wizard-form__field">
+                <label class="wizard-form__label">Unique Angle</label>
+                <textarea name="unique_angle" class="wizard-form__textarea"
+                          placeholder="What makes your brand different?" required></textarea>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="wizard-form__step" data-step="4">
+            <h3 class="wizard-form__step-title">Review & Submit</h3>
+            <p class="wizard-form__step-description">Almost done! Review your information:</p>
+
+            <div id="reviewContent" style="background: var(--brand-bg-secondary); padding: var(--spacing-md); border-radius: var(--radius-md); font-size: var(--text-sm);">
+                <!-- Review content will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="wizard-form__nav">
+            <button type="button" class="wizard-form__btn wizard-form__btn--back" id="backBtn" onclick="previousStep()" style="display: none;">
+                ← Back
+            </button>
+            <button type="button" class="wizard-form__btn wizard-form__btn--next" id="nextBtn" onclick="nextStep()">
+                Next →
+            </button>
+            <button type="submit" class="wizard-form__btn wizard-form__btn--submit" id="submitBtn" style="display: none;">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+let currentStepNum = 1;
+const totalStepsNum = 4;
+
+function nextStep() {
+    // Validate current step
+    const currentStepEl = document.querySelector(`.wizard-form__step[data-step="${currentStepNum}"]`);
+    const inputs = currentStepEl.querySelectorAll('input[required], textarea[required], select[required]');
+
+    let valid = true;
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            input.style.borderColor = 'var(--brand-error, #EF4444)';
+            valid = false;
+        } else {
+            input.style.borderColor = '';
+        }
+    });
+
+    if (!valid) return;
+
+    // Auto-save
+    saveFormData();
+
+    // Move to next step
+    if (currentStepNum < totalStepsNum) {
+        currentStepNum++;
+        updateStepDisplay();
+    }
+}
+
+function previousStep() {
+    if (currentStepNum > 1) {
+        currentStepNum--;
+        updateStepDisplay();
+    }
+}
+
+function updateStepDisplay() {
+    // Hide all steps
+    document.querySelectorAll('.wizard-form__step').forEach(step => {
+        step.classList.remove('active');
+    });
+
+    // Show current step
+    document.querySelector(`.wizard-form__step[data-step="${currentStepNum}"]`).classList.add('active');
+
+    // Update progress bar
+    const progress = (currentStepNum / totalStepsNum) * 100;
+    document.getElementById('wizardProgress').style.width = progress + '%';
+    document.getElementById('currentStep').textContent = currentStepNum;
+
+    // Update buttons
+    const backBtn = document.getElementById('backBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    backBtn.style.display = currentStepNum > 1 ? 'block' : 'none';
+    nextBtn.style.display = currentStepNum < totalStepsNum ? 'block' : 'none';
+    submitBtn.style.display = currentStepNum === totalStepsNum ? 'block' : 'none';
+
+    // Populate review on last step
+    if (currentStepNum === totalStepsNum) {
+        populateReview();
+    }
+}
+
+function saveFormData() {
+    const formData = new FormData(document.getElementById('wizardForm'));
+    const data = Object.fromEntries(formData);
+    sessionStorage.setItem('wizardFormData', JSON.stringify(data));
+}
+
+function populateReview() {
+    const data = JSON.parse(sessionStorage.getItem('wizardFormData') || '{}');
+    const reviewHtml = Object.entries(data).map(([key, value]) => {
+        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return `<p><strong>${label}:</strong> ${value}</p>`;
+    }).join('');
+    document.getElementById('reviewContent').innerHTML = reviewHtml;
+}
+
+function handleWizardSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    fetch('{{FORM_ACTION|/api/wizard-submit}}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Clear saved data
+        sessionStorage.removeItem('wizardFormData');
+
+        // Redirect or show success
+        window.location.href = data.redirect || '/success';
+    })
+    .catch(error => {
+        alert('Error submitting form. Please try again.');
+    });
+
+    return false;
+}
+
+// Load saved data on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('wizardFormData');
+    if (saved) {
+        const data = JSON.parse(saved);
+        Object.entries(data).forEach(([name, value]) => {
+            const input = document.querySelector(`[name="${name}"]`);
+            if (input) input.value = value;
+        });
+    }
+});
+</script>

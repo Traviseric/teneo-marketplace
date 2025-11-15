@@ -1,0 +1,81 @@
+<!-- Application Form for High-Ticket DFY -->
+<style>
+.application-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--spacing-xl, 2rem);
+    background: var(--brand-bg, #FFF);
+    border: 1px solid var(--brand-border-light);
+    border-radius: var(--radius-lg);
+}
+.application-form__field { margin-bottom: var(--spacing-lg); }
+.application-form__label { display: block; margin-bottom: var(--spacing-xs); font-weight: 600; }
+.application-form__input, .application-form__select, .application-form__textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--brand-border-light);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+}
+.application-form__textarea { min-height: 100px; }
+.application-form__submit {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    cursor: pointer;
+}
+</style>
+
+<form class="application-form" action="{{FORM_ACTION}}" method="POST">
+    <h2>{{HEADLINE|Apply for Done-For-You Service}}</h2>
+    <p>{{DESCRIPTION|Tell us about your publishing goals}}</p>
+
+    <div class="application-form__field">
+        <label class="application-form__label">Full Name</label>
+        <input type="text" name="name" class="application-form__input" required>
+    </div>
+
+    <div class="application-form__field">
+        <label class="application-form__label">Email</label>
+        <input type="email" name="email" class="application-form__input" required>
+    </div>
+
+    <div class="application-form__field">
+        <label class="application-form__label">Phone</label>
+        <input type="tel" name="phone" class="application-form__input" required>
+    </div>
+
+    <div class="application-form__field">
+        <label class="application-form__label">How many books do you want to publish?</label>
+        <select name="book_count" class="application-form__select" required>
+            <option value="">Select...</option>
+            <option value="1-10">1-10 books</option>
+            <option value="11-50">11-50 books</option>
+            <option value="51-100">51-100 books</option>
+            <option value="100+">100+ books</option>
+        </select>
+    </div>
+
+    <div class="application-form__field">
+        <label class="application-form__label">Monthly revenue goal</label>
+        <select name="revenue_goal" class="application-form__select" required>
+            <option value="">Select...</option>
+            <option value="1-5k">$1,000 - $5,000</option>
+            <option value="5-10k">$5,000 - $10,000</option>
+            <option value="10-25k">$10,000 - $25,000</option>
+            <option value="25k+">$25,000+</option>
+        </select>
+    </div>
+
+    <div class="application-form__field">
+        <label class="application-form__label">Tell us about your business</label>
+        <textarea name="business_description" class="application-form__textarea" required></textarea>
+    </div>
+
+    <button type="submit" class="application-form__submit">{{BUTTON_TEXT|Submit Application}}</button>
+</form>
