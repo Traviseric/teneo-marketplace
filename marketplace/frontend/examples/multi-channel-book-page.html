@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First-Time Abatement: The Magic 3 Words That Erase IRS Penalties</title>
+    <style>
+        :root {
+            --primary-color: #1E3A8A; /* Navy - Authority */
+            --accent-color: #F59E0B; /* Gold - Wealth */
+            --text-color: #1F2937;
+            --bg-light: #F9FAFB;
+            --success-green: #10B981;
+            --warning-red: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .book-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1E40AF 100%);
+            color: white;
+            padding: 80px 20px;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .book-cover {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .book-details h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .social-proof {
+            display: flex;
+            gap: 32px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .proof-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .proof-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .proof-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Purchase Options */
+        .purchase-section {
+            max-width: 1200px;
+            margin: -40px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: #6B7280;
+        }
+
+        .purchase-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 32px 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .option.featured {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
+        }
+
+        .option.best-deal {
+            border-color: var(--success-green);
+            background: linear-gradient(to bottom, white 0%, #F0FDF4 100%);
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.best-price {
+            background: var(--success-green);
+        }
+
+        .option h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 16px 0;
+        }
+
+        .savings {
+            color: var(--success-green);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .benefits {
+            list-style: none;
+            margin: 24px 0;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            color: #4B5563;
+            display: flex;
+            align-items: start;
+        }
+
+        .benefits li:before {
+            content: "✓";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1E40AF;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-amazon {
+            background: #FF9900;
+            color: #232F3E;
+        }
+
+        .btn-amazon:hover {
+            background: #FFA724;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+        }
+
+        .guarantee, .shipping, .why-amazon {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 12px;
+        }
+
+        /* Value Stack */
+        .value-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .chapters {
+            display: grid;
+            gap: 24px;
+        }
+
+        .chapter {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .chapter h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            background: var(--bg-light);
+            padding: 80px 20px;
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--success-green);
+            margin-bottom: 16px;
+        }
+
+        .testimonial p {
+            color: #4B5563;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .author {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Amazon Reviews */
+        .amazon-reviews {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .amazon-rating {
+            font-size: 2rem;
+            margin: 24px 0;
+            color: var(--accent-color);
+        }
+
+        .amazon-review-snippet {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px auto;
+            max-width: 600px;
+        }
+
+        .amazon-review-snippet p {
+            font-size: 1.125rem;
+            color: #4B5563;
+            margin-bottom: 16px;
+        }
+
+        .reviewer {
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        .amazon-review-snippet a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* FAQ */
+        .faq-section {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        details {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        summary {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.125rem;
+        }
+
+        details p {
+            margin-top: 16px;
+            color: #4B5563;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1E40AF 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto 24px;
+        }
+
+        .cta-buttons .btn {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .book-cover {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .purchase-options {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="book-hero">
+        <div class="hero-container">
+            <div class="book-cover">
+                <img src="/api/placeholder/260/400" alt="First-Time Abatement Book Cover">
+            </div>
+
+            <div class="book-details">
+                <h1>First-Time Abatement: The Magic 3 Words That Erase IRS Penalties</h1>
+                <p class="subtitle">The IRS Hides This Program From 95% of Taxpayers. Learn How to Eliminate Penalties With One Simple Request.</p>
+
+                <div class="social-proof">
+                    <div class="proof-item">
+                        <span class="proof-value">$127M</span>
+                        <span class="proof-label">Penalties Eliminated</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-value">⭐⭐⭐⭐⭐</span>
+                        <span class="proof-label">4.8/5 (2,847 readers)</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-value">156 Pages</span>
+                        <span class="proof-label">Step-by-Step Guide</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purchase Options -->
+    <section class="purchase-section">
+        <div class="section-header">
+            <h2>Choose Your Format</h2>
+            <p>All formats include the same life-changing information</p>
+        </div>
+
+        <div class="purchase-options">
+            <!-- Option 1: Digital (Highest Margin) -->
+            <div class="option digital featured">
+                <div class="badge">Most Popular</div>
+                <h3>📱 Digital Edition</h3>
+                <p class="price">$14.99</p>
+                <ul class="benefits">
+                    <li>Instant download (PDF + ePub)</li>
+                    <li>Read on any device</li>
+                    <li>Searchable & portable</li>
+                    <li>Free updates for life</li>
+                    <li>BONUS: Request letter templates</li>
+                </ul>
+                <button class="btn btn-primary" onclick="addToCart('digital')">Get Instant Access</button>
+                <p class="guarantee">30-day money-back guarantee</p>
+            </div>
+
+            <!-- Option 2: Print (Medium Margin) -->
+            <div class="option print">
+                <h3>📖 Physical Book</h3>
+                <p class="price">$24.99</p>
+                <ul class="benefits">
+                    <li>156-page paperback</li>
+                    <li>Shipped to your door (3-5 days)</li>
+                    <li>Premium quality printing</li>
+                    <li>Includes digital copy FREE</li>
+                    <li>Perfect reference book</li>
+                </ul>
+                <button class="btn btn-secondary" onclick="orderPrint()">Order Print Edition</button>
+                <p class="shipping">Free shipping over $35</p>
+            </div>
+
+            <!-- Option 3: Amazon (Strategic Loss Leader) -->
+            <div class="option amazon best-deal">
+                <div class="badge best-price">Best Price!</div>
+                <h3>🛒 Amazon</h3>
+                <p class="price">$12.99</p>
+                <span class="savings">Save $2 vs digital!</span>
+                <ul class="benefits">
+                    <li>Cheapest option available</li>
+                    <li>Prime 2-day shipping eligible</li>
+                    <li>Amazon's buyer protection</li>
+                    <li>Build your Amazon library</li>
+                    <li>Read reviews from 1,234+ readers</li>
+                </ul>
+                <a href="https://amazon.com/dp/XXXXX" class="btn btn-amazon" target="_blank">
+                    View on Amazon →
+                </a>
+                <p class="why-amazon">⭐ If price matters, Amazon has the best deal</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Stack -->
+    <section class="value-section">
+        <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">What's Inside</h2>
+        <div class="chapters">
+            <div class="chapter">
+                <h3>Chapter 1: What the IRS Doesn't Tell You</h3>
+                <p>Discover why the IRS deliberately hides the First-Time Abatement program from 95% of taxpayers. Learn the psychology behind penalty assessment and why they count on you NOT knowing about this relief program.</p>
+            </div>
+
+            <div class="chapter">
+                <h3>Chapter 2: The Magic 3 Words</h3>
+                <p>The exact phrase that triggers automatic penalty removal. Learn how to structure your request to maximize approval odds. Includes word-for-word scripts tested on thousands of cases.</p>
+            </div>
+
+            <div class="chapter">
+                <h3>Chapter 3: Who Qualifies (Spoiler: Probably You)</h3>
+                <p>The surprisingly broad eligibility criteria the IRS uses. Discover the 3-year clean compliance requirement and how to prove it. Learn what "reasonable cause" really means.</p>
+            </div>
+
+            <div class="chapter">
+                <h3>Chapter 4: The Request Process (Step-by-Step)</h3>
+                <p>Exact instructions for submitting your abatement request. Phone vs. written request strategies. How to handle IRS representatives who claim "it doesn't work that way."</p>
+            </div>
+
+            <div class="chapter">
+                <h3>Chapter 5: Advanced Strategies</h3>
+                <p>Using First-Time Abatement strategically across multiple years. Combining with other penalty relief programs. What to do when FTA is denied (and how to appeal successfully).</p>
+            </div>
+
+            <div class="chapter">
+                <h3>Chapter 6: Real Case Studies</h3>
+                <p>12 actual cases showing First-Time Abatement in action. From $473 to $87,000 in penalties eliminated. Learn from others' mistakes and successes.</p>
+            </div>
+
+            <div class="chapter">
+                <h3>BONUS: Request Letter Templates</h3>
+                <p>Copy-paste templates for phone scripts, written requests, and appeals. Includes templates for failure-to-file, failure-to-pay, and estimated tax penalties.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 16px;">Real Results from Real People</h2>
+            <p style="text-align: center; color: #6B7280; margin-bottom: 40px;">These penalties were 100% eliminated using First-Time Abatement</p>
+
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="amount">$12,430 Eliminated</div>
+                    <p>"I owed penalties from 2019-2021. Used the exact script from Chapter 4. IRS representative said 'okay' and removed all penalties in 10 minutes. Couldn't believe it was that simple."</p>
+                    <div class="author">- James R., Small Business Owner</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="amount">$3,847 Saved</div>
+                    <p>"I had no idea First-Time Abatement existed. My tax preparer never mentioned it. This book paid for itself 257 times over. Everyone should know about this!"</p>
+                    <div class="author">- Maria S., Freelance Consultant</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="amount">$87,000 Wiped Out</div>
+                    <p>"Three years of failure-to-deposit penalties. Thought I was stuck with them forever. Chapter 5's appeal strategy worked when my first request was denied. Persistence paid off."</p>
+                    <div class="author">- David L., Restaurant Owner</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="amount">$1,247 Removed</div>
+                    <p>"As a single mom, every dollar counts. This penalty was eating into my grocery budget. Used the template, penalties gone in 2 weeks. Thank you!"</p>
+                    <div class="author">- Sarah M., Teacher</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Amazon Reviews Integration -->
+    <section class="amazon-reviews">
+        <h2>What Amazon Readers Say</h2>
+        <div class="amazon-rating">
+            ⭐⭐⭐⭐⭐ 4.7/5 on Amazon (1,234 reviews)
+        </div>
+        <div class="amazon-review-snippet">
+            <p>"This is THE definitive guide to First-Time Abatement. Saved me $5,600 in penalties. Better than paying a tax attorney $500/hour to tell me the same thing."</p>
+            <p class="reviewer">- Amazon Customer, Verified Purchase</p>
+            <a href="https://amazon.com/dp/XXXXX#reviews" target="_blank">Read all 1,234 Amazon reviews →</a>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">Frequently Asked Questions</h2>
+
+        <details>
+            <summary>Which format should I choose?</summary>
+            <p><strong>Digital</strong> if you want instant access and portability. <strong>Print</strong> if you prefer physical books and want to highlight/annotate. <strong>Amazon</strong> if you want the lowest price and already shop there. All formats contain the exact same content.</p>
+        </details>
+
+        <details>
+            <summary>Why is Amazon cheaper?</summary>
+            <p>Amazon's massive scale lets them offer lower prices. We list there to make the book accessible to everyone, even if it means lower margins for us. Your financial freedom matters more than our profit!</p>
+        </details>
+
+        <details>
+            <summary>Does First-Time Abatement really work?</summary>
+            <p>Yes! It's an official IRS program outlined in IRS Policy Statement 5-133. The IRS is legally required to grant it to qualifying taxpayers. The problem is they don't advertise it because it costs them billions in penalty revenue.</p>
+        </details>
+
+        <details>
+            <summary>What if I've already paid the penalties?</summary>
+            <p>You can still request a refund! Chapter 5 covers how to request penalty abatement for already-paid penalties. The IRS will refund the penalty amount (usually within 6-8 weeks).</p>
+        </details>
+
+        <details>
+            <summary>Is this for businesses or individuals?</summary>
+            <p>Both! First-Time Abatement works for individual income tax penalties, business payroll tax penalties, and estimated tax penalties. We cover all scenarios in the book.</p>
+        </details>
+
+        <details>
+            <summary>What if my request is denied?</summary>
+            <p>Chapter 5 includes the complete appeals process. About 15% of initial requests are denied (often incorrectly), but we show you exactly how to appeal and get it approved. Our appeal success rate is over 80%.</p>
+        </details>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to Eliminate Your IRS Penalties?</h2>
+        <p style="font-size: 1.125rem; margin-bottom: 40px; opacity: 0.9;">Choose the format that works best for you:</p>
+        <div class="cta-buttons">
+            <button class="btn btn-primary" onclick="addToCart('digital')">Get Digital Edition ($14.99)</button>
+            <button class="btn btn-secondary" onclick="orderPrint()">Order Print ($24.99)</button>
+            <a href="https://amazon.com/dp/XXXXX" class="btn btn-amazon" target="_blank">View on Amazon ($12.99)</a>
+        </div>
+        <p style="font-size: 0.875rem; opacity: 0.8;">Risk-free: 30-day money-back guarantee on all formats</p>
+    </section>
+
+    <script>
+        function addToCart(format) {
+            // Digital purchase flow
+            if (format === 'digital') {
+                alert('Adding digital edition to cart... (Connect to Stripe checkout)');
+                // window.location.href = '/api/checkout?product=first-time-abatement&format=digital';
+            }
+        }
+
+        function orderPrint() {
+            // Print order flow (Lulu integration)
+            alert('Processing print order... (Connect to Lulu API)');
+            // window.location.href = '/api/lulu/order?product=first-time-abatement';
+        }
+    </script>
+</body>
+</html>
