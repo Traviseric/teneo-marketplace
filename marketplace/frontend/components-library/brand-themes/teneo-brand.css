@@ -1,0 +1,34 @@
+/*
+ * BRAND THEME: Teneo
+ * AI & Consciousness Books
+ * Override base variables for Teneo brand
+ */
+
+:root {
+    /* Brand Colors */
+    --brand-primary: #1e3f54;
+    --brand-secondary: #2d5a75;
+    --brand-accent: #fea644;
+
+    /* Backgrounds */
+    --brand-bg: #FFFFFF;
+    --brand-bg-secondary: #f8f9fa;
+    --brand-bg-tertiary: #e9ecef;
+    --brand-bg-dark: #1e3f54;
+
+    /* Text */
+    --brand-text: #111827;
+    --brand-text-secondary: #4B5563;
+    --brand-text-tertiary: #6B7280;
+    --brand-text-muted: #9CA3AF;
+    --brand-text-light: #FFFFFF;
+
+    /* Borders */
+    --brand-border-light: #E5E7EB;
+    --brand-border-medium: #D1D5DB;
+    --brand-border-dark: #9CA3AF;
+
+    /* Typography */
+    --brand-font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --brand-font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{BOOK_TITLE}} - {{BRAND_NAME}}</title>
+    <meta name="description" content="{{BOOK_META_DESC}}">
+
+    <!-- SEO -->
+    <meta property="og:title" content="{{BOOK_TITLE}}">
+    <meta property="og:description" content="{{BOOK_META_DESC}}">
+    <meta property="og:image" content="{{BOOK_COVER_URL}}">
+
+    <style>
+        /* ================================================
+           SALES PAGE TEMPLATE - Component-Based
+           Built from /revolution and /components
+           ================================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Brand Colors - Override per brand */
+            --primary-color: {{PRIMARY_COLOR|#111827}};
+            --accent-color: {{ACCENT_COLOR|#fea644}};
+            --bg-color: {{BG_COLOR|#FFFFFF}};
+            --text-color: {{TEXT_COLOR|#111827}};
+            --text-secondary: {{TEXT_SECONDARY|#4B5563}};
+
+            /* Typography */
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 3rem;
+            --spacing-xl: 4rem;
+
+            /* Layout */
+            --container-width: 1280px;
+            --content-width: 896px;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .content-container {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section - Book Focus */
+        .book-hero {
+            background: linear-gradient(135deg, #F9FAFB 0%, #FFFFFF 100%);
+            padding: 4rem 2rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .book-hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .book-cover-container {
+            text-align: center;
+        }
+
+        .book-cover {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+        }
+
+        .book-cover:hover {
+            transform: scale(1.02);
+        }
+
+        .book-info h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .book-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .author {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .book-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Price Box */
+        .price-box {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-current {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .price-original {
+            font-size: 1.5rem;
+            color: #9CA3AF;
+            text-decoration: line-through;
+        }
+
+        .price-save {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.125rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--text-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Trust Signals */
+        .trust-signals {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-gray {
+            background: #F9FAFB;
+        }
+
+        .section-dark {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .section-dark .section-header h2 {
+            color: white;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .section-dark .section-header p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* What You'll Learn Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .benefit-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .checklist li {
+            padding: 0.75rem 0 0.75rem 2rem;
+            position: relative;
+            font-size: 1.125rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* Testimonial */
+        .testimonial {
+            background: white;
+            border-left: 4px solid var(--accent-color);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .testimonial-text {
+            font-size: 1.125rem;
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #E5E7EB;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .testimonial-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* FAQ */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-answer {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Guarantee Box */
+        .guarantee-box {
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            border-radius: 0.75rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .guarantee-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .guarantee-box h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .guarantee-box p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 0.75rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Footer */
+        footer {
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .book-hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .book-info h1 {
+                font-size: 2rem;
+            }
+
+            .book-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">{{BRAND_NAME}}</a>
+                <nav>
+                    <a href="/library.html">Library</a>
+                    <a href="#buy" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.875rem;">Get This Book</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="book-hero">
+        <div class="container">
+            <div class="book-hero-grid">
+                <div class="book-cover-container">
+                    <img src="{{BOOK_COVER_URL}}" alt="{{BOOK_TITLE}}" class="book-cover">
+                </div>
+
+                <div class="book-info">
+                    <h1>{{BOOK_TITLE}}</h1>
+                    <p class="book-subtitle">{{BOOK_SUBTITLE}}</p>
+                    <p class="author">by <span class="author-name">{{AUTHOR_NAME}}</span></p>
+
+                    <div class="book-stats">
+                        <div class="stat">
+                            <span class="stat-value">{{PAGE_COUNT|250}}</span>
+                            <span class="stat-label">Pages</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">{{RATING|4.8}}</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">{{READERS|1.2K}}</span>
+                            <span class="stat-label">Readers</span>
+                        </div>
+                    </div>
+
+                    <div class="price-box" id="buy">
+                        <div class="price-container">
+                            <span class="price-current">${{PRICE|19.99}}</span>
+                            <span class="price-original">${{ORIGINAL_PRICE|29.99}}</span>
+                        </div>
+                        <span class="price-save">Save {{DISCOUNT|33}}%</span>
+
+                        <div class="btn-group" style="margin-top: 1.5rem;">
+                            <button class="btn btn-primary btn-full" onclick="buyNow()">
+                                Buy Now - Instant Download
+                            </button>
+                        </div>
+
+                        <div class="trust-signals">
+                            <span class="trust-item">✓ Instant Download</span>
+                            <span class="trust-item">✓ 30-Day Guarantee</span>
+                            <span class="trust-item">✓ Secure Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What You'll Learn -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>What You'll Discover Inside</h2>
+                <p>{{WHAT_YOULL_LEARN_DESC|Everything you need to transform your understanding and take action}}</p>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_1_ICON|📖}}</div>
+                    <h3>{{BENEFIT_1_TITLE}}</h3>
+                    <p>{{BENEFIT_1_DESC}}</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_2_ICON|💡}}</div>
+                    <h3>{{BENEFIT_2_TITLE}}</h3>
+                    <p>{{BENEFIT_2_DESC}}</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_3_ICON|🎯}}</div>
+                    <h3>{{BENEFIT_3_TITLE}}</h3>
+                    <p>{{BENEFIT_3_DESC}}</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_4_ICON|⚡}}</div>
+                    <h3>{{BENEFIT_4_TITLE}}</h3>
+                    <p>{{BENEFIT_4_DESC}}</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_5_ICON|🔓}}</div>
+                    <h3>{{BENEFIT_5_TITLE}}</h3>
+                    <p>{{BENEFIT_5_DESC}}</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">{{BENEFIT_6_ICON|🚀}}</div>
+                    <h3>{{BENEFIT_6_TITLE}}</h3>
+                    <p>{{BENEFIT_6_DESC}}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inside This Book -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>Inside This Book</h2>
+                <p>Comprehensive, actionable content organized for maximum impact</p>
+            </div>
+
+            <ul class="checklist">
+                <li>{{INSIDE_1|Complete frameworks and step-by-step processes}}</li>
+                <li>{{INSIDE_2|Real-world examples and case studies}}</li>
+                <li>{{INSIDE_3|Actionable strategies you can implement immediately}}</li>
+                <li>{{INSIDE_4|Expert insights distilled from years of research}}</li>
+                <li>{{INSIDE_5|Tools and resources to accelerate your progress}}</li>
+                <li>{{INSIDE_6|Common pitfalls to avoid and best practices}}</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="section section-gray">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Readers Are Saying</h2>
+            </div>
+
+            <div class="testimonial">
+                <p class="testimonial-text">"{{TESTIMONIAL_TEXT}}"</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar"></div>
+                    <div>
+                        <div class="testimonial-name">{{TESTIMONIAL_NAME}}</div>
+                        <div class="testimonial-role">{{TESTIMONIAL_ROLE}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">What format is this book in?</div>
+                    <div class="faq-answer">You'll receive a PDF download instantly after purchase. Read on any device.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Is there a money-back guarantee?</div>
+                    <div class="faq-answer">Yes! 30-day, no-questions-asked refund policy. If you're not satisfied, we'll refund you immediately.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">{{FAQ_3_Q|Who is this book for?}}</div>
+                    <div class="faq-answer">{{FAQ_3_A}}</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">{{FAQ_4_Q|How long will it take to read?}}</div>
+                    <div class="faq-answer">{{FAQ_4_A}}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantee -->
+    <section class="section section-gray">
+        <div class="container">
+            <div class="guarantee-box">
+                <div class="guarantee-icon">🛡️</div>
+                <h3>30-Day Money-Back Guarantee</h3>
+                <p>We're confident this book will deliver massive value. If you're not completely satisfied within 30 days, we'll refund you immediately, no questions asked.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section">
+        <div class="container">
+            <div class="cta-section">
+                <h2>Ready to Get Started?</h2>
+                <p>Join {{READERS|1,200+}} readers who've already transformed their understanding</p>
+                <button class="btn btn-primary" onclick="buyNow()" style="background: var(--accent-color); color: var(--primary-color); font-size: 1.25rem; padding: 1.25rem 3rem;">
+                    Get Instant Access - ${{PRICE|19.99}}
+                </button>
+                <div class="trust-signals" style="margin-top: 1.5rem; color: rgba(255,255,255,0.8);">
+                    <span class="trust-item">✓ Instant Download</span>
+                    <span class="trust-item">✓ 30-Day Guarantee</span>
+                    <span class="trust-item">✓ Secure Payment</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 {{BRAND_NAME}}. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="/privacy.html" style="color: inherit; margin: 0 1rem;">Privacy Policy</a>
+                <a href="/terms.html" style="color: inherit; margin: 0 1rem;">Terms of Service</a>
+                <a href="/contact.html" style="color: inherit; margin: 0 1rem;">Contact</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function buyNow() {
+            // Stripe checkout integration
+            const bookData = {
+                title: '{{BOOK_TITLE}}',
+                price: '{{PRICE|19.99}}',
+                bookId: '{{BOOK_ID}}',
+                brandId: '{{BRAND_ID}}'
+            };
+
+            // TODO: Replace with actual Stripe checkout
+            alert(`Checkout coming soon!\n\nBook: ${bookData.title}\nPrice: $${bookData.price}`);
+
+            // Actual implementation:
+            // window.location.href = `/api/checkout?bookId=${bookData.bookId}&price=${bookData.price}`;
+        }
+    </script>
+</body>
+</html>

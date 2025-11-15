@@ -1,0 +1,74 @@
+<!--
+Component: CTA Button - Primary
+Category: ctas
+Used In: All funnels
+Variables:
+- {{CTA_TEXT}}: Button text
+- {{CTA_LINK}}: Button destination URL
+Features:
+- Primary brand color
+- Hover animation
+- Click tracking ready
+- Accessible
+-->
+
+<style>
+.cta-btn-primary {
+    --btn-bg: var(--brand-primary, #111827);
+    --btn-bg-hover: var(--brand-secondary, #374151);
+    --btn-text: var(--brand-text-light, #FFFFFF);
+    --btn-padding: var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+    --btn-radius: var(--radius-md, 0.5rem);
+    --btn-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.07));
+    --btn-shadow-hover: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.08));
+}
+
+.cta-btn-primary {
+    display: inline-block;
+    padding: var(--btn-padding);
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: var(--btn-radius);
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: var(--font-weight-semibold, 600);
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base, 0.2s);
+    box-shadow: var(--btn-shadow);
+    font-family: inherit;
+}
+
+.cta-btn-primary:hover {
+    background: var(--btn-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--btn-shadow-hover);
+}
+
+.cta-btn-primary:active {
+    transform: translateY(0);
+}
+
+.cta-btn-primary:focus {
+    outline: 2px solid var(--brand-accent, #fea644);
+    outline-offset: 2px;
+}
+</style>
+
+<a href="{{CTA_LINK|#}}" class="cta-btn-primary" onclick="trackCTA(event)">
+    {{CTA_TEXT|Get Started}}
+</a>
+
+<script>
+function trackCTA(event) {
+    // Analytics tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'cta_click', {
+            event_category: 'CTA',
+            event_label: event.target.textContent,
+            event_value: 1
+        });
+    }
+}
+</script>

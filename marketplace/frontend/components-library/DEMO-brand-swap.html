@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Library Demo - Brand Swapping</title>
+
+    <!-- Base Styles (Always Include) -->
+    <link rel="stylesheet" href="_base/variables.css">
+    <link rel="stylesheet" href="_base/reset.css">
+
+    <!-- 🎨 SWAP THIS LINE TO CHANGE BRAND -->
+    <link rel="stylesheet" href="brand-themes/teneo-brand.css" id="brand-theme">
+    <!-- Alternatives:
+    <link rel="stylesheet" href="brand-themes/information-asymmetry-brand.css">
+    <link rel="stylesheet" href="brand-themes/wealth-wise-brand.css">
+    <link rel="stylesheet" href="brand-themes/true-earth-brand.css">
+    -->
+
+    <style>
+        /* Demo Controls */
+        .demo-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .demo-controls h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .demo-controls button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: #F3F4F6;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .demo-controls button:hover {
+            background: #E5E7EB;
+        }
+
+        .demo-controls button.active {
+            background: #111827;
+            color: white;
+            border-color: #111827;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <h3>🎨 Switch Brand Theme</h3>
+        <button onclick="switchTheme('teneo-brand')" class="active" id="btn-teneo">Teneo</button>
+        <button onclick="switchTheme('information-asymmetry-brand')" id="btn-ia">Info Asymmetry</button>
+        <button onclick="switchTheme('wealth-wise-brand')" id="btn-ww">Wealth Wise</button>
+        <button onclick="switchTheme('true-earth-brand')" id="btn-te">True Earth</button>
+    </div>
+
+    <!-- Component Demo: Book-Focused Hero -->
+    <!-- Copy-pasted from heroes/hero-book-focused.html -->
+    <style>
+    /* Component Variables */
+    .hero-book {
+        --hero-bg: linear-gradient(135deg, var(--brand-bg-secondary, #F9FAFB) 0%, var(--brand-bg, #FFFFFF) 100%);
+        --hero-text: var(--brand-text, #111827);
+        --hero-text-secondary: var(--brand-text-secondary, #4B5563);
+        --hero-accent: var(--brand-accent, #fea644);
+        --hero-border: var(--brand-border-light, #E5E7EB);
+        --hero-padding: var(--spacing-3xl, 4rem) var(--spacing-xl, 2rem);
+    }
+
+    .hero-book {
+        background: var(--hero-bg);
+        padding: var(--hero-padding);
+        border-bottom: 1px solid var(--hero-border);
+    }
+
+    .hero-book__container {
+        max-width: var(--container-max-width, 1280px);
+        margin: 0 auto;
+    }
+
+    .hero-book__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-3xl, 4rem);
+        align-items: center;
+    }
+
+    .hero-book__cover-container {
+        text-align: center;
+    }
+
+    .hero-book__cover {
+        max-width: 400px;
+        width: 100%;
+        border-radius: var(--radius-lg, 0.75rem);
+        box-shadow: var(--shadow-2xl, 0 25px 50px rgba(0, 0, 0, 0.15));
+        transition: transform var(--transition-base, 0.2s);
+        background: #E5E7EB;
+        aspect-ratio: 2/3;
+    }
+
+    .hero-book__title {
+        font-size: var(--text-5xl, 3rem);
+        font-weight: var(--font-weight-light, 300);
+        letter-spacing: var(--letter-spacing-tight, -0.02em);
+        margin-bottom: var(--spacing-md, 1rem);
+        color: var(--hero-text);
+        line-height: var(--line-height-tight, 1.25);
+    }
+
+    .hero-book__subtitle {
+        font-size: var(--text-xl, 1.25rem);
+        color: var(--hero-text-secondary);
+        margin-bottom: var(--spacing-lg, 1.5rem);
+        line-height: var(--line-height-relaxed, 1.6);
+    }
+
+    .hero-book__author {
+        font-size: var(--text-base, 1rem);
+        color: var(--hero-text-secondary);
+        margin-bottom: var(--spacing-xl, 2rem);
+    }
+
+    .hero-book__author-name {
+        font-weight: var(--font-weight-semibold, 600);
+        color: var(--hero-text);
+    }
+
+    .hero-book__stats {
+        display: flex;
+        gap: var(--spacing-xl, 2rem);
+        margin-bottom: var(--spacing-xl, 2rem);
+        padding: var(--spacing-md, 1rem) 0;
+        border-top: 1px solid var(--hero-border);
+        border-bottom: 1px solid var(--hero-border);
+    }
+
+    .hero-book__stat {
+        text-align: center;
+    }
+
+    .hero-book__stat-value {
+        font-size: var(--text-4xl, 2rem);
+        font-weight: var(--font-weight-semibold, 600);
+        color: var(--hero-accent);
+        display: block;
+        line-height: 1;
+    }
+
+    .hero-book__stat-label {
+        font-size: var(--text-xs, 0.75rem);
+        color: var(--brand-text-muted, #9CA3AF);
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-wide, 0.05em);
+        margin-top: var(--spacing-xs, 0.25rem);
+    }
+
+    .hero-book__price-box {
+        background: var(--brand-bg-secondary, #F9FAFB);
+        border: 2px solid var(--hero-border);
+        border-radius: var(--radius-lg, 0.75rem);
+        padding: var(--spacing-lg, 1.5rem);
+        margin-bottom: var(--spacing-lg, 1.5rem);
+    }
+
+    .hero-book__price-container {
+        display: flex;
+        align-items: baseline;
+        gap: var(--spacing-md, 1rem);
+        margin-bottom: var(--spacing-md, 1rem);
+    }
+
+    .hero-book__price-current {
+        font-size: var(--text-5xl, 2.5rem);
+        font-weight: var(--font-weight-semibold, 600);
+        color: var(--hero-text);
+    }
+
+    .hero-book__price-original {
+        font-size: var(--text-2xl, 1.5rem);
+        color: var(--brand-text-muted, #9CA3AF);
+        text-decoration: line-through;
+    }
+
+    .hero-book__price-save {
+        display: inline-block;
+        background: var(--hero-accent);
+        color: white;
+        padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.75rem);
+        border-radius: var(--radius-sm, 0.25rem);
+        font-size: var(--text-sm, 0.875rem);
+        font-weight: var(--font-weight-semibold, 600);
+    }
+
+    .hero-book__cta {
+        display: block;
+        width: 100%;
+        padding: var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+        background: var(--brand-primary, #111827);
+        color: var(--brand-text-light, #FFFFFF);
+        text-align: center;
+        border-radius: var(--radius-md, 0.5rem);
+        font-size: var(--text-lg, 1.125rem);
+        font-weight: var(--font-weight-medium, 500);
+        transition: all var(--transition-base, 0.2s);
+        margin-top: var(--spacing-lg, 1.5rem);
+        text-decoration: none;
+    }
+
+    .hero-book__cta:hover {
+        background: var(--brand-secondary, #374151);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.08));
+    }
+
+    .hero-book__trust {
+        display: flex;
+        gap: var(--spacing-lg, 1.5rem);
+        align-items: center;
+        justify-content: center;
+        font-size: var(--text-sm, 0.875rem);
+        color: var(--hero-text-secondary);
+        margin-top: var(--spacing-md, 1rem);
+    }
+
+    @media (max-width: 768px) {
+        .hero-book__grid {
+            grid-template-columns: 1fr;
+        }
+        .hero-book__title {
+            font-size: var(--text-4xl, 2rem);
+        }
+    }
+    </style>
+
+    <section class="hero-book">
+        <div class="hero-book__container">
+            <div class="hero-book__grid">
+                <div class="hero-book__cover-container">
+                    <div class="hero-book__cover"></div>
+                </div>
+
+                <div class="hero-book__info">
+                    <h1 class="hero-book__title">The IRS Escape Plan</h1>
+                    <p class="hero-book__subtitle">How to Legally Reduce Your Tax Bill by $10K-$355K Using Strategies They Don't Tell You About</p>
+                    <p class="hero-book__author">
+                        by <span class="hero-book__author-name">Travis Eric</span>
+                    </p>
+
+                    <div class="hero-book__stats">
+                        <div class="hero-book__stat">
+                            <span class="hero-book__stat-value">250</span>
+                            <span class="hero-book__stat-label">Pages</span>
+                        </div>
+                        <div class="hero-book__stat">
+                            <span class="hero-book__stat-value">4.8</span>
+                            <span class="hero-book__stat-label">Rating</span>
+                        </div>
+                        <div class="hero-book__stat">
+                            <span class="hero-book__stat-value">1.2K</span>
+                            <span class="hero-book__stat-label">Readers</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-book__price-box">
+                        <div class="hero-book__price-container">
+                            <span class="hero-book__price-current">$19.99</span>
+                            <span class="hero-book__price-original">$29.99</span>
+                        </div>
+                        <span class="hero-book__price-save">Save 33%</span>
+
+                        <a href="#checkout" class="hero-book__cta">
+                            Buy Now - Instant Download
+                        </a>
+
+                        <div class="hero-book__trust">
+                            <span>✓ Instant Download</span>
+                            <span>✓ 30-Day Guarantee</span>
+                            <span>✓ Secure Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function switchTheme(themeName) {
+            // Update theme link
+            const themeLink = document.getElementById('brand-theme');
+            themeLink.href = `brand-themes/${themeName}.css`;
+
+            // Update active button
+            document.querySelectorAll('.demo-controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${themeName.split('-')[0]}`).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

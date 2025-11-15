@@ -1,0 +1,167 @@
+/*
+ * TENEO COMPONENT LIBRARY - BASE VARIABLES
+ * Global CSS variables used across all components
+ * Override these in brand-specific theme files
+ */
+
+:root {
+    /* ================================================
+       BRAND COLORS
+       ================================================ */
+
+    /* Primary brand colors */
+    --brand-primary: #111827;
+    --brand-secondary: #374151;
+    --brand-accent: #fea644;
+
+    /* Background colors */
+    --brand-bg: #FFFFFF;
+    --brand-bg-secondary: #F9FAFB;
+    --brand-bg-tertiary: #F3F4F6;
+    --brand-bg-dark: #111827;
+
+    /* Text colors */
+    --brand-text: #111827;
+    --brand-text-secondary: #4B5563;
+    --brand-text-tertiary: #6B7280;
+    --brand-text-muted: #9CA3AF;
+    --brand-text-light: #FFFFFF;
+
+    /* Border colors */
+    --brand-border-light: #E5E7EB;
+    --brand-border-medium: #D1D5DB;
+    --brand-border-dark: #9CA3AF;
+
+    /* State colors */
+    --brand-success: #10B981;
+    --brand-warning: #F59E0B;
+    --brand-error: #EF4444;
+    --brand-info: #3B82F6;
+
+    /* ================================================
+       TYPOGRAPHY
+       ================================================ */
+
+    /* Font families */
+    --brand-font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --brand-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --brand-font-mono: 'Courier New', Courier, monospace;
+
+    /* Font sizes */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.5rem;      /* 24px */
+    --text-3xl: 1.875rem;    /* 30px */
+    --text-4xl: 2.25rem;     /* 36px */
+    --text-5xl: 3rem;        /* 48px */
+    --text-6xl: 3.75rem;     /* 60px */
+
+    /* Font weights */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    /* Line heights */
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.6;
+    --line-height-loose: 1.8;
+
+    /* Letter spacing */
+    --letter-spacing-tight: -0.025em;
+    --letter-spacing-normal: 0em;
+    --letter-spacing-wide: 0.05em;
+
+    /* ================================================
+       SPACING
+       ================================================ */
+
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-2xl: 3rem;     /* 48px */
+    --spacing-3xl: 4rem;     /* 64px */
+    --spacing-4xl: 6rem;     /* 96px */
+
+    /* ================================================
+       LAYOUT
+       ================================================ */
+
+    --container-max-width: 1280px;
+    --content-max-width: 896px;
+    --sidebar-width: 320px;
+
+    /* ================================================
+       BORDER RADIUS
+       ================================================ */
+
+    --radius-sm: 0.25rem;    /* 4px */
+    --radius-md: 0.5rem;     /* 8px */
+    --radius-lg: 0.75rem;    /* 12px */
+    --radius-xl: 1rem;       /* 16px */
+    --radius-2xl: 1.5rem;    /* 24px */
+    --radius-full: 9999px;   /* Fully rounded */
+
+    /* ================================================
+       SHADOWS
+       ================================================ */
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+
+    /* ================================================
+       TRANSITIONS
+       ================================================ */
+
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 200ms ease-in-out;
+    --transition-slow: 300ms ease-in-out;
+    --transition-slower: 500ms ease-in-out;
+
+    /* ================================================
+       Z-INDEX LAYERS
+       ================================================ */
+
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-popover: 600;
+    --z-tooltip: 700;
+
+    /* ================================================
+       BREAKPOINTS (for reference in JS)
+       ================================================ */
+
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+}
+
+/* ================================================
+   RESPONSIVE FONT SCALING
+   ================================================ */
+
+@media (max-width: 768px) {
+    :root {
+        --text-5xl: 2.5rem;  /* 40px on mobile */
+        --text-4xl: 2rem;    /* 32px on mobile */
+        --text-3xl: 1.5rem;  /* 24px on mobile */
+    }
+}
