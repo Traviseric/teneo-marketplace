@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Publishing Revolution - Teneo Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #4B5563;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #111827;
+        }
+
+        /* Revolution Hero */
+        .revolution-hero {
+            background: #111827;
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .revolution-hero .icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .revolution-hero h1 {
+            font-size: 3.75rem;
+            font-weight: 300;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .revolution-hero p {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-inline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stats-inline span.number {
+            font-size: 3rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .stats-inline span.label {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #fea644;
+            color: #111827;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.125rem;
+        }
+
+        .btn:hover {
+            background: #ff9003;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #F9FAFB;
+        }
+
+        /* Section */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .section-gray {
+            background: #F9FAFB;
+        }
+
+        .section-dark {
+            background: #111827;
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-dark .section-header h2 {
+            color: white;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: #4B5563;
+        }
+
+        .section-dark .section-header p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Case Studies Grid */
+        .case-studies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .case-study-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .case-study-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
+        }
+
+        .case-study-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .case-study-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .case-study-card .tagline {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 1rem;
+        }
+
+        .case-study-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem 0;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fea644;
+            display: block;
+        }
+
+        .stat-item .label {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #E5E7EB;
+            color: #374151;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 0.5rem;
+        }
+
+        .badge-success {
+            background: #111827;
+            color: white;
+        }
+
+        /* Territory Grid */
+        .territory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .territory-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .territory-card.high-priority {
+            border-color: #fea644;
+        }
+
+        .territory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .territory-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .territory-icon {
+            font-size: 2.5rem;
+        }
+
+        .territory-title h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .territory-title .book-count {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(254, 166, 68, 0.1);
+            color: #ff9003;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .revenue-box {
+            background: #F9FAFB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .revenue-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .revenue-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .revenue-item .label {
+            color: #6B7280;
+        }
+
+        .revenue-item .value {
+            font-weight: 600;
+            color: #fea644;
+        }
+
+        .market-info {
+            margin: 1rem 0;
+            font-size: 0.875rem;
+            color: #4B5563;
+        }
+
+        .examples {
+            margin: 1rem 0;
+        }
+
+        .examples-label {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .examples-list {
+            list-style: none;
+            font-size: 0.875rem;
+            color: #4B5563;
+        }
+
+        .examples-list li {
+            padding-left: 1rem;
+            position: relative;
+            margin-bottom: 0.25rem;
+        }
+
+        .examples-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fea644;
+        }
+
+        .amazon-status {
+            margin: 1rem 0 1.5rem 0;
+            padding: 0.75rem;
+            background: #F9FAFB;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-safe {
+            color: #374151;
+        }
+
+        .territory-note {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .claim-button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .claim-button:hover {
+            background: #374151;
+        }
+
+        /* How It Works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #fea644;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .step h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #111827;
+        }
+
+        .section-dark .step h3 {
+            color: white;
+        }
+
+        .step p {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .section-dark .step p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Why Grid */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .why-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .why-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .why-item h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .why-item p {
+            font-size: 0.875rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Final CTA */
+        .final-cta {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            border-radius: 0.75rem;
+        }
+
+        .final-cta h2 {
+            font-size: 2.25rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        .final-cta p {
+            font-size: 1.125rem;
+            color: #4B5563;
+            margin-bottom: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .final-cta p strong {
+            color: #111827;
+        }
+
+        footer {
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            padding: 3rem 0;
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .revolution-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .territory-grid,
+            .case-studies-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">Teneo Marketplace</a>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/brands.html">Networks</a>
+                    <a href="/revolution.html">Revolution</a>
+                    <a href="/components.html">Components</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="revolution-hero">
+        <div class="container">
+            <div class="icon">🔓</div>
+            <h1>The Publishing Revolution</h1>
+            <p>
+                From reader to revolutionary publisher.<br>
+                Build a publishing empire that makes real money while dismantling information asymmetry.
+            </p>
+
+            <div class="stats-inline">
+                <span class="number">4</span>
+                <span class="label">brands live</span>
+                <span class="number">18+</span>
+                <span class="label">books published</span>
+                <span class="number">9</span>
+                <span class="label">territories mapped</span>
+            </div>
+
+            <a href="#territories" class="btn">View Territories →</a>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Proof: Brands Built With Teneo</h2>
+                <p>These are real publishing brands running on this marketplace. Each one demonstrates what's possible when you claim a territory and execute.</p>
+            </div>
+
+            <div class="case-studies-grid" id="brands-grid">
+                <div class="case-study-card">
+                    <div class="case-study-icon">📘</div>
+                    <h3>Teneo</h3>
+                    <p class="tagline">AI & Consciousness Books</p>
+                    <div class="case-study-stats">
+                        <div class="stat-item">
+                            <span class="value">6</span>
+                            <span class="label">Books</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value">Live</span>
+                            <span class="label">Status</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge badge-success">Amazon Safe</span>
+                        <span class="badge">Multi-Format</span>
+                    </div>
+                    <a href="/store.html?brand=teneo" class="btn btn-secondary" style="width: 100%; text-align: center;">View Brand →</a>
+                </div>
+
+                <div class="case-study-card">
+                    <div class="case-study-icon">⚠️</div>
+                    <h3>Information Asymmetry</h3>
+                    <p class="tagline">Financial Sovereignty & IRS Weapons</p>
+                    <div class="case-study-stats">
+                        <div class="stat-item">
+                            <span class="value">6</span>
+                            <span class="label">Books</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value">Live</span>
+                            <span class="label">Status</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge">Crypto Only</span>
+                        <span class="badge">Censorship Resistant</span>
+                    </div>
+                    <a href="/store.html?brand=information_asymmetry" class="btn btn-secondary" style="width: 100%; text-align: center;">View Brand →</a>
+                </div>
+
+                <div class="case-study-card">
+                    <div class="case-study-icon">🌍</div>
+                    <h3>True Earth</h3>
+                    <p class="tagline">Hidden History & Reality Patterns</p>
+                    <div class="case-study-stats">
+                        <div class="stat-item">
+                            <span class="value">3</span>
+                            <span class="label">Books</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value">Live</span>
+                            <span class="label">Status</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge">Crypto Enabled</span>
+                        <span class="badge">Alternative History</span>
+                    </div>
+                    <a href="/store.html?brand=true-earth" class="btn btn-secondary" style="width: 100%; text-align: center;">View Brand →</a>
+                </div>
+
+                <div class="case-study-card">
+                    <div class="case-study-icon">💰</div>
+                    <h3>Wealth Wise</h3>
+                    <p class="tagline">Investment Strategy & Financial Freedom</p>
+                    <div class="case-study-stats">
+                        <div class="stat-item">
+                            <span class="value">3</span>
+                            <span class="label">Books</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value">Live</span>
+                            <span class="label">Status</span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge badge-success">Amazon Safe</span>
+                        <span class="badge">Finance</span>
+                    </div>
+                    <a href="/store.html?brand=wealth-wise" class="btn btn-secondary" style="width: 100%; text-align: center;">View Brand →</a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="font-size: 1.125rem; color: #4B5563; margin-bottom: 1.5rem;">
+                    <strong>These brands exist because someone claimed the territory.</strong><br>
+                    Your brand could be here next.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Four steps from reader to revolutionary publisher</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Claim a Territory</h3>
+                    <p>Choose your sovereignty domain: Medical, IRS, Student Loans, etc. Each territory has 10-40 books mapped out.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Generate with Teneo</h3>
+                    <p>Teneo generates publication-ready 50,000-word books in minutes. Complete outlines, research, and positioning provided.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Publish & Earn</h3>
+                    <p>Amazon-safe books → Amazon. Controversial books → your backend. Keep 100% of revenue.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Build Your Brand</h3>
+                    <p>Become the sovereignty expert in your domain. Build email list, community, recurring revenue.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Territories -->
+    <section class="section" id="territories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Choose Your Territory</h2>
+                <p>Each territory is a complete sovereignty brand. Revenue projections based on market size and book impact.</p>
+            </div>
+
+            <div class="territory-grid" id="territories-grid">
+                <!-- Territories will be loaded via JavaScript -->
+                <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                    <p style="color: #6B7280;">Loading territories...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why This Matters -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>This Changes Everything</h2>
+                <p>Why joining the publishing revolution is the best decision you'll make</p>
+            </div>
+
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="why-icon">🛡️</div>
+                    <h3>You Become Unstoppable</h3>
+                    <p>They can ban one publisher. They can't ban 100. When you join this network, you own your territory, control your brand, and cannot be silenced.</p>
+                </div>
+
+                <div class="why-item">
+                    <div class="why-icon">💰</div>
+                    <h3>You Build Real Wealth</h3>
+                    <p>$240K-$5M annually from publishing books that save people $5K-$500K each. Not from courses. From actually changing lives at scale.</p>
+                </div>
+
+                <div class="why-item">
+                    <div class="why-icon">⚡</div>
+                    <h3>You Wield Powerful Tools</h3>
+                    <p>Teneo generated the brands you just saw. Same AI. Same quality. 50,000 words in minutes. I give you the blueprints. You execute.</p>
+                </div>
+
+                <div class="why-item">
+                    <div class="why-icon">🎯</div>
+                    <h3>You Create Your Legacy</h3>
+                    <p>Ten years from now, thousands will trace their freedom back to the books you published. The money is great. The meaning is greater.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section">
+        <div class="container">
+            <div class="final-cta">
+                <h2>Who Do You Want to Be?</h2>
+                <p>Someone who read a book and saved themselves? Good.</p>
+                <p>Someone who built a business that saved thousands while making real money? Better.</p>
+                <p><strong>Someone who joined the movement that dismantled information asymmetry forever? Legendary.</strong></p>
+                <p style="margin-top: 2rem; margin-bottom: 2rem;">
+                    Your territory is waiting. Your publishing empire is one decision away. Your legacy starts today.
+                </p>
+                <a href="#territories" class="btn">Choose Your Territory →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Teneo Publishing Revolution. Building the uncensorable publishing network.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Territory data (from PublishingRevolutionSection.js)
+        const territories = [
+            {
+                id: 'medical',
+                name: 'Medical Sovereignty',
+                icon: '🏥',
+                bookCount: 40,
+                revenueFirst: '$500K',
+                revenueYearly: '$1M-$5M',
+                avgPerBook: '$25K-$125K',
+                status: 'high-priority',
+                examples: [
+                    'Hospital Bill Eraser',
+                    'Free Care Up to $180K Income'
+                ],
+                marketSize: '530K bankruptcies/year',
+                impact: '$5K-$500K savings per reader',
+                amazonSafe: true
+            },
+            {
+                id: 'student-loans',
+                name: 'Student Loan Sovereignty',
+                icon: '🎓',
+                bookCount: 30,
+                revenueFirst: '$400K',
+                revenueYearly: '$800K-$4M',
+                avgPerBook: '$27K-$133K',
+                status: 'high-priority',
+                examples: [
+                    'PSLF Unlocked: 10X More Jobs',
+                    '27 Forgiveness Programs'
+                ],
+                marketSize: '45M borrowers',
+                impact: '$50K-$300K savings per reader',
+                amazonSafe: true
+            },
+            {
+                id: 'tax-irs',
+                name: 'IRS/Tax Sovereignty',
+                icon: '🎯',
+                bookCount: 35,
+                revenueFirst: '$450K',
+                revenueYearly: '$900K-$4.5M',
+                avgPerBook: '$26K-$129K',
+                status: 'high-priority',
+                examples: [
+                    'Private Family Foundations',
+                    '$10K+ Tax Credits'
+                ],
+                marketSize: '150M+ taxpayers',
+                impact: '$500-$355K savings per reader',
+                amazonSafe: true,
+                note: 'Information Asymmetry brand already claimed this territory'
+            },
+            {
+                id: 'insurance',
+                name: 'Insurance Sovereignty',
+                icon: '🛡️',
+                bookCount: 15,
+                revenueFirst: '$150K',
+                revenueYearly: '$300K-$1.5M',
+                avgPerBook: '$20K-$100K',
+                status: 'medium-priority',
+                examples: [
+                    'Bad Faith Insurance Claims',
+                    'Total Loss Negotiation'
+                ],
+                marketSize: 'Everyone with insurance',
+                impact: '$5K-$50K savings per claim',
+                amazonSafe: true
+            },
+            {
+                id: 'debt-collection',
+                name: 'Debt Collection Defense',
+                icon: '💳',
+                bookCount: 13,
+                revenueFirst: '$130K',
+                revenueYearly: '$260K-$1.3M',
+                avgPerBook: '$20K-$100K',
+                status: 'medium-priority',
+                examples: [
+                    'FDCPA Violations: $1K Per',
+                    'Statute of Limitations'
+                ],
+                marketSize: '77M Americans',
+                impact: '$500-$50K savings per reader',
+                amazonSafe: true
+            },
+            {
+                id: 'employment',
+                name: 'Employment Sovereignty',
+                icon: '💼',
+                bookCount: 12,
+                revenueFirst: '$120K',
+                revenueYearly: '$240K-$1.2M',
+                avgPerBook: '$20K-$100K',
+                status: 'medium-priority',
+                examples: [
+                    'Wage Theft Recovery',
+                    'FMLA Rights'
+                ],
+                marketSize: '160M+ employees',
+                impact: '$2K-$100K recovery per case',
+                amazonSafe: true
+            },
+            {
+                id: 'financial-services',
+                name: 'Banking Sovereignty',
+                icon: '🏦',
+                bookCount: 18,
+                revenueFirst: '$180K',
+                revenueYearly: '$360K-$1.8M',
+                avgPerBook: '$20K-$100K',
+                status: 'medium-priority',
+                examples: [
+                    'Private Trust Banking',
+                    'Bank Fee Reversal'
+                ],
+                marketSize: '200M+ bank customers',
+                impact: '$1K-$50K savings per reader',
+                amazonSafe: true
+            }
+        ];
+
+        // Load territories
+        function loadTerritories() {
+            const grid = document.getElementById('territories-grid');
+            grid.innerHTML = territories.map(territory => `
+                <div class="territory-card ${territory.status === 'high-priority' ? 'high-priority' : ''}">
+                    ${territory.status === 'high-priority' ? '<div class="priority-badge">🔥 High Priority</div>' : ''}
+
+                    <div class="territory-header">
+                        <div class="territory-icon">${territory.icon}</div>
+                        <div class="territory-title">
+                            <h3>${territory.name}</h3>
+                            <span class="book-count">${territory.bookCount} books mapped</span>
+                        </div>
+                    </div>
+
+                    <div class="revenue-box">
+                        <div class="revenue-item">
+                            <span class="label">Year 1:</span>
+                            <span class="value">${territory.revenueFirst}</span>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="label">Yearly:</span>
+                            <span class="value">${territory.revenueYearly}</span>
+                        </div>
+                        <div class="revenue-item">
+                            <span class="label">Per Book:</span>
+                            <span class="value">${territory.avgPerBook}</span>
+                        </div>
+                    </div>
+
+                    <div class="market-info">
+                        <p><strong>Market:</strong> ${territory.marketSize}</p>
+                        <p><strong>Impact:</strong> ${territory.impact}</p>
+                    </div>
+
+                    <div class="examples">
+                        <div class="examples-label">Example Books:</div>
+                        <ul class="examples-list">
+                            ${territory.examples.map(ex => `<li>${ex}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="amazon-status">
+                        <span class="status-safe">✅ Amazon-Safe</span>
+                    </div>
+
+                    ${territory.note ? `<p class="territory-note">${territory.note}</p>` : ''}
+
+                    <button class="claim-button" onclick="claimTerritory('${territory.id}', '${territory.name}')">
+                        Claim Territory →
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function claimTerritory(id, name) {
+            alert(`Territory claiming coming soon!\n\nYou selected: ${name}\n\nWe'll notify you when the Brand Builder and Niche Chain systems are ready.`);
+
+            // Track interest
+            if (window.gtag) {
+                window.gtag('event', 'territory_claim_interest', {
+                    event_category: 'Revolution',
+                    event_label: name
+                });
+            }
+        }
+
+        // Initialize
+        loadTerritories();
+    </script>
+</body>
+</html>
