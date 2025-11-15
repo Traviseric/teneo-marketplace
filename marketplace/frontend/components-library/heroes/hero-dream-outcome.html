@@ -1,0 +1,119 @@
+<!--
+Component: Hero - Dream Outcome
+Category: heroes
+Used In: AI ebook funnel framework
+Variables:
+- {{ACTION_VERB}}: Action word (Create, Generate, Build, etc.)
+- {{OUTCOME}}: Complete outcome promise
+- {{TIME_FRAME}}: Time compression (in minutes, in days, etc.)
+- {{MECHANISM}}: How it works (with AI, using automation, etc.)
+- {{CTA_TEXT}}: Button text
+Features:
+- Cognitive gap opener
+- Time compression emphasis
+- AI mechanism highlight
+- Outcome-focused copy
+-->
+
+<style>
+.hero-dream-outcome {
+    --hero-bg: var(--brand-bg, #FFFFFF);
+    --hero-text: var(--brand-text, #111827);
+    --hero-accent: var(--brand-accent, #fea644);
+    --hero-padding: var(--spacing-4xl, 6rem) var(--spacing-xl, 2rem);
+}
+
+.hero-dream-outcome {
+    background: var(--hero-bg);
+    padding: var(--hero-padding);
+    text-align: center;
+}
+
+.hero-dream-outcome__container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-dream-outcome__headline {
+    font-size: var(--text-6xl, 3.75rem);
+    font-weight: var(--font-weight-extrabold, 800);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    line-height: var(--line-height-tight, 1.25);
+    color: var(--hero-text);
+}
+
+.hero-dream-outcome__action {
+    color: var(--hero-accent);
+}
+
+.hero-dream-outcome__time {
+    display: block;
+    font-size: var(--text-3xl, 1.875rem);
+    font-weight: var(--font-weight-normal, 400);
+    color: var(--brand-text-secondary, #4B5563);
+    margin-top: var(--spacing-sm, 0.5rem);
+}
+
+.hero-dream-outcome__mechanism {
+    font-size: var(--text-xl, 1.25rem);
+    color: var(--brand-text-tertiary, #6B7280);
+    margin-bottom: var(--spacing-2xl, 3rem);
+    font-style: italic;
+}
+
+.hero-dream-outcome__mechanism-highlight {
+    color: var(--hero-accent);
+    font-weight: var(--font-weight-semibold, 600);
+    font-style: normal;
+}
+
+.hero-dream-outcome__cta {
+    display: inline-block;
+    padding: var(--spacing-lg, 1.5rem) var(--spacing-3xl, 4rem);
+    background: var(--brand-primary, #111827);
+    color: var(--brand-text-light, #FFFFFF);
+    border-radius: var(--radius-xl, 1rem);
+    font-size: var(--text-2xl, 1.5rem);
+    font-weight: var(--font-weight-bold, 700);
+    text-decoration: none;
+    transition: all var(--transition-base, 0.2s);
+    box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.1));
+}
+
+.hero-dream-outcome__cta:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-2xl, 0 25px 50px rgba(0, 0, 0, 0.15));
+}
+
+@media (max-width: 768px) {
+    .hero-dream-outcome__headline {
+        font-size: var(--text-4xl, 2.25rem);
+    }
+    .hero-dream-outcome__time {
+        font-size: var(--text-xl, 1.25rem);
+    }
+    .hero-dream-outcome__cta {
+        font-size: var(--text-lg, 1.125rem);
+        padding: var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+    }
+}
+</style>
+
+<section class="hero-dream-outcome">
+    <div class="hero-dream-outcome__container">
+        <h1 class="hero-dream-outcome__headline">
+            <span class="hero-dream-outcome__action">{{ACTION_VERB|Create}}</span>
+            {{OUTCOME|Your Published Book}}
+            <span class="hero-dream-outcome__time">{{TIME_FRAME|in 10 Minutes}}</span>
+        </h1>
+
+        <p class="hero-dream-outcome__mechanism">
+            {{MECHANISM_PREFIX|with}}
+            <span class="hero-dream-outcome__mechanism-highlight">{{MECHANISM|AI-Powered Automation}}</span>
+        </p>
+
+        <a href="#start" class="hero-dream-outcome__cta">
+            {{CTA_TEXT|Start Creating Now}}
+        </a>
+    </div>
+</section>

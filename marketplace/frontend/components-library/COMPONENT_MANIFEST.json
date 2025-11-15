@@ -1,0 +1,593 @@
+{
+  "version": "1.0.0",
+  "description": "Teneo Landing Page Component Library - Drag & Drop System",
+  "lastUpdated": "2024-11-15",
+
+  "categories": {
+    "heroes": {
+      "name": "Hero Sections",
+      "description": "Above-the-fold landing page headers",
+      "components": [
+        "hero-vsl",
+        "hero-revolutionary",
+        "hero-brand-builder",
+        "hero-book-focused",
+        "hero-dream-outcome"
+      ]
+    },
+
+    "ctas": {
+      "name": "Call-to-Action Buttons & Sections",
+      "description": "Conversion-optimized CTAs",
+      "components": [
+        "cta-button-primary",
+        "cta-button-secondary",
+        "cta-button-urgent",
+        "cta-section-full",
+        "cta-sticky-bar",
+        "cta-four-path"
+      ]
+    },
+
+    "forms": {
+      "name": "Forms & Data Capture",
+      "description": "Email capture, multi-step forms, applications",
+      "components": [
+        "form-email-capture",
+        "form-multi-step-wizard",
+        "form-brand-builder",
+        "form-application",
+        "form-qualification"
+      ]
+    },
+
+    "social-proof": {
+      "name": "Social Proof & Trust",
+      "description": "Testimonials, reviews, trust badges",
+      "components": [
+        "testimonial-card",
+        "testimonial-grid",
+        "victories-section",
+        "trust-badges",
+        "stats-display",
+        "social-sharing"
+      ]
+    },
+
+    "pricing": {
+      "name": "Pricing & Value",
+      "description": "Pricing tables, value stacks, comparisons",
+      "components": [
+        "pricing-table-three-tier",
+        "pricing-table-four-tier",
+        "value-stack-comparison",
+        "price-box-single"
+      ]
+    },
+
+    "content": {
+      "name": "Content Blocks",
+      "description": "Features, benefits, grids, checklists",
+      "components": [
+        "benefits-grid",
+        "features-three-column",
+        "features-five-column",
+        "checklist-section",
+        "transformation-journey",
+        "outcome-anchors"
+      ]
+    },
+
+    "interactive": {
+      "name": "Interactive Elements",
+      "description": "Modals, timers, accordions, expandables",
+      "components": [
+        "modal-exit-intent",
+        "modal-oto",
+        "countdown-timer",
+        "progress-bar",
+        "faq-accordion",
+        "expandable-list",
+        "video-player"
+      ]
+    },
+
+    "product": {
+      "name": "Product Showcases",
+      "description": "Book cards, territory cards, armory",
+      "components": [
+        "book-card",
+        "book-grid-filterable",
+        "territory-card",
+        "territory-grid",
+        "armory-section"
+      ]
+    },
+
+    "conversion": {
+      "name": "Conversion Optimization",
+      "description": "Urgency, objections, guarantees",
+      "components": [
+        "objection-destruction",
+        "guarantee-box",
+        "urgency-banner",
+        "scarcity-indicator",
+        "manifesto-section"
+      ]
+    },
+
+    "navigation": {
+      "name": "Navigation & Layout",
+      "description": "Headers, footers, menus",
+      "components": [
+        "header-sticky",
+        "header-minimal",
+        "footer-full",
+        "footer-minimal",
+        "mobile-nav-drawer"
+      ]
+    }
+  },
+
+  "components": {
+    "hero-vsl": {
+      "category": "heroes",
+      "name": "VSL Hero (Video Sales Letter)",
+      "file": "heroes/hero-vsl.html",
+      "thumbnail": "thumbnails/hero-vsl.png",
+      "usedIn": ["10-minute-author", "webinar"],
+      "variables": [
+        "{{HEADLINE}}",
+        "{{SUBHEADLINE}}",
+        "{{VIDEO_URL}}",
+        "{{CTA_TEXT}}",
+        "{{CTA_LINK}}"
+      ],
+      "features": ["video-embed", "single-cta", "exit-intent-ready"]
+    },
+
+    "hero-revolutionary": {
+      "category": "heroes",
+      "name": "Revolutionary Hero (Dark, Dramatic)",
+      "file": "heroes/hero-revolutionary.html",
+      "thumbnail": "thumbnails/hero-revolutionary.png",
+      "usedIn": ["sovereignty-revolution"],
+      "variables": [
+        "{{HEADLINE}}",
+        "{{ICON}}",
+        "{{DESCRIPTION}}",
+        "{{STAT_1_NUMBER}}",
+        "{{STAT_1_LABEL}}",
+        "{{STAT_2_NUMBER}}",
+        "{{STAT_2_LABEL}}",
+        "{{STAT_3_NUMBER}}",
+        "{{STAT_3_LABEL}}",
+        "{{CTA_TEXT}}",
+        "{{PRIMARY_COLOR}}"
+      ],
+      "features": ["stats-display", "dark-theme", "dramatic-copy"]
+    },
+
+    "hero-brand-builder": {
+      "category": "heroes",
+      "name": "Brand Builder Hero",
+      "file": "heroes/hero-brand-builder.html",
+      "thumbnail": "thumbnails/hero-brand-builder.png",
+      "usedIn": ["brand-builder"],
+      "variables": [
+        "{{HEADLINE}}",
+        "{{SUBHEADLINE}}",
+        "{{VALUE_PROP}}",
+        "{{CTA_TEXT}}",
+        "{{TRUST_SIGNAL}}"
+      ],
+      "features": ["value-first", "form-ready", "preview-mode"]
+    },
+
+    "hero-book-focused": {
+      "category": "heroes",
+      "name": "Book-Focused Hero (Split Layout)",
+      "file": "heroes/hero-book-focused.html",
+      "thumbnail": "thumbnails/hero-book-focused.png",
+      "usedIn": ["book-sales-page"],
+      "variables": [
+        "{{BOOK_TITLE}}",
+        "{{BOOK_SUBTITLE}}",
+        "{{BOOK_COVER_URL}}",
+        "{{AUTHOR_NAME}}",
+        "{{PRICE}}",
+        "{{ORIGINAL_PRICE}}",
+        "{{PAGE_COUNT}}",
+        "{{RATING}}",
+        "{{READERS}}"
+      ],
+      "features": ["split-layout", "book-cover-image", "stats-bar", "price-box"]
+    },
+
+    "hero-dream-outcome": {
+      "category": "heroes",
+      "name": "Dream Outcome Hero",
+      "file": "heroes/hero-dream-outcome.html",
+      "thumbnail": "thumbnails/hero-dream-outcome.png",
+      "usedIn": ["ai-ebook-funnel"],
+      "variables": [
+        "{{ACTION_VERB}}",
+        "{{OUTCOME}}",
+        "{{TIME_FRAME}}",
+        "{{MECHANISM}}",
+        "{{CTA_TEXT}}"
+      ],
+      "features": ["cognitive-gap", "time-compression", "action-focused"]
+    },
+
+    "territory-card": {
+      "category": "product",
+      "name": "Territory Card (Expandable)",
+      "file": "product/territory-card.html",
+      "thumbnail": "thumbnails/territory-card.png",
+      "usedIn": ["sovereignty-revolution"],
+      "variables": [
+        "{{TERRITORY_NAME}}",
+        "{{ICON}}",
+        "{{BOOK_COUNT}}",
+        "{{REVENUE_YEAR_1}}",
+        "{{REVENUE_ANNUAL}}",
+        "{{REVENUE_PER_BOOK}}",
+        "{{MARKET_SIZE}}",
+        "{{IMPACT_PER_READER}}",
+        "{{EXAMPLE_1}}",
+        "{{EXAMPLE_2}}",
+        "{{AMAZON_STATUS}}",
+        "{{PRIORITY_BADGE}}"
+      ],
+      "features": ["expandable-book-list", "revenue-calculator", "priority-badges", "amazon-status"],
+      "hasExpandableList": true,
+      "bookListSource": "territoryBooksData.js"
+    },
+
+    "form-multi-step-wizard": {
+      "category": "forms",
+      "name": "Multi-Step Wizard (Brand Builder)",
+      "file": "forms/multi-step-wizard.html",
+      "thumbnail": "thumbnails/form-wizard.png",
+      "usedIn": ["brand-builder"],
+      "variables": [
+        "{{STEP_COUNT}}",
+        "{{FORM_FIELDS}}"
+      ],
+      "features": ["progress-bar", "auto-save", "validation", "deferred-auth"],
+      "fields": [
+        "brand_name",
+        "mission_statement",
+        "target_audience",
+        "voice_tone",
+        "core_values",
+        "unique_angle"
+      ]
+    },
+
+    "pricing-table-four-tier": {
+      "category": "pricing",
+      "name": "4-Tier Pricing Table",
+      "file": "pricing/four-tier-table.html",
+      "thumbnail": "thumbnails/pricing-four-tier.png",
+      "usedIn": ["brand-builder", "10-minute-author"],
+      "variables": [
+        "{{TIER_1_NAME}}",
+        "{{TIER_1_PRICE}}",
+        "{{TIER_1_FEATURES}}",
+        "{{TIER_2_NAME}}",
+        "{{TIER_2_PRICE}}",
+        "{{TIER_2_FEATURES}}",
+        "{{TIER_2_BADGE}}",
+        "{{TIER_3_NAME}}",
+        "{{TIER_3_PRICE}}",
+        "{{TIER_3_FEATURES}}",
+        "{{TIER_4_NAME}}",
+        "{{TIER_4_PRICE}}",
+        "{{TIER_4_FEATURES}}"
+      ],
+      "features": ["most-popular-badge", "feature-checkmarks", "monthly-annual-toggle"]
+    },
+
+    "countdown-timer": {
+      "category": "interactive",
+      "name": "Countdown Timer (Urgency)",
+      "file": "interactive/countdown-timer.html",
+      "thumbnail": "thumbnails/countdown-timer.png",
+      "usedIn": ["10-minute-author", "tripwire-offers"],
+      "variables": [
+        "{{DURATION_HOURS}}",
+        "{{URGENT_THRESHOLD}}",
+        "{{HEADLINE}}"
+      ],
+      "features": ["localStorage-persistence", "color-change-urgency", "auto-update"],
+      "javascript": true
+    },
+
+    "objection-destruction": {
+      "category": "conversion",
+      "name": "Objection Destruction (❌→✅)",
+      "file": "conversion/objection-destruction.html",
+      "thumbnail": "thumbnails/objection-destruction.png",
+      "usedIn": ["sovereignty-revolution", "ai-ebook-funnel"],
+      "variables": [
+        "{{OBJECTION_COUNT}}",
+        "{{OBJECTION_1_PROBLEM}}",
+        "{{OBJECTION_1_SOLUTION}}",
+        "{{OBJECTION_2_PROBLEM}}",
+        "{{OBJECTION_2_SOLUTION}}",
+        "{{OBJECTION_3_PROBLEM}}",
+        "{{OBJECTION_3_SOLUTION}}",
+        "{{OBJECTION_4_PROBLEM}}",
+        "{{OBJECTION_4_SOLUTION}}",
+        "{{OBJECTION_5_PROBLEM}}",
+        "{{OBJECTION_5_SOLUTION}}"
+      ],
+      "features": ["checkmark-x-pattern", "external-blame", "product-reframe"]
+    },
+
+    "expandable-list": {
+      "category": "interactive",
+      "name": "Expandable Book List",
+      "file": "interactive/expandable-list.html",
+      "thumbnail": "thumbnails/expandable-list.png",
+      "usedIn": ["sovereignty-revolution"],
+      "variables": [
+        "{{LIST_TITLE}}",
+        "{{ITEM_COUNT}}",
+        "{{ITEMS_DATA}}",
+        "{{EXPAND_ICON}}",
+        "{{COLLAPSE_ICON}}"
+      ],
+      "features": ["toggle-animation", "scrollable-container", "custom-scrollbar", "mobile-responsive"],
+      "javascript": true
+    },
+
+    "modal-exit-intent": {
+      "category": "interactive",
+      "name": "Exit-Intent Popup",
+      "file": "interactive/modal-exit-intent.html",
+      "thumbnail": "thumbnails/modal-exit-intent.png",
+      "usedIn": ["10-minute-author", "all-funnels"],
+      "variables": [
+        "{{HEADLINE}}",
+        "{{OFFER_TEXT}}",
+        "{{DISCOUNT}}",
+        "{{CTA_TEXT}}",
+        "{{DECLINE_TEXT}}"
+      ],
+      "features": ["mouse-exit-detection", "dark-overlay", "tracking-events"],
+      "javascript": true
+    },
+
+    "transformation-journey": {
+      "category": "content",
+      "name": "3-Stage Transformation Journey",
+      "file": "content/transformation-journey.html",
+      "thumbnail": "thumbnails/transformation-journey.png",
+      "usedIn": ["sovereignty-revolution"],
+      "variables": [
+        "{{STAGE_1_FROM}}",
+        "{{STAGE_1_TO}}",
+        "{{STAGE_1_STATUS}}",
+        "{{STAGE_2_FROM}}",
+        "{{STAGE_2_TO}}",
+        "{{STAGE_2_STATUS}}",
+        "{{STAGE_3_FROM}}",
+        "{{STAGE_3_TO}}",
+        "{{STAGE_3_STATUS}}"
+      ],
+      "features": ["progress-indicators", "checkmarks-arrows", "stage-specific-ctas"]
+    },
+
+    "value-stack-comparison": {
+      "category": "pricing",
+      "name": "Value Stack Comparison Table",
+      "file": "pricing/value-stack-comparison.html",
+      "thumbnail": "thumbnails/value-stack.png",
+      "usedIn": ["sovereignty-revolution", "ai-ebook-funnel"],
+      "variables": [
+        "{{LINE_ITEMS}}",
+        "{{TOTAL_WITHOUT}}",
+        "{{TOTAL_WITH}}",
+        "{{SAVINGS_AMOUNT}}",
+        "{{SAVINGS_PERCENTAGE}}"
+      ],
+      "features": ["strikethrough-pricing", "checkmarks", "savings-calculation", "roi-messaging"]
+    },
+
+    "benefits-grid": {
+      "category": "content",
+      "name": "Benefits Grid (6-Card)",
+      "file": "content/benefits-grid.html",
+      "thumbnail": "thumbnails/benefits-grid.png",
+      "usedIn": ["book-sales-page", "brand-builder"],
+      "variables": [
+        "{{BENEFIT_1_ICON}}",
+        "{{BENEFIT_1_TITLE}}",
+        "{{BENEFIT_1_DESC}}",
+        "{{BENEFIT_2_ICON}}",
+        "{{BENEFIT_2_TITLE}}",
+        "{{BENEFIT_2_DESC}}",
+        "{{BENEFIT_3_ICON}}",
+        "{{BENEFIT_3_TITLE}}",
+        "{{BENEFIT_3_DESC}}",
+        "{{BENEFIT_4_ICON}}",
+        "{{BENEFIT_4_TITLE}}",
+        "{{BENEFIT_4_DESC}}",
+        "{{BENEFIT_5_ICON}}",
+        "{{BENEFIT_5_TITLE}}",
+        "{{BENEFIT_5_DESC}}",
+        "{{BENEFIT_6_ICON}}",
+        "{{BENEFIT_6_TITLE}}",
+        "{{BENEFIT_6_DESC}}"
+      ],
+      "features": ["hover-lift", "icon-support", "responsive-grid"]
+    },
+
+    "faq-accordion": {
+      "category": "interactive",
+      "name": "FAQ Accordion",
+      "file": "interactive/faq-accordion.html",
+      "thumbnail": "thumbnails/faq-accordion.png",
+      "usedIn": ["all-funnels"],
+      "variables": [
+        "{{FAQ_COUNT}}",
+        "{{FAQ_ITEMS}}"
+      ],
+      "features": ["expand-collapse", "single-open-mode", "smooth-animation"],
+      "javascript": true
+    },
+
+    "testimonial-grid": {
+      "category": "social-proof",
+      "name": "Testimonial Grid",
+      "file": "social-proof/testimonial-grid.html",
+      "thumbnail": "thumbnails/testimonial-grid.png",
+      "usedIn": ["all-funnels"],
+      "variables": [
+        "{{TESTIMONIALS_DATA}}"
+      ],
+      "features": ["avatar-images", "star-ratings", "specific-results", "verification-badges"]
+    },
+
+    "guarantee-box": {
+      "category": "conversion",
+      "name": "Money-Back Guarantee Box",
+      "file": "conversion/guarantee-box.html",
+      "thumbnail": "thumbnails/guarantee-box.png",
+      "usedIn": ["book-sales-page", "pricing-pages"],
+      "variables": [
+        "{{GUARANTEE_DAYS}}",
+        "{{ICON}}",
+        "{{HEADLINE}}",
+        "{{DESCRIPTION}}"
+      ],
+      "features": ["shield-icon", "gradient-background", "center-aligned"]
+    },
+
+    "cta-sticky-bar": {
+      "category": "ctas",
+      "name": "Sticky CTA Bar (Fixed Bottom)",
+      "file": "ctas/sticky-bar.html",
+      "thumbnail": "thumbnails/sticky-bar.png",
+      "usedIn": ["long-form-pages"],
+      "variables": [
+        "{{CTA_TEXT}}",
+        "{{CTA_LINK}}",
+        "{{PRICE}}",
+        "{{TRUST_SIGNALS}}"
+      ],
+      "features": ["scroll-triggered", "mobile-optimized", "persistent-visibility"],
+      "javascript": true
+    },
+
+    "video-player": {
+      "category": "interactive",
+      "name": "Video Player (Embed)",
+      "file": "interactive/video-player.html",
+      "thumbnail": "thumbnails/video-player.png",
+      "usedIn": ["vsl-pages", "webinar", "testimonials"],
+      "variables": [
+        "{{VIDEO_URL}}",
+        "{{PROVIDER}}",
+        "{{AUTO_PLAY}}",
+        "{{CAPTIONS}}"
+      ],
+      "features": ["youtube-vimeo-support", "tracking-events", "fullscreen", "responsive-embed"],
+      "javascript": true
+    }
+  },
+
+  "funnelTemplates": {
+    "book-sales-page": {
+      "name": "Book Sales Page",
+      "description": "Complete sales page for individual book",
+      "components": [
+        "header-sticky",
+        "hero-book-focused",
+        "benefits-grid",
+        "checklist-section",
+        "testimonial-card",
+        "faq-accordion",
+        "guarantee-box",
+        "cta-section-full",
+        "footer-minimal"
+      ]
+    },
+
+    "sovereignty-revolution": {
+      "name": "Publishing Revolution Funnel",
+      "description": "Reader to publisher transformation",
+      "components": [
+        "header-sticky",
+        "hero-revolutionary",
+        "transformation-journey",
+        "territory-grid",
+        "objection-destruction",
+        "value-stack-comparison",
+        "cta-four-path",
+        "manifesto-section",
+        "footer-full"
+      ]
+    },
+
+    "vsl-funnel": {
+      "name": "10-Minute Author VSL",
+      "description": "Video sales letter funnel",
+      "components": [
+        "header-minimal",
+        "hero-vsl",
+        "modal-exit-intent",
+        "tripwire-offer-section",
+        "countdown-timer",
+        "modal-oto",
+        "welcome-page",
+        "footer-minimal"
+      ]
+    },
+
+    "brand-builder": {
+      "name": "Brand Builder Funnel",
+      "description": "Free brand creation before payment",
+      "components": [
+        "header-sticky",
+        "hero-brand-builder",
+        "form-multi-step-wizard",
+        "brand-preview-card",
+        "modal-deferred-login",
+        "book-ideas-preview",
+        "pricing-table-four-tier",
+        "footer-full"
+      ]
+    }
+  },
+
+  "buildSettings": {
+    "responsive": {
+      "breakpoints": {
+        "mobile": "< 768px",
+        "tablet": "768px - 1023px",
+        "desktop": "1024px+"
+      }
+    },
+
+    "theming": {
+      "customizable": [
+        "primary-color",
+        "accent-color",
+        "background-color",
+        "text-color",
+        "font-family"
+      ]
+    },
+
+    "integrations": {
+      "analytics": ["GA4", "Meta Pixel", "Custom Events"],
+      "payments": ["Stripe", "PayPal"],
+      "email": ["Email capture API", "CRM integration"],
+      "video": ["YouTube", "Vimeo", "Custom hosting"]
+    }
+  }
+}

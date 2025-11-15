@@ -1,0 +1,38 @@
+/*
+ * BRAND THEME: Information Asymmetry
+ * Financial Sovereignty & IRS Weapons
+ * Dark, urgent, crypto-focused aesthetic
+ */
+
+:root {
+    /* Brand Colors */
+    --brand-primary: #0A0A0A;
+    --brand-secondary: #1C1C1E;
+    --brand-accent: #FF3B30;
+
+    /* Backgrounds */
+    --brand-bg: #FFFFFF;
+    --brand-bg-secondary: #F3F4F6;
+    --brand-bg-tertiary: #E5E7EB;
+    --brand-bg-dark: #0A0A0A;
+
+    /* Text */
+    --brand-text: #1C1C1E;
+    --brand-text-secondary: #3A3A3C;
+    --brand-text-tertiary: #6B7280;
+    --brand-text-muted: #9CA3AF;
+    --brand-text-light: #FFFFFF;
+
+    /* Borders */
+    --brand-border-light: #E5E7EB;
+    --brand-border-medium: #D1D5DB;
+    --brand-border-dark: #9CA3AF;
+
+    /* Typography */
+    --brand-font-main: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --brand-font-heading: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* State colors (more aggressive) */
+    --brand-warning: #FFD60A;
+    --brand-error: #FF3B30;
+}

@@ -1,0 +1,289 @@
+<!--
+Component: Hero - Book Focused (Split Layout)
+Category: heroes
+Used In: Book sales pages
+Variables:
+- {{BOOK_TITLE}}: Main book title
+- {{BOOK_SUBTITLE}}: Supporting headline
+- {{BOOK_COVER_URL}}: Path to book cover image
+- {{AUTHOR_NAME}}: Author name
+- {{PRICE}}: Current price
+- {{ORIGINAL_PRICE}}: Original/strikethrough price
+- {{DISCOUNT}}: Discount percentage
+- {{PAGE_COUNT}}: Number of pages
+- {{RATING}}: Star rating (e.g. "4.8")
+- {{READERS}}: Number of readers (e.g. "1.2K")
+Features:
+- Split-screen layout (cover | info)
+- Stats bar
+- Integrated price box
+- Trust signals
+- Mobile responsive (stacks vertically)
+-->
+
+<style>
+/* Component Variables */
+.hero-book {
+    --hero-bg: linear-gradient(135deg, var(--brand-bg-secondary, #F9FAFB) 0%, var(--brand-bg, #FFFFFF) 100%);
+    --hero-text: var(--brand-text, #111827);
+    --hero-text-secondary: var(--brand-text-secondary, #4B5563);
+    --hero-accent: var(--brand-accent, #fea644);
+    --hero-border: var(--brand-border-light, #E5E7EB);
+    --hero-padding: var(--spacing-3xl, 4rem) var(--spacing-xl, 2rem);
+}
+
+/* Hero Container */
+.hero-book {
+    background: var(--hero-bg);
+    padding: var(--hero-padding);
+    border-bottom: 1px solid var(--hero-border);
+}
+
+.hero-book__container {
+    max-width: var(--container-max-width, 1280px);
+    margin: 0 auto;
+}
+
+/* Grid Layout */
+.hero-book__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3xl, 4rem);
+    align-items: center;
+}
+
+/* Book Cover */
+.hero-book__cover-container {
+    text-align: center;
+}
+
+.hero-book__cover {
+    max-width: 400px;
+    width: 100%;
+    border-radius: var(--radius-lg, 0.75rem);
+    box-shadow: var(--shadow-2xl, 0 25px 50px rgba(0, 0, 0, 0.15));
+    transition: transform var(--transition-base, 0.2s);
+}
+
+.hero-book__cover:hover {
+    transform: scale(1.02);
+}
+
+/* Book Info */
+.hero-book__title {
+    font-size: var(--text-5xl, 3rem);
+    font-weight: var(--font-weight-light, 300);
+    letter-spacing: var(--letter-spacing-tight, -0.02em);
+    margin-bottom: var(--spacing-md, 1rem);
+    color: var(--hero-text);
+    line-height: var(--line-height-tight, 1.25);
+}
+
+.hero-book__subtitle {
+    font-size: var(--text-xl, 1.25rem);
+    color: var(--hero-text-secondary);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    line-height: var(--line-height-relaxed, 1.6);
+}
+
+.hero-book__author {
+    font-size: var(--text-base, 1rem);
+    color: var(--hero-text-secondary);
+    margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.hero-book__author-name {
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--hero-text);
+}
+
+/* Stats Bar */
+.hero-book__stats {
+    display: flex;
+    gap: var(--spacing-xl, 2rem);
+    margin-bottom: var(--spacing-xl, 2rem);
+    padding: var(--spacing-md, 1rem) 0;
+    border-top: 1px solid var(--hero-border);
+    border-bottom: 1px solid var(--hero-border);
+}
+
+.hero-book__stat {
+    text-align: center;
+}
+
+.hero-book__stat-value {
+    font-size: var(--text-4xl, 2rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--hero-accent);
+    display: block;
+    line-height: 1;
+}
+
+.hero-book__stat-label {
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--brand-text-muted, #9CA3AF);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide, 0.05em);
+    margin-top: var(--spacing-xs, 0.25rem);
+}
+
+/* Price Box */
+.hero-book__price-box {
+    background: var(--brand-bg-secondary, #F9FAFB);
+    border: 2px solid var(--hero-border);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--spacing-lg, 1.5rem);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+}
+
+.hero-book__price-container {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.hero-book__price-current {
+    font-size: var(--text-5xl, 2.5rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--hero-text);
+}
+
+.hero-book__price-original {
+    font-size: var(--text-2xl, 1.5rem);
+    color: var(--brand-text-muted, #9CA3AF);
+    text-decoration: line-through;
+}
+
+.hero-book__price-save {
+    display: inline-block;
+    background: var(--hero-accent);
+    color: white;
+    padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.75rem);
+    border-radius: var(--radius-sm, 0.25rem);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-semibold, 600);
+}
+
+/* CTA Button */
+.hero-book__cta {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+    background: var(--brand-primary, #111827);
+    color: var(--brand-text-light, #FFFFFF);
+    text-align: center;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: var(--font-weight-medium, 500);
+    transition: all var(--transition-base, 0.2s);
+    margin-top: var(--spacing-lg, 1.5rem);
+}
+
+.hero-book__cta:hover {
+    background: var(--brand-secondary, #374151);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.08));
+}
+
+/* Trust Signals */
+.hero-book__trust {
+    display: flex;
+    gap: var(--spacing-lg, 1.5rem);
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--hero-text-secondary);
+    margin-top: var(--spacing-md, 1rem);
+}
+
+.hero-book__trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 0.5rem);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-book {
+        padding: var(--spacing-xl, 2rem) var(--spacing-lg, 1.5rem);
+    }
+
+    .hero-book__grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl, 2rem);
+    }
+
+    .hero-book__title {
+        font-size: var(--text-4xl, 2rem);
+    }
+
+    .hero-book__stats {
+        flex-direction: column;
+        gap: var(--spacing-md, 1rem);
+    }
+
+    .hero-book__trust {
+        flex-direction: column;
+        gap: var(--spacing-sm, 0.5rem);
+    }
+}
+</style>
+
+<!-- Hero HTML -->
+<section class="hero-book" id="buy">
+    <div class="hero-book__container">
+        <div class="hero-book__grid">
+            <!-- Book Cover -->
+            <div class="hero-book__cover-container">
+                <img src="{{BOOK_COVER_URL}}" alt="{{BOOK_TITLE}}" class="hero-book__cover">
+            </div>
+
+            <!-- Book Info -->
+            <div class="hero-book__info">
+                <h1 class="hero-book__title">{{BOOK_TITLE}}</h1>
+                <p class="hero-book__subtitle">{{BOOK_SUBTITLE}}</p>
+                <p class="hero-book__author">
+                    by <span class="hero-book__author-name">{{AUTHOR_NAME}}</span>
+                </p>
+
+                <!-- Stats -->
+                <div class="hero-book__stats">
+                    <div class="hero-book__stat">
+                        <span class="hero-book__stat-value">{{PAGE_COUNT|250}}</span>
+                        <span class="hero-book__stat-label">Pages</span>
+                    </div>
+                    <div class="hero-book__stat">
+                        <span class="hero-book__stat-value">{{RATING|4.8}}</span>
+                        <span class="hero-book__stat-label">Rating</span>
+                    </div>
+                    <div class="hero-book__stat">
+                        <span class="hero-book__stat-value">{{READERS|1.2K}}</span>
+                        <span class="hero-book__stat-label">Readers</span>
+                    </div>
+                </div>
+
+                <!-- Price Box -->
+                <div class="hero-book__price-box">
+                    <div class="hero-book__price-container">
+                        <span class="hero-book__price-current">${{PRICE|19.99}}</span>
+                        <span class="hero-book__price-original">${{ORIGINAL_PRICE|29.99}}</span>
+                    </div>
+                    <span class="hero-book__price-save">Save {{DISCOUNT|33}}%</span>
+
+                    <!-- CTA Button -->
+                    <a href="#checkout" class="hero-book__cta">
+                        Buy Now - Instant Download
+                    </a>
+
+                    <!-- Trust Signals -->
+                    <div class="hero-book__trust">
+                        <span class="hero-book__trust-item">✓ Instant Download</span>
+                        <span class="hero-book__trust-item">✓ 30-Day Guarantee</span>
+                        <span class="hero-book__trust-item">✓ Secure Checkout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

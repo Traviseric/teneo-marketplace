@@ -1,0 +1,116 @@
+<!--
+Component: Hero - Brand Builder
+Category: heroes
+Used In: Brand Builder funnel
+Variables:
+- {{HEADLINE}}: Main value proposition
+- {{SUBHEADLINE}}: Supporting description
+- {{VALUE_PROP}}: Key benefit statement
+- {{CTA_TEXT}}: Button text
+- {{TRUST_SIGNAL}}: Trust indicator text
+Features:
+- Value-first messaging
+- Form-ready layout
+- Preview mode support
+- Free offer framing
+-->
+
+<style>
+.hero-brand-builder {
+    --hero-bg: linear-gradient(135deg, var(--brand-primary, #1e3f54) 0%, var(--brand-secondary, #2d5a75) 100%);
+    --hero-text: var(--brand-text-light, #FFFFFF);
+    --hero-accent: var(--brand-accent, #fea644);
+    --hero-padding: var(--spacing-4xl, 6rem) var(--spacing-xl, 2rem);
+}
+
+.hero-brand-builder {
+    background: var(--hero-bg);
+    color: var(--hero-text);
+    padding: var(--hero-padding);
+    text-align: center;
+}
+
+.hero-brand-builder__container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-brand-builder__headline {
+    font-size: var(--text-6xl, 3.75rem);
+    font-weight: var(--font-weight-bold, 700);
+    margin-bottom: var(--spacing-md, 1rem);
+    line-height: var(--line-height-tight, 1.25);
+}
+
+.hero-brand-builder__subheadline {
+    font-size: var(--text-xl, 1.25rem);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    opacity: 0.95;
+    line-height: var(--line-height-relaxed, 1.6);
+}
+
+.hero-brand-builder__value-prop {
+    font-size: var(--text-2xl, 1.5rem);
+    font-weight: var(--font-weight-semibold, 600);
+    margin-bottom: var(--spacing-2xl, 3rem);
+    padding: var(--spacing-lg, 1.5rem);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg, 0.75rem);
+    backdrop-filter: blur(10px);
+}
+
+.hero-brand-builder__cta {
+    display: inline-block;
+    padding: var(--spacing-lg, 1.5rem) var(--spacing-2xl, 3rem);
+    background: var(--hero-accent);
+    color: var(--brand-primary, #1e3f54);
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-xl, 1.25rem);
+    font-weight: var(--font-weight-bold, 700);
+    text-decoration: none;
+    transition: all var(--transition-base, 0.2s);
+    box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.15));
+}
+
+.hero-brand-builder__cta:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2xl, 0 25px 50px rgba(0, 0, 0, 0.2));
+}
+
+.hero-brand-builder__trust {
+    margin-top: var(--spacing-lg, 1.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .hero-brand-builder {
+        padding: var(--spacing-3xl, 4rem) var(--spacing-lg, 1.5rem);
+    }
+    .hero-brand-builder__headline {
+        font-size: var(--text-4xl, 2.25rem);
+    }
+    .hero-brand-builder__value-prop {
+        font-size: var(--text-lg, 1.125rem);
+    }
+}
+</style>
+
+<section class="hero-brand-builder">
+    <div class="hero-brand-builder__container">
+        <h1 class="hero-brand-builder__headline">{{HEADLINE}}</h1>
+        <p class="hero-brand-builder__subheadline">{{SUBHEADLINE}}</p>
+
+        <div class="hero-brand-builder__value-prop">
+            {{VALUE_PROP|Create your publishing brand in minutes. No credit card required.}}
+        </div>
+
+        <a href="#wizard" class="hero-brand-builder__cta">
+            {{CTA_TEXT|Create Your Brand Free}}
+        </a>
+
+        <p class="hero-brand-builder__trust">
+            ✓ {{TRUST_SIGNAL|Free forever · No credit card · 2 minutes to complete}}
+        </p>
+    </div>
+</section>

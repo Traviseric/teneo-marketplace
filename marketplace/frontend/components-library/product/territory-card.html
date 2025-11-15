@@ -1,0 +1,308 @@
+<!--
+Component: Territory Card (Expandable)
+Category: product
+Used In: Sovereignty Revolution funnel
+Variables:
+- {{TERRITORY_NAME}}: Territory title
+- {{ICON}}: Emoji icon
+- {{BOOK_COUNT}}: Number of books
+- {{REVENUE_YEAR_1}}: First year revenue projection
+- {{REVENUE_ANNUAL}}: Annual revenue potential
+- {{REVENUE_PER_BOOK}}: Average per book
+- {{MARKET_SIZE}}: Target market size
+- {{IMPACT_PER_READER}}: Value per reader
+- {{EXAMPLE_1}}, {{EXAMPLE_2}}: Example book titles
+- {{AMAZON_STATUS}}: Safe/Gray/Backend status
+- {{PRIORITY_BADGE}}: High/Medium priority
+- {{BOOKS_JSON}}: JSON array of books for expandable list
+Features:
+- Expandable book list
+- Revenue calculator display
+- Priority badges
+- Amazon status indicator
+- Mobile responsive
+-->
+
+<style>
+.territory-card {
+    --card-bg: var(--brand-bg, #FFFFFF);
+    --card-border: var(--brand-border-light, #E5E7EB);
+    --card-text: var(--brand-text, #111827);
+    --card-accent: var(--brand-accent, #fea644);
+    --card-padding: var(--spacing-xl, 2rem);
+}
+
+.territory-card {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--card-padding);
+    transition: all var(--transition-base, 0.2s);
+    position: relative;
+}
+
+.territory-card--high-priority {
+    border-color: var(--card-accent);
+}
+
+.territory-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.08));
+}
+
+.territory-card__priority-badge {
+    position: absolute;
+    top: var(--spacing-md, 1rem);
+    right: var(--spacing-md, 1rem);
+    background: rgba(254, 166, 68, 0.1);
+    color: #ff9003;
+    padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.75rem);
+    border-radius: var(--radius-sm, 0.25rem);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-semibold, 600);
+}
+
+.territory-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.territory-card__icon {
+    font-size: var(--text-5xl, 2.5rem);
+}
+
+.territory-card__title {
+    font-size: var(--text-xl, 1.25rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--card-text);
+    margin: 0;
+}
+
+.territory-card__book-count {
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--brand-text-secondary, #6B7280);
+}
+
+.territory-card__revenue-box {
+    background: var(--brand-bg-secondary, #F9FAFB);
+    padding: var(--spacing-md, 1rem);
+    border-radius: var(--radius-md, 0.5rem);
+    margin: var(--spacing-md, 1rem) 0;
+}
+
+.territory-card__revenue-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+}
+
+.territory-card__revenue-item:last-child {
+    margin-bottom: 0;
+}
+
+.territory-card__revenue-label {
+    color: var(--brand-text-secondary, #6B7280);
+}
+
+.territory-card__revenue-value {
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--card-accent);
+}
+
+.territory-card__market-info {
+    margin: var(--spacing-md, 1rem) 0;
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--brand-text-secondary, #4B5563);
+}
+
+.territory-card__market-info strong {
+    color: var(--card-text);
+}
+
+.territory-card__examples {
+    margin: var(--spacing-md, 1rem) 0;
+}
+
+.territory-card__examples-label {
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--brand-text-muted, #9CA3AF);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide, 0.05em);
+    margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.territory-card__examples-list {
+    list-style: none;
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--brand-text-secondary, #4B5563);
+}
+
+.territory-card__examples-list li {
+    padding-left: var(--spacing-md, 1rem);
+    position: relative;
+    margin-bottom: var(--spacing-xs, 0.25rem);
+}
+
+.territory-card__examples-list li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--card-accent);
+}
+
+.territory-card__amazon-status {
+    margin: var(--spacing-md, 1rem) 0 var(--spacing-lg, 1.5rem) 0;
+    padding: var(--spacing-sm, 0.75rem);
+    background: var(--brand-bg-secondary, #F9FAFB);
+    border-radius: var(--radius-md, 0.5rem);
+    text-align: center;
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-medium, 500);
+}
+
+.territory-card__expand-button {
+    width: 100%;
+    padding: var(--spacing-sm, 0.75rem);
+    background: var(--brand-bg-secondary, #F9FAFB);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--card-text);
+    cursor: pointer;
+    transition: all var(--transition-base, 0.2s);
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.territory-card__expand-button:hover {
+    background: var(--brand-bg-tertiary, #E5E7EB);
+}
+
+.territory-card__book-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-slow, 0.3s);
+}
+
+.territory-card__book-list--expanded {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.territory-card__book-item {
+    padding: var(--spacing-sm, 0.75rem);
+    border-bottom: 1px solid var(--card-border);
+    font-size: var(--text-sm, 0.875rem);
+}
+
+.territory-card__claim-button {
+    width: 100%;
+    padding: var(--spacing-md, 0.875rem);
+    background: var(--brand-primary, #111827);
+    color: var(--brand-text-light, #FFFFFF);
+    border: none;
+    border-radius: var(--radius-md, 0.5rem);
+    font-weight: var(--font-weight-medium, 500);
+    cursor: pointer;
+    transition: all var(--transition-base, 0.2s);
+}
+
+.territory-card__claim-button:hover {
+    background: var(--brand-secondary, #374151);
+}
+
+@media (max-width: 768px) {
+    .territory-card {
+        padding: var(--spacing-lg, 1.5rem);
+    }
+}
+</style>
+
+<div class="territory-card territory-card--{{PRIORITY_CLASS|high-priority}}">
+    <div class="territory-card__priority-badge">
+        {{PRIORITY_BADGE|🔥 High Priority}}
+    </div>
+
+    <div class="territory-card__header">
+        <div class="territory-card__icon">{{ICON|🏥}}</div>
+        <div class="territory-card__title-group">
+            <h3 class="territory-card__title">{{TERRITORY_NAME}}</h3>
+            <span class="territory-card__book-count">{{BOOK_COUNT}} books mapped</span>
+        </div>
+    </div>
+
+    <div class="territory-card__revenue-box">
+        <div class="territory-card__revenue-item">
+            <span class="territory-card__revenue-label">Year 1:</span>
+            <span class="territory-card__revenue-value">{{REVENUE_YEAR_1}}</span>
+        </div>
+        <div class="territory-card__revenue-item">
+            <span class="territory-card__revenue-label">Yearly:</span>
+            <span class="territory-card__revenue-value">{{REVENUE_ANNUAL}}</span>
+        </div>
+        <div class="territory-card__revenue-item">
+            <span class="territory-card__revenue-label">Per Book:</span>
+            <span class="territory-card__revenue-value">{{REVENUE_PER_BOOK}}</span>
+        </div>
+    </div>
+
+    <div class="territory-card__market-info">
+        <p><strong>Market:</strong> {{MARKET_SIZE}}</p>
+        <p><strong>Impact:</strong> {{IMPACT_PER_READER}}</p>
+    </div>
+
+    <div class="territory-card__examples">
+        <div class="territory-card__examples-label">Example Books:</div>
+        <ul class="territory-card__examples-list">
+            <li>{{EXAMPLE_1}}</li>
+            <li>{{EXAMPLE_2}}</li>
+        </ul>
+    </div>
+
+    <div class="territory-card__amazon-status">
+        {{AMAZON_STATUS|✅ Amazon-Safe}}
+    </div>
+
+    <button class="territory-card__expand-button" onclick="toggleBookList(this)">
+        📚 View All {{BOOK_COUNT}} Books ▶
+    </button>
+
+    <div class="territory-card__book-list" id="book-list-{{TERRITORY_ID}}">
+        <!-- Books will be loaded here from {{BOOKS_JSON}} -->
+    </div>
+
+    <button class="territory-card__claim-button" onclick="claimTerritory('{{TERRITORY_ID}}', '{{TERRITORY_NAME}}')">
+        Claim Territory →
+    </button>
+</div>
+
+<script>
+function toggleBookList(button) {
+    const card = button.closest('.territory-card');
+    const bookList = card.querySelector('.territory-card__book-list');
+    bookList.classList.toggle('territory-card__book-list--expanded');
+
+    if (bookList.classList.contains('territory-card__book-list--expanded')) {
+        button.textContent = button.textContent.replace('▶', '▼');
+    } else {
+        button.textContent = button.textContent.replace('▼', '▶');
+    }
+}
+
+function claimTerritory(id, name) {
+    // Track interest
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'territory_claim_interest', {
+            event_category: 'Revolution',
+            event_label: name
+        });
+    }
+
+    // Redirect or show modal
+    window.location.href = `/claim-territory?id=${id}`;
+}
+</script>

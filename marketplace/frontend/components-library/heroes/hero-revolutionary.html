@@ -1,0 +1,167 @@
+<!--
+Component: Hero - Revolutionary (Dark, Dramatic)
+Category: heroes
+Used In: Sovereignty Revolution funnel
+Variables:
+- {{HEADLINE}}: Main revolutionary headline
+- {{ICON}}: Emoji or icon (e.g., "🔓")
+- {{DESCRIPTION}}: Supporting description
+- {{STAT_1_NUMBER}}: First stat number
+- {{STAT_1_LABEL}}: First stat label
+- {{STAT_2_NUMBER}}: Second stat number
+- {{STAT_2_LABEL}}: Second stat label
+- {{STAT_3_NUMBER}}: Third stat number
+- {{STAT_3_LABEL}}: Third stat label
+- {{CTA_TEXT}}: Call to action button text
+- {{CTA_LINK}}: CTA destination URL
+Features:
+- Dark theme (#111827 background)
+- Dramatic typography
+- Inline stats display
+- Revolutionary/movement framing
+- Centered layout
+-->
+
+<style>
+/* Component Variables */
+.hero-revolutionary {
+    --hero-bg: var(--brand-bg-dark, #111827);
+    --hero-text: var(--brand-text-light, #FFFFFF);
+    --hero-text-muted: rgba(255, 255, 255, 0.9);
+    --hero-accent: var(--brand-accent, #fea644);
+    --hero-padding: var(--spacing-4xl, 6rem) var(--spacing-xl, 2rem);
+}
+
+/* Hero Container */
+.hero-revolutionary {
+    background: var(--hero-bg);
+    color: var(--hero-text);
+    padding: var(--hero-padding);
+    text-align: center;
+}
+
+.hero-revolutionary__container {
+    max-width: var(--container-max-width, 1280px);
+    margin: 0 auto;
+}
+
+/* Icon */
+.hero-revolutionary__icon {
+    font-size: var(--text-6xl, 4rem);
+    margin-bottom: var(--spacing-xl, 2rem);
+    display: block;
+}
+
+/* Headline */
+.hero-revolutionary__headline {
+    font-size: var(--text-6xl, 3.75rem);
+    font-weight: var(--font-weight-light, 300);
+    letter-spacing: var(--letter-spacing-tight, -0.025em);
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    text-transform: uppercase;
+    line-height: var(--line-height-tight, 1.25);
+}
+
+/* Description */
+.hero-revolutionary__description {
+    font-size: var(--text-xl, 1.25rem);
+    color: var(--hero-text-muted);
+    margin-bottom: var(--spacing-2xl, 3rem);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: var(--line-height-relaxed, 1.6);
+}
+
+/* Stats Inline */
+.hero-revolutionary__stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-2xl, 3rem);
+    flex-wrap: wrap;
+}
+
+.hero-revolutionary__stat-number {
+    font-size: var(--text-5xl, 3rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--hero-text);
+}
+
+.hero-revolutionary__stat-label {
+    color: var(--hero-text-muted);
+    font-size: var(--text-base, 1rem);
+}
+
+/* CTA Button */
+.hero-revolutionary__cta {
+    display: inline-block;
+    padding: var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+    background: var(--hero-accent);
+    color: var(--brand-bg-dark, #111827);
+    border-radius: var(--radius-md, 0.5rem);
+    font-weight: var(--font-weight-medium, 500);
+    text-decoration: none;
+    transition: all var(--transition-base, 0.2s);
+    border: none;
+    cursor: pointer;
+    font-size: var(--text-lg, 1.125rem);
+}
+
+.hero-revolutionary__cta:hover {
+    background: #ff9003;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.1));
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-revolutionary {
+        padding: var(--spacing-3xl, 4rem) var(--spacing-lg, 1.5rem);
+    }
+
+    .hero-revolutionary__headline {
+        font-size: var(--text-4xl, 2.5rem);
+    }
+
+    .hero-revolutionary__icon {
+        font-size: var(--text-5xl, 3rem);
+    }
+
+    .hero-revolutionary__stats {
+        flex-direction: column;
+        gap: var(--spacing-sm, 0.5rem);
+    }
+
+    .hero-revolutionary__stat-number {
+        font-size: var(--text-4xl, 2rem);
+    }
+}
+</style>
+
+<!-- Hero HTML -->
+<section class="hero-revolutionary">
+    <div class="hero-revolutionary__container">
+        <div class="hero-revolutionary__icon">{{ICON|🔓}}</div>
+
+        <h1 class="hero-revolutionary__headline">{{HEADLINE}}</h1>
+
+        <p class="hero-revolutionary__description">
+            {{DESCRIPTION}}
+        </p>
+
+        <div class="hero-revolutionary__stats">
+            <span class="hero-revolutionary__stat-number">{{STAT_1_NUMBER}}</span>
+            <span class="hero-revolutionary__stat-label">{{STAT_1_LABEL}}</span>
+            <span class="hero-revolutionary__stat-number">{{STAT_2_NUMBER}}</span>
+            <span class="hero-revolutionary__stat-label">{{STAT_2_LABEL}}</span>
+            <span class="hero-revolutionary__stat-number">{{STAT_3_NUMBER}}</span>
+            <span class="hero-revolutionary__stat-label">{{STAT_3_LABEL}}</span>
+        </div>
+
+        <a href="{{CTA_LINK|#territories}}" class="hero-revolutionary__cta">
+            {{CTA_TEXT|Start Your Revolution →}}
+        </a>
+    </div>
+</section>

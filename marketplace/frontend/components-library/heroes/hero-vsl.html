@@ -1,0 +1,129 @@
+<!--
+Component: Hero - VSL (Video Sales Letter)
+Category: heroes
+Used In: 10-Minute Author, Webinar funnels
+Variables:
+- {{HEADLINE}}: Main headline above video
+- {{SUBHEADLINE}}: Supporting text
+- {{VIDEO_URL}}: YouTube/Vimeo embed URL
+- {{CTA_TEXT}}: Call to action text
+- {{CTA_LINK}}: CTA destination
+Features:
+- Video-first layout
+- Single CTA below video
+- Clean, minimal design
+- Exit-intent tracking ready
+-->
+
+<style>
+.hero-vsl {
+    --hero-bg: var(--brand-bg, #FFFFFF);
+    --hero-text: var(--brand-text, #111827);
+    --hero-text-secondary: var(--brand-text-secondary, #4B5563);
+    --hero-accent: var(--brand-accent, #fea644);
+    --hero-padding: var(--spacing-3xl, 4rem) var(--spacing-xl, 2rem);
+}
+
+.hero-vsl {
+    background: var(--hero-bg);
+    padding: var(--hero-padding);
+    text-align: center;
+}
+
+.hero-vsl__container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-vsl__headline {
+    font-size: var(--text-5xl, 3rem);
+    font-weight: var(--font-weight-bold, 700);
+    margin-bottom: var(--spacing-md, 1rem);
+    color: var(--hero-text);
+    line-height: var(--line-height-tight, 1.25);
+}
+
+.hero-vsl__subheadline {
+    font-size: var(--text-xl, 1.25rem);
+    color: var(--hero-text-secondary);
+    margin-bottom: var(--spacing-2xl, 3rem);
+    line-height: var(--line-height-relaxed, 1.6);
+}
+
+.hero-vsl__video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg, 0.75rem);
+    box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.1));
+    margin-bottom: var(--spacing-2xl, 3rem);
+    background: #000;
+}
+
+.hero-vsl__video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.hero-vsl__cta {
+    display: inline-block;
+    padding: var(--spacing-md, 1rem) var(--spacing-2xl, 3rem);
+    background: var(--hero-accent);
+    color: var(--brand-text, #111827);
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-xl, 1.25rem);
+    font-weight: var(--font-weight-semibold, 600);
+    text-decoration: none;
+    transition: all var(--transition-base, 0.2s);
+    box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.08));
+}
+
+.hero-vsl__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.1));
+    background: #ff9003;
+}
+
+@media (max-width: 768px) {
+    .hero-vsl__headline {
+        font-size: var(--text-4xl, 2rem);
+    }
+}
+</style>
+
+<section class="hero-vsl">
+    <div class="hero-vsl__container">
+        <h1 class="hero-vsl__headline">{{HEADLINE}}</h1>
+        <p class="hero-vsl__subheadline">{{SUBHEADLINE}}</p>
+
+        <div class="hero-vsl__video">
+            <iframe
+                src="{{VIDEO_URL}}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <a href="{{CTA_LINK|#start}}" class="hero-vsl__cta">
+            {{CTA_TEXT|Start the 10-Minute Author Challenge}}
+        </a>
+    </div>
+</section>
+
+<script>
+// Track video play for analytics
+document.querySelector('.hero-vsl__video iframe').addEventListener('load', function() {
+    // Analytics tracking can be added here
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'video_loaded', {
+            event_category: 'VSL',
+            event_label: 'Hero Video'
+        });
+    }
+});
+</script>
