@@ -7,11 +7,25 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
         /* Network Page Specific Styles */
         .network-hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+            color: #111827;
+            padding: 4rem 0;
             text-align: center;
             margin-bottom: 3rem;
         }
@@ -19,12 +33,13 @@
         .network-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            font-weight: 700;
+            font-weight: 300;
+            letter-spacing: -0.02em;
         }
 
         .network-hero p {
-            font-size: 1.3rem;
-            opacity: 0.9;
+            font-size: 1.25rem;
+            color: #4B5563;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -37,40 +52,48 @@
         }
 
         .stat-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            background: #F9FAFB;
+            border-radius: 0.75rem;
             padding: 1.5rem;
             text-align: center;
-            border: 1px solid var(--border-color);
+            border: 1px solid #E5E7EB;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            border-color: var(--accent-color);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
         }
 
         .stat-value {
             font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
+            font-weight: 600;
+            color: #111827;
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            color: #6B7280;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
 
         .search-section {
-            background: var(--bg-secondary);
-            border-radius: 16px;
+            background: #F9FAFB;
+            border-radius: 0.75rem;
             padding: 2rem;
             margin-bottom: 3rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid #E5E7EB;
+        }
+
+        .search-section h2 {
+            font-size: 1.875rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
         }
 
         .network-search-form {
@@ -82,37 +105,37 @@
         .network-search-input {
             flex: 1;
             padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            background: #FFFFFF;
+            color: #111827;
+            font-size: 1rem;
+            transition: all 0.2s;
         }
 
         .network-search-input:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.05);
         }
 
         .network-search-btn {
-            background: var(--gradient);
-            color: white;
+            background: #111827;
+            color: #FFFFFF;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 0.5rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
         .network-search-btn:hover {
+            background: #374151;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
         }
 
         .search-filters {
@@ -123,11 +146,18 @@
 
         .filter-select {
             padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            background: #FFFFFF;
+            color: #111827;
             cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .filter-select:hover {
+            border-color: #D1D5DB;
+            background: #F9FAFB;
         }
 
         .results-section {
@@ -143,17 +173,24 @@
             gap: 1rem;
         }
 
+        .results-header h2 {
+            font-size: 1.875rem;
+            font-weight: 300;
+            color: #111827;
+            letter-spacing: -0.01em;
+        }
+
         .results-count {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
+            color: #6B7280;
+            font-size: 1rem;
         }
 
         .store-results {
             margin-bottom: 3rem;
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            background: #F9FAFB;
+            border-radius: 0.75rem;
             padding: 1.5rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid #E5E7EB;
         }
 
         .store-header {
@@ -172,45 +209,45 @@
         }
 
         .store-name {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            color: var(--text-primary);
+            color: #111827;
         }
 
         .store-badge {
-            background: var(--accent-color);
-            color: var(--bg-primary);
+            background: #111827;
+            color: #FFFFFF;
             padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
             font-weight: 600;
         }
 
         .store-badge.verified {
-            background: #10b981;
+            background: #374151;
         }
 
         .store-badge.offline {
-            background: #ef4444;
+            background: #6B7280;
         }
 
         .visit-store-btn {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            background: #F9FAFB;
+            color: #111827;
+            border: 1px solid #E5E7EB;
             padding: 0.5rem 1rem;
-            border-radius: 6px;
+            border-radius: 0.5rem;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
         }
 
         .visit-store-btn:hover {
-            background: var(--hover-bg);
-            border-color: var(--accent-color);
+            background: #FFFFFF;
+            border-color: #111827;
         }
 
         .network-books-grid {
@@ -220,17 +257,17 @@
         }
 
         .network-book-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
             padding: 1rem;
             transition: all 0.3s ease;
         }
 
         .network-book-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            border-color: var(--accent-color);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
         }
 
         .network-store-list {
@@ -240,18 +277,26 @@
             margin-top: 2rem;
         }
 
+        .network-stores h3 {
+            font-size: 1.875rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+
         .network-store-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
             padding: 1.5rem;
             transition: all 0.3s ease;
         }
 
         .network-store-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            border-color: var(--accent-color);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
         }
 
         .store-specialties {
@@ -262,17 +307,17 @@
         }
 
         .specialty-tag {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
+            background: #E5E7EB;
+            color: #374151;
             padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
         }
 
         .loading-spinner {
             text-align: center;
             padding: 3rem;
-            color: var(--text-secondary);
+            color: #6B7280;
         }
 
         .loading-spinner i {
@@ -286,25 +331,70 @@
         }
 
         .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
+            background: #F9FAFB;
+            color: #4B5563;
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 0.5rem;
             text-align: center;
             margin: 2rem 0;
-            border: 1px solid #ef4444;
+            border: 1px solid #E5E7EB;
         }
 
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: var(--text-secondary);
+            color: #6B7280;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #111827;
+            margin-bottom: 0.75rem;
         }
 
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 1rem;
-            opacity: 0.5;
+            opacity: 0.3;
+            color: #9CA3AF;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        nav a {
+            color: #4B5563;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: #111827;
+        }
+
+        footer {
+            background-color: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            padding: 3rem 0 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.875rem;
         }
 
         @media (max-width: 768px) {
@@ -397,8 +487,8 @@
                 </div>
                 
                 <!-- Demo Search Suggestions -->
-                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
-                    <p style="margin-bottom: 0.5rem; font-weight: 600;">🔍 Try these cross-network searches:</p>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 0.5rem;">
+                    <p style="margin-bottom: 0.5rem; font-weight: 600; color: #111827;">🔍 Try these cross-network searches:</p>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                         <button onclick="demoSearch('hidden')" class="filter-select" style="cursor: pointer;">
                             "hidden" - Teneo + True Earth
@@ -430,8 +520,8 @@
                 <h2>Network Explorer</h2>
                 
                 <!-- Network Connections Visualization -->
-                <div style="background: var(--bg-secondary); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--border-color);">
-                    <h3 style="margin-bottom: 1.5rem;">Cross-Store Connections</h3>
+                <div style="background: #F9FAFB; border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; border: 1px solid #E5E7EB;">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 300; color: #111827;">Cross-Store Connections</h3>
                     <div id="network-connections" style="display: grid; gap: 1rem;">
                         <!-- Connections will be dynamically loaded here -->
                     </div>
@@ -439,25 +529,25 @@
 
                 <!-- Network Insights -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    <div style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7C3AED; border-radius: 8px; padding: 1.5rem;">
-                        <h4 style="color: #7C3AED; margin-bottom: 0.5rem;">Popular Cross-Network Paths</h4>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.75rem; padding: 1.5rem;">
+                        <h4 style="color: #111827; margin-bottom: 0.5rem; font-weight: 600;">Popular Cross-Network Paths</h4>
+                        <p style="font-size: 0.875rem; color: #6B7280; line-height: 1.6;">
                             "Tartaria Unveiled" readers → "Simulation Theory Decoded"<br>
                             "Wealth Transfer Code" readers → "The Pattern Code"<br>
                             "Consciousness Revolution" → Both stores!
                         </p>
                     </div>
-                    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 1.5rem;">
-                        <h4 style="color: #FFD700; margin-bottom: 0.5rem;">Network Savings</h4>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.75rem; padding: 1.5rem;">
+                        <h4 style="color: #111827; margin-bottom: 0.5rem; font-weight: 600;">Network Savings</h4>
+                        <p style="font-size: 0.875rem; color: #6B7280; line-height: 1.6;">
                             Average bundle discount: 60%<br>
                             Cross-store collections: Coming soon<br>
                             Network exclusive deals: 40% off
                         </p>
                     </div>
-                    <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; border-radius: 8px; padding: 1.5rem;">
-                        <h4 style="color: #d4af37; margin-bottom: 0.5rem;">Discovery Insights</h4>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.75rem; padding: 1.5rem;">
+                        <h4 style="color: #111827; margin-bottom: 0.5rem; font-weight: 600;">Discovery Insights</h4>
+                        <p style="font-size: 0.875rem; color: #6B7280; line-height: 1.6;">
                             Pattern seekers visit 3 stores<br>
                             Truth seekers explore all networks<br>
                             Elite readers cross boundaries
@@ -749,8 +839,8 @@
                 
                 // Add tooltip with descriptions
                 container.innerHTML += `
-                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(88, 166, 255, 0.05); border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary);">
-                        <strong>Connection Types:</strong><br>
+                    <div style="margin-top: 1rem; padding: 1rem; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 0.5rem; font-size: 0.85rem; color: #6B7280;">
+                        <strong style="color: #111827;">Connection Types:</strong><br>
                         • <strong>consciousness:</strong> Truth seekers exploring consciousness revelations<br>
                         • <strong>patterns:</strong> Pattern recognition in markets and reality<br>
                         • <strong>hidden-knowledge:</strong> AI revealing suppressed information
@@ -759,20 +849,20 @@
             } else {
                 // Fallback static visualization
                 container.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
-                        <span style="color: #d4af37;">True Earth</span>
-                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ consciousness exploration →</span>
-                        <span style="color: #7C3AED;">Teneo</span>
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.5rem;">
+                        <span style="color: #111827; font-weight: 600;">True Earth</span>
+                        <span style="flex: 1; text-align: center; color: #6B7280; font-size: 0.875rem;">→ consciousness exploration →</span>
+                        <span style="color: #111827; font-weight: 600;">Teneo</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
-                        <span style="color: #FFD700;">WealthWise</span>
-                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ pattern recognition →</span>
-                        <span style="color: #7C3AED;">Teneo</span>
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.5rem;">
+                        <span style="color: #111827; font-weight: 600;">WealthWise</span>
+                        <span style="flex: 1; text-align: center; color: #6B7280; font-size: 0.875rem;">→ pattern recognition →</span>
+                        <span style="color: #111827; font-weight: 600;">Teneo</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
-                        <span style="color: #7C3AED;">Teneo</span>
-                        <span style="flex: 1; text-align: center; color: var(--text-secondary);">→ hidden knowledge →</span>
-                        <span style="color: #d4af37;">True Earth</span>
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.5rem;">
+                        <span style="color: #111827; font-weight: 600;">Teneo</span>
+                        <span style="flex: 1; text-align: center; color: #6B7280; font-size: 0.875rem;">→ hidden knowledge →</span>
+                        <span style="color: #111827; font-weight: 600;">True Earth</span>
                     </div>
                 `;
             }
