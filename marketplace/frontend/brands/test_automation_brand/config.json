@@ -1,0 +1,14 @@
+{
+  "id": "test_automation_brand",
+  "name": "Test Automation Brand",
+  "tagline": "AI-Generated Books for Modern Learners",
+  "themeColor": "#6366F1",
+  "accentColor": "#EC4899",
+  "features": {
+    "newsletter": true,
+    "reviews": true,
+    "socialSharing": true
+  },
+  "created": "2025-11-15T07:30:00.262Z",
+  "source": "orchestrator"
+}
