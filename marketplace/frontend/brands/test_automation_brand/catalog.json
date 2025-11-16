@@ -1,0 +1,60 @@
+{
+  "books": [
+    {
+      "id": "test_book_1",
+      "title": "Introduction to Quantum Computing",
+      "author": "AI Assistant",
+      "price": 14.99,
+      "salePrice": 9.99,
+      "description": "Learn quantum computing fundamentals in plain English.",
+      "longDescription": "A comprehensive introduction to quantum computing designed for beginners. This book covers qubits, superposition, entanglement, and quantum algorithms without requiring advanced mathematics.",
+      "cover": "/brands/test_automation_brand/covers/test_book_1.jpg",
+      "pdf": "/brands/test_automation_brand/books/test_book_1.pdf",
+      "categories": [
+        "Technology",
+        "Science"
+      ],
+      "tags": [
+        "quantum",
+        "computing",
+        "physics",
+        "technology"
+      ],
+      "wordCount": 45000,
+      "chapters": [
+        {
+          "number": 1,
+          "title": "What is Quantum Computing?"
+        },
+        {
+          "number": 2,
+          "title": "Understanding Qubits"
+        },
+        {
+          "number": 3,
+          "title": "Quantum Gates and Circuits"
+        },
+        {
+          "number": 4,
+          "title": "Quantum Algorithms"
+        },
+        {
+          "number": 5,
+          "title": "The Future of Quantum Computing"
+        }
+      ],
+      "features": [
+        "Clear explanations for beginners",
+        "Real-world examples",
+        "Hands-on exercises",
+        "No advanced math required"
+      ],
+      "reviews": {
+        "average": 0,
+        "count": 0
+      },
+      "created": "2025-11-15T07:30:00.267Z"
+    }
+  ],
+  "lastUpdated": "2025-11-15T07:30:00.267Z"
+}
