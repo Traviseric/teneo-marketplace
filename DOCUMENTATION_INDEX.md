@@ -197,6 +197,43 @@
 
 ### 3. Feature Documentation
 
+#### **[AI_BUILDER_STRATEGY.md](./AI_BUILDER_STRATEGY.md)** ⭐ **THE GAME CHANGER**
+**Natural language page builder powered by Claude Code - the ClickFunnels killer**
+
+**The Paradigm Shift:**
+- **ClickFunnels:** 6-8 hours dragging elements, $297/month
+- **Teneo + Claude:** 2-5 minutes natural language, $0/month
+
+**Example:**
+```
+You: "Build sales page for book 'IRS Secrets', $27, professional blue"
+Claude: *generates complete page in 2 minutes*
+```
+
+**Business Model:**
+- 🆓 **FREE:** Open source marketplace (kills $9,552/year in SaaS fees)
+- 💰 **PAID:** Orchestrator automation ($97/month)
+- 💰 **PAID:** Teneo AI book generation ($47/month)
+
+**Strategy:**
+- Free software brings users
+- Charge for automation (not software)
+- Can't compete with free
+- AI makes everything instant
+
+**Revenue Projections:**
+- Year 1: $2M ARR
+- Year 2: $10M ARR
+- Year 3: $20M+ ARR
+
+**Read this if you want to:**
+- Understand the AI page builder
+- See the business model
+- Learn the market attack strategy
+- Understand why this kills ClickFunnels
+
+---
+
 #### **[CLICKFUNNELS_FEATURE_AUDIT.md](./CLICKFUNNELS_FEATURE_AUDIT.md)** ⭐ **NEW**
 **Complete audit of marketplace features vs ClickFunnels ($297/month)**
 
@@ -223,6 +260,36 @@
 - Prioritize feature development
 - Calculate ROI on building vs buying
 - Plan development phases
+
+---
+
+#### **[AMAZON_FEATURES_ROADMAP.md](./AMAZON_FEATURES_ROADMAP.md)** ⭐ **NEW**
+**Copy Amazon's proven UI/UX patterns for maximum book sales conversion**
+
+**Why Copy Amazon:**
+- 20+ years of A/B testing
+- Billions spent optimizing
+- Proven conversion patterns
+- **100% legal to copy UI/UX (not code)**
+
+**Features to Implement:**
+- "Customers Also Bought" (+35% revenue)
+- "Frequently Bought Together" (bundle upsells)
+- Review system with rating breakdown
+- One-click buy (2-3x conversion)
+- Advanced search/filters (+40% conversion)
+- Look Inside preview
+- Bestseller rankings
+- Live viewer counts
+
+**Build Time:** 45 hours total
+**Result:** Amazon-level book marketplace conversion rates
+
+**Read this if you want to:**
+- Copy Amazon's winning patterns
+- Understand what's legal to copy
+- Get implementation roadmap
+- Build Amazon-like marketplace
 
 ---
 
