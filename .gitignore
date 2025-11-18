@@ -91,4 +91,10 @@ playwright-report/
 # ================================================
 teneo-express/
 # This folder contains proprietary SaaS code
-# It must NEVER be pushed to public GitHubclaude-files/
+# It must NEVER be pushed to public GitHub
+
+# ================================================
+# CRITICAL: Private business docs - NEVER commit!
+# ================================================
+claude-files/
+# This folder contains private business strategy, revenue projections, etc.

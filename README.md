@@ -5,10 +5,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-blue.svg)](https://sqlite.org/)
-[![Network](https://img.shields.io/badge/Network-Federated-blueviolet.svg)](./DUAL_MODE_ARCHITECTURE.md)
-[![Payments](https://img.shields.io/badge/Payments-Stripe%20%7C%20Crypto-success.svg)](./INFORMATION_ASYMMETRY_IMPLEMENTATION.md)
-[![Auth](https://img.shields.io/badge/Auth-Local%20%7C%20SSO-orange.svg)](./AUTH_SETUP.md)
-[![Security](https://img.shields.io/badge/Security-Production%20Ready-red.svg)](./SECURITY_SETUP_GUIDE.md)
+[![Network](https://img.shields.io/badge/Network-Federated-blueviolet.svg)](./docs/core/DUAL_MODE_ARCHITECTURE.md)
+[![Payments](https://img.shields.io/badge/Payments-Stripe%20%7C%20Crypto-success.svg)](./docs/features/INFORMATION_ASYMMETRY_IMPLEMENTATION.md)
+[![Auth](https://img.shields.io/badge/Auth-Local%20%7C%20SSO-orange.svg)](./docs/integration/AUTH_SETUP.md)
+[![Security](https://img.shields.io/badge/Security-Production%20Ready-red.svg)](./docs/reference/SECURITY_SETUP_GUIDE.md)
 
 ---
 
@@ -18,10 +18,10 @@
 - **🔐 Dual Auth Providers**: Local (magic links) OR TENEO Auth SSO
 - **🏢 Enterprise Ready**: OAuth 2.0 with PKCE for SSO deployments
 - **🚀 Self-Hosted Friendly**: Zero dependencies, works offline
-- **📖 Comprehensive Docs**: [AUTH_SETUP.md](./AUTH_SETUP.md)
+- **📖 Comprehensive Docs**: [AUTH_SETUP.md](./docs/integration/AUTH_SETUP.md)
 
 ### ✅ **Production Security Hardening** (Nov 2025)
-- **🛡️ Complete Security Guide**: [SECURITY_SETUP_GUIDE.md](./SECURITY_SETUP_GUIDE.md)
+- **🛡️ Complete Security Guide**: [SECURITY_SETUP_GUIDE.md](./docs/reference/SECURITY_SETUP_GUIDE.md)
 - **🔒 Deployment Checklist**: 4-6 hour secure setup guide
 - **⚠️ Emergency Procedures**: Breach response playbook
 - **📊 Audit Schedule**: Daily, weekly, monthly security tasks
@@ -52,19 +52,19 @@
 - **Tor Hidden Service**: .onion backup (survives domain seizure)
 - **IPFS Storage**: Permanent, distributed content hosting
 
-**→ Read the complete architecture: [DUAL_MODE_ARCHITECTURE.md](./DUAL_MODE_ARCHITECTURE.md)**
+**→ Read the complete architecture: [DUAL_MODE_ARCHITECTURE.md](./docs/core/DUAL_MODE_ARCHITECTURE.md)**
 
 ---
 
 ## 📖 **Documentation**
 
-**→ START HERE: [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete documentation catalog
+**→ START HERE: [docs/README.md](./docs/README.md)** - Complete documentation hub
 
 ### Quick Links
-- **[Dual-Mode Architecture](./DUAL_MODE_ARCHITECTURE.md)** - How the system stays online under attack
-- **[48-Hour Launch Guide](./MVP_48_HOUR_LAUNCH.md)** - Deploy your own node this weekend
-- **[Censorship-Resistant MVP](./CENSORSHIP_RESISTANT_MVP.md)** - Infrastructure that can't be taken down
-- **[Information Asymmetry Brand](./INFORMATION_ASYMMETRY_IMPLEMENTATION.md)** - Publishing books Amazon won't allow
+- **[Dual-Mode Architecture](./docs/core/DUAL_MODE_ARCHITECTURE.md)** - How the system stays online under attack
+- **[48-Hour Launch Guide](./docs/quick-start/MVP_48_HOUR_LAUNCH.md)** - Deploy your own node this weekend
+- **[Censorship-Resistant MVP](./docs/deployment/CENSORSHIP_RESISTANT_MVP.md)** - Infrastructure that can't be taken down
+- **[Information Asymmetry Brand](./docs/features/INFORMATION_ASYMMETRY_IMPLEMENTATION.md)** - Publishing books Amazon won't allow
 
 ---
 
@@ -430,7 +430,7 @@ docker-compose up -d
 npm run register-node
 ```
 
-**Full guide:** [DUAL_MODE_ARCHITECTURE.md - Deploy Your Own Node](./DUAL_MODE_ARCHITECTURE.md#one-click-node-deployment)
+**Full guide:** [DUAL_MODE_ARCHITECTURE.md - Deploy Your Own Node](./docs/core/DUAL_MODE_ARCHITECTURE.md#one-click-node-deployment)
 
 ### Deployment Options
 
@@ -440,7 +440,7 @@ npm run register-node
 - **VPS**: Full control, offshore options
 - **Kubernetes**: Enterprise scale
 
-**See:** [MVP_48_HOUR_LAUNCH.md](./MVP_48_HOUR_LAUNCH.md) for step-by-step deployment
+**See:** [MVP_48_HOUR_LAUNCH.md](./docs/quick-start/MVP_48_HOUR_LAUNCH.md) for step-by-step deployment
 
 ---
 
