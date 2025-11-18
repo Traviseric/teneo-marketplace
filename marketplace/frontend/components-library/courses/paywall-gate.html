@@ -1,0 +1,391 @@
+<!-- Paywall Gate Component
+     Shows when user tries to access paid content without purchase
+     Reusable across traviseric.com and teneo-marketplace -->
+
+<style>
+.paywall-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.paywall-content {
+  background: var(--brand-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-2xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.paywall-header {
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--brand-border-light);
+  position: relative;
+}
+
+.paywall-close {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--brand-text-secondary);
+  transition: color 0.2s ease;
+  padding: var(--spacing-xs);
+  line-height: 1;
+}
+
+.paywall-close:hover {
+  color: var(--brand-text);
+}
+
+.paywall-icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-md);
+}
+
+.paywall-title {
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--brand-text);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.2;
+}
+
+.paywall-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--brand-text-secondary);
+  line-height: 1.6;
+}
+
+.paywall-body {
+  padding: var(--spacing-xl);
+}
+
+.paywall-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-xl);
+}
+
+.paywall-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--brand-border-light);
+}
+
+.paywall-feature:last-child {
+  border-bottom: none;
+}
+
+.paywall-feature-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-success);
+  color: white;
+  border-radius: 50%;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.paywall-feature-text {
+  flex: 1;
+}
+
+.paywall-feature-title {
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.paywall-feature-description {
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+.paywall-price {
+  background: var(--brand-bg-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.paywall-price-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.paywall-price-currency {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--brand-text-secondary);
+}
+
+.paywall-price-value {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--brand-text);
+}
+
+.paywall-price-description {
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+}
+
+.paywall-cta {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--brand-accent);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--brand-font-main);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.paywall-cta:hover {
+  background: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.paywall-guarantee {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--brand-border-light);
+}
+
+.paywall-guarantee-icon {
+  font-size: 24px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.paywall-guarantee-text {
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .paywall-content {
+    max-height: 95vh;
+  }
+
+  .paywall-header,
+  .paywall-body {
+    padding: var(--spacing-lg);
+  }
+
+  .paywall-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .paywall-price-value {
+    font-size: var(--font-size-3xl);
+  }
+}
+</style>
+
+<div class="paywall-overlay" id="paywallGate" style="display: none;">
+  <div class="paywall-content">
+    <div class="paywall-header">
+      <button class="paywall-close" onclick="closePaywall()" aria-label="Close">×</button>
+      <div class="paywall-icon">🔓</div>
+      <h2 class="paywall-title">Unlock the Complete Framework</h2>
+      <p class="paywall-subtitle">
+        You've completed the foundation. Ready to master all 10 pillars and transform how you work with AI?
+      </p>
+    </div>
+
+    <div class="paywall-body">
+      <ul class="paywall-features">
+        <li class="paywall-feature">
+          <div class="paywall-feature-icon">✓</div>
+          <div class="paywall-feature-text">
+            <div class="paywall-feature-title">17 Additional Modules</div>
+            <div class="paywall-feature-description">
+              Complete deep-dive into all 10 cognitive pillars, enhancements, and advanced protocols
+            </div>
+          </div>
+        </li>
+
+        <li class="paywall-feature">
+          <div class="paywall-feature-icon">✓</div>
+          <div class="paywall-feature-text">
+            <div class="paywall-feature-title">Lifetime Access</div>
+            <div class="paywall-feature-description">
+              Own it forever. All future updates and additions included at no extra cost
+            </div>
+          </div>
+        </li>
+
+        <li class="paywall-feature">
+          <div class="paywall-feature-icon">✓</div>
+          <div class="paywall-feature-text">
+            <div class="paywall-feature-title">Certificate of Completion</div>
+            <div class="paywall-feature-description">
+              Earn a certificate upon completion. Share on LinkedIn and your professional profiles
+            </div>
+          </div>
+        </li>
+
+        <li class="paywall-feature">
+          <div class="paywall-feature-icon">✓</div>
+          <div class="paywall-feature-text">
+            <div class="paywall-feature-title">Downloadable Resources</div>
+            <div class="paywall-feature-description">
+              Workbooks, templates, exercises, and reference materials you can use forever
+            </div>
+          </div>
+        </li>
+
+        <li class="paywall-feature">
+          <div class="paywall-feature-icon">✓</div>
+          <div class="paywall-feature-text">
+            <div class="paywall-feature-title">{{BONUS_FEATURE_TITLE|Priority Support}}</div>
+            <div class="paywall-feature-description">
+              {{BONUS_FEATURE_DESCRIPTION|Get your questions answered directly}}
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="paywall-price">
+        <div class="paywall-price-amount">
+          <span class="paywall-price-currency">$</span>
+          <span class="paywall-price-value">{{PRICE|97}}</span>
+        </div>
+        <div class="paywall-price-description">One-time payment • Lifetime access</div>
+      </div>
+
+      <a href="/checkout?course={{COURSE_SLUG}}" class="paywall-cta" id="enrollButton">
+        Unlock Full Framework Now
+      </a>
+
+      <div class="paywall-guarantee">
+        <div class="paywall-guarantee-icon">💯</div>
+        <div class="paywall-guarantee-text">
+          <strong>30-Day Money-Back Guarantee</strong><br>
+          If you're not satisfied, we'll refund you. No questions asked.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const paywallOverlay = document.getElementById('paywallGate');
+  const enrollButton = document.getElementById('enrollButton');
+
+  // Show paywall
+  window.showPaywall = function(options = {}) {
+    paywallOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Track paywall view
+    if (window.trackAnalytics) {
+      window.trackAnalytics('paywall_view', {
+        course_slug: options.courseSlug || '{{COURSE_SLUG}}',
+        trigger: options.trigger || 'manual'
+      });
+    }
+  };
+
+  // Close paywall
+  window.closePaywall = function() {
+    paywallOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+
+    // Track paywall dismiss
+    if (window.trackAnalytics) {
+      window.trackAnalytics('paywall_dismiss', {
+        course_slug: '{{COURSE_SLUG}}'
+      });
+    }
+  };
+
+  // Close on overlay click (not content)
+  paywallOverlay.addEventListener('click', function(e) {
+    if (e.target === paywallOverlay) {
+      closePaywall();
+    }
+  });
+
+  // Close on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && paywallOverlay.style.display === 'flex') {
+      closePaywall();
+    }
+  });
+
+  // Track enroll click
+  enrollButton.addEventListener('click', function() {
+    if (window.trackAnalytics) {
+      window.trackAnalytics('paywall_enroll_click', {
+        course_slug: '{{COURSE_SLUG}}',
+        price: '{{PRICE|97}}'
+      });
+    }
+  });
+
+  // Listen for custom event to show paywall
+  window.addEventListener('showPaywall', function(e) {
+    showPaywall(e.detail || {});
+  });
+})();
+</script>

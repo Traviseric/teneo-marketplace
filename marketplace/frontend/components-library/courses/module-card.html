@@ -1,0 +1,460 @@
+<!-- Module Card Component
+     Preview card for course modules on landing pages
+     Reusable across traviseric.com and teneo-marketplace -->
+
+<style>
+.module-card {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border-light);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-card:hover:not(.module-card--locked) {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--brand-accent);
+}
+
+.module-card--locked {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.module-card--completed {
+  border-color: var(--brand-success);
+}
+
+.module-card__header {
+  position: relative;
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--brand-bg-secondary) 0%, var(--brand-bg) 100%);
+  border-bottom: 1px solid var(--brand-border-light);
+}
+
+.module-card--locked .module-card__header {
+  background: linear-gradient(135deg, var(--brand-bg-tertiary) 0%, var(--brand-bg-secondary) 100%);
+}
+
+.module-card--completed .module-card__header {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--brand-bg) 100%);
+}
+
+.module-card__status-badge {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.module-card__status-badge--free {
+  background: var(--brand-success);
+  color: white;
+}
+
+.module-card__status-badge--pro {
+  background: var(--brand-accent);
+  color: white;
+}
+
+.module-card__status-badge--locked {
+  background: var(--brand-bg-tertiary);
+  color: var(--brand-text-muted);
+}
+
+.module-card__status-badge--completed {
+  background: var(--brand-success);
+  color: white;
+}
+
+.module-card__number {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  background: var(--brand-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+}
+
+.module-card--locked .module-card__number {
+  background: var(--brand-bg-tertiary);
+  color: var(--brand-text-muted);
+}
+
+.module-card--completed .module-card__number {
+  background: var(--brand-success);
+}
+
+.module-card__title {
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--brand-text);
+  line-height: 1.3;
+  margin-bottom: var(--spacing-sm);
+}
+
+.module-card__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+.module-card__body {
+  flex: 1;
+  padding: var(--spacing-lg);
+}
+
+.module-card__description {
+  font-size: var(--font-size-base);
+  color: var(--brand-text);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-lg);
+}
+
+.module-card__lessons {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-lg);
+}
+
+.module-card__lesson {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+  line-height: 1.5;
+}
+
+.module-card__lesson-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-bg-secondary);
+  color: var(--brand-accent);
+  border-radius: 50%;
+  font-size: var(--font-size-xs);
+}
+
+.module-card--completed .module-card__lesson-icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--brand-success);
+}
+
+.module-card__footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--brand-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.module-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.module-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+}
+
+.module-card__meta-icon {
+  font-size: var(--font-size-base);
+}
+
+.module-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--brand-accent);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--brand-font-main);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.module-card__cta:hover {
+  background: var(--brand-primary);
+  transform: translateX(2px);
+}
+
+.module-card--locked .module-card__cta {
+  background: var(--brand-bg-tertiary);
+  color: var(--brand-text-muted);
+}
+
+.module-card--completed .module-card__cta {
+  background: var(--brand-success);
+}
+
+.module-card__progress {
+  width: 100%;
+  height: 4px;
+  background: var(--brand-bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--spacing-sm);
+}
+
+.module-card__progress-fill {
+  height: 100%;
+  background: var(--brand-success);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Lock overlay effect */
+.module-card--locked::before {
+  content: '🔒';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 64px;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .module-card__header {
+    padding: var(--spacing-lg);
+  }
+
+  .module-card__body {
+    padding: var(--spacing-md);
+  }
+
+  .module-card__footer {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .module-card__cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+
+<div class="module-card {{CARD_CLASSES}}"
+     data-module-number="{{MODULE_NUMBER}}"
+     data-module-slug="{{MODULE_SLUG}}"
+     data-is-free="{{IS_FREE|true}}"
+     data-is-locked="{{IS_LOCKED|false}}"
+     data-progress="{{PROGRESS|0}}">
+
+  <div class="module-card__header">
+    <!-- Status badge -->
+    <span class="module-card__status-badge {{BADGE_CLASS}}">
+      {{BADGE_ICON}} {{BADGE_TEXT}}
+    </span>
+
+    <!-- Module number -->
+    <div class="module-card__number">{{MODULE_NUMBER}}</div>
+
+    <!-- Title and subtitle -->
+    <h3 class="module-card__title">{{MODULE_TITLE}}</h3>
+    <p class="module-card__subtitle">{{MODULE_SUBTITLE}}</p>
+  </div>
+
+  <div class="module-card__body">
+    <!-- Description -->
+    <p class="module-card__description">{{MODULE_DESCRIPTION}}</p>
+
+    <!-- Lesson list -->
+    <ul class="module-card__lessons">
+      {{#LESSONS}}
+      <li class="module-card__lesson">
+        <span class="module-card__lesson-icon">{{LESSON_ICON|📝}}</span>
+        <span>{{LESSON_TITLE}}</span>
+      </li>
+      {{/LESSONS}}
+    </ul>
+
+    <!-- Progress bar (if started) -->
+    {{#IF_PROGRESS}}
+    <div class="module-card__progress">
+      <div class="module-card__progress-fill" style="width: {{PROGRESS|0}}%"></div>
+    </div>
+    {{/IF_PROGRESS}}
+  </div>
+
+  <div class="module-card__footer">
+    <!-- Meta info -->
+    <div class="module-card__meta">
+      <div class="module-card__meta-item">
+        <span class="module-card__meta-icon">⏱</span>
+        <span>{{DURATION|45 min}}</span>
+      </div>
+      <div class="module-card__meta-item">
+        <span class="module-card__meta-icon">📚</span>
+        <span>{{LESSON_COUNT|5}} lessons</span>
+      </div>
+    </div>
+
+    <!-- CTA button -->
+    <a href="{{MODULE_URL}}" class="module-card__cta">
+      {{CTA_TEXT|Start Module}} →
+    </a>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // Initialize all module cards on the page
+  function initModuleCards() {
+    const cards = document.querySelectorAll('.module-card');
+
+    cards.forEach(card => {
+      const moduleSlug = card.dataset.moduleSlug;
+      const isLocked = card.dataset.isLocked === 'true';
+
+      // Handle card clicks
+      card.addEventListener('click', function(e) {
+        // Don't navigate if clicking CTA button
+        if (e.target.closest('.module-card__cta')) {
+          return;
+        }
+
+        if (isLocked) {
+          // Show paywall for locked modules
+          e.preventDefault();
+          if (window.showPaywall) {
+            window.showPaywall({
+              moduleSlug: moduleSlug,
+              trigger: 'module-card-click'
+            });
+          }
+        } else {
+          // Navigate to module
+          const cta = card.querySelector('.module-card__cta');
+          if (cta && cta.href) {
+            window.location.href = cta.href;
+          }
+        }
+      });
+
+      // Track card views
+      observeCardView(card, moduleSlug);
+    });
+  }
+
+  // Track when cards come into view
+  function observeCardView(card, moduleSlug) {
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && window.trackAnalytics) {
+              window.trackAnalytics('module_card_view', {
+                module_slug: moduleSlug
+              });
+              observer.unobserve(card);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      observer.observe(card);
+    }
+  }
+
+  // Load user progress and update cards
+  async function loadModuleProgress(courseSlug) {
+    try {
+      const response = await fetch(`/api/course/progress?course=${courseSlug}`);
+      if (response.ok) {
+        const data = await response.json();
+        updateCardProgress(data.progress || []);
+      }
+    } catch (error) {
+      console.error('Failed to load module progress:', error);
+    }
+  }
+
+  function updateCardProgress(progressData) {
+    progressData.forEach(progress => {
+      const card = document.querySelector(`[data-module-slug="${progress.moduleSlug}"]`);
+      if (card) {
+        const progressFill = card.querySelector('.module-card__progress-fill');
+        if (progressFill) {
+          progressFill.style.width = progress.percent + '%';
+        }
+
+        if (progress.completed) {
+          card.classList.add('module-card--completed');
+          const cta = card.querySelector('.module-card__cta');
+          if (cta) {
+            cta.textContent = '✓ Review Module';
+          }
+        }
+      }
+    });
+  }
+
+  // Public API
+  window.initModuleCards = initModuleCards;
+  window.loadModuleProgress = loadModuleProgress;
+
+  // Auto-initialize if cards exist
+  if (document.querySelector('.module-card')) {
+    initModuleCards();
+
+    // Try to load progress if course slug is available
+    const firstCard = document.querySelector('.module-card');
+    if (firstCard) {
+      const moduleUrl = firstCard.querySelector('.module-card__cta')?.href;
+      if (moduleUrl) {
+        const courseSlug = moduleUrl.split('/courses/')[1]?.split('/')[0];
+        if (courseSlug) {
+          loadModuleProgress(courseSlug);
+        }
+      }
+    }
+  }
+})();
+</script>

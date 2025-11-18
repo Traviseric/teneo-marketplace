@@ -1,0 +1,370 @@
+<!-- Course Navigation Sidebar
+     Reusable across traviseric.com and teneo-marketplace
+     Brand-swappable via CSS variables -->
+
+<style>
+.course-nav {
+  background: var(--brand-bg);
+  border-right: 1px solid var(--brand-border-light);
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  width: 320px;
+  padding: var(--spacing-lg) 0;
+}
+
+.course-nav__header {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  border-bottom: 1px solid var(--brand-border-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+.course-nav__title {
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--brand-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.course-nav__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+}
+
+.course-nav__progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--brand-bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.course-nav__progress-fill {
+  height: 100%;
+  background: var(--brand-success);
+  transition: width 0.3s ease;
+}
+
+.course-nav__modules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.course-nav__module {
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  border-left: 3px solid transparent;
+}
+
+.course-nav__module:hover:not(.course-nav__module--locked) {
+  background: var(--brand-bg-secondary);
+}
+
+.course-nav__module--active {
+  background: var(--brand-bg-secondary);
+  border-left-color: var(--brand-accent);
+}
+
+.course-nav__module--completed {
+  opacity: 0.8;
+}
+
+.course-nav__module--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.course-nav__module-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: var(--font-size-sm);
+}
+
+.course-nav__module--completed .course-nav__module-icon {
+  background: var(--brand-success);
+  color: white;
+}
+
+.course-nav__module--active:not(.course-nav__module--completed) .course-nav__module-icon {
+  background: var(--brand-accent);
+  color: white;
+}
+
+.course-nav__module--locked .course-nav__module-icon {
+  background: var(--brand-bg-tertiary);
+  color: var(--brand-text-muted);
+}
+
+.course-nav__module-content {
+  flex: 1;
+}
+
+.course-nav__module-title {
+  font-family: var(--brand-font-main);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+}
+
+.course-nav__module-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+}
+
+.course-nav__module-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.course-nav__module-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--brand-success);
+  color: white;
+}
+
+.course-nav__module-badge--locked {
+  background: var(--brand-bg-tertiary);
+  color: var(--brand-text-muted);
+}
+
+.course-nav__footer {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--brand-border-light);
+}
+
+.course-nav__certificate {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-primary) 100%);
+  border-radius: var(--border-radius-md);
+  color: white;
+  text-decoration: none;
+}
+
+.course-nav__certificate-icon {
+  font-size: 32px;
+}
+
+.course-nav__certificate-text {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .course-nav {
+    position: static;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--brand-border-light);
+  }
+}
+</style>
+
+<nav class="course-nav" data-course-slug="{{COURSE_SLUG}}">
+  <div class="course-nav__header">
+    <h2 class="course-nav__title">{{COURSE_TITLE}}</h2>
+    <div class="course-nav__progress">
+      <div class="course-nav__progress-bar">
+        <div class="course-nav__progress-fill" style="width: {{PROGRESS_PERCENT}}%"></div>
+      </div>
+      <span>{{PROGRESS_PERCENT}}%</span>
+    </div>
+  </div>
+
+  <ul class="course-nav__modules">
+    <!-- Module 0: Free -->
+    <li class="course-nav__module course-nav__module--completed" data-slug="forge" data-free="true">
+      <div class="course-nav__module-icon">✓</div>
+      <div class="course-nav__module-content">
+        <div class="course-nav__module-title">Module 0: The Forge</div>
+        <div class="course-nav__module-meta">
+          <span class="course-nav__module-duration">⏱ 30 min</span>
+          <span class="course-nav__module-badge">FREE</span>
+        </div>
+      </div>
+    </li>
+
+    <!-- Module 1: Free -->
+    <li class="course-nav__module course-nav__module--active" data-slug="mirror" data-free="true">
+      <div class="course-nav__module-icon">▶</div>
+      <div class="course-nav__module-content">
+        <div class="course-nav__module-title">Module 1: The Mirror Principle</div>
+        <div class="course-nav__module-meta">
+          <span class="course-nav__module-duration">⏱ 45 min</span>
+          <span class="course-nav__module-badge">FREE</span>
+        </div>
+      </div>
+    </li>
+
+    <!-- Module 2: Free -->
+    <li class="course-nav__module" data-slug="archetypes" data-free="true">
+      <div class="course-nav__module-icon">○</div>
+      <div class="course-nav__module-content">
+        <div class="course-nav__module-title">Module 2: The Three Archetypes</div>
+        <div class="course-nav__module-meta">
+          <span class="course-nav__module-duration">⏱ 60 min</span>
+          <span class="course-nav__module-badge">FREE</span>
+        </div>
+      </div>
+    </li>
+
+    <!-- Module 3: Free -->
+    <li class="course-nav__module" data-slug="emotional-stability" data-free="true">
+      <div class="course-nav__module-icon">○</div>
+      <div class="course-nav__module-content">
+        <div class="course-nav__module-title">Module 3: Emotional Stability Signals</div>
+        <div class="course-nav__module-meta">
+          <span class="course-nav__module-duration">⏱ 75 min</span>
+          <span class="course-nav__module-badge">FREE</span>
+        </div>
+      </div>
+    </li>
+
+    <!-- Module 4: Paid (locked if no access) -->
+    <li class="course-nav__module course-nav__module--locked" data-slug="cognitive-vectoring" data-free="false">
+      <div class="course-nav__module-icon">🔒</div>
+      <div class="course-nav__module-content">
+        <div class="course-nav__module-title">Module 4: Cognitive Vectoring</div>
+        <div class="course-nav__module-meta">
+          <span class="course-nav__module-duration">⏱ 90 min</span>
+          <span class="course-nav__module-badge course-nav__module-badge--locked">PRO</span>
+        </div>
+      </div>
+    </li>
+
+    <!-- Remaining modules... -->
+    <!-- Template: duplicate and modify for each module -->
+  </ul>
+
+  <div class="course-nav__footer">
+    <!-- Certificate (shows when 100% complete) -->
+    <a href="/courses/{{COURSE_SLUG}}/certificate" class="course-nav__certificate" style="display: none;" id="certificateLink">
+      <span class="course-nav__certificate-icon">🏆</span>
+      <span class="course-nav__certificate-text">View Your Certificate</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+(function() {
+  'use strict';
+
+  const courseNav = document.querySelector('.course-nav');
+  const courseSlug = courseNav.dataset.courseSlug;
+  const modules = courseNav.querySelectorAll('.course-nav__module');
+  const certificateLink = document.getElementById('certificateLink');
+
+  // Load user progress from API or localStorage
+  async function loadProgress() {
+    try {
+      const response = await fetch(`/api/course/progress?course=${courseSlug}`);
+      if (response.ok) {
+        const data = await response.json();
+        applyProgress(data.progress);
+        updateProgressBar(data.overallProgress);
+
+        if (data.certificateEarned) {
+          certificateLink.style.display = 'flex';
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load progress:', error);
+      // Fall back to localStorage
+      loadProgressFromLocalStorage();
+    }
+  }
+
+  function applyProgress(progressData) {
+    modules.forEach(module => {
+      const moduleSlug = module.dataset.slug;
+      const progress = progressData.find(p => p.moduleSlug === moduleSlug);
+
+      if (progress && progress.completed) {
+        module.classList.add('course-nav__module--completed');
+        module.classList.remove('course-nav__module--active');
+        const icon = module.querySelector('.course-nav__module-icon');
+        icon.textContent = '✓';
+      }
+    });
+  }
+
+  function updateProgressBar(percent) {
+    const progressFill = courseNav.querySelector('.course-nav__progress-fill');
+    const progressText = courseNav.querySelector('.course-nav__progress span');
+
+    if (progressFill) {
+      progressFill.style.width = percent + '%';
+    }
+    if (progressText) {
+      progressText.textContent = Math.round(percent) + '%';
+    }
+  }
+
+  function loadProgressFromLocalStorage() {
+    const key = `course_progress_${courseSlug}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const data = JSON.parse(saved);
+      applyProgress(data.progress || []);
+      updateProgressBar(data.overallProgress || 0);
+    }
+  }
+
+  // Handle module clicks
+  modules.forEach(module => {
+    module.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Don't navigate if locked
+      if (this.classList.contains('course-nav__module--locked')) {
+        // Show paywall or upgrade prompt
+        const paywallEvent = new CustomEvent('showPaywall', {
+          detail: { courseSlug }
+        });
+        window.dispatchEvent(paywallEvent);
+        return;
+      }
+
+      const moduleSlug = this.dataset.slug;
+      const isFree = this.dataset.free === 'true';
+
+      // Navigate to module
+      window.location.href = `/courses/${courseSlug}/${moduleSlug}`;
+    });
+  });
+
+  // Initialize
+  loadProgress();
+})();
+</script>
