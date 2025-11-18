@@ -1,0 +1,388 @@
+<!-- Progress Bar Component
+     Standalone progress indicator for course completion
+     Reusable across traviseric.com and teneo-marketplace -->
+
+<style>
+.course-progress-bar {
+  width: 100%;
+  padding: var(--spacing-lg);
+  background: var(--brand-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.course-progress-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.course-progress-bar__title {
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+.course-progress-bar__percentage {
+  font-family: var(--brand-font-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--brand-success);
+}
+
+.course-progress-bar__track {
+  position: relative;
+  height: 12px;
+  background: var(--brand-bg-tertiary);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+}
+
+.course-progress-bar__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-success) 0%, var(--brand-accent) 100%);
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.course-progress-bar__fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.course-progress-bar__stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.course-progress-bar__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--brand-text-secondary);
+}
+
+.course-progress-bar__stat-icon {
+  font-size: var(--font-size-base);
+}
+
+.course-progress-bar__stat-value {
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+.course-progress-bar__milestone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--brand-success);
+  color: white;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  animation: celebratePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes celebratePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.course-progress-bar__cta {
+  margin-top: var(--spacing-md);
+  display: block;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--brand-accent);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--brand-font-main);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.course-progress-bar__cta:hover {
+  background: var(--brand-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .course-progress-bar {
+    padding: var(--spacing-md);
+  }
+
+  .course-progress-bar__stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}
+</style>
+
+<div class="course-progress-bar" id="courseProgressBar" data-course-slug="{{COURSE_SLUG}}">
+  <div class="course-progress-bar__header">
+    <h3 class="course-progress-bar__title">Your Progress</h3>
+    <span class="course-progress-bar__percentage" id="progressPercentage">0%</span>
+  </div>
+
+  <div class="course-progress-bar__track">
+    <div class="course-progress-bar__fill" id="progressFill" style="width: 0%"></div>
+  </div>
+
+  <div class="course-progress-bar__stats" id="progressStats">
+    <div class="course-progress-bar__stat">
+      <span class="course-progress-bar__stat-icon">✓</span>
+      <span>
+        <span class="course-progress-bar__stat-value" id="completedCount">0</span>
+        of
+        <span id="totalCount">0</span>
+        modules completed
+      </span>
+    </div>
+
+    <div class="course-progress-bar__stat">
+      <span class="course-progress-bar__stat-icon">⏱</span>
+      <span>
+        <span class="course-progress-bar__stat-value" id="timeRemaining">0h</span>
+        remaining
+      </span>
+    </div>
+
+    <div class="course-progress-bar__stat">
+      <span class="course-progress-bar__stat-icon">🔥</span>
+      <span>
+        <span class="course-progress-bar__stat-value" id="streakCount">0</span>
+        day streak
+      </span>
+    </div>
+  </div>
+
+  <!-- Milestone celebration (shows at 25%, 50%, 75%, 100%) -->
+  <div id="milestoneMessage" style="display: none; margin-top: var(--spacing-md);"></div>
+
+  <!-- Next lesson CTA -->
+  <a href="#" class="course-progress-bar__cta" id="nextLessonCta" style="display: none;">
+    Continue to Next Lesson →
+  </a>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const progressBar = document.getElementById('courseProgressBar');
+  const courseSlug = progressBar.dataset.courseSlug;
+  const progressFill = document.getElementById('progressFill');
+  const progressPercentage = document.getElementById('progressPercentage');
+  const completedCount = document.getElementById('completedCount');
+  const totalCount = document.getElementById('totalCount');
+  const timeRemaining = document.getElementById('timeRemaining');
+  const streakCount = document.getElementById('streakCount');
+  const milestoneMessage = document.getElementById('milestoneMessage');
+  const nextLessonCta = document.getElementById('nextLessonCta');
+
+  let currentProgress = 0;
+  let previousMilestone = 0;
+
+  // Load progress from API or localStorage
+  async function loadProgress() {
+    try {
+      const response = await fetch(`/api/course/progress?course=${courseSlug}`);
+      if (response.ok) {
+        const data = await response.json();
+        updateProgress(data);
+      }
+    } catch (error) {
+      console.error('Failed to load progress:', error);
+      loadProgressFromLocalStorage();
+    }
+  }
+
+  function updateProgress(data) {
+    currentProgress = data.overallProgress || 0;
+    const completed = data.completedModules || 0;
+    const total = data.totalModules || 0;
+    const remaining = data.estimatedTimeRemaining || 0;
+    const streak = data.streak || 0;
+    const nextLesson = data.nextLesson || null;
+
+    // Animate progress bar
+    animateProgress(currentProgress);
+
+    // Update stats
+    completedCount.textContent = completed;
+    totalCount.textContent = total;
+    timeRemaining.textContent = formatTime(remaining);
+    streakCount.textContent = streak;
+
+    // Check for milestones
+    checkMilestone(currentProgress);
+
+    // Show next lesson CTA
+    if (nextLesson && currentProgress < 100) {
+      nextLessonCta.href = nextLesson.url;
+      nextLessonCta.textContent = `Continue to ${nextLesson.title} →`;
+      nextLessonCta.style.display = 'block';
+    }
+
+    // Completion celebration
+    if (currentProgress === 100) {
+      showCompletionCelebration();
+    }
+
+    // Track analytics
+    if (window.trackAnalytics) {
+      window.trackAnalytics('progress_update', {
+        course_slug: courseSlug,
+        progress: currentProgress,
+        completed_modules: completed
+      });
+    }
+  }
+
+  function animateProgress(targetPercent) {
+    const startPercent = parseFloat(progressFill.style.width) || 0;
+    const duration = 1000; // 1 second animation
+    const startTime = Date.now();
+
+    function animate() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease-out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentPercent = startPercent + (targetPercent - startPercent) * easeProgress;
+
+      progressFill.style.width = currentPercent + '%';
+      progressPercentage.textContent = Math.round(currentPercent) + '%';
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  function checkMilestone(percent) {
+    const milestones = [25, 50, 75, 100];
+    const currentMilestone = milestones.find(m => percent >= m && previousMilestone < m);
+
+    if (currentMilestone) {
+      showMilestoneMessage(currentMilestone);
+      previousMilestone = currentMilestone;
+    }
+  }
+
+  function showMilestoneMessage(milestone) {
+    const messages = {
+      25: '🎉 Quarter way there! Keep going!',
+      50: '🚀 Halfway complete! You\'re doing great!',
+      75: '⭐ Three quarters done! Almost there!',
+      100: '🏆 Course Complete! Congratulations!'
+    };
+
+    milestoneMessage.innerHTML = `
+      <span class="course-progress-bar__milestone">
+        ${messages[milestone]}
+      </span>
+    `;
+    milestoneMessage.style.display = 'block';
+
+    // Hide after 5 seconds (except for 100%)
+    if (milestone !== 100) {
+      setTimeout(() => {
+        milestoneMessage.style.display = 'none';
+      }, 5000);
+    }
+  }
+
+  function showCompletionCelebration() {
+    nextLessonCta.href = `/courses/${courseSlug}/certificate`;
+    nextLessonCta.textContent = '🏆 Claim Your Certificate';
+    nextLessonCta.style.display = 'block';
+    nextLessonCta.style.background = 'linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-primary) 100%)';
+  }
+
+  function formatTime(minutes) {
+    if (minutes < 60) {
+      return `${minutes}m`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  }
+
+  function loadProgressFromLocalStorage() {
+    const key = `course_progress_${courseSlug}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const data = JSON.parse(saved);
+      updateProgress(data);
+    }
+  }
+
+  // Public API for external updates
+  window.updateCourseProgress = function(progressData) {
+    updateProgress(progressData);
+  };
+
+  // Listen for progress update events
+  window.addEventListener('courseProgressUpdate', function(e) {
+    if (e.detail.courseSlug === courseSlug) {
+      updateProgress(e.detail);
+    }
+  });
+
+  // Initialize
+  loadProgress();
+})();
+</script>
