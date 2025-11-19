@@ -65,6 +65,7 @@ const manualEnhancementRoutes = require('./routes/manualEnhancement');
 const webhookRoutes = require('./routes/webhooks');
 const aiDiscoveryRoutes = require('./routes/aiDiscovery');
 const censorshipTrackerRoutes = require('./routes/censorshipTracker');
+const nftRoutes = require('./routes/nft');
 
 const app = express();
 
@@ -147,6 +148,7 @@ app.use('/api/manual-enhancement', manualEnhancementRoutes);
 app.use('/webhooks', webhookRoutes);
 app.use('/api/discovery', aiDiscoveryRoutes);
 app.use('/api/censorship', censorshipTrackerRoutes);
+app.use('/api/nft', nftRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -7,6 +7,7 @@ const schemaPath = path.join(__dirname, 'schema.sql');
 const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
 const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
 const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-tracker.sql');
+const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -28,6 +29,7 @@ const schema = fs.readFileSync(schemaPath, 'utf8');
 const luluSchema = fs.existsSync(luluSchemaPath) ? fs.readFileSync(luluSchemaPath, 'utf8') : '';
 const aiDiscoverySchema = fs.existsSync(aiDiscoverySchemaPath) ? fs.readFileSync(aiDiscoverySchemaPath, 'utf8') : '';
 const censorshipTrackerSchema = fs.existsSync(censorshipTrackerSchemaPath) ? fs.readFileSync(censorshipTrackerSchemaPath, 'utf8') : '';
+const nftSchema = fs.existsSync(nftSchemaPath) ? fs.readFileSync(nftSchemaPath, 'utf8') : '';
 
 db.serialize(() => {
     // Execute main schema
@@ -68,6 +70,17 @@ db.serialize(() => {
                 console.error('Error creating Censorship Tracker schema:', err);
             } else {
                 console.log('✅ Censorship Tracker schema created successfully');
+            }
+        });
+    }
+
+    // Execute NFT schema if exists
+    if (nftSchema) {
+        db.exec(nftSchema, (err) => {
+            if (err) {
+                console.error('Error creating NFT schema:', err);
+            } else {
+                console.log('✅ NFT schema created successfully');
             }
         });
     }
