@@ -63,6 +63,7 @@ const bookAnalyticsRoutes = require('./routes/bookAnalytics');
 const digestRoutes = require('./routes/digestRoutes');
 const manualEnhancementRoutes = require('./routes/manualEnhancement');
 const webhookRoutes = require('./routes/webhooks');
+const aiDiscoveryRoutes = require('./routes/aiDiscovery');
 
 const app = express();
 
@@ -143,6 +144,7 @@ app.use('/api/books', bookAnalyticsRoutes);
 app.use('/api/digest', digestRoutes);
 app.use('/api/manual-enhancement', manualEnhancementRoutes);
 app.use('/webhooks', webhookRoutes);
+app.use('/api/discovery', aiDiscoveryRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
