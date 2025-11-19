@@ -4,6 +4,8 @@ const path = require('path');
 
 const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'orders.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
+const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
+const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -20,18 +22,42 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.log('Connected to SQLite database');
 });
 
-// Read and execute schema
+// Read and execute schemas
 const schema = fs.readFileSync(schemaPath, 'utf8');
+const luluSchema = fs.existsSync(luluSchemaPath) ? fs.readFileSync(luluSchemaPath, 'utf8') : '';
+const aiDiscoverySchema = fs.existsSync(aiDiscoverySchemaPath) ? fs.readFileSync(aiDiscoverySchemaPath, 'utf8') : '';
 
 db.serialize(() => {
-    // Execute schema
+    // Execute main schema
     db.exec(schema, (err) => {
         if (err) {
-            console.error('Error creating schema:', err);
+            console.error('Error creating main schema:', err);
             process.exit(1);
         }
-        console.log('Database schema created successfully');
+        console.log('✅ Main database schema created successfully');
     });
+
+    // Execute Lulu schema if exists
+    if (luluSchema) {
+        db.exec(luluSchema, (err) => {
+            if (err) {
+                console.error('Error creating Lulu schema:', err);
+            } else {
+                console.log('✅ Lulu schema created successfully');
+            }
+        });
+    }
+
+    // Execute AI Discovery schema if exists
+    if (aiDiscoverySchema) {
+        db.exec(aiDiscoverySchema, (err) => {
+            if (err) {
+                console.error('Error creating AI Discovery schema:', err);
+            } else {
+                console.log('✅ AI Discovery schema created successfully');
+            }
+        });
+    }
 
     // Verify tables
     db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
