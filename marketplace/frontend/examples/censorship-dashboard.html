@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Censorship Tracker - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(198, 40, 40, 0.3);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff1744, #f50057);
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, #90caf9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .banned-this-week {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-indicator {
+            width: 10px;
+            height: 10px;
+            background: #ff1744;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 20px #ff1744;
+            }
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 5px #ff1744;
+            }
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #ff1744;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 23, 68, 0.3);
+        }
+
+        .book-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .book-author {
+            font-size: 14px;
+            color: #90caf9;
+        }
+
+        .danger-badge {
+            background: linear-gradient(135deg, #ff1744, #f50057);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .platform-badge {
+            background: rgba(156, 39, 176, 0.3);
+            border: 1px solid #9c27b0;
+            color: #ce93d8;
+        }
+
+        .time-badge {
+            background: rgba(255, 152, 0, 0.3);
+            border: 1px solid #ff9800;
+            color: #ffcc80;
+        }
+
+        .description {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b0bec5;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff1744, #f50057);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(255, 23, 68, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #546e7a;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #ff1744;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚨 Live Censorship Tracker</h1>
+        <p>Turning every ban into free marketing - The Streisand Effect as a Service</p>
+    </div>
+
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-banned">-</div>
+                <div class="stat-label">Total Banned Books</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="bans-this-week">-</div>
+                <div class="stat-label">Banned This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="bans-this-month">-</div>
+                <div class="stat-label">Banned This Month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="restored">-</div>
+                <div class="stat-label">Books Restored</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="startMonitoring()">
+                ▶️ Start Monitoring
+            </button>
+            <button class="control-btn" onclick="stopMonitoring()">
+                ⏹️ Stop Monitoring
+            </button>
+            <button class="control-btn" onclick="triggerCheck()">
+                🔄 Check Now
+            </button>
+            <button class="control-btn" onclick="loadData()">
+                📊 Refresh Data
+            </button>
+        </div>
+
+        <!-- Banned This Week -->
+        <div class="banned-this-week">
+            <div class="section-title">
+                <div class="live-indicator"></div>
+                <span>📕 Banned This Week</span>
+            </div>
+            <div id="banned-books" class="book-grid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading banned books...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bans -->
+        <div class="banned-this-week">
+            <div class="section-title">Recent Censorship Events</div>
+            <div id="recent-bans" class="book-grid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading censorship events...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:3001/api'
+            : '/api';
+
+        // Load data on page load
+        loadData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+
+        async function loadData() {
+            await Promise.all([
+                loadStats(),
+                loadBannedThisWeek(),
+                loadRecentBans()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/censorship/stats`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('total-banned').textContent = data.stats.total_banned_books || 0;
+                    document.getElementById('bans-this-week').textContent = data.stats.bans_this_week || 0;
+                    document.getElementById('bans-this-month').textContent = data.stats.bans_this_month || 0;
+                    document.getElementById('restored').textContent = data.stats.total_restorations || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadBannedThisWeek() {
+            const container = document.getElementById('banned-books');
+
+            try {
+                const response = await fetch(`${API_BASE}/censorship/banned-this-week`);
+                const data = await response.json();
+
+                if (data.success && data.books.length > 0) {
+                    container.innerHTML = data.books.map(book => `
+                        <div class="book-card">
+                            <div class="book-header">
+                                <div>
+                                    <div class="book-title">${book.title}</div>
+                                    <div class="book-author">${book.author}</div>
+                                </div>
+                                <div class="danger-badge">
+                                    🔥 ${book.danger_index || 0}
+                                </div>
+                            </div>
+                            <div class="book-meta">
+                                <div class="meta-badge platform-badge">
+                                    ${book.platform}
+                                </div>
+                                <div class="meta-badge time-badge">
+                                    ${formatDate(book.created_at)}
+                                </div>
+                                ${book.platform_count > 1 ? `
+                                    <div class="meta-badge" style="background: rgba(244, 67, 54, 0.3); border: 1px solid #f44336; color: #ff8a80;">
+                                        ${book.platform_count} platforms
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${book.description ? `
+                                <div class="description">${book.description}</div>
+                            ` : ''}
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="viewTimeline('${book.book_id}')">
+                                    View Timeline
+                                </button>
+                                <button class="btn btn-secondary" onclick="shareOnTwitter('${book.title}', '${book.platform}')">
+                                    🐦 Share
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📚</div>
+                            <p>No books banned this week</p>
+                            <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
+                                Good news! Or maybe the tracker needs ISBNs/ASINs added.
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>Error loading banned books</p>
+                        <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
+                            ${error.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadRecentBans() {
+            const container = document.getElementById('recent-bans');
+
+            try {
+                const response = await fetch(`${API_BASE}/censorship/recent-bans?limit=12`);
+                const data = await response.json();
+
+                if (data.success && data.bans.length > 0) {
+                    container.innerHTML = data.bans.map(ban => `
+                        <div class="book-card">
+                            <div class="book-header">
+                                <div>
+                                    <div class="book-title">${ban.title || ban.book_id}</div>
+                                    <div class="book-author">${ban.author || 'Unknown'}</div>
+                                </div>
+                                <div class="danger-badge">
+                                    ${ban.severity.toUpperCase()}
+                                </div>
+                            </div>
+                            <div class="book-meta">
+                                <div class="meta-badge platform-badge">
+                                    ${ban.platform}
+                                </div>
+                                <div class="meta-badge time-badge">
+                                    ${formatDate(ban.created_at)}
+                                </div>
+                                ${ban.is_verified ? `
+                                    <div class="meta-badge" style="background: rgba(76, 175, 80, 0.3); border: 1px solid #4caf50; color: #a5d6a7;">
+                                        ✓ Verified
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${ban.description ? `
+                                <div class="description">${ban.description}</div>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎉</div>
+                            <p>No censorship events detected</p>
+                            <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
+                                Either no bans occurred, or monitoring hasn't started yet.
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>Error loading censorship events</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function startMonitoring() {
+            try {
+                const response = await fetch(`${API_BASE}/censorship/admin/start-monitoring`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Censorship monitoring started!');
+                } else {
+                    alert('❌ Failed to start monitoring: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function stopMonitoring() {
+            try {
+                const response = await fetch(`${API_BASE}/censorship/admin/stop-monitoring`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('⏹️ Censorship monitoring stopped');
+                } else {
+                    alert('❌ Failed to stop monitoring: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function triggerCheck() {
+            try {
+                const response = await fetch(`${API_BASE}/censorship/admin/check-now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('🔄 Availability check started! Results will appear shortly.');
+                    setTimeout(loadData, 5000); // Reload after 5 seconds
+                } else {
+                    alert('❌ Failed to trigger check: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        function viewTimeline(bookId) {
+            window.open(`/api/censorship/timeline/${bookId}`, '_blank');
+        }
+
+        function shareOnTwitter(title, platform) {
+            const text = `🚨 CENSORSHIP ALERT: "${title}" was just removed from ${platform}. Why are they scared? #FreeSpeech #BannedBooks`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank', 'width=550,height=420');
+        }
+    </script>
+</body>
+</html>
