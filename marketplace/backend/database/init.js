@@ -6,6 +6,7 @@ const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'orders.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
 const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
 const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
+const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-tracker.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -26,6 +27,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 const schema = fs.readFileSync(schemaPath, 'utf8');
 const luluSchema = fs.existsSync(luluSchemaPath) ? fs.readFileSync(luluSchemaPath, 'utf8') : '';
 const aiDiscoverySchema = fs.existsSync(aiDiscoverySchemaPath) ? fs.readFileSync(aiDiscoverySchemaPath, 'utf8') : '';
+const censorshipTrackerSchema = fs.existsSync(censorshipTrackerSchemaPath) ? fs.readFileSync(censorshipTrackerSchemaPath, 'utf8') : '';
 
 db.serialize(() => {
     // Execute main schema
@@ -55,6 +57,17 @@ db.serialize(() => {
                 console.error('Error creating AI Discovery schema:', err);
             } else {
                 console.log('✅ AI Discovery schema created successfully');
+            }
+        });
+    }
+
+    // Execute Censorship Tracker schema if exists
+    if (censorshipTrackerSchema) {
+        db.exec(censorshipTrackerSchema, (err) => {
+            if (err) {
+                console.error('Error creating Censorship Tracker schema:', err);
+            } else {
+                console.log('✅ Censorship Tracker schema created successfully');
             }
         });
     }

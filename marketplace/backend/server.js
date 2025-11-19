@@ -64,6 +64,7 @@ const digestRoutes = require('./routes/digestRoutes');
 const manualEnhancementRoutes = require('./routes/manualEnhancement');
 const webhookRoutes = require('./routes/webhooks');
 const aiDiscoveryRoutes = require('./routes/aiDiscovery');
+const censorshipTrackerRoutes = require('./routes/censorshipTracker');
 
 const app = express();
 
@@ -145,6 +146,7 @@ app.use('/api/digest', digestRoutes);
 app.use('/api/manual-enhancement', manualEnhancementRoutes);
 app.use('/webhooks', webhookRoutes);
 app.use('/api/discovery', aiDiscoveryRoutes);
+app.use('/api/censorship', censorshipTrackerRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
