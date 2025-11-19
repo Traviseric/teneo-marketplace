@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - Proof of Read NFTs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .wallet-input {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .wallet-input input {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .wallet-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .wallet-input button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .book-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .book-author {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nft-badge {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .badge-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .badge-card:hover {
+            transform: scale(1.05);
+            border-color: rgba(102, 126, 234, 0.8);
+        }
+
+        .badge-card.milestone {
+            border-color: rgba(52, 211, 153, 0.5);
+        }
+
+        .badge-card.controversial {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .badge-card.topic {
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .badge-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .badge-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .badge-category {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .inheritance-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .inheritance-form {
+            display: grid;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-primary {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #fff;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Proof of Read Library</h1>
+            <p>Your uncensorable book collection on the blockchain</p>
+
+            <div class="wallet-input">
+                <input type="text" id="walletAddress" placeholder="Enter wallet address (0x...)" />
+                <button onclick="loadLibrary()">Load Library</button>
+            </div>
+        </header>
+
+        <div id="content" class="hidden">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalBooks">0</div>
+                    <div class="stat-label">Books Owned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalBadges">0</div>
+                    <div class="stat-label">Badges Earned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalBrands">0</div>
+                    <div class="stat-label">Brands</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgDanger">0</div>
+                    <div class="stat-label">Avg Danger Index</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('library')">📚 Library</button>
+                <button class="tab" onclick="switchTab('badges')">🏆 Badges</button>
+                <button class="tab" onclick="switchTab('inheritance')">🔐 Inheritance</button>
+            </div>
+
+            <!-- Library Tab -->
+            <div id="library-tab" class="tab-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">My Books</h2>
+                    </div>
+                    <div class="books-grid" id="booksGrid"></div>
+                </div>
+            </div>
+
+            <!-- Badges Tab -->
+            <div id="badges-tab" class="tab-content hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Achievement Badges</h2>
+                    </div>
+                    <div class="badges-grid" id="badgesGrid"></div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Available Badges</h2>
+                    </div>
+                    <div class="badges-grid" id="availableBadgesGrid"></div>
+                </div>
+            </div>
+
+            <!-- Inheritance Tab -->
+            <div id="inheritance-tab" class="tab-content hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Library Inheritance Plan</h2>
+                    </div>
+
+                    <div class="inheritance-card">
+                        <p style="margin-bottom: 20px; color: rgba(255, 255, 255, 0.8);">
+                            Set up a plan to transfer your book NFTs to beneficiaries after a specified date,
+                            or if you stop sending regular heartbeats (dead man's switch).
+                        </p>
+
+                        <div class="inheritance-form">
+                            <div class="form-group">
+                                <label>Beneficiaries (comma-separated addresses)</label>
+                                <textarea id="beneficiaries" placeholder="0x123..., 0xabc..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Release Date</label>
+                                <input type="date" id="releaseDate" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Heartbeat Interval (days)</label>
+                                <input type="number" id="heartbeatInterval" placeholder="90" value="90" />
+                                <small style="color: rgba(255, 255, 255, 0.6);">
+                                    You must send a heartbeat within this interval to keep the plan active
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Message to Beneficiaries</label>
+                                <textarea id="notes" placeholder="Your message here..."></textarea>
+                            </div>
+
+                            <button class="btn-primary" onclick="createInheritancePlan()">
+                                Create Inheritance Plan
+                            </button>
+                        </div>
+
+                        <div id="currentPlan" class="hidden" style="margin-top: 30px; padding-top: 30px; border-top: 2px solid rgba(255, 255, 255, 0.1);">
+                            <h3 style="margin-bottom: 20px;">Current Plan</h3>
+                            <div id="planDetails"></div>
+                            <button class="btn-primary" onclick="sendHeartbeat()" style="margin-top: 20px;">
+                                ❤️ Send Heartbeat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading your library...</p>
+        </div>
+
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-state-icon">📭</div>
+            <h2>No books found</h2>
+            <p>This wallet doesn't own any book NFTs yet.</p>
+        </div>
+    </div>
+
+    <script>
+        let currentWallet = '';
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:3001/api'
+            : '/api';
+
+        // Badge icons mapping
+        const badgeIcons = {
+            0: '📖', 1: '📚', 2: '🎓', 3: '🏛️', 4: '👨‍🎓', 5: '🏆',
+            6: '🔥', 7: '💀', 8: '☠️',
+            9: '💰', 10: '🧠', 11: '🔒'
+        };
+
+        async function loadLibrary() {
+            const walletInput = document.getElementById('walletAddress');
+            const wallet = walletInput.value.trim();
+
+            if (!wallet || !wallet.startsWith('0x')) {
+                alert('Please enter a valid wallet address');
+                return;
+            }
+
+            currentWallet = wallet;
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('content').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+
+            try {
+                // Load stats
+                const statsRes = await fetch(`${API_BASE}/nft/stats/${wallet}`);
+                const statsData = await statsRes.json();
+
+                if (statsData.success) {
+                    document.getElementById('totalBooks').textContent = statsData.stats.totalBooks || 0;
+                    document.getElementById('totalBadges').textContent = statsData.stats.totalBadges || 0;
+                    document.getElementById('totalBrands').textContent = statsData.stats.totalBrands || 0;
+                    document.getElementById('avgDanger').textContent = statsData.stats.averageDanger || 0;
+                }
+
+                // Load books
+                const booksRes = await fetch(`${API_BASE}/nft/library/${wallet}`);
+                const booksData = await booksRes.json();
+
+                // Load badges
+                const badgesRes = await fetch(`${API_BASE}/nft/badges/${wallet}`);
+                const badgesData = await badgesRes.json();
+
+                // Load badge definitions
+                const defsRes = await fetch(`${API_BASE}/nft/badge-definitions`);
+                const defsData = await defsRes.json();
+
+                // Load inheritance plan
+                const planRes = await fetch(`${API_BASE}/nft/inheritance/${wallet}`);
+                const planData = await planRes.json();
+
+                document.getElementById('loading').classList.add('hidden');
+
+                if (booksData.success && booksData.books.length > 0) {
+                    document.getElementById('content').classList.remove('hidden');
+                    renderBooks(booksData.books);
+                    renderBadges(badgesData.badges || []);
+                    renderAvailableBadges(defsData.badges || [], badgesData.badges || []);
+
+                    if (planData.success && planData.plan) {
+                        renderInheritancePlan(planData.plan);
+                    }
+                } else {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Error loading library:', error);
+                document.getElementById('loading').classList.add('hidden');
+                alert('Error loading library. Please try again.');
+            }
+        }
+
+        function renderBooks(books) {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = books.map(book => `
+                <div class="book-card">
+                    <div class="book-cover">📖</div>
+                    <div class="book-info">
+                        <div class="book-title">${book.title || 'Untitled'}</div>
+                        <div class="book-author">${book.author || 'Unknown Author'}</div>
+                        <div class="book-meta">
+                            <span class="nft-badge">NFT #${book.token_id}</span>
+                            <span>${book.brand || 'Unknown'}</span>
+                        </div>
+                        ${book.danger_index > 50 ? '<div style="margin-top: 10px; color: #ef4444;">⚠️ Controversial</div>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBadges(badges) {
+            const grid = document.getElementById('badgesGrid');
+
+            if (badges.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><p>No badges earned yet. Keep reading!</p></div>';
+                return;
+            }
+
+            grid.innerHTML = badges.map(badge => `
+                <div class="badge-card ${badge.category}">
+                    <div class="badge-icon">${badgeIcons[badge.badge_id] || '🏅'}</div>
+                    <div class="badge-name">${badge.name}</div>
+                    <div class="badge-category">${badge.category}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAvailableBadges(allBadges, earnedBadges) {
+            const grid = document.getElementById('availableBadgesGrid');
+            const earnedIds = new Set(earnedBadges.map(b => b.badge_id));
+            const available = allBadges.filter(b => !earnedIds.has(b.badge_id));
+
+            if (available.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><p>You\'ve earned all available badges! 🎉</p></div>';
+                return;
+            }
+
+            grid.innerHTML = available.map(badge => `
+                <div class="badge-card ${badge.category}" style="opacity: 0.5;">
+                    <div class="badge-icon">${badgeIcons[badge.badge_id] || '🏅'}</div>
+                    <div class="badge-name">${badge.name}</div>
+                    <div class="badge-category">${badge.category}</div>
+                    <div style="margin-top: 10px; font-size: 0.85em; color: rgba(255, 255, 255, 0.6);">
+                        ${badge.requirement}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderInheritancePlan(plan) {
+            const container = document.getElementById('currentPlan');
+            const details = document.getElementById('planDetails');
+
+            container.classList.remove('hidden');
+
+            const releaseDate = new Date(plan.releaseDate * 1000).toLocaleDateString();
+            const lastHeartbeat = new Date(plan.lastHeartbeat * 1000).toLocaleString();
+
+            details.innerHTML = `
+                <p><strong>Status:</strong> ${plan.status}</p>
+                <p><strong>Beneficiaries:</strong> ${plan.beneficiaries.length} address(es)</p>
+                <p><strong>Release Date:</strong> ${releaseDate}</p>
+                <p><strong>Last Heartbeat:</strong> ${lastHeartbeat}</p>
+                <p><strong>Heartbeat Interval:</strong> ${plan.heartbeatInterval} days</p>
+                ${plan.notes ? `<p><strong>Notes:</strong> ${plan.notes}</p>` : ''}
+            `;
+        }
+
+        async function createInheritancePlan() {
+            const beneficiariesText = document.getElementById('beneficiaries').value;
+            const releaseDate = document.getElementById('releaseDate').value;
+            const heartbeatInterval = document.getElementById('heartbeatInterval').value;
+            const notes = document.getElementById('notes').value;
+
+            if (!beneficiariesText || !releaseDate) {
+                alert('Please fill in beneficiaries and release date');
+                return;
+            }
+
+            const beneficiaries = beneficiariesText.split(',').map(a => a.trim()).filter(a => a);
+            const releaseDateTimestamp = Math.floor(new Date(releaseDate).getTime() / 1000);
+
+            try {
+                const res = await fetch(`${API_BASE}/nft/inheritance/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ownerAddress: currentWallet,
+                        beneficiaries,
+                        releaseDate: releaseDateTimestamp,
+                        heartbeatInterval: parseInt(heartbeatInterval),
+                        notes
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('Inheritance plan created successfully!');
+                    loadLibrary();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error creating plan:', error);
+                alert('Error creating inheritance plan');
+            }
+        }
+
+        async function sendHeartbeat() {
+            try {
+                const res = await fetch(`${API_BASE}/nft/inheritance/heartbeat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ownerAddress: currentWallet })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('Heartbeat sent! ❤️');
+                    loadLibrary();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error sending heartbeat:', error);
+                alert('Error sending heartbeat');
+            }
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+        }
+
+        // Load sample data on page load for demo
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set a demo wallet address
+            document.getElementById('walletAddress').value = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
+        });
+    </script>
+</body>
+</html>
