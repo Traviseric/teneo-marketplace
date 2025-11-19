@@ -95,3 +95,7 @@ public/uploads/
 # Build outputs
 dist/
 build/
+# Hardhat
+artifacts/
+cache/
+deployments/
