@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funnel Builder - Teneo Marketplace</title>
+    <meta name="description" content="Build your book funnel in minutes with AI-powered templates">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- JSZip for ZIP exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/funnel-builder.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-purple-600">
+                        <i class="fas fa-magic"></i> Funnel Builder
+                    </h1>
+                    <span class="hidden sm:inline-block text-sm text-gray-500 border-l pl-4">
+                        Build your book funnel in minutes
+                    </span>
+                </div>
+
+                <!-- Course Context Badge (shows if opened from course) -->
+                <div id="course-context-badge" class="hidden items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg">
+                    <i class="fas fa-graduation-cap text-blue-600"></i>
+                    <span class="text-sm text-blue-900 font-medium">Course Mode</span>
+                    <button id="back-to-course-btn" class="ml-2 text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-arrow-left"></i> Back to Course
+                    </button>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center space-x-3">
+                    <button id="save-draft-btn" class="hidden sm:flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                        <i class="fas fa-save"></i>
+                        <span>Save Draft</span>
+                    </button>
+                    <div class="relative">
+                        <button id="export-menu-btn" class="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-download"></i>
+                            <span>Export</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <!-- Export Dropdown -->
+                        <div id="export-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                            <button class="export-option w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-3">
+                                <i class="fas fa-file-code text-purple-600"></i>
+                                <span>Download HTML</span>
+                            </button>
+                            <button class="export-option w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-3">
+                                <i class="fas fa-file-archive text-blue-600"></i>
+                                <span>Download ZIP</span>
+                            </button>
+                            <button class="export-option w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-3">
+                                <i class="fas fa-clipboard text-green-600"></i>
+                                <span>Copy to Clipboard</span>
+                            </button>
+                            <div class="border-t border-gray-200"></div>
+                            <button id="deploy-btn" class="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center space-x-3 text-purple-600 font-semibold">
+                                <i class="fas fa-rocket"></i>
+                                <span>Deploy to Teneo</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Screen (shows first time or if no template selected) -->
+        <div id="welcome-screen" class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                    Build Your Book Funnel in Minutes
+                </h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    Choose a template, fill in the details with AI help, and launch your funnel
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <button id="take-quiz-btn" class="px-8 py-4 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition shadow-lg">
+                        <i class="fas fa-quiz mr-2"></i>
+                        Take Quiz (Recommended)
+                    </button>
+                    <button id="choose-template-btn" class="px-8 py-4 bg-white text-gray-700 border-2 border-gray-300 rounded-lg font-semibold hover:border-purple-600 hover:text-purple-600 transition">
+                        <i class="fas fa-th-large mr-2"></i>
+                        Browse Templates
+                    </button>
+                </div>
+            </div>
+
+            <!-- Template Grid -->
+            <div id="template-grid" class="hidden grid md:grid-cols-2 gap-6">
+                <!-- Gated Sneak-Peak Funnel -->
+                <div class="template-card bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition" data-template="book-sales-page">
+                    <div class="h-48 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-book-open text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            Gated Sneak-Peak Funnel
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            Perfect for books with a free chapter. Give away a sample to build your list, then sell the full book.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-purple-600 font-semibold">Best for: Lead Generation</span>
+                            <i class="fas fa-arrow-right text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Story-Driven Sales Funnel -->
+                <div class="template-card bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition" data-template="story-driven">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <i class="fas fa-scroll text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            Story-Driven Sales Funnel
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            Use storytelling to pre-sell. Tell your author journey, why you wrote the book, and the transformation it offers.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-blue-600 font-semibold">Best for: Higher Prices ($20+)</span>
+                            <i class="fas fa-arrow-right text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reader Magnet Funnel -->
+                <div class="template-card bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition" data-template="reader-magnet">
+                    <div class="h-48 bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <i class="fas fa-magnet text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            Reader Magnet Funnel
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            Free book in exchange for email. Build a massive list, then monetize with upsells and future books.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-green-600 font-semibold">Best for: List Building</span>
+                            <i class="fas fa-arrow-right text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct-to-Sale Funnel -->
+                <div class="template-card bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition" data-template="direct-sale">
+                    <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            Direct-to-Sale Funnel
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            No fluff, just sell. Single page with strong benefits, testimonials, and clear CTA. Perfect for impulse buys.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-600 font-semibold">Best for: Low Prices ($1-$9)</span>
+                            <i class="fas fa-arrow-right text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Builder Interface (shows after template selected) -->
+        <div id="builder-interface" class="hidden">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Left Panel: Variable Inputs -->
+                <div class="space-y-6">
+                    <!-- Template Info -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" id="selected-template-name">
+                                    Gated Sneak-Peak Funnel
+                                </h3>
+                                <p class="text-sm text-gray-600" id="selected-template-desc">
+                                    Give away a free chapter to build your list
+                                </p>
+                            </div>
+                            <button id="change-template-btn" class="text-purple-600 hover:text-purple-700 text-sm font-semibold">
+                                Change Template
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-2">
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-700 font-medium">Completion</span>
+                                <span class="text-purple-600 font-bold" id="completion-percentage">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="completion-bar" class="bg-purple-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Variable Input Form (dynamically generated) -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">
+                            Fill in Your Details
+                        </h4>
+                        <form id="variables-form" class="space-y-6">
+                            <!-- Variables will be generated here by JavaScript -->
+                            <div id="variables-container">
+                                <!-- Loading state -->
+                                <div class="text-center py-12 text-gray-500">
+                                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                                    <p>Loading template...</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Live Preview -->
+                <div class="sticky top-20">
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="bg-gray-800 px-4 py-3 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex space-x-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-gray-400 text-sm ml-4">Live Preview</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="preview-desktop" class="preview-mode-btn active text-gray-400 hover:text-white p-2">
+                                    <i class="fas fa-desktop"></i>
+                                </button>
+                                <button id="preview-tablet" class="preview-mode-btn text-gray-400 hover:text-white p-2">
+                                    <i class="fas fa-tablet-alt"></i>
+                                </button>
+                                <button id="preview-mobile" class="preview-mode-btn text-gray-400 hover:text-white p-2">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </button>
+                                <button id="preview-fullscreen" class="text-gray-400 hover:text-white p-2">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="preview-container" class="bg-white">
+                            <iframe id="preview-iframe" class="w-full border-0 preview-desktop-mode" style="height: 600px;"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal (loads funnel-wizard.html content) -->
+    <div id="quiz-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div id="quiz-content">
+                <!-- Quiz will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Prompt Modal -->
+    <div id="ai-prompt-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                        AI Prompt Helper
+                    </h3>
+                    <button id="close-ai-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        For: <span id="ai-modal-field-name" class="text-purple-600 font-bold"></span>
+                    </label>
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                        <p id="ai-modal-prompt-text" class="text-gray-700 whitespace-pre-wrap"></p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="copy-prompt-btn" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-copy mr-2"></i>
+                            Copy Prompt
+                        </button>
+                        <button id="auto-generate-btn" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition">
+                            <i class="fas fa-magic mr-2"></i>
+                            Auto-Generate
+                        </button>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <p class="mb-2"><strong>How to use:</strong></p>
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>Click "Copy Prompt" above</li>
+                        <li>Paste into ChatGPT or Claude</li>
+                        <li>Copy the AI's response</li>
+                        <li>Paste back into the input field</li>
+                    </ol>
+                    <p class="mt-3 text-xs">
+                        Or click "Auto-Generate" to fill automatically (requires API key)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="hidden fixed bottom-4 right-4 bg-white rounded-lg shadow-xl border border-gray-200 p-4 max-w-sm z-50">
+        <div class="flex items-center space-x-3">
+            <i id="notification-icon" class="fas fa-check-circle text-green-500 text-xl"></i>
+            <p id="notification-text" class="text-gray-900"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../marketplace/frontend/js/template-processor.js"></script>
+    <script src="js/funnel-builder.js"></script>
+</body>
+</html>

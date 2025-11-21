@@ -67,6 +67,9 @@ const aiDiscoveryRoutes = require('./routes/aiDiscovery');
 const censorshipTrackerRoutes = require('./routes/censorshipTracker');
 const nftRoutes = require('./routes/nft');
 
+// Funnel builder routes
+const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
+
 const app = express();
 
 // Import auth middleware
@@ -149,6 +152,9 @@ app.use('/webhooks', webhookRoutes);
 app.use('/api/discovery', aiDiscoveryRoutes);
 app.use('/api/censorship', censorshipTrackerRoutes);
 app.use('/api/nft', nftRoutes);
+
+// Funnel builder API
+app.use('/api/funnels', funnelRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -398,24 +404,30 @@ app.use('/api/*', (req, res) => {
 if (process.env.NODE_ENV !== 'production') {
     // Serve frontend files
     app.use(express.static(path.join(__dirname, '..', 'frontend')));
-    
+
+    // Serve funnel builder module
+    app.use('/funnel-builder', express.static(path.join(__dirname, '..', '..', 'funnel-module', 'frontend')));
+
+    // Serve course module
+    app.use('/courses', express.static(path.join(__dirname, '..', '..', 'course-module', 'frontend')));
+
     // Specific routes for admin and setup
     app.get('/setup', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'setup.html'));
     });
-    
+
     app.get('/admin', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
     });
-    
+
     app.get('/published', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'published.html'));
     });
-    
+
     app.get('/published/profile/:userId', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'publisher-profile.html'));
     });
-    
+
     app.get('/rewards', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'rewards.html'));
     });

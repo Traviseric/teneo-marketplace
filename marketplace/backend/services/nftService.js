@@ -13,12 +13,22 @@ const { ethers } = require('ethers');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
-const db = require('../database/db');
+const path = require('path');
+const db = require('../database/database');
 
 // Import contract ABIs (will be generated after compilation)
-const BookOwnershipABI = require('../contracts/abi/BookOwnership.json');
-const KnowledgeBadgesABI = require('../contracts/abi/KnowledgeBadges.json');
-const LibraryInheritanceABI = require('../contracts/abi/LibraryInheritance.json');
+// Use conditional loading to avoid errors before contracts are compiled
+let BookOwnershipABI, KnowledgeBadgesABI, LibraryInheritanceABI;
+try {
+    BookOwnershipABI = require('../contracts/abi/BookOwnership.json');
+    KnowledgeBadgesABI = require('../contracts/abi/KnowledgeBadges.json');
+    LibraryInheritanceABI = require('../contracts/abi/LibraryInheritance.json');
+} catch (error) {
+    console.warn('⚠️  NFT contract ABIs not found. Run `npx hardhat compile` to generate them.');
+    BookOwnershipABI = null;
+    KnowledgeBadgesABI = null;
+    LibraryInheritanceABI = null;
+}
 
 class NFTService {
     constructor() {

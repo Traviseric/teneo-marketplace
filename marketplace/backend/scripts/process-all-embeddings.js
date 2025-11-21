@@ -7,7 +7,7 @@
 
 require('dotenv').config();
 const aiDiscoveryService = require('../services/aiDiscoveryService');
-const db = require('../database/db');
+const db = require('../database/database');
 
 async function processAllEmbeddings() {
     console.log('\n🔄 Processing all embeddings...\n');

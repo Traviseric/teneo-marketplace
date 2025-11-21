@@ -1,0 +1,389 @@
+{
+  "courseId": "book-funnel-blueprint",
+  "title": "Book Funnel Blueprint",
+  "subtitle": "Build a Profitable Funnel for Your Teneo Book in 2 Hours",
+  "description": "The complete system for turning your Teneo book into a revenue-generating machine. No fluff, no theory—just fill-in-the-blanks templates that create your custom funnel as you learn.",
+  "instructor": {
+    "name": "Teneo Book Marketing Academy",
+    "bio": "Proven book marketing frameworks for the AI publishing era",
+    "avatar": "/courses/book-funnel-blueprint/assets/instructor.jpg"
+  },
+  "coverImage": "/courses/book-funnel-blueprint/assets/cover.jpg",
+  "duration": "2 hours",
+  "level": "Beginner to Intermediate",
+  "tags": ["Marketing", "Book Funnels", "Sales", "Teneo", "Publishing"],
+  "outcomes": [
+    "A complete, deployed funnel for your book (live URL)",
+    "5-12 day email sequence written and ready",
+    "Ad creative strategy with proven templates",
+    "Understanding of which funnel type maximizes YOUR book's revenue"
+  ],
+  "modules": [
+    {
+      "moduleId": "module-0",
+      "title": "Module 0: Foundation & Strategy",
+      "description": "Before you build, you need clarity. This quiz-driven module ensures you build the RIGHT funnel for YOUR book.",
+      "duration": "20 minutes",
+      "lessons": [
+        {
+          "lessonId": "m0-l1",
+          "title": "Welcome: Why Most Book Funnels Fail",
+          "type": "video",
+          "duration": "5 min",
+          "content": "lessons/m0-l1-welcome.md",
+          "videoUrl": "/courses/book-funnel-blueprint/videos/m0-l1-welcome.mp4"
+        },
+        {
+          "lessonId": "m0-l2",
+          "title": "The Teneo Advantage: From Speed to Systemization",
+          "type": "video",
+          "duration": "7 min",
+          "content": "lessons/m0-l2-teneo-advantage.md",
+          "videoUrl": "/courses/book-funnel-blueprint/videos/m0-l2-teneo.mp4"
+        },
+        {
+          "lessonId": "m0-l3",
+          "title": "Funnel Selection Quiz",
+          "type": "interactive",
+          "duration": "8 min",
+          "content": "lessons/m0-l3-quiz.md",
+          "quiz": {
+            "questions": [
+              {
+                "id": "q1",
+                "question": "What type of book are you marketing?",
+                "options": [
+                  {"value": "fiction", "label": "Fiction, memoir, or story-driven", "points": {"gated": 3, "bundle": 2}},
+                  {"value": "series", "label": "Series (2+ books in sequence)", "points": {"bundle": 3, "gated": 1}},
+                  {"value": "nonfiction", "label": "Nonfiction how-to or educational", "points": {"magnet": 3, "direct": 1}},
+                  {"value": "proven", "label": "Proven seller with social proof", "points": {"direct": 3, "magnet": 2}}
+                ]
+              },
+              {
+                "id": "q2",
+                "question": "What's your PRIMARY goal?",
+                "options": [
+                  {"value": "list", "label": "Build email list + sales", "points": {"gated": 3, "magnet": 2}},
+                  {"value": "aov", "label": "Maximize order value (AOV)", "points": {"bundle": 3}},
+                  {"value": "backend", "label": "Funnel to coaching/courses", "points": {"magnet": 3}},
+                  {"value": "sales", "label": "Immediate book sales", "points": {"direct": 3, "bundle": 2}}
+                ]
+              },
+              {
+                "id": "q3",
+                "question": "How many books do you have?",
+                "options": [
+                  {"value": "one", "label": "1 book (first launch)", "points": {"gated": 2, "magnet": 2}},
+                  {"value": "series", "label": "2-3 books (series)", "points": {"bundle": 3}},
+                  {"value": "multiple", "label": "3+ unrelated books", "points": {"magnet": 2, "direct": 2}},
+                  {"value": "empire", "label": "10+ books (empire mode)", "points": {"direct": 3, "bundle": 2}}
+                ]
+              },
+              {
+                "id": "q4",
+                "question": "Do you have a backend offer (course, coaching, etc.)?",
+                "options": [
+                  {"value": "yes", "label": "Yes, ready to sell", "points": {"magnet": 3}},
+                  {"value": "soon", "label": "Creating one soon", "points": {"magnet": 2, "gated": 1}},
+                  {"value": "no", "label": "No, book is the product", "points": {"gated": 2, "bundle": 2, "direct": 2}}
+                ]
+              },
+              {
+                "id": "q5",
+                "question": "What's your technical comfort level?",
+                "options": [
+                  {"value": "low", "label": "Keep it simple", "points": {"gated": 2, "direct": 2}},
+                  {"value": "medium", "label": "Can handle some complexity", "points": {"magnet": 2}},
+                  {"value": "high", "label": "Bring on the automation", "points": {"bundle": 2, "magnet": 1}}
+                ]
+              }
+            ],
+            "results": {
+              "gated": {
+                "title": "Gated Sneak-Peak Funnel",
+                "description": "Perfect for your book! Lead with emotion, build your list, then sell.",
+                "nextModule": "module-1"
+              },
+              "bundle": {
+                "title": "Bundle Maximizer Funnel",
+                "description": "Your series needs this! Maximize order value with strategic upsells.",
+                "nextModule": "module-2"
+              },
+              "magnet": {
+                "title": "Reader Magnet Funnel",
+                "description": "Expert positioning! Your book feeds your backend offers.",
+                "nextModule": "module-3"
+              },
+              "direct": {
+                "title": "Direct-to-Sale Funnel",
+                "description": "You've got proof! Skip nurture, sell directly.",
+                "nextModule": "module-4"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "moduleId": "module-1",
+      "title": "Module 1: The Gated Sneak-Peak Funnel",
+      "description": "Fiction, memoirs, emotional reads. Build your list while selling books.",
+      "duration": "45 minutes",
+      "funnelType": "book-sales-page",
+      "lessons": [
+        {
+          "lessonId": "m1-l1",
+          "title": "When to Use This Funnel",
+          "type": "video",
+          "duration": "5 min",
+          "content": "lessons/m1-l1-overview.md"
+        },
+        {
+          "lessonId": "m1-l2",
+          "title": "Ad Strategy: Emotional Hooks",
+          "type": "video+action",
+          "duration": "10 min",
+          "content": "lessons/m1-l2-ads.md",
+          "action": {
+            "type": "open-funnel-builder",
+            "fields": ["AD_HOOK", "AD_CONTEXT"],
+            "template": "book-sales-page"
+          }
+        },
+        {
+          "lessonId": "m1-l3",
+          "title": "Landing Page: The Perfect Headline",
+          "type": "video+action",
+          "duration": "8 min",
+          "content": "lessons/m1-l3-headline.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["HERO_HEADLINE", "HERO_SUBHEADLINE"]
+          }
+        },
+        {
+          "lessonId": "m1-l4",
+          "title": "The Free Chapter That Converts",
+          "type": "video+action",
+          "duration": "7 min",
+          "content": "lessons/m1-l4-free-chapter.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["FREE_CHAPTER_TEASER", "BENEFIT_1_TITLE", "BENEFIT_1_DESC"]
+          }
+        },
+        {
+          "lessonId": "m1-l5",
+          "title": "Thank You Page Optimization",
+          "type": "video+action",
+          "duration": "5 min",
+          "content": "lessons/m1-l5-thankyou.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["THANKYOU_HEADLINE", "UPSELL_TEXT"]
+          }
+        },
+        {
+          "lessonId": "m1-l6",
+          "title": "The 5-Day Email Sequence",
+          "type": "video+action",
+          "duration": "10 min",
+          "content": "lessons/m1-l6-emails.md",
+          "action": {
+            "type": "download-template",
+            "template": "5-day-email-sequence.txt"
+          }
+        }
+      ]
+    },
+    {
+      "moduleId": "module-2",
+      "title": "Module 2: The Bundle Maximizer Funnel",
+      "description": "Series fiction or complementary books. Maximize average order value.",
+      "duration": "50 minutes",
+      "funnelType": "bundle-maximizer",
+      "lessons": [
+        {
+          "lessonId": "m2-l1",
+          "title": "The Bundle Psychology",
+          "type": "video",
+          "duration": "6 min",
+          "content": "lessons/m2-l1-psychology.md"
+        },
+        {
+          "lessonId": "m2-l2",
+          "title": "Ad Strategy: Series Positioning",
+          "type": "video+action",
+          "duration": "10 min",
+          "content": "lessons/m2-l2-series-ads.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["SERIES_NAME", "BOOK_1_TITLE", "BOOK_2_TITLE", "BOOK_3_TITLE"]
+          }
+        },
+        {
+          "lessonId": "m2-l3",
+          "title": "The Upsell Ladder",
+          "type": "video+action",
+          "duration": "12 min",
+          "content": "lessons/m2-l3-upsells.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["ORDER_BUMP_TEXT", "UPSELL_1_HEADLINE", "DOWNSELL_TEXT"]
+          }
+        },
+        {
+          "lessonId": "m2-l4",
+          "title": "Bundle Pricing Strategy",
+          "type": "video+action",
+          "duration": "8 min",
+          "content": "lessons/m2-l4-pricing.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["BOOK_PRICE", "BUNDLE_PRICE", "SAVINGS_PERCENTAGE"]
+          }
+        },
+        {
+          "lessonId": "m2-l5",
+          "title": "The Series Nurture Sequence",
+          "type": "video+action",
+          "duration": "14 min",
+          "content": "lessons/m2-l5-series-emails.md",
+          "action": {
+            "type": "download-template",
+            "template": "series-email-sequence.txt"
+          }
+        }
+      ]
+    },
+    {
+      "moduleId": "module-3",
+      "title": "Module 3: The Reader Magnet Funnel",
+      "description": "Nonfiction experts. Your book is the lead magnet for high-ticket offers.",
+      "duration": "55 minutes",
+      "funnelType": "reader-magnet",
+      "lessons": [
+        {
+          "lessonId": "m3-l1",
+          "title": "The Expert Positioning Framework",
+          "type": "video",
+          "duration": "7 min",
+          "content": "lessons/m3-l1-positioning.md"
+        },
+        {
+          "lessonId": "m3-l2",
+          "title": "Solution-Focused Ad Strategy",
+          "type": "video+action",
+          "duration": "12 min",
+          "content": "lessons/m3-l2-solution-ads.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["SPECIFIC_PROBLEM", "SPECIFIC_SOLUTION", "TIMEFRAME"]
+          }
+        },
+        {
+          "lessonId": "m3-l3",
+          "title": "The Quick Win Lead Magnet",
+          "type": "video+action",
+          "duration": "10 min",
+          "content": "lessons/m3-l3-lead-magnet.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["LEAD_MAGNET_TITLE", "QUICK_WIN_1", "QUICK_WIN_2"]
+          }
+        },
+        {
+          "lessonId": "m3-l4",
+          "title": "Credibility Machine Landing Page",
+          "type": "video+action",
+          "duration": "10 min",
+          "content": "lessons/m3-l4-credibility.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["CREDENTIAL_1", "RESULT_PROOF", "FRAMEWORK_NAME"]
+          }
+        },
+        {
+          "lessonId": "m3-l5",
+          "title": "The 7-12 Day Expert Sequence",
+          "type": "video+action",
+          "duration": "16 min",
+          "content": "lessons/m3-l5-expert-emails.md",
+          "action": {
+            "type": "download-template",
+            "template": "expert-email-sequence.txt"
+          }
+        }
+      ]
+    },
+    {
+      "moduleId": "module-4",
+      "title": "Module 4: The Direct-to-Sale Funnel",
+      "description": "Proven books with strong social proof. Skip nurture, sell immediately.",
+      "duration": "40 minutes",
+      "funnelType": "direct-sale",
+      "lessons": [
+        {
+          "lessonId": "m4-l1",
+          "title": "When This Funnel Works (And When It Doesn't)",
+          "type": "video",
+          "duration": "5 min",
+          "content": "lessons/m4-l1-when-to-use.md"
+        },
+        {
+          "lessonId": "m4-l2",
+          "title": "The Sales Page That Converts",
+          "type": "video+action",
+          "duration": "15 min",
+          "content": "lessons/m4-l2-sales-page.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["HEADLINE_FORMULA", "PAIN_POINT_1", "PAIN_POINT_2", "PAIN_POINT_3"]
+          }
+        },
+        {
+          "lessonId": "m4-l3",
+          "title": "Making 'Fluffy' Concepts Tangible",
+          "type": "video+action",
+          "duration": "8 min",
+          "content": "lessons/m4-l3-tangible.md",
+          "action": {
+            "type": "fill-field",
+            "fields": ["METHODOLOGY_NAME", "STEP_1", "STEP_2", "STEP_3"]
+          }
+        },
+        {
+          "lessonId": "m4-l4",
+          "title": "The Retargeting Strategy",
+          "type": "video",
+          "duration": "12 min",
+          "content": "lessons/m4-l4-retargeting.md"
+        }
+      ]
+    }
+  ],
+  "bonuses": [
+    {
+      "title": "Email Sequence Templates",
+      "description": "Copy-paste email sequences for all 4 funnel types",
+      "downloadUrl": "/courses/book-funnel-blueprint/downloads/email-templates.zip"
+    },
+    {
+      "title": "Ad Creative Swipe File",
+      "description": "50+ proven ad creative templates",
+      "downloadUrl": "/courses/book-funnel-blueprint/downloads/ad-swipes.pdf"
+    },
+    {
+      "title": "Funnel Analytics Dashboard",
+      "description": "Google Sheets template for tracking all metrics",
+      "downloadUrl": "/courses/book-funnel-blueprint/downloads/analytics-template.xlsx"
+    }
+  ],
+  "settings": {
+    "funnelBuilderIntegration": true,
+    "autoSaveProgress": true,
+    "allowSkipLessons": false,
+    "certificateOnCompletion": true,
+    "redirectAfterCompletion": "/funnel-builder?deployed=true"
+  }
+}

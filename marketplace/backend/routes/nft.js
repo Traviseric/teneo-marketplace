@@ -11,7 +11,7 @@
 const express = require('express');
 const router = express.Router();
 const nftService = require('../services/nftService');
-const db = require('../database/db');
+const db = require('../database/database');
 
 /**
  * POST /api/nft/mint

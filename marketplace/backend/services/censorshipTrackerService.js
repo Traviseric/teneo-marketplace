@@ -8,7 +8,7 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 const crypto = require('crypto');
-const db = require('../database/db');
+const db = require('../database/database');
 const aiDiscoveryService = require('./aiDiscoveryService');
 
 class CensorshipTrackerService {

@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const censorshipTracker = require('../services/censorshipTrackerService');
-const db = require('../database/db');
+const db = require('../database/database');
 
 /**
  * GET /api/censorship/recent-bans

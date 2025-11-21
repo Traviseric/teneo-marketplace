@@ -1,6 +1,8 @@
-# 📚 Teneo Marketplace - Censorship-Resistant Book Network
+# 📚 Teneo Marketplace - The All-in-One Platform for Free Thinkers
 
-**The first dual-mode, federated marketplace designed to be uncensorable. Operates with standard payments (Stripe) for ease of use, automatically falls back to crypto + offshore infrastructure when attacked, and enables anyone to deploy network nodes for true distributed resilience.**
+**Website. Store. Courses. Email Marketing. All with built-in censorship resistance.**
+
+The only all-in-one platform designed for creators who value freedom. Like Podia, but with automatic failover to crypto payments + offshore hosting when you get deplatformed. Open source, federated, and impossible to shut down.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
@@ -33,24 +35,81 @@
 
 ---
 
+## 🎯 **All-in-One Platform**
+
+Run your entire business from one place:
+
+### 📖 **Website Builder**
+- Professional templates with AI customization
+- Multi-brand support (run multiple stores from one install)
+- Template system with variables
+- Mobile-responsive, dark mode ready
+
+### 🛒 **Online Store**
+- Digital products (PDFs, ePubs, audiobooks)
+- Print-on-demand (Lulu integration)
+- Stripe + Crypto payments (Bitcoin, Lightning, Monero)
+- Cart, checkout, order management
+
+### 🎓 **Course Platform**
+- Video, audio, text, quiz support
+- Drip content & cohort-based delivery
+- Progress tracking & certificates
+- Discussion forums & Q&A
+- **[Full course platform docs →](./COURSES_PLATFORM_IMPLEMENTATION.md)**
+
+### 📧 **Email Marketing**
+- List management & segmentation
+- Campaign builder with templates
+- Marketing automation (welcome series, cart abandonment)
+- Open/click tracking, revenue attribution
+- **[Email marketing guide →](./EMAIL_MARKETING_IMPLEMENTATION.md)**
+
+### 📊 **Analytics**
+- Sales tracking & revenue reports
+- Email campaign performance
+- Student progress & engagement
+- Funnel conversion analysis
+
+### 🤖 **AI-Powered Features**
+- **AI Website Designer**: Natural language customization ("make it feel more premium")
+- **AI Discovery Engine**: Semantic search across your catalog
+- **Content Generation**: Email copy, product descriptions, blog posts (planned)
+
+---
+
 ## ⚡ **What Makes This Different**
 
-### 🔄 Dual-Mode Operation
+### 🛡️ **Censorship Resistance** (Unique to Us)
+
+**Dual-Mode Operation:**
 - **PRIMARY MODE**: Stripe checkout, mainstream hosting, easy UX
 - **FALLBACK MODE**: Crypto payments, offshore VPS, Tor backup
 - **AUTOMATIC FAILOVER**: Switches modes when primary is taken down
 
-### 🌐 Federated Network
-- **OPEN SOURCE**: Anyone can deploy their own marketplace node
-- **CROSS-NODE DISCOVERY**: Find books across the entire network
-- **REVENUE SHARING**: Nodes earn 10-20% referral fees
-- **DISTRIBUTED**: Can't shut down a network
+**When Podia/Shopify/Gumroad ban you → You're done.**
+**When Stripe bans you on Teneo → Automatically switches to Bitcoin. You stay online.**
 
-### 🛡️ Censorship Resistant
-- **Offshore Hosting**: Iceland, Romania, Netherlands (DMCA-resistant)
-- **Crypto Payments**: Bitcoin, Lightning, Monero (no payment processor)
-- **Tor Hidden Service**: .onion backup (survives domain seizure)
-- **IPFS Storage**: Permanent, distributed content hosting
+### 🌐 **Federated Network** (Unique to Us)
+- **OPEN SOURCE**: Anyone can deploy their own marketplace node
+- **CROSS-NODE DISCOVERY**: Find products across the entire network
+- **REVENUE SHARING**: Nodes earn 10-20% referral fees
+- **DISTRIBUTED**: Can't shut down a network of 100+ independent nodes
+
+### 💰 **Pricing That Actually Makes Sense**
+
+| Feature | Podia | Teneo Marketplace |
+|---------|-------|-------------------|
+| **Price** | $39/month | **FREE** (self-hosted) or $29/month (hosted) |
+| Website Builder | ✅ | ✅ + AI customization |
+| Online Store | ✅ | ✅ + Crypto payments |
+| Email Marketing | ✅ | ✅ |
+| Courses | ✅ | ✅ |
+| **Censorship Resistance** | ❌ | ✅ |
+| **Federation** | ❌ | ✅ |
+| **Open Source** | ❌ | ✅ |
+
+**[See complete feature comparison →](./PODIA_FEATURE_PARITY.md)**
 
 **→ Read the complete architecture: [DUAL_MODE_ARCHITECTURE.md](./docs/core/DUAL_MODE_ARCHITECTURE.md)**
 
@@ -70,29 +129,30 @@
 
 ## 🎯 **Use Cases**
 
-### For Publishers
+### 💼 **Solo Creators & Course Creators**
+- **All-in-one platform**: Website, store, courses, email in one place
+- **No coding required**: AI customization, template system, visual editors
+- **Affordable**: Free (self-hosted) or $29/month (cheaper than Podia's $39)
+- **Own your platform**: No vendor lock-in, export everything
+
+### 📚 **Publishers & Authors**
 - **Amazon-Safe Books**: Track performance, analytics, community
 - **Censored Content**: Publish what Amazon won't (institutional crime exposure, systemic critiques)
 - **Crypto Payments**: Accept Bitcoin/Monero when Stripe bans you
 - **Multiple Channels**: Amazon + backend marketplace simultaneously
+- **Book → Course**: Turn your book into a course automatically (AI-powered)
 
-### For Network Operators
+### 🌐 **Network Operators**
 - **Deploy Your Own Node**: One-click deployment, earn referral fees
-- **Join Federation**: Cross-promote books, share revenue (10-20%)
+- **Join Federation**: Cross-promote products, share revenue (10-20%)
 - **Build Community**: Your brand, your audience, network benefits
 - **Censorship Insurance**: If your node goes down, network continues
 
-### For Readers
-- **Uncensored Access**: Find books mainstream platforms ban
-- **Network Discovery**: Browse books across all federated nodes
-- **Multiple Payment Options**: Card, Bitcoin, Lightning, Monero
-- **Permanent Access**: IPFS ensures books never disappear
-
-### For Developers
-- **📖 7,700+ Lines of Production Code**: Auth system, payments, federation
+### 👨‍💻 **Developers**
+- **📖 10,000+ Lines of Production Code**: Auth system, payments, federation, courses, email
 - **🏗️ Clean Architecture**: Provider abstraction, pluggable auth, modular design
 - **🔐 Security First**: Complete hardening guide, audit logging, CSRF protection
-- **📚 Comprehensive Docs**: Setup guides, API docs, security checklists
+- **📚 Comprehensive Docs**: Setup guides, API docs, security checklists, implementation plans
 - **🧪 Battle-Tested**: SQLite + Stripe + OAuth 2.0 + crypto payments
 - **⚡ Deploy in Hours**: Complete `.env.example`, automated setup
 
