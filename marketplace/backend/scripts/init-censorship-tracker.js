@@ -9,7 +9,7 @@
 
 require('dotenv').config();
 const censorshipTracker = require('../services/censorshipTrackerService');
-const db = require('../database/db');
+const db = require('../database/database');
 const fs = require('fs').promises;
 const path = require('path');
 

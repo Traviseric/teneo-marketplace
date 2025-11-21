@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player - Teneo Marketplace</title>
+  <link rel="stylesheet" href="css/course-player.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="course-header">
+    <div class="header-left">
+      <h1 class="course-title" id="header-course-title">The Book Funnel Blueprint</h1>
+      <nav class="breadcrumb" id="breadcrumb">
+        <a href="/products">Products</a> /
+        <a href="/courses">Course</a> /
+        <span id="breadcrumb-section">Section</span> /
+        <span id="breadcrumb-lesson">Lesson</span>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="user-menu">
+        <button class="user-avatar" id="user-menu-btn" aria-label="User menu">
+          <img src="/assets/default-avatar.png" alt="User" id="user-avatar-img">
+        </button>
+        <div class="user-dropdown" id="user-dropdown">
+          <a href="/student/dashboard">My Courses</a>
+          <a href="/account">Account Settings</a>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="course-container">
+
+    <!-- Sidebar -->
+    <aside class="course-sidebar" id="course-sidebar">
+      <button class="sidebar-toggle-mobile" id="sidebar-toggle" aria-label="Toggle sidebar">
+        ☰
+      </button>
+
+      <div class="sidebar-header">
+        <div class="course-icon" id="course-icon">💰</div>
+        <h2 class="sidebar-course-title" id="sidebar-course-title">
+          The Book Funnel Blueprint
+        </h2>
+        <div class="course-subtitle" id="course-subtitle">
+          4 Genre-Specific Funnels
+        </div>
+      </div>
+
+      <!-- Progress Circle -->
+      <div class="progress-section">
+        <svg class="progress-circle" viewBox="0 0 36 36">
+          <path class="circle-bg"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#eee"
+            stroke-width="3.8"
+          />
+          <path class="circle-progress"
+            id="progress-path"
+            stroke-dasharray="7, 100"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#7C3AED"
+            stroke-width="2.8"
+            stroke-linecap="round"
+          />
+          <text x="18" y="20.35" class="progress-text" id="progress-fraction">1/14</text>
+        </svg>
+        <p class="progress-label">completed</p>
+      </div>
+
+      <!-- Table of Contents -->
+      <nav class="table-of-contents" id="toc">
+        <!-- Populated by JavaScript -->
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="course-content" id="course-content">
+
+      <!-- Lesson Header -->
+      <div class="lesson-header">
+        <h1 class="lesson-title" id="lesson-title">
+          The plug-and-play system for profitable author funnels
+        </h1>
+      </div>
+
+      <!-- Video Container -->
+      <div class="video-wrapper" id="video-wrapper">
+        <div class="video-container">
+          <video id="lesson-video" controls controlsList="nodownload">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-overlay" id="video-overlay">
+            <button class="play-button" id="play-button">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="38" fill="rgba(124, 58, 237, 0.9)" />
+                <polygon points="32,25 32,55 55,40" fill="white" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson Content -->
+      <div class="lesson-body" id="lesson-body">
+        <p>Welcome to The Book Funnel Blueprint — the plug-and-play system I used to sell over 50,000 books without a publisher.</p>
+
+        <p>This isn't a course. It's a system. You'll be launching your optimized book funnel in less than a week — with full confidence in what you're building and why it works.</p>
+
+        <h3>What You'll Need to Begin</h3>
+        <ul>
+          <li>Your own book online store and Amazon link</li>
+          <li>1-2 hours to review this guide</li>
+          <li>1-2 hours per day over the next 3-7 days to implement, build, and get ready for launch</li>
+          <li>To go live with ads, you will need a Meta ad account + Meta conversion pixel (dataset) installed throughout your funnel</li>
+        </ul>
+
+        <h3>How to Use This System</h3>
+        <ul>
+          <li>Start by choosing your funnel using the Funnel Selector Matrix in the next lesson</li>
+          <li>Use the included blueprints to map and build your funnel</li>
+          <li>Watch the Loom walkthroughs to see how I'd implement each step</li>
+          <li>Follow the 7-Day Roadmap for fast execution</li>
+        </ul>
+
+        <div class="lesson-note">
+          <strong>Don't aim for perfection!</strong> Aim for clarity and launch. Once your funnel is live and you're driving ad traffic, you will optimize based on data, not assumptions.
+        </div>
+
+        <h3>Your Immediate Goals</h3>
+        <p><strong>By the end of Day 1</strong> → You'll know <em>exactly</em> which funnel to use</p>
+        <p><strong>By the end of Day 2</strong> → You have a clear understanding of how your funnel will look and what elements you will need to build</p>
+        <p><strong>Day 3-6</strong> → BUILDING</p>
+        <p><strong>By the end of Day 7</strong> → You'll have a fully functional author funnel launched to cold traffic — and tracking real data</p>
+
+        <p class="lesson-closing">
+          <strong>Remember:</strong> You're not just launching a funnel. You're taking control of your book sales. Let's build it like a strategist.
+        </p>
+      </div>
+
+      <!-- Downloadable Resources (if any) -->
+      <div class="lesson-resources" id="lesson-resources" style="display: none;">
+        <h3>📥 Downloadable Resources</h3>
+        <ul id="resources-list">
+          <!-- Populated by JavaScript -->
+        </ul>
+      </div>
+
+      <!-- Lesson Navigation Footer -->
+      <div class="lesson-navigation">
+        <button class="nav-btn nav-prev" id="nav-prev" disabled>
+          <span class="nav-arrow">←</span>
+          <span class="nav-label">Previous</span>
+        </button>
+
+        <label class="completion-checkbox">
+          <input type="checkbox" id="mark-complete">
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Completed</span>
+        </label>
+
+        <button class="nav-btn nav-next" id="nav-next">
+          <span class="nav-label">Next Lesson</span>
+          <span class="nav-arrow">→</span>
+        </button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="js/course-player.js"></script>
+  <script src="js/course-progress.js"></script>
+  <script src="js/video-controls.js"></script>
+</body>
+</html>

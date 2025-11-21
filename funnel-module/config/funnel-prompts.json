@@ -1,0 +1,217 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-11-20",
+  "description": "AI prompts for Book Funnel Builder - helps users generate compelling copy",
+  "prompts": {
+    "BOOK_TITLE": {
+      "label": "Book Title",
+      "prompt": "Write a compelling book title for a non-fiction book about {{TOPIC}}.\n\nRequirements:\n- Clear and specific (not vague)\n- Benefit-driven (shows the transformation)\n- Memorable and unique\n- Under 10 words\n- Avoid clichés like \"Ultimate Guide\" or \"Secrets\"\n\nExamples of great titles:\n- \"Atomic Habits\" (clear + benefit)\n- \"The 4-Hour Workweek\" (specific + intriguing)\n- \"Never Split the Difference\" (unique angle)\n\nGenerate 3 options and explain why each works.",
+      "context": ["TOPIC"],
+      "outputFormat": "3 options with rationale"
+    },
+    "BOOK_SUBTITLE": {
+      "label": "Book Subtitle",
+      "prompt": "Write a compelling subtitle for the book \"{{BOOK_TITLE}}\".\n\nThe subtitle should:\n- Clarify what the book is about\n- Highlight the main benefit or transformation\n- Target the specific audience ({{TARGET_AUDIENCE}})\n- Be under 15 words\n- Work well with the title\n\nFormat: [Verb] + [Benefit/Outcome] + [for whom/what context]\n\nExamples:\n- \"Tiny Changes, Remarkable Results\" (Atomic Habits)\n- \"Escape 9-5, Live Anywhere, and Join the New Rich\" (4-Hour Workweek)\n\nGenerate 2-3 subtitle options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 subtitle options"
+    },
+    "AUTHOR_NAME": {
+      "label": "Author Name",
+      "prompt": "Suggest author pen name options for a book about {{TOPIC}}.\n\nConsider:\n- Professional and credible\n- Memorable\n- Appropriate for the niche\n- Can be real name or pen name\n\nProvide 3 options: 1 traditional, 1 authoritative, 1 memorable.",
+      "context": ["TOPIC"],
+      "outputFormat": "3 name options"
+    },
+    "AUTHOR_BIO": {
+      "label": "Author Bio",
+      "prompt": "Write a professional author bio for {{AUTHOR_NAME}}, author of \"{{BOOK_TITLE}}\".\n\nInclude:\n- Why they're qualified to write this book\n- Relevant credentials, experience, or expertise\n- Personal connection to the topic\n- Builds trust and authority\n- 2-3 sentences (50-75 words)\n\nTone: Professional but approachable\n\nDon't include:\n- Excessive credentials (keep it relevant)\n- Generic phrases like \"passionate about helping people\"\n- Anything that sounds fake or exaggerated",
+      "context": ["AUTHOR_NAME", "BOOK_TITLE"],
+      "outputFormat": "2-3 sentence bio"
+    },
+    "BENEFIT_1_TITLE": {
+      "label": "Benefit 1 Title",
+      "prompt": "Write a compelling benefit headline for \"{{BOOK_TITLE}}\".\n\nThis is the #1 main benefit - the biggest transformation or problem solved.\n\nRequirements:\n- Focus on the outcome, not the method\n- Use active, powerful language\n- Be specific (not generic)\n- Under 10 words\n- Make it benefit-driven, NOT feature-driven\n\nBAD: \"Learn 50 time management techniques\" (feature)\nGOOD: \"Reclaim 10 Hours Every Week\" (benefit)\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 headline options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "3 benefit headlines"
+    },
+    "BENEFIT_1_TEXT": {
+      "label": "Benefit 1 Description",
+      "prompt": "Write a brief description (2-3 sentences) for the benefit: \"{{BENEFIT_1_TITLE}}\".\n\nExplain:\n- What transformation the reader experiences\n- Why this matters to {{TARGET_AUDIENCE}}\n- The emotional impact (how they'll feel)\n\nFormat:\n1. State the problem/pain point\n2. Introduce the transformation\n3. Paint the \"after\" picture\n\nTone: Conversational, encouraging, focused on them (not you)\n\nExample:\n\"Tired of working weekends and missing family time? This book shows you how to eliminate time-wasting tasks and focus only on what moves the needle. Imagine leaving work at 5 PM every day with everything done—and actually enjoying your evenings.\"",
+      "context": ["BENEFIT_1_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 sentence description"
+    },
+    "BENEFIT_2_TITLE": {
+      "label": "Benefit 2 Title",
+      "prompt": "Write the second major benefit headline for \"{{BOOK_TITLE}}\".\n\nThis should be a DIFFERENT benefit from \"{{BENEFIT_1_TITLE}}\".\n\nRequirements:\n- Address a different pain point or desire\n- Still focused on outcomes\n- Complementary to benefit #1\n- Under 10 words\n- Specific and tangible\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "BENEFIT_1_TITLE"],
+      "outputFormat": "3 headline options"
+    },
+    "BENEFIT_2_TEXT": {
+      "label": "Benefit 2 Description",
+      "prompt": "Write a 2-3 sentence description for the benefit: \"{{BENEFIT_2_TITLE}}\".\n\nFollow the same format as benefit 1:\n1. Problem/pain point (different from benefit 1)\n2. The transformation\n3. The \"after\" state\n\nMake it complementary to {{BENEFIT_1_TITLE}}, not repetitive.\n\nTarget audience: {{TARGET_AUDIENCE}}",
+      "context": ["BENEFIT_2_TITLE", "TARGET_AUDIENCE", "BENEFIT_1_TITLE"],
+      "outputFormat": "2-3 sentence description"
+    },
+    "BENEFIT_3_TITLE": {
+      "label": "Benefit 3 Title",
+      "prompt": "Write the third major benefit headline for \"{{BOOK_TITLE}}\".\n\nDifferent from:\n- {{BENEFIT_1_TITLE}}\n- {{BENEFIT_2_TITLE}}\n\nRequirements:\n- Address a third pain point/desire\n- Under 10 words\n- Outcome-focused\n- Specific\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "BENEFIT_1_TITLE", "BENEFIT_2_TITLE"],
+      "outputFormat": "3 headline options"
+    },
+    "BENEFIT_3_TEXT": {
+      "label": "Benefit 3 Description",
+      "prompt": "Write a 2-3 sentence description for: \"{{BENEFIT_3_TITLE}}\".\n\nSame format: Problem → Transformation → After state\n\nDifferent from benefits 1 and 2.\n\nTarget audience: {{TARGET_AUDIENCE}}",
+      "context": ["BENEFIT_3_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 sentence description"
+    },
+    "TESTIMONIAL_1_TEXT": {
+      "label": "Testimonial 1",
+      "prompt": "Write a realistic customer testimonial for \"{{BOOK_TITLE}}\".\n\nRequirements:\n- Sound like a real person (not marketing copy)\n- Focus on a specific transformation or result\n- Include before/after context\n- Mention credibility (their situation/background)\n- 2-3 sentences (40-60 words)\n- Enthusiastic but believable\n\nStructure:\n- What they struggled with before\n- What happened after reading\n- Specific result or emotion\n\nBAD: \"This book changed my life! 5 stars!\"\nGOOD: \"I was drowning in student loan debt ($87K) with no plan. After following the strategies in Chapter 3, I paid off $12K in 4 months. The negotiation script alone saved me $200/month.\"\n\nTarget audience: {{TARGET_AUDIENCE}}\nGenerate 2 testimonial options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2 testimonial options"
+    },
+    "TESTIMONIAL_1_NAME": {
+      "label": "Testimonial 1 Name",
+      "prompt": "Suggest a realistic name for a testimonial giver.\n\nConsider:\n- Appropriate for {{TARGET_AUDIENCE}}\n- Sounds believable\n- Include first name + last initial OR first name + credential\n\nExamples:\n- \"Sarah M.\"\n- \"David Chen, CPA\"\n- \"Jennifer T., Small Business Owner\"\n\nProvide 3 options.",
+      "context": ["TARGET_AUDIENCE"],
+      "outputFormat": "3 name options"
+    },
+    "TESTIMONIAL_2_TEXT": {
+      "label": "Testimonial 2",
+      "prompt": "Write a second customer testimonial for \"{{BOOK_TITLE}}\".\n\nThis should highlight a DIFFERENT benefit or result than {{TESTIMONIAL_1_TEXT}}.\n\nSame requirements:\n- Realistic voice\n- Specific transformation\n- Before/after context\n- 2-3 sentences\n- Believable enthusiasm\n\nTarget audience: {{TARGET_AUDIENCE}}\nGenerate 2 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "TESTIMONIAL_1_TEXT"],
+      "outputFormat": "2 testimonial options"
+    },
+    "TESTIMONIAL_2_NAME": {
+      "label": "Testimonial 2 Name",
+      "prompt": "Suggest a realistic name for a second testimonial giver.\n\nDifferent demographic/background from {{TESTIMONIAL_1_NAME}}.\n\nProvide 3 options.",
+      "context": ["TARGET_AUDIENCE", "TESTIMONIAL_1_NAME"],
+      "outputFormat": "3 name options"
+    },
+    "TESTIMONIAL_3_TEXT": {
+      "label": "Testimonial 3",
+      "prompt": "Write a third customer testimonial for \"{{BOOK_TITLE}}\".\n\nHighlight a DIFFERENT aspect than testimonials 1 and 2.\n\nPossible angles:\n- Ease of implementation\n- Speed of results\n- Unexpected benefit\n- Comparison to other solutions\n\nSame format: Specific, believable, 2-3 sentences.\n\nTarget audience: {{TARGET_AUDIENCE}}\nGenerate 2 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2 testimonial options"
+    },
+    "TESTIMONIAL_3_NAME": {
+      "label": "Testimonial 3 Name",
+      "prompt": "Suggest a realistic name for a third testimonial giver.\n\nVary the demographic from testimonials 1 and 2.\n\nProvide 3 options.",
+      "context": ["TARGET_AUDIENCE"],
+      "outputFormat": "3 name options"
+    },
+    "FAQ_1_Q": {
+      "label": "FAQ Question 1",
+      "prompt": "Write the most common objection or question someone would have about buying \"{{BOOK_TITLE}}\".\n\nCommon objections:\n- \"Will this work for me?\"\n- \"How is this different from other books?\"\n- \"How long does it take?\"\n- \"Do I need special skills/tools?\"\n- \"Is this really worth ${{PRICE}}?\"\n\nMake it specific to {{TARGET_AUDIENCE}}.\n\nFormat as a direct question (5-12 words).\n\nGenerate 3 FAQ question options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "PRICE"],
+      "outputFormat": "3 question options"
+    },
+    "FAQ_1_A": {
+      "label": "FAQ Answer 1",
+      "prompt": "Write a clear, reassuring answer to: \"{{FAQ_1_Q}}\"\n\nRequirements:\n- Directly address the concern\n- Provide specific reassurance or proof\n- Build trust (don't be defensive)\n- 2-3 sentences (40-60 words)\n- End with confidence\n\nTone: Helpful, understanding, confident\n\nStructure:\n1. Acknowledge the concern\n2. Provide the answer/reassurance\n3. Add credibility (proof, guarantee, etc.)\n\nExample:\n\"Great question. This book is specifically designed for {{TARGET_AUDIENCE}}, not experts. Every strategy includes step-by-step instructions and real examples. Plus, you're covered by our 60-day money-back guarantee—if it doesn't work for you, you get a full refund.\"",
+      "context": ["FAQ_1_Q", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 sentence answer"
+    },
+    "FAQ_2_Q": {
+      "label": "FAQ Question 2",
+      "prompt": "Write the second most common question about \"{{BOOK_TITLE}}\".\n\nDifferent from: {{FAQ_1_Q}}\n\nAddress a different concern or objection.\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "FAQ_1_Q"],
+      "outputFormat": "3 question options"
+    },
+    "FAQ_2_A": {
+      "label": "FAQ Answer 2",
+      "prompt": "Write a clear answer to: \"{{FAQ_2_Q}}\"\n\nSame format as FAQ 1:\n1. Acknowledge\n2. Answer\n3. Add credibility\n\n2-3 sentences, helpful tone.",
+      "context": ["FAQ_2_Q", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 sentence answer"
+    },
+    "FAQ_3_Q": {
+      "label": "FAQ Question 3",
+      "prompt": "Write the third common question about \"{{BOOK_TITLE}}\".\n\nDifferent from:\n- {{FAQ_1_Q}}\n- {{FAQ_2_Q}}\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "FAQ_1_Q", "FAQ_2_Q"],
+      "outputFormat": "3 question options"
+    },
+    "FAQ_3_A": {
+      "label": "FAQ Answer 3",
+      "prompt": "Write a clear answer to: \"{{FAQ_3_Q}}\"\n\nSame helpful, reassuring format.\n\n2-3 sentences.",
+      "context": ["FAQ_3_Q", "TARGET_AUDIENCE"],
+      "outputFormat": "2-3 sentence answer"
+    },
+    "GUARANTEE_TEXT": {
+      "label": "Money-Back Guarantee",
+      "prompt": "Write a strong, risk-reversing money-back guarantee for \"{{BOOK_TITLE}}\".\n\nRequirements:\n- Make it generous (30, 60, or 90 days)\n- Remove all risk from buyer\n- Be specific about the process\n- Sound confident (not desperate)\n- 2-4 sentences (60-100 words)\n\nStructure:\n1. State the guarantee period\n2. Make it easy (how to get refund)\n3. Show confidence in the product\n4. Remove any friction\n\nBAD: \"If you're not satisfied, we'll refund you.\"\nGOOD: \"If you don't see results in the first 60 days, just email us and we'll refund every penny—no questions asked. We're this confident because we know these strategies work. You risk nothing.\"\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 2 guarantee options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "2 guarantee options"
+    },
+    "CTA_TEXT": {
+      "label": "Call-to-Action Button",
+      "prompt": "Write compelling call-to-action button text for buying \"{{BOOK_TITLE}}\".\n\nRequirements:\n- Action-oriented (starts with verb)\n- Benefit-focused (not just \"Buy Now\")\n- Creates urgency or desire\n- Under 5 words\n- Specific to digital/instant delivery\n\nBAD: \"Click Here\" or \"Buy Now\"\nGOOD Examples:\n- \"Get Instant Access\"\n- \"Download Now - ${{PRICE}}\"\n- \"Start Reading Today\"\n- \"Yes, Send Me the Book\"\n- \"Get My Copy Now\"\n\nGenerate 5 CTA button text options.",
+      "context": ["BOOK_TITLE", "PRICE"],
+      "outputFormat": "5 CTA options"
+    },
+    "HERO_HEADLINE": {
+      "label": "Hero Section Headline",
+      "prompt": "Write a powerful hero headline for the sales page of \"{{BOOK_TITLE}}\".\n\nThis is the first thing visitors see. It must:\n- Hook attention immediately\n- Clearly state the main benefit\n- Speak directly to {{TARGET_AUDIENCE}}\n- Create curiosity or desire\n- Under 15 words\n\nFormulas:\n1. \"How to [achieve desire] without [pain point]\"\n2. \"[Number] [thing] to [achieve benefit]\"\n3. \"[Achieve desire] in [timeframe] (even if [objection])\"\n4. \"Stop [pain]. Start [gain].\"\n\nExamples:\n- \"How to Pay Off $50K in Student Loans in 2 Years\"\n- \"Stop Working Weekends. Start Living Again.\"\n- \"Discover the IRS Loopholes That Save $3,000+ Per Year\"\n\nGenerate 3 headline options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "3 headline options"
+    },
+    "HERO_SUBHEADLINE": {
+      "label": "Hero Section Subheadline",
+      "prompt": "Write a supporting subheadline that goes under: \"{{HERO_HEADLINE}}\"\n\nThe subheadline should:\n- Expand on the main headline\n- Add credibility or proof\n- Create more desire\n- Address skepticism\n- Under 25 words\n\nFormulas:\n1. \"[Proof/credibility] + [time frame] + [without common objection]\"\n2. \"The [adjective] guide to [outcome] for [audience]\"\n\nExamples:\n- \"Used by 10,000+ graduates to eliminate debt faster—without sacrificing your lifestyle\"\n- \"The proven 6-step system that works even if you have bad credit and zero savings\"\n\nGenerate 2 subheadline options.",
+      "context": ["HERO_HEADLINE", "TARGET_AUDIENCE"],
+      "outputFormat": "2 subheadline options"
+    },
+    "PRICE": {
+      "label": "Book Price",
+      "prompt": "Suggest pricing for \"{{BOOK_TITLE}}\" targeting {{TARGET_AUDIENCE}}.\n\nConsider:\n- Typical ebook pricing: $7-$27\n- Complexity and value of content\n- Target audience's budget\n- Positioning (premium vs accessible)\n\nProvide 3 price points:\n1. Low (impulse buy): $7-$9\n2. Mid (standard): $17-$19\n3. Premium (high value): $27-$47\n\nFor each, explain the positioning strategy.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "3 price options with strategy"
+    },
+    "TARGET_AUDIENCE": {
+      "label": "Target Audience",
+      "prompt": "Define the ideal target audience for \"{{BOOK_TITLE}}\".\n\nBe specific:\n- Demographics (age, occupation, income)\n- Psychographics (goals, fears, frustrations)\n- Current situation (where they are now)\n- Desired situation (where they want to be)\n\nFormat:\n\"[Occupation/role] who [current struggle] and want to [desired outcome] but [obstacle]\"\n\nExample:\n\"Millennial professionals drowning in student debt who want financial freedom but don't know where to start\"\n\nGenerate 3 audience definitions.",
+      "context": ["BOOK_TITLE"],
+      "outputFormat": "3 audience definitions"
+    },
+    "WHAT_YOU_LEARN_1": {
+      "label": "What You'll Learn #1",
+      "prompt": "Write the first item in a \"What You'll Learn\" list for \"{{BOOK_TITLE}}\".\n\nFormat: \"How to [specific outcome]\"\n\nRequirements:\n- Specific and tangible\n- Outcome-focused\n- Achievable\n- Under 12 words\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+      "outputFormat": "3 learning outcome options"
+    },
+    "WHAT_YOU_LEARN_2": {
+      "label": "What You'll Learn #2",
+      "prompt": "Write the second learning outcome for \"{{BOOK_TITLE}}\".\n\nDifferent from: {{WHAT_YOU_LEARN_1}}\n\nFormat: \"How to [specific outcome]\"\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "WHAT_YOU_LEARN_1"],
+      "outputFormat": "3 learning outcome options"
+    },
+    "WHAT_YOU_LEARN_3": {
+      "label": "What You'll Learn #3",
+      "prompt": "Write the third learning outcome for \"{{BOOK_TITLE}}\".\n\nDifferent from:\n- {{WHAT_YOU_LEARN_1}}\n- {{WHAT_YOU_LEARN_2}}\n\nFormat: \"How to [specific outcome]\"\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nGenerate 3 options.",
+      "context": ["BOOK_TITLE", "TARGET_AUDIENCE", "WHAT_YOU_LEARN_1", "WHAT_YOU_LEARN_2"],
+      "outputFormat": "3 learning outcome options"
+    }
+  },
+  "promptTemplates": {
+    "default": "Write compelling copy for {{VARIABLE_LABEL}} for the book \"{{BOOK_TITLE}}\".\n\nTarget audience: {{TARGET_AUDIENCE}}\n\nRequirements:\n- Specific and concrete\n- Benefit-driven\n- Authentic voice\n- Appropriate length\n\nProvide 2-3 options.",
+    "withContext": "Based on what you know about:\n- Book: {{BOOK_TITLE}}\n- Audience: {{TARGET_AUDIENCE}}\n- Previous context: {{CONTEXT}}\n\nWrite {{VARIABLE_LABEL}}:\n\n{{SPECIFIC_REQUIREMENTS}}",
+    "refinement": "Here's the current {{VARIABLE_LABEL}}:\n\n{{CURRENT_VALUE}}\n\nImprove it by:\n- {{IMPROVEMENT_1}}\n- {{IMPROVEMENT_2}}\n- {{IMPROVEMENT_3}}\n\nProvide 2 improved versions."
+  },
+  "contextRules": {
+    "always_include": ["BOOK_TITLE", "TARGET_AUDIENCE"],
+    "conditional_context": {
+      "benefits": ["BENEFIT_1_TITLE", "BENEFIT_2_TITLE", "BENEFIT_3_TITLE"],
+      "testimonials": ["TESTIMONIAL_1_TEXT", "TESTIMONIAL_2_TEXT"],
+      "faqs": ["FAQ_1_Q", "FAQ_2_Q", "FAQ_3_Q"]
+    },
+    "variable_replacement": {
+      "{{BOOK_TITLE}}": "from user input or 'Your Book'",
+      "{{TARGET_AUDIENCE}}": "from user input or 'readers'",
+      "{{TOPIC}}": "inferred from book title or ask user",
+      "{{PRICE}}": "from user input or '19.99'"
+    }
+  },
+  "usageInstructions": {
+    "forUsers": "Click the 💡 AI Prompt button next to any field. Copy the prompt and paste it into ChatGPT, Claude, or any AI. Copy the result and paste it back into the field.",
+    "forDevelopers": "Load this JSON, replace {{VARIABLES}} with actual values, display in modal. User can copy prompt or use auto-generate API.",
+    "autoGenerate": "For auto-generate feature, send the processed prompt to Claude API and fill the field automatically."
+  }
+}

@@ -9,17 +9,28 @@
  */
 
 const OpenAI = require('openai');
-const db = require('../database/db');
+const db = require('../database/database');
 
 class AIDiscoveryService {
     constructor() {
-        this.openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
-        });
-
-        // Use cheaper, faster embedding model (3x cheaper than ada-002)
+        this.openai = null;
         this.embeddingModel = 'text-embedding-3-small';
         this.embeddingDimensions = 1536;
+    }
+
+    /**
+     * Initialize OpenAI client (lazy loading)
+     */
+    _initOpenAI() {
+        if (!this.openai && process.env.OPENAI_API_KEY) {
+            this.openai = new OpenAI({
+                apiKey: process.env.OPENAI_API_KEY
+            });
+        }
+
+        if (!this.openai) {
+            throw new Error('OpenAI API key not configured. Set OPENAI_API_KEY environment variable.');
+        }
     }
 
     /**
@@ -29,6 +40,8 @@ class AIDiscoveryService {
      */
     async generateBookEmbedding(book) {
         try {
+            this._initOpenAI();
+
             // Combine book metadata into rich text for embedding
             const textToEmbed = this.prepareBookText(book);
 
@@ -327,6 +340,8 @@ class AIDiscoveryService {
      */
     async generateQueryEmbedding(query) {
         try {
+            this._initOpenAI();
+
             const response = await this.openai.embeddings.create({
                 model: this.embeddingModel,
                 input: query,
@@ -438,6 +453,8 @@ class AIDiscoveryService {
             const bookList = relatedBooks.map(b =>
                 `- "${b.title}" by ${b.author}: ${b.description}`
             ).join('\n');
+
+            this._initOpenAI();
 
             const prompt = `You are an expert curator creating a learning path on "${topic}" for ${level} readers.
 

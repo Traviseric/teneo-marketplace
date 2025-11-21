@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const aiDiscoveryService = require('../services/aiDiscoveryService');
-const db = require('../database/db');
+const db = require('../database/database');
 
 /**
  * POST /api/discovery/semantic-search
