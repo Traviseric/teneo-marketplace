@@ -2,7 +2,7 @@
 
 ## The Brutal Truth About Book Marketing in 2025
 
-You wrote a book. Maybe with Teneo in 3 days, maybe the traditional way over 6 months. Either way, you hit "publish" and...
+You wrote a book. Maybe with AI assistance in days, maybe the traditional way over months. Either way, you hit "publish" and...
 
 **Crickets.**
 
@@ -39,7 +39,7 @@ A properly built funnel turns **1,000 visitors** into:
 - Backend revenue: $1,500-$3,000 (2-3 × $500-1000)
 - **ROI: 5-10x**
 
-## Your Unfair Advantage: The Teneo Multiplier
+## Your Unfair Advantage: The Modern Publishing Multiplier
 
 Traditional authors spend:
 - 6-12 months writing
@@ -48,20 +48,20 @@ Traditional authors spend:
 
 **One book per year.**
 
-You with Teneo:
-- 3-5 days creating
+Modern authors with AI tools:
+- Days to weeks creating
 - 1-2 weeks refining
 - 1 week launching
 
-**10-15 books per year.**
+**Multiple books per year.**
 
 ### What This Means
 
 - 1 book = Author
 - 3 books = Expert
-- 10 books = Authority
+- 10+ books = Authority
 
-**You can build authority 10x faster than traditional authors.**
+**You can build authority faster than traditional authors with the right systems.**
 
 ## What You'll Build In This Course
 
@@ -103,4 +103,4 @@ Let's go.
 
 ---
 
-**Next: Module 0, Lesson 2 - The Teneo Advantage**
+**Next: Module 0, Lesson 2 - The Modern Author Advantage**

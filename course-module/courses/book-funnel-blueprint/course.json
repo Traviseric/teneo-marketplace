@@ -1,17 +1,17 @@
 {
   "courseId": "book-funnel-blueprint",
   "title": "Book Funnel Blueprint",
-  "subtitle": "Build a Profitable Funnel for Your Teneo Book in 2 Hours",
-  "description": "The complete system for turning your Teneo book into a revenue-generating machine. No fluff, no theory—just fill-in-the-blanks templates that create your custom funnel as you learn.",
+  "subtitle": "Build a Profitable Funnel for Your Book in 2 Hours",
+  "description": "The complete system for turning your book into a revenue-generating machine. No fluff, no theory—just fill-in-the-blanks templates that create your custom funnel as you learn.",
   "instructor": {
-    "name": "Teneo Book Marketing Academy",
-    "bio": "Proven book marketing frameworks for the AI publishing era",
+    "name": "Book Marketing Academy",
+    "bio": "Proven book marketing frameworks for the digital publishing era",
     "avatar": "/courses/book-funnel-blueprint/assets/instructor.jpg"
   },
   "coverImage": "/courses/book-funnel-blueprint/assets/cover.jpg",
   "duration": "2 hours",
   "level": "Beginner to Intermediate",
-  "tags": ["Marketing", "Book Funnels", "Sales", "Teneo", "Publishing"],
+  "tags": ["Marketing", "Book Funnels", "Sales", "Publishing", "Self-Publishing"],
   "outcomes": [
     "A complete, deployed funnel for your book (live URL)",
     "5-12 day email sequence written and ready",
@@ -35,11 +35,11 @@
         },
         {
           "lessonId": "m0-l2",
-          "title": "The Teneo Advantage: From Speed to Systemization",
+          "title": "The Modern Author Advantage: From Speed to Systemization",
           "type": "video",
           "duration": "7 min",
-          "content": "lessons/m0-l2-teneo-advantage.md",
-          "videoUrl": "/courses/book-funnel-blueprint/videos/m0-l2-teneo.mp4"
+          "content": "lessons/m0-l2-modern-advantage.md",
+          "videoUrl": "/courses/book-funnel-blueprint/videos/m0-l2-modern.mp4"
         },
         {
           "lessonId": "m0-l3",
