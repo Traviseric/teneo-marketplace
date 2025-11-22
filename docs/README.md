@@ -41,17 +41,25 @@ Core architecture and design principles
 
 ### [features/](features/)
 Feature guides and implementation details
-- Amazon integration & published books tracking
-- Course platform integration
+- **[Course Platform Design](features/COURSE_PLATFORM_DESIGN.md)** - Course architecture
+- **[Course Implementation](features/COURSES_PLATFORM_IMPLEMENTATION.md)** - Course platform details
+- **[Course Player](features/COURSE_PLAYER_IMPLEMENTATION_SUMMARY.md)** - Player UI
+- **[Book Funnel Blueprint](features/BOOK_FUNNEL_BLUEPRINT_COURSE_IMPLEMENTATION.md)** - Funnel system
+- **[Funnel Builder Concept](features/BOOK_FUNNEL_BUILDER_CONCEPT.md)** - Builder architecture
+- **[Funnel Integration Plan](features/FUNNEL_BUILDER_INTEGRATION_PLAN.md)** - Integration strategy
+- **[Email Marketing](features/EMAIL_MARKETING_IMPLEMENTATION.md)** - Marketing automation
+- **[Podia Feature Parity](features/PODIA_FEATURE_PARITY.md)** - Competitive analysis
 - Information Asymmetry brand (backend books)
-- Marketing automation & SEO
+- Amazon integration & published books tracking
 - Multi-channel sales strategies
 - Brand automation roadmap
 
 ### [deployment/](deployment/)
 Production deployment and infrastructure
 - **[Production Setup](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)** ⭐
+- **[Production Deployment](deployment/PRODUCTION_DEPLOYMENT.md)** - Production guide
 - **[Censorship-Resistant MVP](deployment/CENSORSHIP_RESISTANT_MVP.md)** ⭐
+- **[Render Deployment](deployment/RENDER_DEPLOYMENT.md)** - Deploy to Render
 - Docker deployment
 - Stripe production configuration
 - Deployment status & checklists
@@ -78,8 +86,16 @@ Day-to-day operations and maintenance
 ### [reference/](reference/)
 Technical reference and specifications
 - **[Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)** ⭐ - 4-6 hour hardening
+- **[Security Audit Report](reference/SECURITY_AUDIT_REPORT.md)** - Recent security audit
+- **[Open Source Assessment](reference/OPEN_SOURCE_ASSESSMENT.md)** - Project evaluation
+- **[Documentation Map](reference/DOCUMENTATION_MAP.md)** - Complete doc navigation
 - **[Marketplace Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - Current status
 - **[Auth Integration Complete](reference/AUTH_INTEGRATION_COMPLETE.md)** - Auth system docs
+- **[Course Module Cleanup](reference/COURSE_MODULE_CLEANUP_SUMMARY.md)** - Cleanup summary
+- **[Course Migration Guide](reference/COURSE_MODULE_MIGRATION_GUIDE.md)** - Migration docs
+- **[Funnel Infrastructure Audit](reference/FUNNEL_INFRASTRUCTURE_AUDIT.md)** - Funnel audit
+- **[Implementation Plan](reference/IMPLEMENTATION_PLAN.md)** - Overall plan
+- **[Marketplace vs Production Strategy](reference/MARKETPLACE_VS_PRODUCTION_STRATEGY.md)** - Repo strategy
 - Cost tracking architecture
 - Public vs private strategy
 - [Archives](reference/archives/) - Historical documentation
@@ -259,9 +275,9 @@ Found an error or want to improve the docs? See [Contributing Guide](development
 
 ---
 
-**Last Updated:** November 17, 2025
+**Last Updated:** November 22, 2025
 
-**Documentation Version:** 2.0 (Organized structure)
+**Documentation Version:** 2.1 (Reorganized - Clean Root)
 
 ---
 

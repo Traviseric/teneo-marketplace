@@ -56,14 +56,14 @@ Run your entire business from one place:
 - Drip content & cohort-based delivery
 - Progress tracking & certificates
 - Discussion forums & Q&A
-- **[Full course platform docs →](./COURSES_PLATFORM_IMPLEMENTATION.md)**
+- **[Full course platform docs →](./docs/features/COURSES_PLATFORM_IMPLEMENTATION.md)**
 
 ### 📧 **Email Marketing**
 - List management & segmentation
 - Campaign builder with templates
 - Marketing automation (welcome series, cart abandonment)
 - Open/click tracking, revenue attribution
-- **[Email marketing guide →](./EMAIL_MARKETING_IMPLEMENTATION.md)**
+- **[Email marketing guide →](./docs/features/EMAIL_MARKETING_IMPLEMENTATION.md)**
 
 ### 📊 **Analytics**
 - Sales tracking & revenue reports
