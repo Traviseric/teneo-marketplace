@@ -97,6 +97,33 @@ node test-api.js
 
 ---
 
+## 🏗️ Public/Private Repository Strategy
+
+**IMPORTANT: This is the PUBLIC open-source repository.**
+
+### What This Repo Contains (Public):
+- ✅ Book marketplace (display & sales infrastructure)
+- ✅ Generic funnel builder (templates, no Teneo Engine logic)
+- ✅ Course player UI (consumption, not generation)
+- ✅ Federation network infrastructure
+- ✅ Multi-brand system
+- ✅ Generic e-commerce features
+
+### What This Repo Does NOT Contain (Private):
+- ❌ Book/course/funnel generation logic (Teneo Engine)
+- ❌ Proprietary AI prompts and orchestration
+- ❌ "Course-as-Code" automation (Shadow Repository)
+- ❌ Advanced brand profile analysis
+- ❌ Teneo Engine 7-phase generation pattern
+
+**Content Generation**: Books and courses are created in the **teneo-production** (private repo) using Teneo Engine, then published to this marketplace via API.
+
+**Full Documentation**: See [docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md](./docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md)
+
+**API Specification**: See [docs/reference/API_SPECIFICATION.md](./docs/reference/API_SPECIFICATION.md)
+
+---
+
 ## Architecture Overview
 
 ### Project Structure
