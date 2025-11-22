@@ -98,3 +98,6 @@ teneo-express/
 # ================================================
 claude-files/
 # This folder contains private business strategy, revenue projections, etc.
+
+# Private deployment notes
+PRIVATE_DEPLOY_NOTES.md
