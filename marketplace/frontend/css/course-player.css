@@ -431,6 +431,13 @@ body {
   transform: scale(1.1);
 }
 
+.play-button:focus,
+.play-button:focus-visible {
+  outline: 3px solid #7C3AED;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
 /* Lesson Body */
 .lesson-body {
   max-width: 750px;
