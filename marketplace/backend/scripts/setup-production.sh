@@ -77,7 +77,7 @@ node database/init.js
 
 echo ""
 echo -e "${BLUE}📊 Database statistics:${NC}"
-sqlite3 database/orders.db "SELECT name FROM sqlite_master WHERE type='table';" | wc -l | xargs echo "Total tables:"
+sqlite3 database/marketplace.db "SELECT name FROM sqlite_master WHERE type='table';" | wc -l | xargs echo "Total tables:"
 
 echo ""
 echo -e "${BLUE}🔐 Generating secure session secret...${NC}"
