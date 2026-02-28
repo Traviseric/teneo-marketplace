@@ -22,3 +22,17 @@ CREATE TABLE IF NOT EXISTS funnel_drafts (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, funnel_name)
 );
+
+-- Funnel conversion tracking events
+CREATE TABLE IF NOT EXISTS funnel_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    funnel_id TEXT NOT NULL,
+    page_slug TEXT,
+    event_type TEXT NOT NULL, -- 'pageview', 'cta_click', 'checkout_start', 'purchase'
+    session_id TEXT,
+    metadata TEXT, -- JSON
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_funnel_events_funnel ON funnel_events(funnel_id);
+CREATE INDEX IF NOT EXISTS idx_funnel_events_type ON funnel_events(funnel_id, event_type);

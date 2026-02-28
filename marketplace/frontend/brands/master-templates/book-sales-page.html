@@ -551,7 +551,7 @@
                 <a href="/" class="logo">{{BRAND_NAME}}</a>
                 <nav>
                     <a href="/library.html">Library</a>
-                    <a href="#buy" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.875rem;">Get This Book</a>
+                    <a href="#buy" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.875rem;" data-funnel-cta="nav_cta">Get This Book</a>
                 </nav>
             </div>
         </div>
@@ -593,7 +593,7 @@
                         <span class="price-save">Save {{DISCOUNT|33}}%</span>
 
                         <div class="btn-group" style="margin-top: 1.5rem;">
-                            <button class="btn btn-primary btn-full" onclick="buyNow()">
+                            <button class="btn btn-primary btn-full" onclick="buyNow()" data-funnel-cta="buy_now" data-funnel-checkout="buy_now">
                                 Buy Now - Instant Download
                             </button>
                         </div>
@@ -744,7 +744,7 @@
             <div class="cta-section">
                 <h2>Ready to Get Started?</h2>
                 <p>Join {{READERS|1,200+}} readers who've already transformed their understanding</p>
-                <button class="btn btn-primary" onclick="buyNow()" style="background: var(--accent-color); color: var(--primary-color); font-size: 1.25rem; padding: 1.25rem 3rem;">
+                <button class="btn btn-primary" onclick="buyNow()" style="background: var(--accent-color); color: var(--primary-color); font-size: 1.25rem; padding: 1.25rem 3rem;" data-funnel-cta="final_cta" data-funnel-checkout="final_cta">
                     Get Instant Access - ${{PRICE|19.99}}
                 </button>
                 <div class="trust-signals" style="margin-top: 1.5rem; color: rgba(255,255,255,0.8);">
