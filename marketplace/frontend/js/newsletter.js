@@ -79,9 +79,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', handleNewsletterSubmit);
-        
+
         // Add real-time email validation
         if (emailInput) {
+            // Suppress native browser validation bubble; show accessible error instead
+            emailInput.addEventListener('invalid', function(e) {
+                e.preventDefault();
+                emailInput.setAttribute('aria-invalid', 'true');
+                const errorSpan = document.getElementById('newsletter-email-error');
+                if (errorSpan) errorSpan.hidden = false;
+            });
+
             emailInput.addEventListener('blur', function() {
                 const email = this.value.trim();
                 if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
@@ -92,12 +100,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage('', '');
                 }
             });
-            
-            // Clear messages when user starts typing
+
+            // Clear error state when user corrects the input
             emailInput.addEventListener('input', function() {
                 const messageDiv = document.getElementById('newsletter-message');
                 if (messageDiv && messageDiv.classList.contains('error')) {
                     showMessage('', '');
+                }
+                if (emailInput.validity.valid) {
+                    emailInput.setAttribute('aria-invalid', 'false');
+                    const errorSpan = document.getElementById('newsletter-email-error');
+                    if (errorSpan) errorSpan.hidden = true;
                 }
             });
         }
