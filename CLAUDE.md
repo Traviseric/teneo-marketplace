@@ -63,3 +63,23 @@ node test-purchase-flow.js                         # Test purchase flow
 ## Current Focus
 
 See OVERNIGHT_TASKS.md for active roadmap.
+
+## TE Code Ecosystem Capabilities
+
+This project is part of the **TE Code ecosystem**. When you build, fix, or break callable capabilities, update the central registry.
+
+**Registry Location**: `D:\Travis Eric\TE Code\CAPABILITIES.yaml`
+
+### When to Update CAPABILITIES.yaml
+1. **You add a new callable feature** → Add to your project's section with status `experimental`
+2. **You fix a broken capability** → Update status or remove `# BROKEN` note
+3. **You break something** → Add `# BROKEN: reason` or downgrade status
+4. **You depend on another project** → Add yourself to their `consumers:` list
+5. **You claim a planned capability** → Add to `planned:` section with your project name
+
+### Before Adding a Capability
+- Is it PROVEN WORKING (not just planned)?
+- Can other projects actually call it?
+- Is the input/output documented?
+
+Read the full instructions at the top of `CAPABILITIES.yaml` before making changes.
