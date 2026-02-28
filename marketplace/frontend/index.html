@@ -436,6 +436,31 @@
                 gap: 1rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            nav {
+                gap: 0.5rem 0.625rem;
+                font-size: 0.8125rem;
+                flex-wrap: wrap;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero .tagline {
+                font-size: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
