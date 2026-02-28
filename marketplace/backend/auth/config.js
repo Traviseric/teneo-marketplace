@@ -32,14 +32,17 @@ function getAuthProvider() {
       };
 
       // Validate required OAuth credentials
-      if (!config.clientId || !config.clientSecret || !config.callbackUrl) {
+      if (!config.clientId || !config.callbackUrl) {
         console.error('[Auth] Missing required TENEO Auth credentials');
         console.error('Required environment variables:');
         console.error('  - TENEO_CLIENT_ID');
-        console.error('  - TENEO_CLIENT_SECRET');
         console.error('  - TENEO_CALLBACK_URL');
         console.error('Falling back to local auth provider');
         return new LocalAuthProvider();
+      }
+
+      if (!config.clientSecret) {
+        console.log('[Auth] No TENEO_CLIENT_SECRET set — using PKCE-only flow (first-party)');
       }
 
       try {

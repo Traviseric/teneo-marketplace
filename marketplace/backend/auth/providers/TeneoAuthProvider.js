@@ -32,8 +32,8 @@ class TeneoAuthProvider extends AuthProvider {
     // Validate required config
     if (!config.authUrl) throw new Error('TENEO_AUTH_URL is required');
     if (!config.clientId) throw new Error('TENEO_CLIENT_ID is required');
-    if (!config.clientSecret) throw new Error('TENEO_CLIENT_SECRET is required');
     if (!config.callbackUrl) throw new Error('TENEO_CALLBACK_URL is required');
+    // clientSecret is optional — first-party PKCE clients don't need it
 
     this.authUrl = config.authUrl;
     this.clientId = config.clientId;
@@ -104,19 +104,24 @@ class TeneoAuthProvider extends AuthProvider {
   async handleOAuthCallback(code, codeVerifier) {
     try {
       // Exchange authorization code for access token
+      const tokenBody = {
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: this.callbackUrl,
+        client_id: this.clientId,
+        code_verifier: codeVerifier,
+      };
+      // Only include client_secret if configured (third-party forks)
+      if (this.clientSecret) {
+        tokenBody.client_secret = this.clientSecret;
+      }
+
       const tokenResponse = await fetch(`${this.authUrl}/api/oauth/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          grant_type: 'authorization_code',
-          code,
-          redirect_uri: this.callbackUrl,
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          code_verifier: codeVerifier,
-        }),
+        body: JSON.stringify(tokenBody),
       });
 
       if (!tokenResponse.ok) {
