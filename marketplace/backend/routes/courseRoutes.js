@@ -6,7 +6,7 @@
  *   GET  /api/courses/:slug      - course detail + curriculum
  *   GET  /api/courses/:slug/preview - free preview lessons
  *
- * Enrolled users (email query param for MVP):
+ * Enrolled users (session-authenticated):
  *   GET  /api/courses/:slug/learn          - full course (checks enrollment)
  *   GET  /api/courses/:slug/lessons/:id    - individual lesson
  *   POST /api/courses/:slug/progress/:id   - mark lesson complete
@@ -117,10 +117,17 @@ router.get('/:slug/preview', async (req, res) => {
 
 // ─── Enrolled User Routes ─────────────────────────────────────────────────────
 
-// Middleware: check enrollment (expects ?email= query param for MVP)
+// Middleware: check enrollment via session authentication
 async function requireEnrollment(req, res, next) {
-    const email = req.query.email || req.body.email;
-    if (!email) return res.status(401).json({ success: false, error: 'Email required to access course content' });
+    // Require active session — user must be logged in
+    if (!req.session || !req.session.isAuthenticated || !req.session.email) {
+        return res.status(401).json({
+            success: false,
+            error: 'Authentication required. Please log in to access course content.'
+        });
+    }
+
+    const email = req.session.email; // Use session email only — never trust query/body email
 
     try {
         const course = await dbGet('SELECT id FROM courses WHERE slug = ?', [req.params.slug]);
