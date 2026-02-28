@@ -185,8 +185,9 @@
             border-radius: 8px;
             font-size: 0.875rem;
             margin-bottom: 1.25rem;
-            display: none;
         }
+
+        .alert.hidden { display: none; }
 
         .alert-success {
             background: rgba(16,185,129,0.1);
@@ -223,13 +224,25 @@
 
         /* Hide SSO sections by default; JS reveals them if enabled */
         #teneo-sso-section, #nostr-section { display: none; }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="header-inner">
             <a href="/" class="logo">Teneo Marketplace</a>
-            <nav id="nav-auth"></nav>
+            <nav id="nav-auth" aria-label="Site navigation"></nav>
         </div>
     </header>
 
@@ -238,8 +251,8 @@
             <h1>Sign In</h1>
             <p class="subtitle">Enter your email and we'll send you a magic link</p>
 
-            <div class="alert alert-success" id="alert-success"></div>
-            <div class="alert alert-error" id="alert-error"></div>
+            <div class="alert alert-success hidden" id="alert-success" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="alert alert-error hidden" id="alert-error" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
             <!-- Magic Link (primary) -->
             <form id="magic-link-form" novalidate>
@@ -251,8 +264,11 @@
                         name="email"
                         placeholder="you@example.com"
                         required
+                        aria-required="true"
+                        aria-describedby="email-hint"
                         autocomplete="email"
                     >
+                    <span id="email-hint" class="sr-only">Enter a valid email address</span>
                 </div>
                 <button type="submit" class="btn btn-primary" id="magic-link-btn">
                     <i class="fas fa-paper-plane"></i>
@@ -265,7 +281,7 @@
             <div id="teneo-sso-section">
                 <div class="divider">or</div>
                 <div class="sso-buttons">
-                    <button class="btn btn-accent" id="teneo-sso-btn" onclick="loginWithTeneo()">
+                    <button type="button" class="btn btn-accent" id="teneo-sso-btn">
                         <i class="fas fa-shield-alt"></i>
                         Sign in with Teneo
                     </button>
@@ -276,7 +292,7 @@
             <div id="nostr-section">
                 <div class="divider">or</div>
                 <div class="sso-buttons">
-                    <button class="btn btn-nostr" id="nostr-btn" onclick="loginWithNostr()">
+                    <button type="button" class="btn btn-nostr" id="nostr-btn">
                         <i class="fas fa-bolt"></i>
                         Connect with Nostr
                     </button>
@@ -395,23 +411,26 @@
             }
         }
 
+        document.getElementById('teneo-sso-btn').addEventListener('click', loginWithTeneo);
+        document.getElementById('nostr-btn').addEventListener('click', loginWithNostr);
+
         function showSuccess(msg) {
             const el = document.getElementById('alert-success');
             el.textContent = msg;
-            el.style.display = 'block';
-            document.getElementById('alert-error').style.display = 'none';
+            el.classList.remove('hidden');
+            document.getElementById('alert-error').classList.add('hidden');
         }
 
         function showError(msg) {
             const el = document.getElementById('alert-error');
             el.textContent = msg;
-            el.style.display = 'block';
-            document.getElementById('alert-success').style.display = 'none';
+            el.classList.remove('hidden');
+            document.getElementById('alert-success').classList.add('hidden');
         }
 
         function clearAlerts() {
-            document.getElementById('alert-success').style.display = 'none';
-            document.getElementById('alert-error').style.display = 'none';
+            document.getElementById('alert-success').classList.add('hidden');
+            document.getElementById('alert-error').classList.add('hidden');
         }
     </script>
 </body>
