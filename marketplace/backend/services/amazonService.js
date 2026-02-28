@@ -407,18 +407,19 @@ class AmazonService {
 
     estimateDailySales(bsr) {
         if (!bsr) return null;
-        
-        // Simple BSR to sales estimation (very rough approximation)
+
+        // Deterministic BSR to sales estimation (very rough approximation)
         // Based on general industry data - actual conversion varies significantly
-        if (bsr < 100) return Math.floor(500 + Math.random() * 200);
-        if (bsr < 500) return Math.floor(100 + Math.random() * 100);
-        if (bsr < 1000) return Math.floor(50 + Math.random() * 50);
-        if (bsr < 5000) return Math.floor(20 + Math.random() * 30);
-        if (bsr < 10000) return Math.floor(10 + Math.random() * 15);
-        if (bsr < 50000) return Math.floor(5 + Math.random() * 10);
-        if (bsr < 100000) return Math.floor(2 + Math.random() * 5);
-        if (bsr < 500000) return Math.floor(1 + Math.random() * 3);
-        return Math.floor(Math.random() * 2);
+        // Uses midpoint of each tier so the value is stable across page loads
+        if (bsr < 100) return 600;
+        if (bsr < 500) return 150;
+        if (bsr < 1000) return 75;
+        if (bsr < 5000) return 35;
+        if (bsr < 10000) return 17;
+        if (bsr < 50000) return 10;
+        if (bsr < 100000) return 4;
+        if (bsr < 500000) return 2;
+        return 1;
     }
 
     parsePrice(priceText) {
