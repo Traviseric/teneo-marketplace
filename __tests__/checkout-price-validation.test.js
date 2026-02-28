@@ -14,6 +14,12 @@ jest.mock('stripe', () => () => ({
     }
 }));
 
+// Mock stripeHealthService to bypass real Stripe API call in tests
+jest.mock('../marketplace/backend/services/stripeHealthService', () => ({
+    checkStripeHealth: jest.fn().mockResolvedValue({ healthy: true }),
+    getStatus: jest.fn().mockReturnValue({ healthy: true, lastChecked: Date.now() })
+}));
+
 // Mock services that checkout.js imports transitively
 jest.mock('../marketplace/backend/services/emailService', () => ({
     sendOrderConfirmation: jest.fn().mockResolvedValue(true),
