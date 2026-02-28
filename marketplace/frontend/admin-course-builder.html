@@ -28,8 +28,8 @@
           <h2>Course Details</h2>
 
           <div class="form-group">
-            <label for="course-title">Course Title *</label>
-            <input type="text" id="course-title" required placeholder="e.g., The Book Funnel Blueprint">
+            <label for="course-title">Course Title <span aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+            <input type="text" id="course-title" required aria-required="true" placeholder="e.g., The Book Funnel Blueprint">
           </div>
 
           <div class="form-group">
@@ -100,13 +100,15 @@
           <h2>Course Settings</h2>
 
           <div class="form-group">
-            <label>
-              <input type="checkbox" id="drip-enabled">
+            <label for="drip-enabled">
+              <input type="checkbox" id="drip-enabled"
+                     aria-controls="drip-settings"
+                     aria-expanded="false">
               Enable Drip Content (release lessons over time)
             </label>
           </div>
 
-          <div class="form-group" id="drip-settings" style="display: none;">
+          <div class="form-group" id="drip-settings" hidden>
             <label for="drip-interval">Days between lessons</label>
             <input type="number" id="drip-interval" min="1" value="1">
           </div>
@@ -146,7 +148,7 @@
   <template id="module-template">
     <div class="module-block">
       <div class="module-header">
-        <input type="text" class="module-title-input" placeholder="Module Title (e.g., CHOOSE YOUR FUNNEL IN 60 SEC)">
+        <input type="text" class="module-title-input" aria-label="Module title" placeholder="Module Title (e.g., CHOOSE YOUR FUNNEL IN 60 SEC)">
         <button type="button" class="btn-icon btn-collapse" title="Collapse">▼</button>
         <button type="button" class="btn-icon btn-delete" title="Delete Module">🗑️</button>
       </div>
@@ -164,8 +166,8 @@
     <div class="lesson-block">
       <div class="lesson-header">
         <span class="drag-handle">☰</span>
-        <input type="text" class="lesson-title-input" placeholder="Lesson Title">
-        <select class="lesson-type-select">
+        <input type="text" class="lesson-title-input" aria-label="Lesson title" placeholder="Lesson Title">
+        <select class="lesson-type-select" aria-label="Lesson type">
           <option value="video">Video</option>
           <option value="text">Text/Article</option>
           <option value="quiz">Quiz</option>
@@ -176,21 +178,24 @@
       <div class="lesson-details">
         <!-- Video lesson -->
         <div class="lesson-content video-content">
-          <label>Video File</label>
-          <input type="file" class="lesson-video" accept="video/*">
+          <label>Video File
+            <input type="file" class="lesson-video" accept="video/*">
+          </label>
           <small>Or paste video URL:</small>
-          <input type="url" class="lesson-video-url" placeholder="https://...">
+          <input type="url" class="lesson-video-url" aria-label="Video URL" placeholder="https://...">
         </div>
 
         <!-- Text lesson -->
         <div class="lesson-content text-content" style="display: none;">
-          <label>Lesson Content (Markdown or HTML)</label>
-          <textarea class="lesson-text-content" rows="8" placeholder="Write your lesson content here..."></textarea>
+          <label>Lesson Content (Markdown or HTML)
+            <textarea class="lesson-text-content" rows="8" placeholder="Write your lesson content here..."></textarea>
+          </label>
         </div>
 
         <!-- Common fields -->
-        <label>Description</label>
-        <textarea class="lesson-description" rows="3" placeholder="Brief lesson description..."></textarea>
+        <label>Description
+          <textarea class="lesson-description" rows="3" placeholder="Brief lesson description..."></textarea>
+        </label>
 
         <label>
           <input type="checkbox" class="lesson-preview">
