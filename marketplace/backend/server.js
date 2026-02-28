@@ -49,6 +49,7 @@ function validateEnvironment() {
 validateEnvironment();
 
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs').promises;
@@ -87,6 +88,22 @@ const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 const courseRoutes = require('./routes/courseRoutes');
 
 const app = express();
+
+// Security headers (CWE-693)
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
+            imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'", "https://api.stripe.com"]
+        }
+    },
+    crossOriginEmbedderPolicy: false
+}));
 
 // Import auth middleware
 const { requireHTTPS } = require('./middleware/auth');
