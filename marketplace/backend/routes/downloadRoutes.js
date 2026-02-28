@@ -4,6 +4,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 const multer = require('multer');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // In-memory token storage (use Redis in production)
 const OrderService = require('../services/orderService');
@@ -41,34 +42,6 @@ const upload = multer({
   }
 });
 
-// Simple auth middleware  
-const AUTH_PASSWORD = process.env.ADMIN_PASSWORD || 'use-admin-dashboard';
-
-// Note: This route uses basic auth for quick file management
-// For full security, use the admin dashboard instead
-
-function checkAuth(req, res, next) {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-  
-  const [type, credentials] = authHeader.split(' ');
-  if (type !== 'Basic') {
-    return res.status(401).json({ error: 'Invalid authentication type' });
-  }
-  
-  const [username, password] = Buffer.from(credentials, 'base64').toString().split(':');
-  
-  if (password !== AUTH_PASSWORD) {
-    return res.status(401).json({ error: 'Invalid password' });
-  }
-  
-  next();
-}
-
-
 
 // GET /api/download/:token - Download file with token
 router.get('/:token', async (req, res) => {
@@ -84,7 +57,15 @@ router.get('/:token', async (req, res) => {
         error: 'Invalid or expired download link'
       });
     }
-    
+
+    // Check expiry before serving the file
+    if (order.download_expiry && new Date() > new Date(order.download_expiry)) {
+      return res.status(410).json({
+        success: false,
+        error: 'Download link has expired. Please contact support if you need assistance.'
+      });
+    }
+
     // Check download limit
     if (order.download_count >= 5) {
       await orderService.logDownload(
@@ -181,7 +162,7 @@ router.get('/:token', async (req, res) => {
 });
 
 // POST /api/download/upload - Upload PDF file (requires auth)
-router.post('/upload', checkAuth, upload.single('pdf'), async (req, res) => {
+router.post('/upload', authenticateAdmin, upload.single('pdf'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -221,7 +202,7 @@ router.post('/upload', checkAuth, upload.single('pdf'), async (req, res) => {
 });
 
 // GET /api/download/list - List uploaded PDFs (requires auth)
-router.get('/list', checkAuth, async (req, res) => {
+router.get('/list', authenticateAdmin, async (req, res) => {
   try {
     const booksDir = path.join(__dirname, '../books');
     
@@ -265,7 +246,7 @@ router.get('/list', checkAuth, async (req, res) => {
 });
 
 // DELETE /api/download/:bookId - Delete PDF file (requires auth)
-router.delete('/:bookId', checkAuth, async (req, res) => {
+router.delete('/:bookId', authenticateAdmin, async (req, res) => {
   try {
     const { bookId } = req.params;
     const filePath = path.join(__dirname, '../books', `${bookId}.pdf`);
