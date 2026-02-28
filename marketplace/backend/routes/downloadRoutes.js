@@ -5,6 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
+const arxmintService = require('../services/arxmintService');
 
 // In-memory token storage (use Redis in production)
 const OrderService = require('../services/orderService');
@@ -142,6 +143,12 @@ router.get('/:token', async (req, res) => {
     
     console.log(`Download: ${order.book_id} by ${order.customer_email} (${order.download_count + 1}/5)`);
     
+    // If ArxMint enabled, advertise L402 paywall capability alongside token auth
+    // Clients that support L402 can use Lightning/ecash instead of purchase tokens
+    if (arxmintService.enabled) {
+      res.setHeader('X-ArxMint-L402', 'supported');
+    }
+
     // Set headers for file download
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${order.book_title}.pdf"`);

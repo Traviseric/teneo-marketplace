@@ -17,18 +17,28 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 const db = require('../database/database');
 
-// Import contract ABIs (will be generated after compilation)
-// Use conditional loading to avoid errors before contracts are compiled
-let BookOwnershipABI, KnowledgeBadgesABI, LibraryInheritanceABI;
-try {
-    BookOwnershipABI = require('../contracts/abi/BookOwnership.json');
-    KnowledgeBadgesABI = require('../contracts/abi/KnowledgeBadges.json');
-    LibraryInheritanceABI = require('../contracts/abi/LibraryInheritance.json');
-} catch (error) {
-    console.warn('⚠️  NFT contract ABIs not found. Run `npx hardhat compile` to generate them.');
-    BookOwnershipABI = null;
-    KnowledgeBadgesABI = null;
-    LibraryInheritanceABI = null;
+// Import contract ABIs — try hardhat artifacts first, then extracted abi dir
+// To regenerate: cd marketplace/backend && npx hardhat compile
+function _loadABI(name) {
+    const candidates = [
+        `../artifacts/contracts/${name}.sol/${name}.json`, // hardhat artifacts (preferred)
+        `../contracts/abi/${name}.json`                    // copied by deploy-contracts.js
+    ];
+    for (const p of candidates) {
+        try {
+            const artifact = require(p);
+            return artifact.abi || artifact; // hardhat artifacts have .abi; extracted files are the array
+        } catch (_) { /* try next */ }
+    }
+    return null;
+}
+
+let BookOwnershipABI    = _loadABI('BookOwnership');
+let KnowledgeBadgesABI  = _loadABI('KnowledgeBadges');
+let LibraryInheritanceABI = _loadABI('LibraryInheritance');
+
+if (!BookOwnershipABI) {
+    console.warn('⚠️  NFT contract ABIs not found. Run `npx hardhat compile` inside marketplace/backend/');
 }
 
 class NFTService {
