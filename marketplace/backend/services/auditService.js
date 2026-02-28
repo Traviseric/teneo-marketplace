@@ -1,4 +1,5 @@
 // Audit logging service for admin actions
+const crypto = require('crypto');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -49,7 +50,7 @@ class AuditService {
     }
 
     generateActionId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        return crypto.randomUUID();
     }
 
     async logAdminLogin(req, success, username = 'admin') {
