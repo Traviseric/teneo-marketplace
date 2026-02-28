@@ -5,6 +5,7 @@ const { safeMessage } = require('../utils/validate');
 const path = require('path');
 const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripeHealthService = require('../services/stripeHealthService');
 
 // Checkout session rate limiter — 10 per hour per IP (CWE-770)
 // Disabled in test environment to allow test suites to run freely
@@ -91,6 +92,19 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
     if (!bookId || !format || !bookTitle || !bookAuthor || !userEmail) {
       return res.status(400).json({
         error: 'Missing required fields: bookId, format, bookTitle, bookAuthor, userEmail'
+      });
+    }
+
+    // Check Stripe availability before attempting session creation.
+    // If Stripe is down, return a fallback signal so the frontend can redirect
+    // to the crypto checkout flow instead of showing a generic error.
+    const stripeHealth = await stripeHealthService.checkStripeHealth();
+    if (!stripeHealth.healthy) {
+      return res.status(503).json({
+        success: false,
+        stripeDown: true,
+        fallbackUrl: '/checkout/crypto',
+        message: 'Stripe payment temporarily unavailable — please use crypto checkout',
       });
     }
 
@@ -271,6 +285,17 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
   }
 
   res.json({received: true});
+});
+
+// Stripe health status endpoint — used by status pages and monitoring
+router.get('/health/stripe', async (req, res) => {
+  const health = await stripeHealthService.checkStripeHealth();
+  const statusCode = health.healthy ? 200 : 503;
+  res.status(statusCode).json({
+    healthy: health.healthy,
+    lastChecked: health.lastChecked ? new Date(health.lastChecked).toISOString() : null,
+    ...(health.error && { error: health.error }),
+  });
 });
 
 module.exports = router;

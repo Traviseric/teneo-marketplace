@@ -157,6 +157,7 @@ const csrfExcludePaths = [
     '/api/checkout/webhook',
     '/api/checkout/mixed',
     '/api/lulu/webhook',
+    '/api/crypto/btcpay/webhook', // BTCPay payment webhook
     '/webhooks' // Orchestrator webhooks
 ]; // Webhook endpoints need to be excluded
 
@@ -212,10 +213,22 @@ app.use('/api/courses', courseRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'healthy', 
+    res.json({
+        status: 'healthy',
         timestamp: new Date().toISOString(),
         service: 'teneo-marketplace-api'
+    });
+});
+
+// Stripe-specific health endpoint (also accessible via /api/checkout/health/stripe)
+app.get('/api/health/stripe', async (req, res) => {
+    const { checkStripeHealth } = require('./services/stripeHealthService');
+    const health = await checkStripeHealth();
+    const statusCode = health.healthy ? 200 : 503;
+    res.status(statusCode).json({
+        healthy: health.healthy,
+        lastChecked: health.lastChecked ? new Date(health.lastChecked).toISOString() : null,
+        ...(health.error && { error: health.error }),
     });
 });
 
