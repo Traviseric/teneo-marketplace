@@ -137,18 +137,15 @@ router.post('/create-session', async (req, res) => {
             // Production-specific settings
             payment_intent_data: {
                 description: `Order ${orderId}: ${bookTitle}`,
+                statement_descriptor: 'TENEO BOOKS',
+                statement_descriptor_suffix: bookId.substring(0, 10).toUpperCase(),
                 metadata: {
                     orderId,
                     bookId
                 }
             },
             // Enable address collection in production
-            billing_address_collection: isProduction ? 'required' : 'auto',
-            // Set statement descriptor
-            payment_intent_data: {
-                statement_descriptor: 'TENEO BOOKS',
-                statement_descriptor_suffix: bookId.substring(0, 10).toUpperCase()
-            }
+            billing_address_collection: isProduction ? 'required' : 'auto'
         });
 
         // Create order record in database
