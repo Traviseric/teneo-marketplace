@@ -203,9 +203,15 @@ async function processMixedOrder(session) {
     const digitalItemsParsed = JSON.parse(digitalItems || '[]');
     const physicalItemsParsed = JSON.parse(physicalItems || '[]');
 
-    // Process digital items immediately
+    // Process digital items immediately — isolate from physical so a digital failure
+    // does not prevent physical items from being submitted to Lulu
     if (digitalItemsParsed.length > 0) {
-        await processDigitalDelivery(orderId, digitalItemsParsed, userEmail);
+        try {
+            await processDigitalDelivery(orderId, digitalItemsParsed, userEmail);
+        } catch (digitalErr) {
+            // fulfillment_status already set to 'digital_delivery_failed' inside processDigitalDelivery
+            console.error('Digital delivery failed for order', orderId, '— physical processing will continue:', digitalErr.message);
+        }
     }
 
     // Process physical items through Lulu
@@ -243,6 +249,22 @@ async function processDigitalDelivery(orderId, digitalItems, userEmail) {
 
     } catch (error) {
         console.error('Digital delivery error:', error);
+
+        // Record failure on the order so admin can identify affected customers
+        try {
+            await orderService.updateOrderStatus(orderId, {
+                fulfillment_status: 'digital_delivery_failed',
+                metadata: JSON.stringify({
+                    digital_error: error.message,
+                    failed_at: new Date().toISOString()
+                })
+            });
+        } catch (updateErr) {
+            console.error('Failed to record digital delivery error on order:', updateErr);
+        }
+
+        // Re-throw so the caller (processMixedOrder) is aware of the failure
+        throw error;
     }
 }
 
