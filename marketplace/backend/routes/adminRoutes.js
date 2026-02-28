@@ -82,10 +82,9 @@ router.post('/login', loginLimiter, async (req, res) => {
             // Log successful login
             await auditService.logAdminLogin(req, true);
             
-            res.json({ 
-                success: true, 
-                message: 'Login successful',
-                sessionId: req.sessionID
+            res.json({
+                success: true,
+                message: 'Login successful'
             });
         } else {
             // Log failed login attempt
