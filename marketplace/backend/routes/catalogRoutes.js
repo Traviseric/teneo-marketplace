@@ -4,35 +4,11 @@ const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
 const { parse } = require('csv-parse/sync');
+const { authenticateAdmin } = require('../middleware/auth');
 
-// Simple password check middleware
-const AUTH_PASSWORD = process.env.ADMIN_PASSWORD || 'use-admin-dashboard';
-
-// Note: This route uses basic auth for quick catalog management
-// For full security, use the admin dashboard instead
-
-function checkAuth(req, res, next) {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="Book Manager"');
-        return res.status(401).json({ error: 'Authentication required' });
-    }
-    
-    const [type, credentials] = authHeader.split(' ');
-    if (type !== 'Basic') {
-        return res.status(401).json({ error: 'Invalid authentication type' });
-    }
-    
-    const [username, password] = Buffer.from(credentials, 'base64').toString().split(':');
-    
-    if (password !== AUTH_PASSWORD) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="Book Manager"');
-        return res.status(401).json({ error: 'Invalid password' });
-    }
-    
-    next();
-}
+// Auth decision: catalog write operations use session-based authenticateAdmin
+// consistent with the rest of the admin surface (adminRoutes, brandRoutes, etc.)
+const checkAuth = authenticateAdmin;
 
 // Memory storage for file uploads
 const upload = multer({ storage: multer.memoryStorage() });

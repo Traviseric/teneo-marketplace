@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 const censorshipTracker = require('../services/censorshipTrackerService');
 const db = require('../database/database');
+const { authenticateAdmin } = require('../middleware/auth');
 
 /**
  * GET /api/censorship/recent-bans
@@ -248,7 +249,7 @@ router.get('/archives/:bookId', async (req, res) => {
  * POST /api/censorship/admin/start-monitoring
  * Admin: Start continuous monitoring
  */
-router.post('/admin/start-monitoring', async (req, res) => {
+router.post('/admin/start-monitoring', authenticateAdmin, async (req, res) => {
     try {
         await censorshipTracker.startMonitoring();
 
@@ -271,7 +272,7 @@ router.post('/admin/start-monitoring', async (req, res) => {
  * POST /api/censorship/admin/stop-monitoring
  * Admin: Stop continuous monitoring
  */
-router.post('/admin/stop-monitoring', async (req, res) => {
+router.post('/admin/stop-monitoring', authenticateAdmin, async (req, res) => {
     try {
         await censorshipTracker.stopMonitoring();
 
@@ -293,7 +294,7 @@ router.post('/admin/stop-monitoring', async (req, res) => {
  * POST /api/censorship/admin/check-now
  * Admin: Trigger immediate check of all books
  */
-router.post('/admin/check-now', async (req, res) => {
+router.post('/admin/check-now', authenticateAdmin, async (req, res) => {
     try {
         // Run check in background
         censorshipTracker.checkAllBooks().catch(err => {
@@ -318,7 +319,7 @@ router.post('/admin/check-now', async (req, res) => {
  * POST /api/censorship/admin/add-book
  * Admin: Add book to monitoring
  */
-router.post('/admin/add-book', async (req, res) => {
+router.post('/admin/add-book', authenticateAdmin, async (req, res) => {
     try {
         const { bookId, brand, platformIdentifiers } = req.body;
 
@@ -349,7 +350,7 @@ router.post('/admin/add-book', async (req, res) => {
  * GET /api/censorship/admin/monitored-books
  * Admin: Get list of monitored books
  */
-router.get('/admin/monitored-books', async (req, res) => {
+router.get('/admin/monitored-books', authenticateAdmin, async (req, res) => {
     try {
         const books = await db.all(`
             SELECT

@@ -521,32 +521,31 @@ function updateTotal() {
     cart.orderBump.included = bumpChecked;
 }
 
-// Apply coupon
-function applyCoupon() {
+// Apply coupon — validated server-side; no coupon codes in frontend
+async function applyCoupon() {
     const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+    if (!code) return;
 
-    // Check coupon (in real app, validate server-side)
-    const coupons = {
-        'SAVE10': { type: 'percent', value: 10 },
-        '10OFF': { type: 'fixed', value: 10 },
-        'WELCOME20': { type: 'percent', value: 20 }
-    };
+    const subtotal = cart.items.reduce((sum, item) => sum + item.price, 0);
 
-    if (coupons[code]) {
-        const coupon = coupons[code];
-        const subtotal = cart.items.reduce((sum, item) => sum + item.price, 0);
+    try {
+        const resp = await fetch('/api/coupons/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, cartTotal: subtotal })
+        });
+        const result = await resp.json();
 
-        if (coupon.type === 'percent') {
-            cart.discount = subtotal * (coupon.value / 100);
+        if (result.valid) {
+            cart.discount = result.discount;
+            cart.coupon = result.code;
+            updateTotal();
+            alert(`Coupon applied! You saved $${cart.discount.toFixed(2)}`);
         } else {
-            cart.discount = coupon.value;
+            alert('Invalid coupon code');
         }
-
-        cart.coupon = code;
-        updateTotal();
-        alert(`Coupon applied! You saved $${cart.discount.toFixed(2)}`);
-    } else {
-        alert('Invalid coupon code');
+    } catch (err) {
+        alert('Could not validate coupon. Please try again.');
     }
 }
 

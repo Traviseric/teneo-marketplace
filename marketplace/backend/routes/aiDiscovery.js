@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 const aiDiscoveryService = require('../services/aiDiscoveryService');
 const db = require('../database/database');
+const { authenticateAdmin } = require('../middleware/auth');
 
 /**
  * POST /api/discovery/semantic-search
@@ -317,7 +318,7 @@ router.get('/controversy/:bookId', async (req, res) => {
  * POST /api/discovery/admin/generate-embeddings
  * Admin: Generate embeddings for all books (or specific book)
  */
-router.post('/admin/generate-embeddings', async (req, res) => {
+router.post('/admin/generate-embeddings', authenticateAdmin, async (req, res) => {
     try {
         // Queue all books for embedding generation
         const queuedCount = await aiDiscoveryService.queueAllBooksForEmbedding();
@@ -342,7 +343,7 @@ router.post('/admin/generate-embeddings', async (req, res) => {
  * POST /api/discovery/admin/process-embeddings
  * Admin: Process embedding queue
  */
-router.post('/admin/process-embeddings', async (req, res) => {
+router.post('/admin/process-embeddings', authenticateAdmin, async (req, res) => {
     try {
         const batchSize = parseInt(req.body.batchSize) || 10;
 
@@ -367,7 +368,7 @@ router.post('/admin/process-embeddings', async (req, res) => {
  * GET /api/discovery/admin/queue-status
  * Admin: Get embedding queue status
  */
-router.get('/admin/queue-status', async (req, res) => {
+router.get('/admin/queue-status', authenticateAdmin, async (req, res) => {
     try {
         const stats = await db.get(`
             SELECT

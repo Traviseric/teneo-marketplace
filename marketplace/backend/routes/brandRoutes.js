@@ -4,6 +4,7 @@ const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -109,7 +110,7 @@ router.get('/:brandId', async (req, res) => {
 });
 
 // Create new brand
-router.post('/', async (req, res) => {
+router.post('/', authenticateAdmin, async (req, res) => {
     try {
         const { brandId, name, tagline, description, template } = req.body;
         
@@ -197,7 +198,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update brand config
-router.put('/:brandId/config', async (req, res) => {
+router.put('/:brandId/config', authenticateAdmin, async (req, res) => {
     try {
         const { brandId } = req.params;
         const updates = req.body;
@@ -225,7 +226,7 @@ router.put('/:brandId/config', async (req, res) => {
 });
 
 // Update brand catalog
-router.put('/:brandId/catalog', async (req, res) => {
+router.put('/:brandId/catalog', authenticateAdmin, async (req, res) => {
     try {
         const { brandId } = req.params;
         const updates = req.body;
@@ -253,7 +254,7 @@ router.put('/:brandId/catalog', async (req, res) => {
 });
 
 // Add book to brand catalog
-router.post('/:brandId/books', async (req, res) => {
+router.post('/:brandId/books', authenticateAdmin, async (req, res) => {
     try {
         const { brandId } = req.params;
         const bookData = req.body;
@@ -293,7 +294,7 @@ router.post('/:brandId/books', async (req, res) => {
 });
 
 // Update book in brand catalog
-router.put('/:brandId/books/:bookId', async (req, res) => {
+router.put('/:brandId/books/:bookId', authenticateAdmin, async (req, res) => {
     try {
         const { brandId, bookId } = req.params;
         const updates = req.body;
@@ -335,7 +336,7 @@ router.put('/:brandId/books/:bookId', async (req, res) => {
 });
 
 // Delete book from brand catalog
-router.delete('/:brandId/books/:bookId', async (req, res) => {
+router.delete('/:brandId/books/:bookId', authenticateAdmin, async (req, res) => {
     try {
         const { brandId, bookId } = req.params;
         
@@ -372,7 +373,7 @@ router.delete('/:brandId/books/:bookId', async (req, res) => {
 });
 
 // Upload brand asset (logo, book cover, etc.)
-router.post('/:brandId/upload', upload.single('file'), async (req, res) => {
+router.post('/:brandId/upload', authenticateAdmin, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -403,7 +404,7 @@ router.post('/:brandId/upload', upload.single('file'), async (req, res) => {
 });
 
 // Delete brand
-router.delete('/:brandId', async (req, res) => {
+router.delete('/:brandId', authenticateAdmin, async (req, res) => {
     try {
         const { brandId } = req.params;
         const brandPath = path.join(__dirname, '../../frontend/brands', brandId);
