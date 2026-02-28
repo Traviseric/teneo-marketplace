@@ -194,7 +194,7 @@ Purchase Date: ${new Date(purchase.purchaseDate).toLocaleDateString()}
 
 Your books are ready for download:
 ${Object.values(purchase.downloads).map(book => 
-    `- ${book.title}: Download at http://localhost:3001/downloads.html?order=${purchase.orderId}`
+    `- ${book.title}: Download at ${window.location.origin}/downloads.html?order=${purchase.orderId}`
 ).join('\n')}
 
 Your download links will expire on ${new Date(purchase.expirationDate).toLocaleDateString()}.

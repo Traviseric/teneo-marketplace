@@ -442,21 +442,41 @@
 </div>
 
 <script>
-// Initialize Stripe
-const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY');
-const elements = stripe.elements();
-const cardElement = elements.create('card');
-cardElement.mount('#card-element');
+// Initialize Stripe — key loaded from backend config endpoint
+let stripe, elements, cardElement;
 
-// Handle card errors
-cardElement.on('change', ({error}) => {
-    const displayError = document.getElementById('card-errors');
-    if (error) {
-        displayError.textContent = error.message;
-    } else {
-        displayError.textContent = '';
+function initStripe(publishableKey) {
+    if (!publishableKey) {
+        console.error('[Cart] Stripe publishable key not configured');
+        return;
     }
-});
+    stripe = Stripe(publishableKey);
+    elements = stripe.elements();
+    cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    // Handle card errors
+    cardElement.on('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+            displayError.textContent = error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+}
+
+// Use key already loaded by config.js, or fetch it
+(function setupStripe() {
+    if (window.STRIPE_PUBLISHABLE_KEY) {
+        initStripe(window.STRIPE_PUBLISHABLE_KEY);
+    } else {
+        fetch('/api/config/frontend')
+            .then(function(r) { return r.json(); })
+            .then(function(cfg) { initStripe(cfg.stripePublishableKey); })
+            .catch(function(err) { console.error('[Cart] Failed to load Stripe config:', err); });
+    }
+})();
 
 // Cart data (in real app, load from session/API)
 let cart = {

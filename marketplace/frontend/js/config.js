@@ -1,14 +1,20 @@
 // API Configuration
-// This file centralizes all API endpoints and configuration
+// Centralizes all API endpoints and auto-detects environment
+
+const _IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const _API_BASE = _IS_DEV ? 'http://localhost:3001' : '';
 
 window.API_CONFIG = {
-    // Main API Base URL
-    API_URL: 'https://teneo-marketplace-api.onrender.com',
-    
+    // Auto-detected base URL — empty string means same-origin in production
+    API_BASE: _API_BASE,
+
+    // For legacy compatibility (was a hardcoded Render URL)
+    API_URL: _API_BASE,
+
     // API Endpoints
     ENDPOINTS: {
         BOOKS: '/api/books',
-        CHECKOUT: '/api/create-checkout-session',
+        CHECKOUT: '/api/checkout/create-session',
         DOWNLOAD_TOKEN: '/api/download/create-token',
         DOWNLOAD_FILE: '/api/download/file',
         NETWORK_SEARCH: '/api/network/search',
@@ -17,33 +23,44 @@ window.API_CONFIG = {
         NETWORK_STATS: '/api/network/stats',
         NETWORK_PING: '/api/network/ping',
         NEWSLETTER: '/api/newsletter',
-        WEBHOOK: '/api/checkout/webhook'
+        WEBHOOK: '/api/checkout/webhook',
+        AUTH_ME: '/api/auth/me',
+        AUTH_LOGIN: '/api/auth/login',
+        AUTH_LOGOUT: '/api/auth/logout',
+        FRONTEND_CONFIG: '/api/config/frontend'
     },
-    
+
     // Network Configuration
     NETWORK: {
-        TIMEOUT: 5000, // 5 second timeout for network requests
+        TIMEOUT: 5000,
         MAX_RETRIES: 3,
         RETRY_DELAY: 1000
     },
-    
-    // Environment Detection
-    IS_DEVELOPMENT: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
-    
-    // Helper function to build full URL
+
+    IS_DEVELOPMENT: _IS_DEV,
+
+    // Helper: build full URL (no-op in production since API_BASE is '')
     buildURL: function(endpoint) {
-        return this.API_URL + endpoint;
+        return this.API_BASE + endpoint;
     },
-    
-    // Helper function for network store API calls
+
     buildNetworkURL: function(storeApiBase, endpoint) {
         return storeApiBase + endpoint;
     }
 };
 
-// For backwards compatibility, also set as global
-window.API_URL = window.API_CONFIG.API_URL;
+// Legacy global
+window.API_URL = window.API_CONFIG.API_BASE;
 
-    API_URL: window.API_CONFIG.API_URL,
-    Environment: window.API_CONFIG.IS_DEVELOPMENT ? 'Development' : 'Production'
-});
+// Load Stripe publishable key from backend config endpoint
+window.STRIPE_PUBLISHABLE_KEY = window.STRIPE_PUBLISHABLE_KEY || '';
+(function loadFrontendConfig() {
+    fetch(window.API_CONFIG.buildURL('/api/config/frontend'))
+        .then(function(r) { return r.json(); })
+        .then(function(cfg) {
+            if (cfg && cfg.stripePublishableKey) {
+                window.STRIPE_PUBLISHABLE_KEY = cfg.stripePublishableKey;
+            }
+        })
+        .catch(function() { /* config endpoint optional */ });
+})();

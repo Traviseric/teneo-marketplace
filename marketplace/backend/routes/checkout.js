@@ -66,6 +66,38 @@ router.post('/create-session', async (req, res) => {
   }
 });
 
+// Retrieve Stripe session details for success page analytics
+router.get('/session/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    if (!sessionId || !sessionId.startsWith('cs_')) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['line_items']
+    });
+
+    res.json({
+      success: true,
+      orderId: session.metadata?.orderId || sessionId,
+      bookTitle: session.metadata?.bookTitle || 'Book purchase',
+      bookAuthor: session.metadata?.bookAuthor || '',
+      amount: session.amount_total || 0,
+      currency: session.currency || 'usd',
+      customerEmail: session.customer_email || session.customer_details?.email || '',
+      items: (session.line_items?.data || []).map(item => ({
+        name: item.description || item.price?.product_data?.name || 'Book',
+        quantity: item.quantity,
+        amount: item.amount_total
+      }))
+    });
+  } catch (error) {
+    console.error('Error retrieving Stripe session:', error);
+    res.status(500).json({ error: 'Failed to retrieve session', message: error.message });
+  }
+});
+
 // Stripe webhook handler
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
   const sig = req.headers['stripe-signature'];

@@ -449,6 +449,7 @@
                     <a href="/network.html">Network Search</a>
                     <a href="/revolution.html">Revolution</a>
                     <a href="/cart.html">Cart</a>
+                    <span id="nav-auth-placeholder"></span>
                 </nav>
             </div>
         </div>
@@ -640,6 +641,31 @@
         }
 
         init();
+    </script>
+    <script>
+        // Navbar auth state detection
+        (async function updateNavAuth() {
+            const placeholder = document.getElementById('nav-auth-placeholder');
+            if (!placeholder) return;
+            try {
+                const resp = await fetch('/api/auth/me');
+                if (resp.ok) {
+                    const user = await resp.json();
+                    placeholder.innerHTML =
+                        '<a href="/account-dashboard.html" style="color:inherit;text-decoration:none;">My Account</a>' +
+                        ' | <a href="#" id="nav-logout-link" style="color:inherit;text-decoration:none;">Sign out</a>';
+                    document.getElementById('nav-logout-link').addEventListener('click', async function(e) {
+                        e.preventDefault();
+                        await fetch('/api/auth/logout', { method: 'POST' }).catch(()=>{});
+                        window.location.reload();
+                    });
+                } else {
+                    placeholder.innerHTML = '<a href="/login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
+                }
+            } catch (_) {
+                placeholder.innerHTML = '<a href="/login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
+            }
+        })();
     </script>
 </body>
 </html>

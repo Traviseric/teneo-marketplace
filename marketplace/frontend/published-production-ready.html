@@ -374,9 +374,8 @@
                 
                 // Try multiple endpoints for reliability
                 const endpoints = [
-                    'http://localhost:3004/api/published/dashboard',  // Simple server
-                    '/api/published/dashboard',                        // Main backend
-                    'http://localhost:3001/api/published/dashboard'    // Direct backend
+                    '/api/published/dashboard',                     // Main backend (same-origin)
+                    'http://localhost:3001/api/published/dashboard' // Direct backend (dev)
                 ];
                 
                 for (const endpoint of endpoints) {

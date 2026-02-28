@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Teneo Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #111827;
+            --accent: #7C3AED;
+            --success: #10B981;
+            --danger: #EF4444;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text: #111827;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(255,255,255,0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-auth {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .nav-auth a { color: var(--text-muted); text-decoration: none; }
+        .nav-auth a:hover { color: var(--text); }
+
+        .btn-logout {
+            padding: 0.4rem 0.875rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover { background: var(--background); }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5rem 24px;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.375rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+        }
+
+        .user-meta {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #6D28D9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-details h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .user-details p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.125rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .section-header i {
+            color: var(--accent);
+            width: 18px;
+            text-align: center;
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+        }
+
+        .order-row:last-child { border-bottom: none; }
+
+        .order-title {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9375rem;
+        }
+
+        .order-meta {
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            margin-top: 0.125rem;
+        }
+
+        .order-amount {
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            font-size: 0.9375rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success { background: rgba(16,185,129,0.1); color: #065f46; }
+        .badge-pending { background: rgba(245,158,11,0.1); color: #92400e; }
+
+        .btn-download {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .btn-download:hover { background: #6D28D9; }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            height: 1em;
+            display: inline-block;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .course-placeholder {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .order-row { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">Teneo Marketplace</a>
+            <div class="nav-auth">
+                <a href="/">Browse</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sign out
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>My Account</h1>
+            <p id="user-since"></p>
+        </div>
+
+        <!-- User info -->
+        <div class="user-meta">
+            <div class="avatar" id="user-avatar">?</div>
+            <div class="user-details">
+                <h2 id="user-name">Loading...</h2>
+                <p id="user-email">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-receipt"></i>
+                <h2>Order History</h2>
+            </div>
+            <div class="section-body" id="orders-body">
+                <div class="empty-state">
+                    <span class="skeleton" style="width: 200px;">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloads -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-download"></i>
+                <h2>Downloads</h2>
+            </div>
+            <div class="section-body" id="downloads-body">
+                <div class="empty-state">
+                    <span class="skeleton" style="width: 200px;">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h2>Course Access</h2>
+            </div>
+            <div class="section-body">
+                <p class="course-placeholder">
+                    <i class="fas fa-info-circle"></i>
+                    Course enrollment is coming soon. Purchased course access will appear here.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Require auth — redirect to login if not authenticated
+        async function requireAuth() {
+            try {
+                const resp = await fetch('/api/auth/me');
+                if (!resp.ok) {
+                    window.location.href = '/login.html?error=session_expired&message=Please+sign+in+to+view+your+account';
+                    return null;
+                }
+                return await resp.json();
+            } catch (_) {
+                window.location.href = '/login.html';
+                return null;
+            }
+        }
+
+        async function loadOrders(userEmail) {
+            const body = document.getElementById('orders-body');
+            try {
+                const resp = await fetch('/api/admin/orders?email=' + encodeURIComponent(userEmail || ''));
+                if (!resp.ok) throw new Error('failed');
+                const data = await resp.json();
+                const orders = data.orders || data || [];
+                if (!orders.length) {
+                    body.innerHTML = '<div class="empty-state">No orders yet. <a href="/">Browse books</a> to get started.</div>';
+                    return orders;
+                }
+                body.innerHTML = orders.map(o => `
+                    <div class="order-row">
+                        <div>
+                            <div class="order-title">${escHtml(o.book_title || o.bookTitle || 'Book purchase')}</div>
+                            <div class="order-meta">Order #${escHtml(String(o.order_id || o.orderId || o.id))} &middot; ${formatDate(o.created_at || o.createdAt)}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+                            <span class="badge badge-success">Completed</span>
+                            <span class="order-amount">$${parseFloat(o.amount || o.total_amount || 0).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `).join('');
+                return orders;
+            } catch (_) {
+                body.innerHTML = '<div class="empty-state">Orders unavailable right now.</div>';
+                return [];
+            }
+        }
+
+        async function loadDownloads(orders) {
+            const body = document.getElementById('downloads-body');
+            if (!orders.length) {
+                body.innerHTML = '<div class="empty-state">No downloads yet.</div>';
+                return;
+            }
+            const rows = orders
+                .filter(o => o.order_id || o.orderId || o.id)
+                .map(o => {
+                    const orderId = o.order_id || o.orderId || o.id;
+                    return `
+                        <div class="order-row">
+                            <div>
+                                <div class="order-title">${escHtml(o.book_title || o.bookTitle || 'Book')}</div>
+                                <div class="order-meta">Order #${escHtml(String(orderId))}</div>
+                            </div>
+                            <a href="/downloads.html?order=${encodeURIComponent(orderId)}" class="btn-download">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    `;
+                });
+            body.innerHTML = rows.length ? rows.join('') : '<div class="empty-state">No downloads available.</div>';
+        }
+
+        function formatDate(str) {
+            if (!str) return '';
+            try { return new Date(str).toLocaleDateString(); } catch(_) { return str; }
+        }
+
+        function escHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async function() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } catch(_) {}
+            window.location.href = '/login.html';
+        });
+
+        // Boot
+        (async function boot() {
+            const user = await requireAuth();
+            if (!user) return;
+
+            // Populate user info
+            const name = user.name || user.email || 'User';
+            const email = user.email || '';
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('user-email').textContent = email;
+            document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+            if (user.created_at || user.createdAt) {
+                document.getElementById('user-since').textContent =
+                    'Member since ' + formatDate(user.created_at || user.createdAt);
+            }
+
+            const orders = await loadOrders(email);
+            await loadDownloads(orders);
+        })();
+    </script>
+</body>
+</html>

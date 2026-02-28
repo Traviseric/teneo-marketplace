@@ -251,63 +251,86 @@
     <script src="js/cart.js"></script>
     <script src="js/newsletter.js"></script>
     <script>
-        // Parse session ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
-        
-        // Load order details
+
         document.addEventListener('DOMContentLoaded', async function() {
             if (!sessionId) {
                 showError('Invalid payment session');
                 return;
             }
 
-            // Show processing state
+            // Guard: only fire analytics once per session_id (prevents refresh duplicates)
+            const analyticsKey = 'analytics_fired_' + sessionId;
+            const alreadyFired = sessionStorage.getItem(analyticsKey);
+
             document.getElementById('processing').style.display = 'block';
 
-            // Simulate processing delay
-            setTimeout(() => {
-                processSuccessfulPayment(sessionId);
-            }, 2000);
-        });
-
-        function processSuccessfulPayment(sessionId) {
-            if (!window.delivery) {
-                showError('Delivery system not available');
-                return;
-            }
-
             try {
-                // Handle the successful payment
-                const orderId = window.delivery.handleStripeSuccess(sessionId);
-                
+                const response = await fetch('/api/checkout/session/' + sessionId);
+                const orderData = await response.json();
+
+                if (!orderData.success) {
+                    throw new Error(orderData.error || 'Failed to load order');
+                }
+
+                const orderId = orderData.orderId;
+                const amountDollars = (orderData.amount / 100).toFixed(2);
+
                 // Update UI
                 document.getElementById('order-id').textContent = orderId;
+                document.getElementById('book-title').textContent = orderData.bookTitle || 'Book purchase';
+                document.getElementById('amount').textContent = '$' + amountDollars;
                 document.getElementById('processing').style.display = 'none';
                 document.getElementById('action-buttons').style.display = 'flex';
-                
-                // Update download button
-                const downloadBtn = document.getElementById('download-btn');
-                downloadBtn.href = `/downloads.html?order=${orderId}`;
-                
+                document.getElementById('download-btn').href = '/downloads.html?order=' + orderId;
+
                 // Clear cart
                 if (window.cart) {
-                    window.cart.clearCart(false); // Don't show confirmation
+                    window.cart.clearCart(false);
                 }
-                
-                // Update order details with actual data
-                if (window.cart && window.cart.cart.length > 0) {
-                    const items = window.cart.cart;
-                    document.getElementById('book-title').textContent = items.map(item => item.title).join(', ');
-                    document.getElementById('amount').textContent = `$${window.cart.getCartTotal().toFixed(2)}`;
-                } else {
-                    document.getElementById('book-title').textContent = 'Your Books';
-                    document.getElementById('amount').textContent = 'Paid';
+
+                // Fire analytics only once per session
+                if (!alreadyFired) {
+                    sessionStorage.setItem(analyticsKey, '1');
+                    fireAnalytics(orderData, amountDollars);
                 }
-                
+
             } catch (error) {
-                console.error('Error processing payment:', error);
-                showError('There was an error processing your order. Please contact support.');
+                console.error('Error loading order details:', error);
+                // Fallback: show generic success without order data
+                document.getElementById('order-id').textContent = sessionId.substring(0, 16) + '...';
+                document.getElementById('book-title').textContent = 'Your Books';
+                document.getElementById('amount').textContent = 'Paid';
+                document.getElementById('processing').style.display = 'none';
+                document.getElementById('action-buttons').style.display = 'flex';
+            }
+        });
+
+        function fireAnalytics(orderData, amountDollars) {
+            // Google Analytics 4
+            if (typeof gtag === 'function') {
+                gtag('event', 'purchase', {
+                    transaction_id: orderData.orderId,
+                    value: parseFloat(amountDollars),
+                    currency: (orderData.currency || 'usd').toUpperCase(),
+                    items: (orderData.items || []).map(function(item) {
+                        return {
+                            item_name: item.name,
+                            quantity: item.quantity,
+                            price: (item.amount / 100)
+                        };
+                    })
+                });
+            }
+
+            // Facebook Pixel
+            if (typeof fbq === 'function') {
+                fbq('track', 'Purchase', {
+                    value: parseFloat(amountDollars),
+                    currency: (orderData.currency || 'USD').toUpperCase(),
+                    order_id: orderData.orderId
+                });
             }
         }
 
@@ -324,22 +347,6 @@
                     <a href="/" class="btn btn-primary">Return Home</a>
                 </div>
             `;
-        }
-        
-        // Optional: Fetch real order details from Stripe
-        async function fetchOrderDetails(sessionId) {
-            try {
-                // This would call your backend to retrieve session details
-                const response = await fetch(`/api/checkout-session/${sessionId}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('book-title').textContent = data.bookTitle || 'Book purchase';
-                    document.getElementById('amount').textContent = `$${data.amount || '0.00'}`;
-                }
-            } catch (error) {
-                console.error('Error fetching order details:', error);
-            }
         }
     </script>
 </body>
