@@ -84,6 +84,7 @@ const censorshipTrackerRoutes = require('./routes/censorshipTracker');
 const nftRoutes = require('./routes/nft');
 const authRoutes = require('./routes/auth');
 const couponsRoutes = require('./routes/couponsRoutes');
+const emailTrackingRoutes = require('./routes/emailTracking');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -204,6 +205,7 @@ app.use('/api/nft', nftRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
+app.use('/api/email', emailTrackingRoutes);
 
 // Funnel builder API
 app.use('/api/funnels', funnelRoutes);

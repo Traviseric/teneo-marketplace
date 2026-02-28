@@ -294,6 +294,26 @@ class EmailMarketingService {
   }
 
   /**
+   * Inject tracking pixel and wrapped click URLs into an HTML email body.
+   * Returns the modified HTML.
+   */
+  injectTracking(html, sendId) {
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+
+    // Wrap absolute http/https links with click tracker
+    const tracked = html.replace(
+      /href="(https?:\/\/[^"]+)"/gi,
+      (_, url) => `href="${baseUrl}/api/email/track/click/${sendId}?url=${encodeURIComponent(url)}"`
+    );
+
+    // Append 1×1 tracking pixel before </body>, or at end if no </body> tag
+    const pixel = `<img src="${baseUrl}/api/email/track/open/${sendId}" width="1" height="1" alt="" style="display:none;border:0">`;
+    return tracked.includes('</body>')
+      ? tracked.replace('</body>', `${pixel}</body>`)
+      : tracked + pixel;
+  }
+
+  /**
    * Send sequence email
    */
   async sendSequenceEmail(sequenceEmailData) {
@@ -326,23 +346,33 @@ class EmailMarketingService {
       SUBSCRIBER_EMAIL: email
     });
 
+    // Pre-insert send record so we have an ID to embed in tracking URLs
+    const sendRecord = await this.db.run(
+      `INSERT INTO email_sends
+       (subscriber_id, email_type, sequence_email_id, template_id, subject, from_email, to_email, status, sent_at)
+       VALUES (?, 'sequence', ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)`,
+      [subscriber_id, sequence_email_id, template_id, subject, from_email, email]
+    );
+    const sendId = sendRecord.lastID;
+
+    // Inject open pixel and wrapped click URLs
+    const trackedHtml = this.injectTracking(processedHtml, sendId);
+
     try {
       // Send via email service
       await emailService.sendEmail({
         to: email,
         subject,
-        html: processedHtml,
+        html: trackedHtml,
         text: processedText,
         from: `${from_name} <${from_email}>`,
         replyTo: reply_to
       });
 
-      // Log send
+      // Mark as sent
       await this.db.run(
-        `INSERT INTO email_sends
-         (subscriber_id, email_type, sequence_email_id, template_id, subject, from_email, to_email, status, sent_at)
-         VALUES (?, 'sequence', ?, ?, ?, ?, ?, 'sent', CURRENT_TIMESTAMP)`,
-        [subscriber_id, sequence_email_id, template_id, subject, from_email, email]
+        `UPDATE email_sends SET status = 'sent' WHERE id = ?`,
+        [sendId]
       );
 
       // Update activity
@@ -354,18 +384,51 @@ class EmailMarketingService {
         [subscriber_id]
       );
 
-      return { success: true };
+      return { success: true, sendId };
     } catch (error) {
-      // Log failure
+      // Mark as failed
       await this.db.run(
-        `INSERT INTO email_sends
-         (subscriber_id, email_type, sequence_email_id, template_id, subject, from_email, to_email, status, error_message, sent_at)
-         VALUES (?, 'sequence', ?, ?, ?, ?, ?, 'failed', ?, CURRENT_TIMESTAMP)`,
-        [subscriber_id, sequence_email_id, template_id, subject, from_email, email, error.message]
-      );
+        `UPDATE email_sends SET status = 'failed', error_message = ? WHERE id = ?`,
+        [error.message, sendId]
+      ).catch(() => {});
 
       throw error;
     }
+  }
+
+  /**
+   * Get open/click stats for a specific email send.
+   * Returns open_count, click_count, unique_opens.
+   */
+  async getEmailStats(sendId) {
+    const [send, openCount, clickCount, uniqueOpens] = await Promise.all([
+      this.db.get(
+        'SELECT id, to_email, subject, status, sent_at, opened_at, clicked_at FROM email_sends WHERE id = ?',
+        [sendId]
+      ),
+      this.db.get(
+        `SELECT COUNT(*) AS count FROM email_events WHERE send_id = ? AND event_type = 'open'`,
+        [sendId]
+      ),
+      this.db.get(
+        `SELECT COUNT(*) AS count FROM email_events WHERE send_id = ? AND event_type = 'click'`,
+        [sendId]
+      ),
+      this.db.get(
+        `SELECT COUNT(DISTINCT ip_address) AS count FROM email_events WHERE send_id = ? AND event_type = 'open'`,
+        [sendId]
+      )
+    ]);
+
+    return {
+      sendId,
+      send: send || null,
+      stats: {
+        open_count: openCount ? openCount.count : 0,
+        click_count: clickCount ? clickCount.count : 0,
+        unique_opens: uniqueOpens ? uniqueOpens.count : 0
+      }
+    };
   }
 
   // ================================================
