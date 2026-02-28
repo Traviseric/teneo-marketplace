@@ -10,6 +10,7 @@ const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-trac
 const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
 const coursesSchemaPath = path.join(__dirname, 'schema-courses.sql');
 const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
+const emailMarketingSchemaPath = path.join(__dirname, 'schema-email-marketing.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -34,6 +35,7 @@ const censorshipTrackerSchema = fs.existsSync(censorshipTrackerSchemaPath) ? fs.
 const nftSchema = fs.existsSync(nftSchemaPath) ? fs.readFileSync(nftSchemaPath, 'utf8') : '';
 const coursesSchema = fs.existsSync(coursesSchemaPath) ? fs.readFileSync(coursesSchemaPath, 'utf8') : '';
 const funnelsSchema = fs.existsSync(funnelsSchemaPath) ? fs.readFileSync(funnelsSchemaPath, 'utf8') : '';
+const emailMarketingSchema = fs.existsSync(emailMarketingSchemaPath) ? fs.readFileSync(emailMarketingSchemaPath, 'utf8') : '';
 
 db.serialize(() => {
     // Execute main schema
@@ -107,6 +109,17 @@ db.serialize(() => {
                 console.error('Error creating Funnels schema:', err);
             } else {
                 console.log('✅ Funnels schema created successfully');
+            }
+        });
+    }
+
+    // Execute Email Marketing schema if exists
+    if (emailMarketingSchema) {
+        db.exec(emailMarketingSchema, (err) => {
+            if (err) {
+                console.error('Error creating Email Marketing schema:', err);
+            } else {
+                console.log('✅ Email Marketing schema created successfully');
             }
         });
     }

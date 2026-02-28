@@ -380,6 +380,25 @@ BEGIN
     UPDATE email_sequences SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
+-- Email Events (individual open/click event log for per-send analytics)
+CREATE TABLE IF NOT EXISTS email_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type TEXT NOT NULL CHECK(event_type IN ('open', 'click')),
+    send_id INTEGER NOT NULL,
+    subscriber_id INTEGER,
+    url TEXT,            -- populated for click events
+    ip_address TEXT,
+    user_agent TEXT,
+    recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (send_id) REFERENCES email_sends(id) ON DELETE CASCADE,
+    FOREIGN KEY (subscriber_id) REFERENCES subscribers(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_events_send ON email_events(send_id);
+CREATE INDEX IF NOT EXISTS idx_email_events_type ON email_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_email_events_subscriber ON email_events(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_email_events_recorded ON email_events(recorded_at);
+
 -- ================================================
 -- SUCCESS!
 -- ================================================
