@@ -649,4 +649,44 @@ router.get('/badge-definitions', async (req, res) => {
     }
 });
 
+/**
+ * GET /api/books/:bookId/ipfs-hash
+ * Returns the IPFS CID for a book that has been pinned.
+ * Public — IPFS hashes are not secrets (content is public on IPFS).
+ */
+router.get('/books/:bookId/ipfs-hash', publicApiLimit, async (req, res) => {
+    try {
+        const { bookId } = req.params;
+
+        const pin = await db.get(
+            `SELECT ipfs_hash, pinned_at FROM ipfs_pins
+             WHERE book_id = ? AND pin_status = 'pinned'
+             ORDER BY pinned_at DESC LIMIT 1`,
+            [bookId]
+        );
+
+        if (!pin) {
+            return res.status(404).json({
+                success: false,
+                error: 'No IPFS pin found for this book'
+            });
+        }
+
+        res.json({
+            success: true,
+            bookId,
+            ipfsHash: pin.ipfs_hash,
+            ipfsUrl: `https://ipfs.io/ipfs/${pin.ipfs_hash}`,
+            pinnedAt: pin.pinned_at
+        });
+
+    } catch (error) {
+        console.error('Error fetching IPFS hash:', error);
+        res.status(500).json({
+            success: false,
+            error: safeMessage(error)
+        });
+    }
+});
+
 module.exports = router;

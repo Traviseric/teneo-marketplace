@@ -21,6 +21,8 @@ const checkoutLimiter = process.env.NODE_ENV === 'test'
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
+const nftService = require('../services/nftService');
+const db = require('../database/database');
 
 // Sanitize brandId to prevent path traversal
 function sanitizeBrandId(brandId) {
@@ -274,10 +276,17 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
           console.error('Failed to generate download token:', tokenResponse.data.error);
         }
 
+        // Pin purchased book to IPFS for censorship-resistant delivery (non-fatal)
+        if (process.env.PINATA_JWT && bookId) {
+          const bookFilePath = path.join(__dirname, '../books', `${bookId}.pdf`);
+          nftService.pinBookToIPFS(bookId, bookFilePath)
+            .catch(err => console.error('[IPFS] Pin failed (non-fatal):', err.message));
+        }
+
       } catch (error) {
         console.error('Error processing payment completion:', error);
       }
-      
+
       break;
     
     default:
