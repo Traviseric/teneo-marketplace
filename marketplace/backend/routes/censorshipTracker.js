@@ -11,6 +11,7 @@ const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const { publicApiLimit } = require('../middleware/rateLimits');
 const { isValidEmail } = require('../utils/validate');
+const emailService = require('../services/emailService');
 
 /**
  * GET /api/censorship/recent-bans
@@ -419,12 +420,13 @@ router.post('/subscribe', publicApiLimit, async (req, res) => {
             unsubscribeToken
         ]);
 
-        // TODO: Send verification email
+        // Send verification email with token — do not expose token in response
+        const verifyUrl = `${process.env.APP_URL || ''}/api/censorship/verify/${verificationToken}`;
+        await emailService.sendAlertVerificationEmail({ to: email, verifyUrl });
 
         res.json({
             success: true,
-            message: 'Subscription created. Please check your email to verify.',
-            verificationToken // Remove in production, send via email only
+            message: 'Subscription created. Please check your email to verify your subscription.'
         });
 
     } catch (error) {

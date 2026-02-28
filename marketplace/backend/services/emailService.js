@@ -973,6 +973,33 @@ Questions about your order? Reply to this email or visit our support page.
       return { success: false, error: error.message };
     }
   }
+
+  async sendAlertVerificationEmail({ to, verifyUrl }) {
+    if (!this.transporter) {
+      console.warn('Email service not configured — cannot send verification email');
+      return { success: false, error: 'Email service not configured' };
+    }
+
+    try {
+      const result = await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Verify your censorship alert subscription',
+        html: `
+          <p>Thank you for subscribing to censorship alerts.</p>
+          <p>Click the link below to verify your email address and activate your subscription:</p>
+          <p><a href="${verifyUrl}">${verifyUrl}</a></p>
+          <p>If you did not request this subscription, you can ignore this email.</p>
+        `,
+        text: `Verify your censorship alert subscription:\n\n${verifyUrl}\n\nIf you did not request this, ignore this email.`
+      });
+
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Error sending alert verification email:', error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 module.exports = new EmailService();
