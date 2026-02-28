@@ -253,6 +253,12 @@
         @media (max-width: 600px) {
             .order-row { flex-wrap: wrap; }
         }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
     </style>
 </head>
 <body>
@@ -262,7 +268,7 @@
             <div class="nav-auth">
                 <a href="/">Browse</a>
                 <button class="btn-logout" id="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Sign out
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out
                 </button>
             </div>
         </div>
@@ -276,7 +282,7 @@
 
         <!-- User info -->
         <div class="user-meta">
-            <div class="avatar" id="user-avatar">?</div>
+            <div class="avatar" role="img" aria-label="User avatar" id="user-avatar">?</div>
             <div class="user-details">
                 <h2 id="user-name">Loading...</h2>
                 <p id="user-email">Loading...</p>
@@ -286,7 +292,7 @@
         <!-- Orders -->
         <div class="section">
             <div class="section-header">
-                <i class="fas fa-receipt"></i>
+                <i class="fas fa-receipt" aria-hidden="true"></i>
                 <h2>Order History</h2>
             </div>
             <div class="section-body" id="orders-body">
@@ -299,7 +305,7 @@
         <!-- Downloads -->
         <div class="section">
             <div class="section-header">
-                <i class="fas fa-download"></i>
+                <i class="fas fa-download" aria-hidden="true"></i>
                 <h2>Downloads</h2>
             </div>
             <div class="section-body" id="downloads-body">
@@ -312,12 +318,12 @@
         <!-- Courses -->
         <div class="section">
             <div class="section-header">
-                <i class="fas fa-graduation-cap"></i>
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
                 <h2>Course Access</h2>
             </div>
             <div class="section-body">
                 <p class="course-placeholder">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
                     Course enrollment is coming soon. Purchased course access will appear here.
                 </p>
             </div>
@@ -365,8 +371,9 @@
                     </div>
                 `).join('');
                 return orders;
-            } catch (_) {
-                body.innerHTML = '<div class="empty-state">Orders unavailable right now.</div>';
+            } catch (err) {
+                body.innerHTML = '<div class="empty-state">Unable to load orders. Please refresh the page.</div>';
+                console.error('Orders fetch failed:', err);
                 return [];
             }
         }
@@ -388,7 +395,7 @@
                                 <div class="order-meta">Order #${escHtml(String(orderId))}</div>
                             </div>
                             <a href="/downloads.html?order=${encodeURIComponent(orderId)}" class="btn-download">
-                                <i class="fas fa-download"></i> Download
+                                <i class="fas fa-download" aria-hidden="true"></i> Download
                             </a>
                         </div>
                     `;
@@ -423,7 +430,9 @@
             const email = user.email || '';
             document.getElementById('user-name').textContent = name;
             document.getElementById('user-email').textContent = email;
-            document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+            const avatarEl = document.getElementById('user-avatar');
+            avatarEl.textContent = name.charAt(0).toUpperCase();
+            avatarEl.setAttribute('aria-label', 'Avatar for ' + name);
             if (user.created_at || user.createdAt) {
                 document.getElementById('user-since').textContent =
                     'Member since ' + formatDate(user.created_at || user.createdAt);
