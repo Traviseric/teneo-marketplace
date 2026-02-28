@@ -1,8 +1,8 @@
 # Teneo Marketplace
 
-**The open source replacement for ClickFunnels, Gumroad, Teachable, and Kajabi.**
+**The open source creator platform with a discovery network.** Every store that joins makes the network stronger.
 
-Store. Courses. Funnels. Email marketing. $0/month. Self-hosted or cloud. Crypto payments via [ArxMint](https://github.com/Traviseric/arxmint). Nostr identity. Can't be deplatformed.
+Store. Courses. Funnels. Email marketing. Cross-store discovery. $0/month. Self-hosted or cloud. Crypto payments via [ArxMint](https://github.com/Traviseric/arxmint). Nostr identity. Can't be deplatformed.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
@@ -64,9 +64,44 @@ Everything you need to replace paid creator platforms:
 
 **Authentication** — Three options: local magic links (zero deps), Teneo Auth SSO (OAuth 2.0 + PKCE), Nostr (NIP-07 via Alby). [Auth setup →](./docs/integration/AUTH_SETUP.md)
 
-**Federated Network** — Cross-store discovery, 10-20% referral revenue sharing. Can't shut down a network of independent nodes.
-
 **Dual-Mode Operation** — Primary: Stripe + standard hosting. Fallback: crypto + offshore VPS. Automatic failover when primary is disrupted. [Architecture →](./docs/core/DUAL_MODE_ARCHITECTURE.md)
+
+---
+
+## The Discovery Network
+
+This isn't just a storefront — it's a **network of storefronts** where every store joining makes every other store more valuable.
+
+**How it works:** Deploy your store → it automatically joins the discovery network → your products appear in cross-store search → customers browsing other stores find you → you earn from your products, other stores earn referral fees for sending you traffic.
+
+**Think Amazon, but decentralized.** Amazon's real product isn't the store — it's the traffic and distribution. Teneo's discovery network does the same thing without a central platform taking 30%. Stores keep 80-90% of revenue; referring stores earn 10-20% for sending customers.
+
+**What's built today:**
+- Cross-store search and catalog aggregation across the network
+- Store registry with health checks and RSA-signed communications
+- Network explorer UI with search, stats, and store connections
+- AI discovery service — semantic search, reading paths, knowledge graph
+- Frontend network client with caching
+
+**What's coming (discovery upgrades ship alongside every marketplace phase):**
+
+| Version | Ships With | What It Adds |
+|---------|-----------|-------------|
+| **v0** | MVP | Cross-store search, product feed, network page |
+| **v1** | Checkout features | Categories, trending products, "stores like this" |
+| **v2** | Revenue tools | Semantic search, AI reading paths, knowledge graph |
+| **v3** | Crypto payments | NIP-99 Nostr listings, relay-based decentralized search |
+| **v4** | Network scale | Transformation-based ranking, community validation |
+
+[Full discovery roadmap →](./docs/ROADMAP.md)
+
+### Store-in-a-Box: Join the Network
+
+| Tier | Price | What You Get |
+|------|-------|-------------|
+| **Self-hosted** | Free | `git clone`, deploy anywhere, auto-join the network |
+| **Managed** | $29-149/mo | One-click deploy on Teneo Cloud, auto-updates, SSL, email |
+| **Done-for-you** | Custom | Full store setup, branding, product migration, training |
 
 ---
 
@@ -117,30 +152,30 @@ Full API docs: [API-DOCUMENTATION.md](./marketplace/backend/API-DOCUMENTATION.md
 
 ## Roadmap
 
-### Phase 1: Core Platform ✅
+Each phase ships marketplace features **and** a discovery network upgrade in parallel.
+
+### Phase 0: MVP + Discovery v0 ✅
 - ✅ Store, courses, email marketing, funnels
-- ✅ Stripe payments (fiat)
-- ✅ Auth system (local magic links + OAuth SSO + PKCE)
-- ✅ Dual-mode operation (Stripe primary, crypto fallback)
-- ✅ Production security hardening
+- ✅ Stripe payments (fiat), auth system, dual-mode operation
+- ✅ Cross-store search, network page, store registry
 
-### Phase 2: Crypto Payments + Nostr Identity (Current)
-- ArxMint payment integration (Lightning checkout, ecash)
-- Nostr auth in marketplace (NIP-07 via Alby — already built in ArxMint)
-- Cross-project sessions (marketplace <-> ArxMint shared HMAC tokens)
-- Federated cross-store discovery
+### Phase 1: Checkout Conversion + Discovery v1 (Current)
+- Coupons, order bumps, upsells, cart recovery, content protection
+- Categories, trending products, "stores like this" recommendations
 
-### Phase 3: Circular Economy
-- Community mints (Fedimint/Cashu via ArxMint) connected to marketplace stores
-- L402 paywalls for premium content (pay-per-article, pay-per-lesson)
-- Nostr-based product discovery (NIP-15/NIP-99 marketplace events)
-- Referral revenue sharing via Lightning (instant affiliate payouts)
+### Phase 2: Revenue & Distribution + Discovery v2
+- Affiliate program, tax workflow, managed hosting, migration tooling
+- Semantic search (AI embeddings), reading paths, knowledge graph
 
-### Phase 4: Network Scale
-- 100+ independent federated nodes
-- Nostr relay-based product indexes
-- Multi-language support
-- Mobile PWA
+### Phase 3: Crypto Differentiators + Discovery v3
+- ArxMint payment integration (Lightning/ecash), Nostr auth, L402 paywalls
+- NIP-99 product listings, Nostr relay-based decentralized search
+
+### Phase 4: Network Scale + Discovery v4
+- Circular economy, liquidity bootstrap, 100+ federated nodes
+- Transformation-based ranking, community validation, progressive disclosure
+
+[Full roadmap →](./docs/ROADMAP.md)
 
 ---
 
@@ -157,7 +192,7 @@ docker-compose up -d    # Deploy
 
 **Full guide:** [MVP_48_HOUR_LAUNCH.md](./docs/quick-start/MVP_48_HOUR_LAUNCH.md)
 
-**Why run a node?** 100% of your own sales. 10-20% referral fees from network discovery. Your brand, your audience. If one node goes down, the network continues.
+**Why run a node?** Your store joins the discovery network on first boot. 100% of your own sales. 10-20% referral fees when network search sends customers to you. Your brand, your audience, your data. If one node goes down, the network continues.
 
 ---
 
@@ -173,4 +208,4 @@ MIT — see [LICENSE](./LICENSE).
 
 ---
 
-**Part of the open creator economy.** [ArxMint](https://github.com/Traviseric/arxmint) (payments) + Teneo Marketplace (storefront) + [Nostr](https://nostr.com) (identity) = a circular crypto economy for creators.
+**Part of the open creator economy.** [ArxMint](https://github.com/Traviseric/arxmint) (payments) + Teneo Marketplace (storefront + discovery network) + [Nostr](https://nostr.com) (identity) = a circular crypto economy where every store makes the network stronger.
