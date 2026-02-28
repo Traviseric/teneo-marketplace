@@ -9,12 +9,13 @@ const router = express.Router();
 const censorshipTracker = require('../services/censorshipTrackerService');
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
+const { publicApiLimit } = require('../middleware/rateLimits');
 
 /**
  * GET /api/censorship/recent-bans
  * Get recently detected bans
  */
-router.get('/recent-bans', async (req, res) => {
+router.get('/recent-bans', publicApiLimit, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
         const platform = req.query.platform;
@@ -69,7 +70,7 @@ router.get('/recent-bans', async (req, res) => {
  * GET /api/censorship/stats
  * Get censorship statistics
  */
-router.get('/stats', async (req, res) => {
+router.get('/stats', publicApiLimit, async (req, res) => {
     try {
         const stats = await db.get(`
             SELECT
@@ -121,7 +122,7 @@ router.get('/stats', async (req, res) => {
  * GET /api/censorship/timeline/:bookId
  * Get censorship timeline for a specific book
  */
-router.get('/timeline/:bookId', async (req, res) => {
+router.get('/timeline/:bookId', publicApiLimit, async (req, res) => {
     try {
         const { bookId } = req.params;
 
@@ -177,7 +178,7 @@ router.get('/timeline/:bookId', async (req, res) => {
  * GET /api/censorship/banned-this-week
  * Get "Banned This Week" feed
  */
-router.get('/banned-this-week', async (req, res) => {
+router.get('/banned-this-week', publicApiLimit, async (req, res) => {
     try {
         const bannedBooks = await db.all(`
             SELECT
@@ -219,7 +220,7 @@ router.get('/banned-this-week', async (req, res) => {
  * GET /api/censorship/archives/:bookId
  * Get Wayback Machine archives for a book
  */
-router.get('/archives/:bookId', async (req, res) => {
+router.get('/archives/:bookId', publicApiLimit, async (req, res) => {
     try {
         const { bookId } = req.params;
 
@@ -386,7 +387,7 @@ router.get('/admin/monitored-books', authenticateAdmin, async (req, res) => {
  * POST /api/censorship/subscribe
  * Subscribe to censorship alerts
  */
-router.post('/subscribe', async (req, res) => {
+router.post('/subscribe', publicApiLimit, async (req, res) => {
     try {
         const { email, preferences = {} } = req.body;
 

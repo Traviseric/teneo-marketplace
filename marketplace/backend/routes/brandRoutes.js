@@ -5,6 +5,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
+const { publicApiLimit } = require('../middleware/rateLimits');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -42,7 +43,7 @@ const upload = multer({
 });
 
 // Get all brands
-router.get('/', async (req, res) => {
+router.get('/', publicApiLimit, async (req, res) => {
     try {
         const brandsPath = path.join(__dirname, '../../frontend/brands');
         const brandDirs = await fs.readdir(brandsPath);
@@ -86,7 +87,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get specific brand details
-router.get('/:brandId', async (req, res) => {
+router.get('/:brandId', publicApiLimit, async (req, res) => {
     try {
         const { brandId } = req.params;
         const config = await loadBrandConfig(brandId);

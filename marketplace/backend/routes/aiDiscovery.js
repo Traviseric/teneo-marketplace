@@ -9,12 +9,13 @@ const router = express.Router();
 const aiDiscoveryService = require('../services/aiDiscoveryService');
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
+const { aiRateLimit, publicApiLimit } = require('../middleware/rateLimits');
 
 /**
  * POST /api/discovery/semantic-search
  * Semantic search using natural language queries
  */
-router.post('/semantic-search', async (req, res) => {
+router.post('/semantic-search', aiRateLimit, async (req, res) => {
     try {
         const {
             query,
@@ -68,7 +69,7 @@ router.post('/semantic-search', async (req, res) => {
  * GET /api/discovery/suppressed-books
  * Get "What They Don't Want You to Read" feed
  */
-router.get('/suppressed-books', async (req, res) => {
+router.get('/suppressed-books', publicApiLimit, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 20;
 
@@ -93,7 +94,7 @@ router.get('/suppressed-books', async (req, res) => {
  * POST /api/discovery/reading-path
  * Generate AI-powered reading path
  */
-router.post('/reading-path', async (req, res) => {
+router.post('/reading-path', aiRateLimit, async (req, res) => {
     try {
         const { topic, level = 'beginner' } = req.body;
 
@@ -132,7 +133,7 @@ router.post('/reading-path', async (req, res) => {
  * GET /api/discovery/reading-paths
  * Get all reading paths (optionally filtered by topic)
  */
-router.get('/reading-paths', async (req, res) => {
+router.get('/reading-paths', publicApiLimit, async (req, res) => {
     try {
         const { topic, difficulty, featured } = req.query;
 
@@ -180,7 +181,7 @@ router.get('/reading-paths', async (req, res) => {
  * GET /api/discovery/knowledge-graph/:bookId
  * Get knowledge graph for a book (related books, citations, etc.)
  */
-router.get('/knowledge-graph/:bookId', async (req, res) => {
+router.get('/knowledge-graph/:bookId', publicApiLimit, async (req, res) => {
     try {
         const { bookId } = req.params;
         const depth = parseInt(req.query.depth) || 1;
@@ -249,7 +250,7 @@ router.get('/knowledge-graph/:bookId', async (req, res) => {
  * GET /api/discovery/controversy/:bookId
  * Get controversy metrics for a book
  */
-router.get('/controversy/:bookId', async (req, res) => {
+router.get('/controversy/:bookId', publicApiLimit, async (req, res) => {
     try {
         const { bookId } = req.params;
 
@@ -403,7 +404,7 @@ router.get('/admin/queue-status', authenticateAdmin, async (req, res) => {
  * GET /api/discovery/stats
  * Get AI discovery system statistics
  */
-router.get('/stats', async (req, res) => {
+router.get('/stats', publicApiLimit, async (req, res) => {
     try {
         const stats = await db.get(`
             SELECT

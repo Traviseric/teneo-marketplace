@@ -12,6 +12,7 @@ const express = require('express');
 const router = express.Router();
 const nftService = require('../services/nftService');
 const db = require('../database/database');
+const { publicApiLimit } = require('../middleware/rateLimits');
 
 /**
  * POST /api/nft/mint
@@ -24,7 +25,7 @@ const db = require('../database/database');
  *   bookData: { title, author, description, category, filePath }
  * }
  */
-router.post('/mint', async (req, res) => {
+router.post('/mint', publicApiLimit, async (req, res) => {
     try {
         const { userAddress, bookId, brand, bookData } = req.body;
 
@@ -76,7 +77,7 @@ router.post('/mint', async (req, res) => {
  * GET /api/nft/library/:address
  * Get all books owned by a wallet address
  */
-router.get('/library/:address', async (req, res) => {
+router.get('/library/:address', publicApiLimit, async (req, res) => {
     try {
         const { address } = req.params;
         const books = await nftService.getUserLibrary(address);
