@@ -2,6 +2,28 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const crypto = require('crypto');
 
+// Whitelist of columns that may be updated via updateOrderStatus().
+// Prevents SQL injection if a caller ever passes user-controlled keys.
+const ALLOWED_UPDATE_KEYS = new Set([
+    'status',
+    'payment_status',
+    'fulfillment_status',
+    'download_token',
+    'download_count',
+    'download_expiry',
+    'metadata',
+    'stripe_session_id',
+    'stripe_payment_intent_id',
+    'refund_id',
+    'refund_status',
+    'refund_amount',
+    'refund_reason',
+    'lulu_print_job_id',
+    'tracking_number',
+    'estimated_delivery',
+    'shipping_cost',
+]);
+
 class OrderService {
     constructor() {
         const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/orders.db');
@@ -66,11 +88,14 @@ class OrderService {
             const fields = [];
             const values = [];
 
-            // Build dynamic update query
-            Object.keys(updates).forEach(key => {
+            // Build dynamic update query — validate all keys against whitelist (CWE-89)
+            for (const key of Object.keys(updates)) {
+                if (!ALLOWED_UPDATE_KEYS.has(key)) {
+                    return reject(new Error(`updateOrderStatus: unknown column '${key}'`));
+                }
                 fields.push(`${key} = ?`);
                 values.push(updates[key]);
-            });
+            }
 
             // Always update updated_at
             fields.push('updated_at = CURRENT_TIMESTAMP');

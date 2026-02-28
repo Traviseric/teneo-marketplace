@@ -1,11 +1,71 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
 const { safeMessage } = require('../utils/validate');
+
+// Sanitize brandId to prevent path traversal
+function sanitizeBrandId(brandId) {
+    if (!brandId || typeof brandId !== 'string') return null;
+    if (!/^[a-zA-Z0-9_-]+$/.test(brandId)) return null;
+    return brandId;
+}
+
+// Look up authoritative book price server-side from brand catalogs.
+// Never trust the client-supplied price.
+function lookupBookPrice(bookId, format, brandId) {
+    const brandsPath = path.join(__dirname, '../../frontend/brands');
+
+    let brandsToSearch;
+    if (brandId) {
+        brandsToSearch = [brandId];
+    } else {
+        try {
+            brandsToSearch = fs.readdirSync(brandsPath).filter(entry => {
+                try {
+                    return fs.statSync(path.join(brandsPath, entry)).isDirectory();
+                } catch (e) {
+                    return false;
+                }
+            });
+        } catch (err) {
+            console.error('Error reading brands directory:', err);
+            return null;
+        }
+    }
+
+    for (const brand of brandsToSearch) {
+        const catalogPath = path.join(brandsPath, brand, 'catalog.json');
+        try {
+            if (!fs.existsSync(catalogPath)) continue;
+            const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
+
+            const books = catalog.books || [];
+            const book = books.find(b => b.id === bookId);
+            if (book) {
+                if (format === 'hardcover' && book.hardcoverPrice != null) {
+                    return book.hardcoverPrice;
+                }
+                return book.price;
+            }
+
+            const collections = catalog.collections || [];
+            const collection = collections.find(c => c.id === bookId);
+            if (collection) {
+                return collection.price;
+            }
+        } catch (err) {
+            console.error(`Error reading catalog for brand ${brand}:`, err);
+        }
+    }
+
+    return null;
+}
 
 // Initialize order service
 const orderService = new OrderService();
@@ -16,20 +76,25 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Create checkout session
 router.post('/create-session', async (req, res) => {
     try {
-        const { bookId, format, price, bookTitle, bookAuthor, userEmail } = req.body;
+        // Do not destructure 'price' from req.body — client-supplied price is untrusted
+        const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+        const brandId = sanitizeBrandId(rawBrandId);
 
         // Validate required fields
-        if (!bookId || !format || !price || !bookTitle || !bookAuthor || !userEmail) {
-            return res.status(400).json({ 
+        if (!bookId || !format || !bookTitle || !bookAuthor || !userEmail) {
+            return res.status(400).json({
                 error: 'Missing required fields',
-                required: ['bookId', 'format', 'price', 'bookTitle', 'bookAuthor', 'userEmail']
+                required: ['bookId', 'format', 'bookTitle', 'bookAuthor', 'userEmail']
             });
         }
 
-        // Validate price
-        if (price <= 0 || price > 9999) {
+        // Look up authoritative price from catalog — never use the client-supplied price
+        const catalogPrice = lookupBookPrice(bookId, format, brandId);
+        if (catalogPrice == null) {
             return res.status(400).json({
-                error: 'Invalid price. Price must be between $0.01 and $9999.00'
+                error: 'Book not found in catalog',
+                bookId,
+                format
             });
         }
 
@@ -54,7 +119,7 @@ router.post('/create-session', async (req, res) => {
                             bookAuthor
                         }
                     },
-                    unit_amount: Math.round(price * 100),
+                    unit_amount: Math.round(catalogPrice * 100),
                 },
                 quantity: 1,
             }],
@@ -95,7 +160,7 @@ router.post('/create-session', async (req, res) => {
             bookTitle,
             bookAuthor,
             format,
-            price,
+            price: catalogPrice,
             currency: 'USD',
             metadata: {
                 sessionUrl: session.url,
