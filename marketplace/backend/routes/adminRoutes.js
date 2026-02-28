@@ -11,6 +11,18 @@ const auditService = require('../services/auditService');
 // Initialize services
 const orderService = new OrderService();
 
+// Lazy-initialized Stripe client — avoids re-instantiation on every refund request
+let _stripe = null;
+let _stripeKey = null;
+function getStripe() {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!_stripe || _stripeKey !== key) {
+        _stripe = require('stripe')(key);
+        _stripeKey = key;
+    }
+    return _stripe;
+}
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -197,7 +209,7 @@ router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
         }
         
         // Process refund through Stripe
-        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        const stripe = getStripe();
         
         if (order.stripe_payment_intent_id) {
             const refund = await stripe.refunds.create({
@@ -548,8 +560,24 @@ async function getActiveBooks() {
 }
 
 async function getConversionRate() {
-    // Simplified conversion rate calculation
-    return 2.5; // Placeholder
+    return new Promise((resolve) => {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sql = `
+            SELECT
+                COUNT(*) AS total_orders,
+                SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) AS paid_orders
+            FROM orders
+            WHERE created_at >= ?
+        `;
+        db.get(sql, [thirtyDaysAgo], (err, row) => {
+            if (err || !row || row.total_orders === 0) {
+                resolve(null);
+                return;
+            }
+            const rate = (row.paid_orders / row.total_orders) * 100;
+            resolve(Math.round(rate * 10) / 10);
+        });
+    });
 }
 
 async function getRecentOrders() {
@@ -566,39 +594,12 @@ async function getRecentOrders() {
     });
 }
 
-async function saveBookToDatabase(bookData) {
-    // Save book formats to database
-    for (const [formatType, format] of Object.entries(bookData.formats || {})) {
+async function upsertBookFormats(bookId, formats) {
+    for (const [formatType, format] of Object.entries(formats)) {
         await new Promise((resolve, reject) => {
             db.run(
-                `INSERT OR REPLACE INTO book_formats 
-                (book_id, format_type, pod_package_id, page_count, base_price, our_price, is_active) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    bookData.id,
-                    formatType,
-                    format.pod_package_id || null,
-                    format.pages || null,
-                    format.price * 0.6, // Estimated base cost
-                    format.price,
-                    format.available ? 1 : 0
-                ],
-                (err) => {
-                    if (err) reject(err);
-                    else resolve();
-                }
-            );
-        });
-    }
-}
-
-async function updateBookInDatabase(bookId, bookData) {
-    // Update book formats in database
-    for (const [formatType, format] of Object.entries(bookData.formats || {})) {
-        await new Promise((resolve, reject) => {
-            db.run(
-                `INSERT OR REPLACE INTO book_formats 
-                (book_id, format_type, pod_package_id, page_count, base_price, our_price, is_active) 
+                `INSERT OR REPLACE INTO book_formats
+                (book_id, format_type, pod_package_id, page_count, base_price, our_price, is_active)
                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [
                     bookId,
@@ -616,6 +617,14 @@ async function updateBookInDatabase(bookId, bookData) {
             );
         });
     }
+}
+
+async function saveBookToDatabase(bookData) {
+    await upsertBookFormats(bookData.id, bookData.formats || {});
+}
+
+async function updateBookInDatabase(bookId, bookData) {
+    await upsertBookFormats(bookId, bookData.formats || {});
 }
 
 async function deleteBookFromDatabase(bookId) {
