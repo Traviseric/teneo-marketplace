@@ -469,6 +469,30 @@
 
 ---
 
+### **15. Amazon KDP Import & Network Onboarding Bridge** ❌ **[NEW — COLD-START]**
+
+**Status:** Not implemented. This is the bridge between teneo-production (teneo.io) and teneo-marketplace that solves the discovery network's cold-start problem.
+
+**The funnel:** teneo.io customers generate books → publish to Amazon → make money → one-click deploy own storefront → join discovery network.
+
+**What exists on teneo.io:**
+- `/marketplace` route (customer book showcase with Amazon links)
+- `/published` route (publisher dashboard, BSR tracking, leaderboards)
+- Brand Builder (complete brand identity generation)
+- Skool community integration (1 free book/month for members)
+
+**Needs:**
+- Amazon KDP catalog import tool (pull book metadata, covers, descriptions from Amazon listing URL or ASIN)
+- "Deploy your storefront" flow on teneo.io `/published` page (one-click from published dashboard → own store)
+- Auto-populate storefront with Amazon import data + teneo-production generated brand assets
+- Free book credit for network join incentive
+- Store-in-a-Box defaults optimized for teneo-production customers (pre-filled brand, pre-loaded products)
+
+**Time Estimate:** 12-16 hours
+**Priority:** **HIGH** — solves the cold-start problem for the discovery network
+
+---
+
 ## 🚀 MINIMUM VIABLE PRODUCT (MVP)
 
 ### **What's REQUIRED to launch:**
@@ -548,7 +572,7 @@ Priority: **HIGH**
 
 1. **Affiliate program** (16 hours) — Research #3: non-negotiable
 2. **Tax workflow** (12 hours) — calculation, invoicing, export (NOT MoR)
-3. **Migration tooling** (8 hours) — Gumroad import, "Switch from X" pages
+3. **Migration tooling + Amazon import bridge** (12 hours) — Gumroad import, "Switch from X" pages, Amazon KDP catalog import (one-click from teneo.io /published → own storefront)
 4. **Managed hosting infrastructure** (12 hours) — first revenue stream
 
 5. **Discovery v2 — semantic search & knowledge graph** (12 hours)

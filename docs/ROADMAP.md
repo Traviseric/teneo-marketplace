@@ -471,10 +471,47 @@ timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
 - Auto-rebalance ecash → Lightning above risk thresholds
 - Keep ecash balances small by default; "withdraw to self-custody" as first-class UX
 
-### 4.6 Liquidity Bootstrap Strategy
+### 4.6 Cold-Start Solution: The Teneo Production Funnel
+
+The discovery network's cold-start problem (no stores → no buyers → no stores) is solved by feeding it from an existing paid product.
+
+**The funnel:**
+```
+Ads → teneo.io ($49-599/mo book generation)
+  → Generate books + brands for customers
+  → Publish to Amazon KDP (DOCX/PDF export ready)
+  → Customer makes money on Amazon
+  → Incentive: free books + network discoverability
+  → One-click import from Amazon → deploy own storefront
+  → Store auto-joins discovery network
+  → Network grows
+```
+
+**What already exists on teneo.io:**
+- `/marketplace` — customer-facing book showcase (search, author filtering, Amazon links)
+- `/published` — publisher dashboard (BSR tracking, leaderboards, 10k books community goal)
+- `BookSubmissionForm` — submit published books to the community
+- Brand Builder — generates complete brand identity (positioning, messaging, audience)
+- Skool community integration — 1 free book/month for $47/mo members
+
+**Why this works:**
+1. **Customers are already paying** — teneo-production at $49-599/mo funds acquisition. The network is a value-add, not the thing you sell
+2. **Products are pre-validated** — a creator selling on Amazon has proven product-market fit. They bring real products, not empty stores
+3. **Migration cost is near-zero** — teneo-production generated the content AND the brand. One-click import pulls metadata from Amazon
+4. **Every ad dollar does double duty** — acquire a book generation customer, that customer becomes a marketplace node
+5. **Free books + discoverability as incentive** — customers get free book credits and their products appear across the entire network. No reason NOT to join
+
+**What needs to be built (the bridge):**
+- [ ] Amazon KDP catalog import tool (pull book metadata, covers, descriptions from Amazon listing)
+- [ ] "Deploy your storefront" flow on teneo.io `/marketplace` page (one-click from published dashboard to own store)
+- [ ] Auto-populate storefront with books from Amazon import + teneo-production generated content
+- [ ] Free book credit for joining the network (incentive beyond Skool integration)
+- [ ] Store-in-a-Box defaults optimized for teneo-production customers (pre-filled brand, pre-loaded products)
+
+### 4.7 Liquidity Bootstrap Strategy
 **From Research #9:**
 
-The cold-start problem is real — the Bitcoin creator economy is small. Strategies:
+The cold-start problem is real — the Bitcoin creator economy is small. **Primary solution: the teneo-production funnel (see above).** Additional strategies:
 
 1. **Manufacture liquidity:** Seed creator wallets with sats for first purchases; subsidize early cross-store transactions
 2. **Import liquidity:** Alby wallet integration (largest Lightning browser wallet), Fountain podcast app cross-promotion
@@ -485,7 +522,7 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 
 **Key insight:** BTCPay Server is substrate, not competitor. Differentiate on layers BTCPay omits: storefront, courses, email, affiliates, discovery.
 
-### 4.7 Circular Economy Metrics
+### 4.8 Circular Economy Metrics
 **From Research #6:**
 
 | Metric | Definition |
@@ -496,7 +533,7 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 | Cycle density | A→B→C→A transaction patterns (structural health) |
 | Referral ROI | Incremental GMV / referral payouts |
 
-### 4.8 Privacy Design
+### 4.9 Privacy Design
 **From Research #6:**
 
 - Opt-in, aggregated telemetry published as signed events
