@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "next_box": "CONDUCTOR",
+  "context": {
+    "completed": 1,
+    "blocked": 0,
+    "in_progress": 0,
+    "commits": ["ddca11c"],
+    "files_changed": ["marketplace/backend/services/auditService.js"],
+    "task_file": "044-P3-use-crypto-random-for-audit-ids.md",
+    "blockers": [],
+    "follow_up_tasks": []
+  }
+}
