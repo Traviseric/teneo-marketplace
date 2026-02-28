@@ -66,10 +66,14 @@
 - ✅ Daily digests
 
 **Network/Federation:**
-- ✅ Network registry system
-- ✅ Cross-node search
-- ✅ Node discovery
+- ✅ Network registry system with RSA-signed communications
+- ✅ Cross-node search and catalog aggregation
+- ✅ Node discovery and health checks
 - ✅ Revenue sharing logic
+- ✅ Network explorer UI (`network.html`) with stats, search, store connections
+- ✅ AI discovery service (semantic search, reading paths, knowledge graph)
+- ✅ Database schema for embeddings, citations, and reading paths
+- ✅ Frontend network client with caching (`network-client.js`)
 
 **API Routes:**
 - ✅ `/api/brands` - Multi-brand catalog
@@ -508,7 +512,13 @@ Priority: **CRITICAL**
    - Test download delivery
    - Test magic link login
 
-**Deliverable:** Functional marketplace, ready to sell
+3. **Discovery v0 — ship existing network** (2 hours)
+   - Verify cross-store search works end-to-end
+   - Add "Browse the Network" link to store homepage
+   - Test network.html with live data
+   - Ensure store auto-registers on first boot
+
+**Deliverable:** Functional marketplace with network discovery, ready to sell
 
 ---
 
@@ -522,7 +532,13 @@ Priority: **CRITICAL** — Research #3: blocks all creator switching
 4. **Cart abandonment recovery** (6 hours)
 5. **Content protection** (PDF stamping, watermarks, license keys, versioning) (10 hours)
 
-**Deliverable:** Feature parity on checkout conversion — creators can now credibly switch
+6. **Discovery v1 — search & browse** (8 hours)
+   - Category/tag system for products
+   - Trending products feed (cross-network)
+   - "Stores like this" recommendations
+   - Improved network search filters
+
+**Deliverable:** Feature parity on checkout conversion + network discovery — creators can now credibly switch
 
 ---
 
@@ -535,7 +551,13 @@ Priority: **HIGH**
 3. **Migration tooling** (8 hours) — Gumroad import, "Switch from X" pages
 4. **Managed hosting infrastructure** (12 hours) — first revenue stream
 
-**Deliverable:** Creator growth tools + our own revenue
+5. **Discovery v2 — semantic search & knowledge graph** (12 hours)
+   - Activate semantic search (embed products via Claude/OpenAI API)
+   - AI-generated reading paths across stores
+   - Knowledge graph: citation network (products that relate/extend/contradict)
+   - "You might also like" cross-store recommendations
+
+**Deliverable:** Creator growth tools + our own revenue + intelligent cross-store discovery
 
 ---
 
@@ -555,7 +577,7 @@ Priority: **HIGH** — the unique value prop, built on Phase 1-2 foundation
 
 ---
 
-### **Phase 4: Federation & Circular Economy** (32-40 hours)
+### **Phase 4: Network Scale & Decentralized Discovery** (40-52 hours)
 
 Priority: **MEDIUM** — network effects after core is solid
 
@@ -564,7 +586,12 @@ Priority: **MEDIUM** — network effects after core is solid
 3. **Cross-store referral system** (12 hours) — two-rate model + Lightning payouts
 4. **Circular economy metrics** (8 hours) — velocity, recirculation, cross-store rate
 
-**Deliverable:** Independent stores discover each other, money circulates
+5. **Discovery v3 — Nostr-native discovery** (8 hours)
+   - NIP-99 product listings replace JSON registry
+   - NIP-50 relay-based search
+   - Dual-mode migration (JSON + NIP-99)
+
+**Deliverable:** Independent stores discover each other via decentralized Nostr protocol, money circulates
 
 ---
 
@@ -577,7 +604,10 @@ Priority: **LOW** (post-launch)
 3. **Community features** (Nostr-aligned)
 4. **PWA for mobile engagement**
 5. **Integrations** (webhooks, API, Zapier)
-6. **Advanced search & recommendations**
+6. **Discovery v4 — network intelligence**
+   - Transformation-based ranking
+   - Community validation signals
+   - Progressive disclosure (simple → deep)
 7. **Review system**
 
 ---

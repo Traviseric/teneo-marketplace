@@ -60,6 +60,47 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 | Wallets as replaceable middleware reduces regulatory burden | Research #9 | Architecture decision |
 | "No fees + meaningful infra costs" kills projects (OpenBazaar) | Research #9 | Sustainability warning |
 
+### Discovery Network — The Parallel Track
+
+Discovery isn't a separate phase — it's a **parallel track** that levels up alongside marketplace features. Each phase gets a discovery upgrade.
+
+**Why discovery is the product:**
+- The network IS the product — like Amazon, the value is traffic and distribution, not just a storefront
+- Every store that joins strengthens the network (more products in search, richer recommendations)
+- People-powered ranking vs algorithm-controlled (transformation metrics, community validation — not an opaque algorithm deciding what surfaces)
+- Incremental approach: ship what exists, upgrade each phase
+
+**What's already built (70-80% of federation infrastructure):**
+- Cross-store search and catalog aggregation (`network-service.js`)
+- Store registry with health checks and RSA-signed communications (`network.js`, `networkRoutes.js`)
+- Network explorer UI with search, stats, and store connections (`network.html`)
+- AI discovery service with semantic search, reading paths, and knowledge graph (`aiDiscoveryService.js`)
+- Database schema for embeddings, citation networks, and reading paths (`schema-ai-discovery.sql`)
+- Frontend network client with caching (`network-client.js`)
+
+**Discovery levels by phase:**
+
+| Phase | Marketplace | Discovery Upgrade |
+|-------|------------|-------------------|
+| **0 (MVP)** | Deploy, list, sell | **v0:** Ship existing federation — cross-store search, product feed, network page |
+| **1 (Checkout)** | Coupons, bumps, upsells, content protection | **v1:** Categories/tags, trending products, "stores like this", basic recommendations |
+| **2 (Revenue)** | Affiliates, tax, managed hosting, migration | **v2:** Semantic search (Claude/OpenAI), AI reading paths, knowledge graph (citation network) |
+| **3 (Crypto)** | ArxMint, Nostr auth, L402, disputes | **v3:** NIP-99 product listings replace JSON registry, Nostr relay-based search (NIP-50) |
+| **4 (Network)** | Circular economy, liquidity, metrics | **v4:** Transformation-based ranking, community validation signals, progressive disclosure |
+| **5 (Scale)** | Themes, memberships, PWA, integrations | Polish and optimize discovery UX |
+
+**Node onboarding (Store-in-a-Box):**
+
+Originally "Brand-in-a-Box" for book publishing. Now evolves to onboard any digital product creator:
+
+| Tier | Price | What You Get |
+|------|-------|-------------|
+| Self-hosted | Free | `git clone`, deploy anywhere, join the network |
+| Managed | $29-149/mo | One-click deploy on Teneo Cloud, auto-updates, SSL, email deliverability |
+| Done-for-you | Custom | Full store setup, branding, product migration, training |
+
+Each new store automatically joins the discovery network. The onboarding funnel: discover network → deploy store → list products → get discovered by every other store's customers.
+
 ---
 
 ## What's Built (Current State — Feb 2026)
@@ -113,10 +154,17 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 - [ ] Create "start here" golden path documentation
 - [ ] Starter store templates (pre-built themes for quick setup)
 
+### Discovery v0 (Ship What Exists)
+- [ ] Verify network registry loads and cross-store search works end-to-end
+- [ ] Add "Browse the Network" link to store homepage
+- [ ] Test network.html with live store data
+- [ ] Ensure store auto-registers with network on first boot
+
 ### Success criteria
 - A creator can deploy, publish 1 product, enable email capture, and complete a test purchase
 - Both auth flows work (magic link + OAuth SSO)
 - Time to first sale < 60 minutes from git clone
+- Network page shows at least the deploying store and any configured peers
 
 ---
 
@@ -162,6 +210,13 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 | Cart recovery | Yes | Yes | Unknown | Unknown |
 | PDF stamping | Yes | No | No | No |
 | License keys | Yes | No | No | No |
+
+### 1.6 Discovery v1 — Search & Browse Improvements
+- Category and tag system for products (beyond books: courses, templates, software, downloads)
+- Trending products feed (cross-network, based on recent sales velocity)
+- "Stores like this" recommendations on store pages
+- Basic product recommendations ("customers also bought" using purchase correlation)
+- Improved network search: filters by category, price range, product type
 
 ---
 
@@ -220,6 +275,13 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 - Teachable course import
 - Email list import (CSV, matches common export formats)
 - "Switch from [Competitor]" comparison pages for SEO
+
+### 2.6 Discovery v2 — Semantic Search & Knowledge Graph
+- Activate semantic search using Claude or OpenAI embeddings (service exists in `aiDiscoveryService.js`, needs API key and product embedding pipeline)
+- AI-generated reading paths and learning journeys across stores
+- Knowledge graph: citation network showing how products relate (supports, extends, contradicts)
+- "You might also like" recommendations powered by embeddings (cross-store)
+- Search analytics dashboard for store owners (what people search for, conversion rates)
 
 ---
 
@@ -360,7 +422,7 @@ timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
 
 ---
 
-## Phase 4: Federation & Circular Economy
+## Phase 4: Network Scale & Circular Economy
 
 **Goal:** Independent creator stores that discover each other, share audiences, and transact in a circular economy.
 
@@ -383,7 +445,13 @@ timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
 - "Market-relay class" relays: write-accepting for publishing, search-optimized for browsing
 - Avoid full marketplace ranking until supply exists (Research #5 — defer to post-adoption)
 
-### 4.3 Cross-Store Referral System
+### 4.3 Discovery v3 — Decentralized Discovery
+- NIP-99 product listings (kind 30402) replace JSON registry — stores publish products as signed Nostr events
+- NIP-50 relay-based search — discovery index reads from Nostr relays instead of polling store APIs
+- "Market-relay class" relays: write-accepting for publishing, search-optimized for browsing
+- Transition path: JSON registry → NIP-99 events (dual-mode during migration, then sunset JSON)
+
+### 4.4 Cross-Store Referral System
 **Architecture decisions from Research #6:**
 
 - **Two-rate model:**
@@ -393,7 +461,7 @@ timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
 - Anti-abuse: one-time-use codes, payout delays past refund windows, per-buyer caps
 - Payouts via Lightning (instant affiliate settlement — a genuine differentiator)
 
-### 4.4 Payment Architecture
+### 4.5 Payment Architecture
 **Architecture decisions from Research #6:**
 
 - **Lightning = network settlement rail** (buyer-to-seller payments, cross-mint settlement)
@@ -403,7 +471,7 @@ timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
 - Auto-rebalance ecash → Lightning above risk thresholds
 - Keep ecash balances small by default; "withdraw to self-custody" as first-class UX
 
-### 4.5 Liquidity Bootstrap Strategy
+### 4.6 Liquidity Bootstrap Strategy
 **From Research #9:**
 
 The cold-start problem is real — the Bitcoin creator economy is small. Strategies:
@@ -417,7 +485,7 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 
 **Key insight:** BTCPay Server is substrate, not competitor. Differentiate on layers BTCPay omits: storefront, courses, email, affiliates, discovery.
 
-### 4.6 Circular Economy Metrics
+### 4.7 Circular Economy Metrics
 **From Research #6:**
 
 | Metric | Definition |
@@ -428,7 +496,7 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 | Cycle density | A→B→C→A transaction patterns (structural health) |
 | Referral ROI | Incremental GMV / referral payouts |
 
-### 4.7 Privacy Design
+### 4.8 Privacy Design
 **From Research #6:**
 
 - Opt-in, aggregated telemetry published as signed events
@@ -465,11 +533,13 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 - Zapier triggers/actions
 - Research #3: Kajabi charges $25/mo add-on for API access — for open source, this is trivially includable
 
-### 5.6 Discovery Marketplace (Revenue — Optional)
-- Cross-store search and recommendations
-- Seller opt-in to be listed
-- 10-20% referral fee on marketplace-attributed sales (vs Gumroad's 30%)
-- Only build after sufficient supply exists (Research #5)
+### 5.6 Discovery v4 — Network Intelligence
+- Transformation-based ranking: products ranked by measurable reader/user outcomes, not just sales volume
+- Community validation signals: verified reviews weighted by reviewer's network reputation
+- Controversy boosting (opt-in per store): surface suppressed or contested content for stores that want it
+- Progressive disclosure: simple search for casual browsers, deep knowledge graph for power users
+- Cross-store learning paths: multi-store curricula that span the entire network
+- Public network dashboard: transaction volume, creator earnings, network growth (competitive advantage: incumbents don't publish this)
 
 ---
 
@@ -496,7 +566,7 @@ The cold-start problem is real — the Bitcoin creator economy is small. Strateg
 | Crypto processing fee (0.75%) | $200k/mo GMV = $1,500/mo | Phase 3 | SECOND |
 | Premium themes ($79-149 each) | 50 sales/mo at 20% share = $990/mo | Phase 5 | THIRD |
 | Paid onboarding ($299/setup) | 10 setups/mo = $2,990/mo | Phase 2 | BRIDGE |
-| Discovery marketplace (10-20%) | $50k/mo attributed GMV at 15% = $7,500/mo | Phase 5 | LATER |
+| Discovery network referrals (10-20%) | $50k/mo attributed GMV at 15% = $7,500/mo | Phase 2+ (grows with network) | GROWS |
 | Grants (OpenSats, HRF, Spiral) | Variable; supplemental only | Parallel | SUPPLEMENTAL |
 
 ---
