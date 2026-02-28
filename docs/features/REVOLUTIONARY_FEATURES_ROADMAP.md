@@ -1,20 +1,35 @@
-# Revolutionary Features Roadmap 🚀
+# Revolutionary Features Roadmap
 
-**Created:** November 17, 2025
-**Status:** 📋 Planning Phase
-**Vision:** Make the marketplace not just censorship-resistant, but **better than Amazon**
+> **SUPERSEDED (Feb 2026):** This roadmap has been replaced by **[docs/ROADMAP.md](../ROADMAP.md)**, which is informed by Gemini Deep Research outputs covering product-market fit, monetization, feature gaps, positioning, and federated network design.
+>
+> **Key changes from research:**
+> - AI features are NOT a differentiator — Teachable and Kajabi already have them (Research #3)
+> - "Censorship monetization" framing contradicts GTM research — lead with ownership + fees, not ideology (Research #5)
+> - Proof-of-Read NFTs not in any priority tier; no proven demand
+> - P0 priority is checkout conversion stack (coupons, bumps, upsells, cart recovery) — not AI discovery
+> - Information asymmetry scoring deferred until platform has users
+>
+> This file is preserved for historical reference. Do not use it for planning.
 
 ---
 
-## 🎯 Philosophy
+**Created:** November 17, 2025
+**Status:** ~~📋 Planning Phase~~ → **SUPERSEDED by docs/ROADMAP.md**
+**Vision:** ~~Make the marketplace not just censorship-resistant, but better than Amazon~~ → See ROADMAP.md
 
-**Core Principle:** A marketplace that not only **survives censorship** but **profits from it** and **becomes more valuable the more it's attacked**.
+---
 
-**Differentiators:**
+## Philosophy (Historical — Superseded)
+
+**Original Core Principle:** A marketplace that not only **survives censorship** but **profits from it** and **becomes more valuable the more it's attacked**.
+
+**Original Differentiators:**
 - Amazon shows you what *they* want to sell
 - We show you what *you* need to learn
 - We surface what mainstream platforms hide
 - We turn censorship into marketing
+
+**Why superseded:** Research #5 found that "own your audience + $0 fees" messaging converts far better than censorship/ideology framing. Resilience is a valid segment wedge for adult/marginalized creators, but not the primary message.
 
 ---
 

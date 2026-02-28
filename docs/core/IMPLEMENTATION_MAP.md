@@ -1,7 +1,10 @@
-# 🗺️ TENEO MARKETPLACE - COMPLETE IMPLEMENTATION MAP
+# TENEO MARKETPLACE - IMPLEMENTATION MAP
 
-**Last Updated:** 2024-11-15
+**Last Updated:** 2024-11-15 (component status) | 2026-02-28 (roadmap pointer)
 **Status:** Component library foundation complete, scaling to production
+
+> **Strategic roadmap:** See **[docs/ROADMAP.md](../ROADMAP.md)** for research-informed build priorities.
+> The "Strategic Roadmap" section below is from Nov 2024 and has been superseded.
 
 ---
 
