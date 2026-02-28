@@ -145,7 +145,15 @@ router.post('/deploy', authenticateAdmin, async (req, res) => {
     await fs.mkdir(funnelDir, { recursive: true });
 
     // Process template with variables
-    const processedHTML = await processTemplate(template, variables);
+    let processedHTML = await processTemplate(template, variables);
+
+    // Inject funnel tracker before </body>
+    const trackerInjection = `  <meta name="funnel-id" content="${slug}">\n  <script src="/js/funnel-tracker.js"></script>\n`;
+    if (processedHTML.includes('</body>')) {
+      processedHTML = processedHTML.replace('</body>', trackerInjection + '</body>');
+    } else {
+      processedHTML += '\n' + trackerInjection;
+    }
 
     // Save HTML file
     await fs.writeFile(path.join(funnelDir, 'index.html'), processedHTML);
@@ -246,19 +254,114 @@ router.get('/list', async (req, res) => {
     );
 
     const baseUrl = process.env.SITE_URL || 'http://localhost:3001';
-    const funnels = dbFunnels.map(f => ({
-      id: f.id,
-      slug: f.slug,
-      name: f.name,
-      status: f.status,
-      updatedAt: f.updated_at,
-      url: `${baseUrl}/funnels/${f.slug}`
-    }));
+
+    // Fetch stats for all funnels in one query
+    const slugs = dbFunnels.map(f => f.slug);
+    let eventCounts = {};
+    if (slugs.length > 0) {
+      const placeholders = slugs.map(() => '?').join(', ');
+      const eventRows = await dbAll(
+        `SELECT funnel_id, event_type, COUNT(*) as count
+         FROM funnel_events
+         WHERE funnel_id IN (${placeholders})
+         GROUP BY funnel_id, event_type`,
+        slugs
+      );
+      eventRows.forEach(row => {
+        if (!eventCounts[row.funnel_id]) {
+          eventCounts[row.funnel_id] = { pageviews: 0, cta_clicks: 0, checkout_starts: 0, purchases: 0 };
+        }
+        const s = eventCounts[row.funnel_id];
+        if (row.event_type === 'pageview')       s.pageviews       = row.count;
+        if (row.event_type === 'cta_click')      s.cta_clicks      = row.count;
+        if (row.event_type === 'checkout_start') s.checkout_starts = row.count;
+        if (row.event_type === 'purchase')       s.purchases       = row.count;
+      });
+    }
+
+    const funnels = dbFunnels.map(f => {
+      const s = eventCounts[f.slug] || { pageviews: 0, cta_clicks: 0, checkout_starts: 0, purchases: 0 };
+      s.conversion_rate = s.pageviews > 0 ? ((s.purchases / s.pageviews) * 100).toFixed(2) : '0.00';
+      return {
+        id: f.id,
+        slug: f.slug,
+        name: f.name,
+        status: f.status,
+        updatedAt: f.updated_at,
+        url: `${baseUrl}/funnels/${f.slug}`,
+        stats: s
+      };
+    });
 
     res.json({ success: true, funnels, count: funnels.length });
   } catch (error) {
     console.error('List funnels error:', error);
     res.status(500).json({ error: 'Failed to list funnels' });
+  }
+});
+
+/**
+ * Track a funnel conversion event (public — called by funnel-tracker.js)
+ * POST /api/funnels/events
+ * Body: { funnelId, pageSlug, eventType, sessionId, metadata }
+ */
+const VALID_EVENT_TYPES = ['pageview', 'cta_click', 'checkout_start', 'purchase'];
+router.post('/events', async (req, res) => {
+  try {
+    const { funnelId, pageSlug, eventType, sessionId, metadata } = req.body;
+
+    if (!funnelId || !eventType || !VALID_EVENT_TYPES.includes(eventType)) {
+      return res.status(400).json({ error: 'Missing or invalid funnelId / eventType' });
+    }
+
+    const metadataJson = typeof metadata === 'string' ? metadata : JSON.stringify(metadata || {});
+
+    await dbRun(
+      `INSERT INTO funnel_events (funnel_id, page_slug, event_type, session_id, metadata)
+       VALUES (?, ?, ?, ?, ?)`,
+      [funnelId, pageSlug || funnelId, eventType, sessionId || null, metadataJson]
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Funnel event tracking error:', error);
+    res.status(500).json({ error: 'Failed to record event' });
+  }
+});
+
+/**
+ * Get conversion stats for a funnel
+ * GET /api/funnels/stats/:funnelId
+ * Auth: admin token required
+ */
+router.get('/stats/:funnelId', authenticateAdmin, async (req, res) => {
+  try {
+    const { funnelId } = req.params;
+
+    const rows = await dbAll(
+      `SELECT event_type, COUNT(*) as count
+       FROM funnel_events
+       WHERE funnel_id = ?
+       GROUP BY event_type`,
+      [funnelId]
+    );
+
+    const stats = { pageviews: 0, cta_clicks: 0, checkout_starts: 0, purchases: 0 };
+    rows.forEach(row => {
+      if (row.event_type === 'pageview')       stats.pageviews       = row.count;
+      if (row.event_type === 'cta_click')      stats.cta_clicks      = row.count;
+      if (row.event_type === 'checkout_start') stats.checkout_starts = row.count;
+      if (row.event_type === 'purchase')       stats.purchases       = row.count;
+    });
+
+    stats.conversion_rate = stats.pageviews > 0
+      ? ((stats.purchases / stats.pageviews) * 100).toFixed(2)
+      : '0.00';
+
+    res.json({ success: true, funnelId, stats });
+  } catch (error) {
+    console.error('Funnel stats error:', error);
+    res.status(500).json({ error: 'Failed to get funnel stats' });
   }
 });
 
