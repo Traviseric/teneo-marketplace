@@ -480,17 +480,19 @@ function initStripe(publishableKey) {
     }
 })();
 
-// Cart data (in real app, load from session/API)
+// Load cart from localStorage (populated by cart.js ShoppingCart on catalog/book pages)
+const storedItems = JSON.parse(localStorage.getItem('teneoCart') || '[]');
 let cart = {
-    items: [
-        {
-            id: 1,
-            title: 'The IRS Escape Plan',
-            author: 'Travis Eric',
-            price: 19.99,
-            originalPrice: 29.99
-        }
-    ],
+    items: storedItems.map(function(item) {
+        return {
+            id: item.id,
+            title: item.title,
+            author: item.author || 'Unknown Author',
+            price: parseFloat(item.price) || 0,
+            originalPrice: item.originalPrice || null,
+            quantity: item.quantity || 1
+        };
+    }),
     orderBump: {
         price: 10.00,
         included: false
@@ -502,27 +504,37 @@ let cart = {
 // Load cart items
 function loadCart() {
     const container = document.getElementById('cartItems');
-    container.innerHTML = cart.items.map(item => `
+
+    if (cart.items.length === 0) {
+        container.innerHTML = '<div style="padding:2rem;text-align:center;color:#6B7280;">Your cart is empty. <a href="/store.html">Continue shopping</a></div>';
+        updateTotal();
+        return;
+    }
+
+    container.innerHTML = cart.items.map(function(item) {
+        const qty = item.quantity > 1 ? ` &times; ${item.quantity}` : '';
+        return `
         <div class="cart-item">
             <div class="item-image"></div>
             <div class="item-details">
-                <h3>${item.title}</h3>
+                <h3>${item.title}${qty}</h3>
                 <p>by ${item.author}</p>
-                <button class="item-remove" onclick="removeItem(${item.id})">Remove</button>
+                <button class="item-remove" onclick="removeItem(${JSON.stringify(item.id)})">Remove</button>
             </div>
             <div class="item-price">
-                <div class="price">$${item.price.toFixed(2)}</div>
+                <div class="price">$${(item.price * (item.quantity || 1)).toFixed(2)}</div>
                 ${item.originalPrice ? `<div class="original-price">$${item.originalPrice.toFixed(2)}</div>` : ''}
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     updateTotal();
 }
 
 // Update totals
 function updateTotal() {
-    const subtotal = cart.items.reduce((sum, item) => sum + item.price, 0);
+    const subtotal = cart.items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
     const bumpChecked = document.getElementById('orderBump').checked;
     const bumpPrice = bumpChecked ? cart.orderBump.price : 0;
     const total = subtotal + bumpPrice - cart.discount;
@@ -573,7 +585,9 @@ async function applyCoupon() {
 
 // Remove item
 function removeItem(id) {
-    cart.items = cart.items.filter(item => item.id !== id);
+    cart.items = cart.items.filter(function(item) { return item.id !== id; });
+    // Persist removal back to localStorage so cart.js stays in sync
+    localStorage.setItem('teneoCart', JSON.stringify(cart.items));
     loadCart();
 }
 

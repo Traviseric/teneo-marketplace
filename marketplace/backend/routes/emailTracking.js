@@ -1,12 +1,14 @@
 /**
  * Email Open/Click Tracking Routes
  *
- * GET /api/email/track/open/:sendId  - Returns 1×1 GIF, logs open event
- * GET /api/email/track/click/:sendId?url=<encoded>  - Logs click, redirects
- * GET /api/email/stats/:sendId  - Per-send open/click stats (admin)
+ * POST /api/email/subscribe             - Newsletter subscribe (stores in subscribers table)
+ * GET  /api/email/track/open/:sendId    - Returns 1×1 GIF, logs open event
+ * GET  /api/email/track/click/:sendId?url=<encoded>  - Logs click, redirects
+ * GET  /api/email/stats/:sendId         - Per-send open/click stats (admin)
  */
 
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
@@ -35,6 +37,48 @@ function dbAll(sql, params) {
     db.all(sql, params, (err, rows) => { if (err) reject(err); else resolve(rows || []); });
   });
 }
+
+/**
+ * POST /api/email/subscribe
+ * Stores a newsletter subscriber in the subscribers table.
+ * Body: { email, name?, source? }
+ */
+router.post('/subscribe', async (req, res) => {
+  const { email, name = '', source = 'newsletter_widget' } = req.body || {};
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ success: false, error: 'Valid email required' });
+  }
+
+  try {
+    const confirmToken = crypto.randomBytes(32).toString('hex');
+    const unsubscribeToken = crypto.randomBytes(32).toString('hex');
+    const ip = req.ip || null;
+    const ua = req.headers['user-agent'] || null;
+
+    await dbRun(
+      `INSERT INTO subscribers (email, name, source, ip_address, user_agent, confirm_token, unsubscribe_token, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active')`,
+      [
+        email.trim().toLowerCase(),
+        name.trim() || null,
+        source,
+        ip,
+        ua,
+        confirmToken,
+        unsubscribeToken
+      ]
+    );
+
+    res.json({ success: true, message: 'Subscribed successfully' });
+  } catch (err) {
+    if (err.message && err.message.includes('UNIQUE constraint failed')) {
+      return res.status(409).json({ success: false, error: 'Email already subscribed' });
+    }
+    console.error('[emailTracking] subscribe error:', err.message);
+    res.status(500).json({ success: false, error: 'Subscription failed. Please try again.' });
+  }
+});
 
 /**
  * GET /api/email/track/open/:sendId

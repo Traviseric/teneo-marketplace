@@ -1,52 +1,52 @@
 // Newsletter subscription functionality
 
 // Function to handle newsletter form submission
-function handleNewsletterSubmit(event) {
+async function handleNewsletterSubmit(event) {
     event.preventDefault();
-    
+
     const form = event.target;
     const emailInput = document.getElementById('email-input');
+    const nameInput = document.getElementById('newsletter-name');
     const submitBtn = form.querySelector('.submit-btn');
-    const messageDiv = document.getElementById('newsletter-message');
-    
+
     const email = emailInput.value.trim();
-    
+    const name = nameInput ? nameInput.value.trim() : '';
+
     if (!email) {
         showMessage('Please enter a valid email address.', 'error');
         return;
     }
-    
-    // Validate email format
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         showMessage('Please enter a valid email address.', 'error');
         return;
     }
-    
-    // Disable form while processing
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Subscribing...';
-    
-    // Simulate API call for newsletter subscription
-    setTimeout(() => {
-        // In a real application, you would send this to your backend
-        
-        // Simulate successful subscription
-        showMessage('Thank you for subscribing! Check your email for confirmation.', 'success');
-        
-        // Reset form
-        emailInput.value = '';
+
+    try {
+        const response = await fetch('/api/email/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name, source: 'newsletter_widget' })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            showMessage('Thank you for subscribing! Check your email for confirmation.', 'success');
+            emailInput.value = '';
+            if (nameInput) nameInput.value = '';
+        } else {
+            showMessage(data.error || 'Subscription failed. Please try again.', 'error');
+        }
+    } catch (err) {
+        showMessage('Network error. Please try again.', 'error');
+    } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Subscribe';
-        
-        // Store subscription in localStorage for demo purposes
-        const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
-        if (!subscribers.includes(email)) {
-            subscribers.push(email);
-            localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
-        }
-        
-    }, 1500);
+    }
 }
 
 // Function to show messages to user
@@ -66,21 +66,14 @@ function showMessage(message, type = 'info') {
     }
 }
 
-// Function to check if email is already subscribed (demo purposes)
-function isEmailSubscribed(email) {
-    const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
-    return subscribers.includes(email);
-}
-
 // Initialize newsletter functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     const newsletterForm = document.getElementById('newsletter-form');
     const emailInput = document.getElementById('email-input');
-    
+
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', handleNewsletterSubmit);
 
-        // Add real-time email validation
         if (emailInput) {
             // Suppress native browser validation bubble; show accessible error instead
             emailInput.addEventListener('invalid', function(e) {
@@ -94,14 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const email = this.value.trim();
                 if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
                     showMessage('Please enter a valid email format.', 'error');
-                } else if (email && isEmailSubscribed(email)) {
-                    showMessage('This email is already subscribed!', 'info');
                 } else {
                     showMessage('', '');
                 }
             });
 
-            // Clear error state when user corrects the input
             emailInput.addEventListener('input', function() {
                 const messageDiv = document.getElementById('newsletter-message');
                 if (messageDiv && messageDiv.classList.contains('error')) {
@@ -119,9 +109,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Export for potential module use
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        handleNewsletterSubmit,
-        showMessage,
-        isEmailSubscribed
-    };
+    module.exports = { handleNewsletterSubmit, showMessage };
 }
