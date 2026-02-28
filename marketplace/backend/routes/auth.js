@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAuthProviderInstance, getAuthConfig } = require('../auth/config');
+const { isValidEmail } = require('../utils/validate');
 
 // =====================================
 // Public Routes (No Auth Required)
@@ -42,8 +43,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Basic email validation
-    if (!email.includes('@') || !email.includes('.')) {
+    if (!isValidEmail(email)) {
       return res.status(400).json({
         error: 'Invalid email',
         message: 'Please provide a valid email address',
@@ -87,11 +87,10 @@ router.post('/login', async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Validate input
-    if (!email) {
+    if (!email || !isValidEmail(email)) {
       return res.status(400).json({
-        error: 'Missing email',
-        message: 'Email is required',
+        error: 'Invalid email',
+        message: 'A valid email address is required',
       });
     }
 

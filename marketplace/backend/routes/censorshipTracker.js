@@ -10,6 +10,7 @@ const censorshipTracker = require('../services/censorshipTrackerService');
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const { publicApiLimit } = require('../middleware/rateLimits');
+const { isValidEmail } = require('../utils/validate');
 
 /**
  * GET /api/censorship/recent-bans
@@ -391,7 +392,7 @@ router.post('/subscribe', publicApiLimit, async (req, res) => {
     try {
         const { email, preferences = {} } = req.body;
 
-        if (!email || !email.includes('@')) {
+        if (!isValidEmail(email)) {
             return res.status(400).json({
                 success: false,
                 error: 'Valid email is required'

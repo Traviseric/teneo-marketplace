@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const db = require('../database/database');
+const { isValidEmail } = require('../utils/validate');
 
 // Generate unique order ID
 function generateOrderId() {
@@ -13,10 +14,17 @@ router.post('/create-order', async (req, res) => {
     try {
         const { bookId, email, paymentMethod, brandId } = req.body;
 
-        if (!bookId || !email || !paymentMethod) {
+        if (!bookId || !paymentMethod) {
             return res.status(400).json({
                 success: false,
                 error: 'Missing required fields'
+            });
+        }
+
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Valid email address required'
             });
         }
 
