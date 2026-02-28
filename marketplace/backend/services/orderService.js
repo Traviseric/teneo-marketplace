@@ -26,7 +26,7 @@ const ALLOWED_UPDATE_KEYS = new Set([
 
 class OrderService {
     constructor() {
-        const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/orders.db');
+        const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/marketplace.db');
         this.db = new sqlite3.Database(dbPath);
     }
 

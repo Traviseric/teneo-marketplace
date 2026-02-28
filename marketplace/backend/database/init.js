@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'orders.db');
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'marketplace.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
 const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
 const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
