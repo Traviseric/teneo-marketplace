@@ -11,6 +11,9 @@ RUN adduser -S teneo -u 1001
 # Copy package files first for better layer caching
 COPY marketplace/backend/package*.json ./
 
+# Install build tools required for native modules (bcrypt, sqlite3)
+RUN apk add --no-cache python3 make g++ curl
+
 # Install dependencies
 RUN npm ci --only=production && npm cache clean --force
 
