@@ -132,6 +132,29 @@
             margin-bottom: 1rem;
         }
         
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        input[aria-invalid="true"] {
+            border-color: #dc2626;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         @media (max-width: 480px) {
             .cancel-container {
                 margin: 2rem 1rem;
@@ -214,16 +237,27 @@
                     <h4>Stay Updated</h4>
                     <p>Get the latest book releases and exclusive offers</p>
                     <form id="newsletter-form" class="newsletter-form">
-                        <input 
-                            type="email" 
+                        <label for="email-input" class="visually-hidden">Email Address</label>
+                        <input
+                            type="email"
                             id="email-input"
-                            class="email-input" 
-                            placeholder="Enter your email" 
+                            name="email"
+                            class="email-input"
+                            placeholder="Enter your email"
                             required
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                            aria-describedby="newsletter-email-error"
+                            aria-invalid="false"
                         >
                         <button type="submit" class="submit-btn">Subscribe</button>
                     </form>
+                    <span id="newsletter-email-error"
+                          class="error-message"
+                          aria-live="polite"
+                          role="alert"
+                          hidden>
+                        Please enter a valid email address (e.g. you@example.com)
+                    </span>
                     <div id="newsletter-message" class="newsletter-message"></div>
                 </div>
             </div>
