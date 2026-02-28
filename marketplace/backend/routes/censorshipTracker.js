@@ -10,7 +10,7 @@ const censorshipTracker = require('../services/censorshipTrackerService');
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const { publicApiLimit } = require('../middleware/rateLimits');
-const { isValidEmail } = require('../utils/validate');
+const { isValidEmail, safeMessage } = require('../utils/validate');
 const emailService = require('../services/emailService');
 
 /**
@@ -266,7 +266,7 @@ router.post('/admin/start-monitoring', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to start monitoring',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });

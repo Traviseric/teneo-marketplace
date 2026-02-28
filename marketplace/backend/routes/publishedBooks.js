@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database/database');
+const { safeMessage } = require('../utils/validate');
 const TeneoAuthMiddleware = require('../middleware/teneoAuth');
 const AmazonService = require('../services/amazonService');
 const BadgeService = require('../services/badgeService');
@@ -149,7 +150,7 @@ router.post('/submit', TeneoAuthMiddleware.requireVerifiedUser, async (req, res)
         res.status(500).json({
             success: false,
             error: 'Failed to submit book',
-            details: error.message
+            details: safeMessage(error)
         });
     }
 });

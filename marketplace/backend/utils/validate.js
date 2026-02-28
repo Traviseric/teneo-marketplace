@@ -18,4 +18,18 @@ function isValidEmail(email) {
     return emailRegex.test(trimmed);
 }
 
-module.exports = { isValidEmail };
+/**
+ * Return a safe error message for HTTP responses (CWE-209).
+ * In production, always returns a generic string so internal details
+ * (file paths, SQL fragments, stack traces) are never leaked to clients.
+ * Full details are still logged server-side by the caller.
+ *
+ * @param {Error|*} err
+ * @returns {string}
+ */
+function safeMessage(err) {
+    if (process.env.NODE_ENV === 'production') return 'Internal server error';
+    return (err && err.message) ? err.message : String(err);
+}
+
+module.exports = { isValidEmail, safeMessage };

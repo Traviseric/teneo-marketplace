@@ -11,6 +11,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
+const { safeMessage } = require('../utils/validate');
 
 // Helper: Generate brand ID from name
 function generateBrandId(brandName) {
@@ -131,7 +132,7 @@ router.post('/orchestrator/brand-created', async (req, res) => {
   } catch (error) {
     console.error('❌ Webhook error (brand-created):', error);
     res.status(500).json({
-      error: error.message,
+      error: safeMessage(error),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
@@ -234,7 +235,7 @@ router.post('/orchestrator/book-generated', async (req, res) => {
   } catch (error) {
     console.error('❌ Webhook error (book-generated):', error);
     res.status(500).json({
-      error: error.message,
+      error: safeMessage(error),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
@@ -342,7 +343,7 @@ router.post('/orchestrator/seo-generated', async (req, res) => {
   } catch (error) {
     console.error('❌ Webhook error (seo-generated):', error);
     res.status(500).json({
-      error: error.message,
+      error: safeMessage(error),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }

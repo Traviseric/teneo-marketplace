@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+const { safeMessage } = require('../utils/validate');
 const path = require('path');
 const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -146,7 +147,7 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
     console.error('Stripe session creation error:', error);
     res.status(500).json({ 
       error: 'Failed to create checkout session',
-      message: error.message 
+      message: safeMessage(error) 
     });
   }
 });
@@ -179,7 +180,7 @@ router.get('/session/:sessionId', async (req, res) => {
     });
   } catch (error) {
     console.error('Error retrieving Stripe session:', error);
-    res.status(500).json({ error: 'Failed to retrieve session', message: error.message });
+    res.status(500).json({ error: 'Failed to retrieve session', message: safeMessage(error) });
   }
 });
 

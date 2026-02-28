@@ -5,6 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const { parse } = require('csv-parse/sync');
 const { authenticateAdmin } = require('../middleware/auth');
+const { safeMessage } = require('../utils/validate');
 
 // Auth decision: catalog write operations use session-based authenticateAdmin
 // consistent with the rest of the admin surface (adminRoutes, brandRoutes, etc.)
@@ -249,7 +250,7 @@ router.post('/:brandId/import-csv', checkAuth, upload.single('csv'), async (req,
         console.error('Error importing CSV:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to import CSV: ' + error.message
+            error: 'Failed to import CSV: ' + safeMessage(error)
         });
     }
 });

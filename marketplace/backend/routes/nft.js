@@ -13,6 +13,7 @@ const router = express.Router();
 const nftService = require('../services/nftService');
 const db = require('../database/database');
 const { publicApiLimit } = require('../middleware/rateLimits');
+const { safeMessage } = require('../utils/validate');
 
 /**
  * POST /api/nft/mint
@@ -68,7 +69,7 @@ router.post('/mint', publicApiLimit, async (req, res) => {
         console.error('Error minting NFT:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -92,7 +93,7 @@ router.get('/library/:address', publicApiLimit, async (req, res) => {
         console.error('Error getting library:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -125,7 +126,7 @@ router.get('/badges/:address', async (req, res) => {
         console.error('Error getting badges:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -149,7 +150,7 @@ router.post('/claim-badges/:address', async (req, res) => {
         console.error('Error claiming badges:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -172,7 +173,7 @@ router.get('/stats/:address', async (req, res) => {
         console.error('Error getting stats:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -236,7 +237,7 @@ router.post('/inheritance/create', async (req, res) => {
         console.error('Error creating inheritance plan:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -287,7 +288,7 @@ router.post('/inheritance/heartbeat', async (req, res) => {
         console.error('Error sending heartbeat:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -343,7 +344,7 @@ router.get('/inheritance/:address', async (req, res) => {
         console.error('Error getting inheritance plan:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -374,7 +375,7 @@ router.get('/inheritance/beneficiary/:address', async (req, res) => {
         console.error('Error getting beneficiary plans:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -439,7 +440,7 @@ router.post('/inheritance/execute/:ownerAddress', async (req, res) => {
         console.error('Error executing inheritance:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -494,7 +495,7 @@ router.get('/wallet/:address', async (req, res) => {
         console.error('Error getting wallet info:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -523,7 +524,7 @@ router.get('/transfers/:tokenId', async (req, res) => {
         console.error('Error getting transfers:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -572,7 +573,7 @@ router.get('/ipfs/:hash', async (req, res) => {
         console.error('Error getting IPFS info:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -600,7 +601,7 @@ router.get('/leaderboard', async (req, res) => {
         console.error('Error getting leaderboard:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });
@@ -636,7 +637,7 @@ router.get('/badge-definitions', async (req, res) => {
         console.error('Error getting badge definitions:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });

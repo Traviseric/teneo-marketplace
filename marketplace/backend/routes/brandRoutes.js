@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
 const { publicApiLimit } = require('../middleware/rateLimits');
+const { safeMessage } = require('../utils/validate');
 
 // Base directory for all brand assets — used for path traversal validation
 const BRANDS_BASE = path.resolve(__dirname, '../../frontend/brands');
@@ -101,7 +102,7 @@ router.get('/', publicApiLimit, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to fetch brands',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -128,7 +129,7 @@ router.get('/:brandId', publicApiLimit, async (req, res) => {
         res.status(404).json({
             success: false,
             error: 'Brand not found',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -217,7 +218,7 @@ router.post('/', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to create brand',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -248,7 +249,7 @@ router.put('/:brandId/config', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to update brand config',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -279,7 +280,7 @@ router.put('/:brandId/catalog', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to update brand catalog',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -322,7 +323,7 @@ router.post('/:brandId/books', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to add book',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -368,7 +369,7 @@ router.put('/:brandId/books/:bookId', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to update book',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -409,7 +410,7 @@ router.delete('/:brandId/books/:bookId', authenticateAdmin, async (req, res) => 
         res.status(500).json({
             success: false,
             error: 'Failed to delete book',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -445,7 +446,7 @@ router.post('/:brandId/upload', authenticateAdmin, upload.single('file'), async 
         res.status(500).json({
             success: false,
             error: 'Failed to upload file',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -473,7 +474,7 @@ router.delete('/:brandId', authenticateAdmin, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to delete brand',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });

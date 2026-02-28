@@ -4,6 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderService = require('../services/orderService');
 const LuluService = require('../services/luluService');
 const emailService = require('../services/emailService');
+const { safeMessage } = require('../utils/validate');
 
 // Initialize services
 const orderService = new OrderService();
@@ -185,7 +186,7 @@ router.post('/create-mixed-session', async (req, res) => {
         console.error('Mixed checkout error:', error);
         res.status(500).json({ 
             error: 'Failed to create checkout session',
-            message: error.message 
+            message: safeMessage(error)
         });
     }
 });

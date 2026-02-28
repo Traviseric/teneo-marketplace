@@ -5,6 +5,7 @@ const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
+const { safeMessage } = require('../utils/validate');
 
 // Initialize order service
 const orderService = new OrderService();
@@ -115,12 +116,12 @@ router.post('/create-session', async (req, res) => {
         if (error.type === 'StripeCardError') {
             res.status(400).json({
                 error: 'Card error',
-                message: error.message
+                message: safeMessage(error)
             });
         } else if (error.type === 'StripeInvalidRequestError') {
             res.status(400).json({
                 error: 'Invalid request',
-                message: error.message
+                message: safeMessage(error)
             });
         } else {
             res.status(500).json({
@@ -201,7 +202,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         await orderService.markEventProcessed(event.id, false, error.message);
         
         // Still return 200 to prevent Stripe from retrying
-        return res.json({ received: true, error: error.message });
+        return res.json({ received: true, error: safeMessage(error) });
     }
 
     res.json({ received: true });
@@ -459,7 +460,7 @@ router.get('/health', async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 'unhealthy',
-            error: error.message
+            error: safeMessage(error)
         });
     }
 });

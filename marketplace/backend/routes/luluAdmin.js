@@ -4,6 +4,7 @@ const { authenticateAdmin } = require('../middleware/auth');
 const LuluService = require('../services/luluService');
 const OrderService = require('../services/orderService');
 const db = require('../database/database');
+const { safeMessage } = require('../utils/validate');
 
 const luluService = new LuluService();
 const orderService = new OrderService();
@@ -245,7 +246,7 @@ router.post('/sync', async (req, res) => {
                 results.push({
                     bookId: format.book_id,
                     format: format.format_type,
-                    error: error.message,
+                    error: safeMessage(error),
                     success: false
                 });
             }

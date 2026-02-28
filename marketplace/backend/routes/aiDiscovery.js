@@ -10,6 +10,7 @@ const aiDiscoveryService = require('../services/aiDiscoveryService');
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const { aiRateLimit, publicApiLimit } = require('../middleware/rateLimits');
+const { safeMessage } = require('../utils/validate');
 
 /**
  * POST /api/discovery/semantic-search
@@ -60,7 +61,7 @@ router.post('/semantic-search', aiRateLimit, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Search failed',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -124,7 +125,7 @@ router.post('/reading-path', aiRateLimit, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to generate reading path',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -335,7 +336,7 @@ router.post('/admin/generate-embeddings', authenticateAdmin, async (req, res) =>
         res.status(500).json({
             success: false,
             error: 'Failed to queue embeddings',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -360,7 +361,7 @@ router.post('/admin/process-embeddings', authenticateAdmin, async (req, res) => 
         res.status(500).json({
             success: false,
             error: 'Failed to process embeddings',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });

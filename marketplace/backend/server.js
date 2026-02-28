@@ -87,6 +87,8 @@ const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 // Course platform routes
 const courseRoutes = require('./routes/courseRoutes');
 
+const { safeMessage } = require('./utils/validate');
+
 const app = express();
 
 // Security headers (CWE-693)
@@ -281,7 +283,7 @@ app.get('/api/books', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Failed to fetch books',
-            message: error.message 
+            message: safeMessage(error)
         });
     }
 });
@@ -348,7 +350,7 @@ app.get('/api/search', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Search failed',
-            message: error.message 
+            message: safeMessage(error)
         });
     }
 });
@@ -381,7 +383,7 @@ app.get('/api/brands/:brandId/catalog', async (req, res) => {
         res.status(404).json({
             success: false,
             error: 'Brand catalog not found',
-            message: error.message
+            message: safeMessage(error)
         });
     }
 });
@@ -408,7 +410,7 @@ app.get('/api/network/search', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Network search failed',
-            message: error.message 
+            message: safeMessage(error)
         });
     }
 });

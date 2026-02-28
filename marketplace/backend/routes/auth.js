@@ -9,7 +9,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { getAuthProviderInstance, getAuthConfig } = require('../auth/config');
-const { isValidEmail } = require('../utils/validate');
+const { isValidEmail, safeMessage } = require('../utils/validate');
 
 // Rate limiter for magic-link / login / register — 5 attempts per 15 min per IP (CWE-307)
 // Disabled in test environment to allow test suites to run freely
@@ -87,7 +87,7 @@ router.post('/register', magicLinkLimiter, async (req, res) => {
 
     res.status(400).json({
       error: 'Registration failed',
-      message: error.message,
+      message: safeMessage(error),
     });
   }
 });
@@ -131,7 +131,7 @@ router.post('/login', magicLinkLimiter, async (req, res) => {
 
     res.status(400).json({
       error: 'Login failed',
-      message: error.message,
+      message: safeMessage(error),
     });
   }
 });
@@ -250,7 +250,7 @@ router.post('/verify', async (req, res) => {
     res.status(401).json({
       valid: false,
       error: 'Invalid token',
-      message: error.message,
+      message: safeMessage(error),
     });
   }
 });
@@ -287,7 +287,7 @@ router.get('/me', requireAuth, async (req, res) => {
 
     res.status(500).json({
       error: 'Failed to get user',
-      message: error.message,
+      message: safeMessage(error),
     });
   }
 });
@@ -317,7 +317,7 @@ router.post('/logout', requireAuth, async (req, res) => {
 
     res.status(500).json({
       error: 'Logout failed',
-      message: error.message,
+      message: safeMessage(error),
     });
   }
 });
