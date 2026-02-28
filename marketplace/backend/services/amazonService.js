@@ -699,17 +699,18 @@ class AmazonService {
 
     async getBookTrendHistory(publishedBookId, days = 30) {
         try {
+            const daysInt = parseInt(days, 10) || 30;
             const query = `
                 SELECT bestseller_rank, rating_average, rating_count,
                        review_count, trend_direction, rank_change,
                        DATE(recorded_at) as date
-                FROM book_ranking_history 
+                FROM book_ranking_history
                 WHERE published_book_id = ?
-                AND recorded_at >= datetime('now', '-${days} days')
+                AND recorded_at >= datetime('now', '-' || ? || ' days')
                 ORDER BY recorded_at ASC
             `;
-            
-            return await db.all(query, [publishedBookId]);
+
+            return await db.all(query, [publishedBookId, daysInt]);
         } catch (error) {
             console.error('Error getting book trend history:', error);
             return [];
