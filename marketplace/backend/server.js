@@ -326,23 +326,32 @@ app.get('/api/search', async (req, res) => {
 // Get specific brand catalog
 app.get('/api/brands/:brandId/catalog', async (req, res) => {
     try {
-        const { brandId } = req.params;
-        const catalogPath = path.join(__dirname, '..', 'frontend', 'brands', brandId, 'catalog.json');
-        
+        // Sanitize brandId to prevent path traversal (CWE-22)
+        const brandsBase = path.resolve(__dirname, '..', 'frontend', 'brands');
+        const safe = path.basename(req.params.brandId || '');
+        if (!safe || safe === '.' || safe === '..') {
+            return res.status(400).json({ success: false, error: 'Invalid brand ID' });
+        }
+        const resolved = path.resolve(brandsBase, safe);
+        if (!resolved.startsWith(brandsBase + path.sep) && resolved !== brandsBase) {
+            return res.status(400).json({ success: false, error: 'Invalid brand ID' });
+        }
+        const catalogPath = path.join(brandsBase, safe, 'catalog.json');
+
         const catalogContent = await fs.readFile(catalogPath, 'utf8');
         const catalog = JSON.parse(catalogContent);
-        
+
         res.json({
             success: true,
-            brand: brandId,
+            brand: safe,
             catalog: catalog
         });
     } catch (error) {
         console.error(`Error fetching catalog for brand ${req.params.brandId}:`, error);
-        res.status(404).json({ 
+        res.status(404).json({
             success: false,
             error: 'Brand catalog not found',
-            message: error.message 
+            message: error.message
         });
     }
 });
