@@ -55,7 +55,30 @@
 **6. Payment Processing**
 - Stripe (fiat — cards, BNPL)
 - ArxMint (crypto — Lightning invoices, ecash tokens via Cashu/Fedimint)
+- BIP21 unified QR (on-chain + Lightning in one code)
+- Payment-method-agnostic order state machine
+- Three-mode checkout: instant-final (LN/ecash), escrowed (Cashu P2PK), card (Stripe)
+- Zap-to-unlock for micro-content <$5 (NIP-57)
+- Creator payout routing policy (destination × conversion × settlement timing)
+- Tax data model: capture USD fair market value per crypto payment from day one
 - Tax calculation workflow (not MoR — creators are sellers)
+
+**6a. Dispute Resolution & Refunds**
+- Stripe refunds (standard API)
+- Lightning refunds via BTCPay Pull Payments + LNURL-withdraw
+- Ecash refund as store-credit bearer tokens (Cashu)
+- Split settlement: 80-90% instant, 10-20% escrowed with locktime
+- Cashu 2-of-3 P2PK multisig escrow (NUT-10/NUT-11)
+- Signed purchase receipts (Nostr events)
+- Receipt-referenced reviews with NIP-13 PoW spam resistance
+- EU 14-day digital content withdrawal consent capture
+
+**6b. Regulatory Compliance (Parallel Track)**
+- Path B (licensed partner) for Longmont ecash pilot
+- Compliance-safe design: no privacy/anonymity marketing
+- Mint operations separated from marketplace operations
+- Balance and velocity caps in pilot phase
+- Federation as incorporated entity
 
 **7. Authentication**
 - Local magic links (zero dependencies)
