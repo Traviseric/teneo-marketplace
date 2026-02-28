@@ -8,9 +8,9 @@ class SimpleDigestService {
                 bookOfTheDay: await this.getSimpleBookOfTheDay(),
                 moverAndShaker: null,
                 reviewChampion: null,
-                risingCategory: { category: 'Fiction', book_count: 12, improvementPercent: '8.5', successRate: '67' },
+                risingCategory: null,
                 collectiveIntelligence: await this.getSimpleIntelligence(),
-                communityInsights: ['Books with professional covers perform 40% better', 'Tuesday-Thursday releases get 25% more visibility', 'Optimal description length is 15-25 words'],
+                communityInsights: [],
                 milestonesFeed: await this.getSimpleFeed(),
                 generatedAt: new Date().toISOString()
             };
@@ -42,27 +42,14 @@ class SimpleDigestService {
                 return {
                     ...book,
                     publisher_name: book.display_name || book.username || 'Publisher',
-                    improvementPercent: '12.5',
-                    improvementAmount: 5000,
-                    previous_rank: book.bestseller_rank + 5000,
                     current_rank: book.bestseller_rank
                 };
             }
         } catch (error) {
-            console.log('Using mock book of the day:', error.message);
+            console.error('getSimpleBookOfTheDay DB error:', error.message);
         }
 
-        return {
-            id: 1,
-            title: 'Sample Published Book',
-            author: 'Community Author',
-            publisher_name: 'Teneo Publisher',
-            improvementPercent: '12.5',
-            improvementAmount: 5000,
-            previous_rank: 55000,
-            current_rank: 50000,
-            cover_image_url: '/images/book-placeholder.png'
-        };
+        return null;
     }
 
     async getSimpleIntelligence() {
@@ -88,48 +75,16 @@ class SimpleDigestService {
                     estimated_revenue: metrics.estimated_revenue || 0,
                     total_reviews: metrics.total_reviews || 0,
                     avg_rating: metrics.avg_rating ? parseFloat(metrics.avg_rating).toFixed(1) : '0.0',
-                    active_categories: 8,
+                    active_categories: metrics.active_categories || 0,
                     total_publishers: metrics.total_publishers || 0
                 },
-                velocityData: this.getMockVelocityData(),
-                genreData: [
-                    { genre: 'Fiction', book_count: 25 },
-                    { genre: 'Non-Fiction', book_count: 18 },
-                    { genre: 'Business', book_count: 12 },
-                    { genre: 'Romance', book_count: 8 },
-                    { genre: 'Sci-Fi', book_count: 6 }
-                ],
-                successRates: {
-                    top_100k: '75.0',
-                    top_50k: '45.0',
-                    top_10k: '15.0',
-                    top_5k: '8.0'
-                }
+                velocityData: [],
+                genreData: [],
+                successRates: null
             };
         } catch (error) {
-            console.log('Using mock intelligence data:', error.message);
-            return {
-                metrics: {
-                    total_books: 0,
-                    verified_books: 0,
-                    estimated_revenue: 0,
-                    total_reviews: 0,
-                    avg_rating: '0.0',
-                    active_categories: 8,
-                    total_publishers: 0
-                },
-                velocityData: this.getMockVelocityData(),
-                genreData: [
-                    { genre: 'Fiction', book_count: 15 },
-                    { genre: 'Non-Fiction', book_count: 12 }
-                ],
-                successRates: {
-                    top_100k: '60.0',
-                    top_50k: '30.0',
-                    top_10k: '10.0',
-                    top_5k: '5.0'
-                }
-            };
+            console.error('getSimpleIntelligence DB error:', error.message);
+            return null;
         }
     }
 
@@ -170,38 +125,7 @@ class SimpleDigestService {
             console.log('Recent books query failed:', error.message);
         }
         
-        if (feed.length === 0) {
-            const now = new Date();
-            feed.push(
-                {
-                    type: 'community',
-                    message: '🎯 Welcome to the Teneo Publishing Community!',
-                    timestamp: now.toISOString(),
-                    icon: '🎉'
-                },
-                {
-                    type: 'milestone',
-                    message: '📊 Publishing dashboard launched!',
-                    timestamp: new Date(now - 3600000).toISOString(),
-                    icon: '✨'
-                }
-            );
-        }
-
         return feed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
-    }
-
-    getMockVelocityData() {
-        const data = [];
-        for (let i = 29; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            data.push({
-                publish_date: date.toISOString().split('T')[0],
-                books_published: Math.floor(Math.random() * 5) + 1
-            });
-        }
-        return data;
     }
 
     formatTimeAgo(timestamp) {

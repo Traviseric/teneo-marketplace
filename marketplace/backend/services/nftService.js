@@ -13,6 +13,7 @@ const { ethers } = require('ethers');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 const db = require('../database/database');
 
@@ -117,12 +118,11 @@ class NFTService {
      * @returns {Promise<string>} IPFS hash
      */
     async uploadToIPFS(fileBuffer, metadata = {}) {
-        try {
-            if (!this.pinataJWT) {
-                console.warn('⚠️  IPFS not configured, returning mock hash');
-                return 'Qm' + Math.random().toString(36).substring(7);
-            }
+        if (!this.pinataJWT) {
+            throw new Error('IPFS not configured: PINATA_JWT environment variable not set');
+        }
 
+        try {
             // Upload file to Pinata
             const formData = new FormData();
             formData.append('file', fileBuffer, {
@@ -157,9 +157,7 @@ class NFTService {
             return response.data.IpfsHash;
 
         } catch (error) {
-            console.error('Error uploading to IPFS:', error.message);
-            // Return mock hash for testing
-            return 'Qm' + Math.random().toString(36).substring(7);
+            throw new Error(`IPFS upload failed: ${error.message}`);
         }
     }
 
@@ -169,11 +167,11 @@ class NFTService {
      * @returns {Promise<string>} IPFS hash
      */
     async uploadMetadataToIPFS(metadata) {
-        try {
-            if (!this.pinataJWT) {
-                return 'Qm' + Math.random().toString(36).substring(7);
-            }
+        if (!this.pinataJWT) {
+            throw new Error('IPFS not configured: PINATA_JWT environment variable not set');
+        }
 
+        try {
             const response = await axios.post(
                 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
                 metadata,
@@ -188,8 +186,7 @@ class NFTService {
             return response.data.IpfsHash;
 
         } catch (error) {
-            console.error('Error uploading metadata to IPFS:', error.message);
-            return 'Qm' + Math.random().toString(36).substring(7);
+            throw new Error(`IPFS metadata upload failed: ${error.message}`);
         }
     }
 
@@ -223,16 +220,24 @@ class NFTService {
             };
 
             // Upload book content to IPFS (in production, encrypt first)
-            let contentHash = 'QmMockHash123'; // Mock for now
-            if (bookData.filePath && fs.existsSync(bookData.filePath)) {
-                const fileBuffer = fs.readFileSync(bookData.filePath);
-                contentHash = await this.uploadToIPFS(fileBuffer, {
-                    filename: `${bookId}.pdf`,
-                    title: bookData.title,
-                    author: bookData.author,
-                    bookId,
-                    brand
-                });
+            let contentHash = null;
+            if (bookData.filePath) {
+                try {
+                    const fileBuffer = await fsPromises.readFile(bookData.filePath);
+                    contentHash = await this.uploadToIPFS(fileBuffer, {
+                        filename: `${bookId}.pdf`,
+                        title: bookData.title,
+                        author: bookData.author,
+                        bookId,
+                        brand
+                    });
+                } catch (err) {
+                    if (err.code === 'ENOENT') {
+                        console.warn('Book file not found, skipping IPFS content upload:', bookData.filePath);
+                    } else {
+                        throw err;
+                    }
+                }
             }
 
             // Upload metadata to IPFS
@@ -269,37 +274,45 @@ class NFTService {
                     tokenId = parsed.args.tokenId.toString();
                 }
             } else {
-                // Mock minting for testing
-                tokenId = Math.floor(Math.random() * 1000000);
-                console.warn('⚠️  Contracts not configured, using mock token ID');
+                // Contracts not configured — cannot mint real NFT
+                tokenId = null;
+                console.warn('⚠️  Smart contracts not configured, skipping NFT mint');
             }
 
-            // Save to database
-            await db.run(`
-                INSERT INTO nft_mints
-                (user_address, book_id, brand, token_id, ipfs_hash, metadata_hash,
-                 transaction_hash, minted_at, network)
-                VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
-            `, [
-                userAddress,
-                bookId,
-                brand,
-                tokenId || 0,
-                contentHash,
-                metadataHash,
-                receipt?.hash || 'mock_tx',
-                this.network
-            ]);
+            // Only save to database when a real on-chain mint occurred
+            if (tokenId !== null) {
+                await db.run(`
+                    INSERT INTO nft_mints
+                    (user_address, book_id, brand, token_id, ipfs_hash, metadata_hash,
+                     transaction_hash, minted_at, network)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
+                `, [
+                    userAddress,
+                    bookId,
+                    brand,
+                    tokenId,
+                    contentHash,
+                    metadataHash,
+                    receipt?.hash,
+                    this.network
+                ]);
 
-            console.log(`✅ NFT minted! Token ID: ${tokenId}`);
+                console.log(`✅ NFT minted! Token ID: ${tokenId}`);
+
+                return {
+                    success: true,
+                    tokenId,
+                    ipfsHash: contentHash,
+                    metadataHash,
+                    transactionHash: receipt?.hash,
+                    tokenURI
+                };
+            }
 
             return {
-                success: true,
-                tokenId,
-                ipfsHash: contentHash,
-                metadataHash,
-                transactionHash: receipt?.hash || 'mock_tx',
-                tokenURI
+                success: false,
+                tokenId: null,
+                reason: 'contracts_not_configured'
             };
 
         } catch (error) {

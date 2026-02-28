@@ -176,16 +176,11 @@ class DigestService {
                 };
             }
         } catch (error) {
-            console.log('Using mock data for rising category:', error.message);
+            console.error('getRisingCategory DB error:', error.message);
+            return null;
         }
-        
-        // Return mock data if database query fails
-        return {
-            category: 'Fiction',
-            book_count: 15,
-            improvementPercent: '12.5',
-            successRate: '67'
-        };
+
+        return null;
     }
 
     async getCollectiveIntelligence() {
@@ -235,14 +230,8 @@ class DigestService {
             
             genreData = await db.all(genreQuery);
         } catch (error) {
-            console.log('Using mock genre data:', error.message);
-            genreData = [
-                { genre: 'Fiction', book_count: 25 },
-                { genre: 'Non-Fiction', book_count: 18 },
-                { genre: 'Romance', book_count: 12 },
-                { genre: 'Sci-Fi', book_count: 8 },
-                { genre: 'Business', book_count: 6 }
-            ];
+            console.error('getCollectiveIntelligence genre query error:', error.message);
+            genreData = [];
         }
 
         // Get success rate metrics
@@ -352,13 +341,6 @@ class DigestService {
             insights.push(`Books with 10+ reviews rank ${improvement}% better on average`);
         }
 
-        // Add some general insights if we don't have enough data-driven ones
-        if (insights.length < 3) {
-            insights.push('Books with professional covers get 40% more clicks');
-            insights.push('Publishing on Tuesday-Thursday gets 25% more initial visibility');
-            insights.push('Books with 15-25 word descriptions convert 30% better');
-        }
-        
         return insights.slice(0, 3); // Return top 3 insights
     }
 
@@ -431,25 +413,6 @@ class DigestService {
             console.log('BSR achievements query failed:', error.message);
         }
         
-        // Add some mock milestones if we don't have enough real data
-        if (feed.length === 0) {
-            const now = new Date();
-            feed.push(
-                {
-                    type: 'community',
-                    message: '🎯 Welcome to the Teneo Publishing Community!',
-                    timestamp: now.toISOString(),
-                    icon: '🎉'
-                },
-                {
-                    type: 'milestone',
-                    message: '📊 Community dashboard is now live!',
-                    timestamp: new Date(now - 3600000).toISOString(), // 1 hour ago
-                    icon: '✨'
-                }
-            );
-        }
-
         return feed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 10);
     }
 

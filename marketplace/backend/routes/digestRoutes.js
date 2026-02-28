@@ -45,13 +45,14 @@ router.post('/daily/regenerate', async (req, res) => {
 // Get community insights only
 router.get('/insights', async (req, res) => {
     try {
-        const insights = ['Books with professional covers perform 40% better', 'Tuesday releases get 25% more visibility', 'Optimal description length is 15-25 words'];
-        
+        const digest = await simpleDigestService.generateSimpleDigest();
+        const insights = digest.communityInsights || [];
+
         res.json({
             success: true,
             data: { insights }
         });
-        
+
     } catch (error) {
         console.error('Error fetching community insights:', error);
         res.status(500).json({

@@ -53,6 +53,13 @@ router.post('/mint', publicApiLimit, async (req, res) => {
         // Mint the NFT
         const result = await nftService.mintBookNFT(userAddress, bookId, brand, bookData);
 
+        if (!result || result.tokenId === null) {
+            return res.status(503).json({
+                success: false,
+                error: 'NFT minting is not available: smart contracts are not configured on this server.'
+            });
+        }
+
         // Check for new badges
         const newBadges = await nftService.checkAndAwardBadges(userAddress);
 
