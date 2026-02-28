@@ -4,7 +4,7 @@ You are a QA engineer reviewing browser test evidence collected via CDP.
 Your job: analyze the evidence and produce a definitive go/no-go verdict.
 
 ## Target Application
-**URL:** https://opensource.org/licenses/MIT
+**URL:** http://localhost:3003
 
 ## Evidence File
 
@@ -37,21 +37,21 @@ Mark all scenarios as SKIP with reason "evidence_collection_failed".
 
    1. [CRITICAL] auth_flow — Test authentication flow
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT/login or auth page
+      1. Navigate to http://localhost:3003/login or auth page
       2. Try logging in with test credentials
       3. Verify redirect after login
       Expected: Login works, user is redirected appropriately
 
    2. [HIGH] api_health — Test API endpoints respond
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT/api/health or similar
+      1. Navigate to http://localhost:3003/api/health or similar
       2. Check API returns valid JSON
       3. Verify no server errors
       Expected: API endpoints return valid responses
 
    3. [CRITICAL] cart_flow — Test shopping cart flow
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Add item to cart
       3. View cart
       4. Proceed to checkout (don't complete)
@@ -59,49 +59,49 @@ Mark all scenarios as SKIP with reason "evidence_collection_failed".
 
    4. [CRITICAL] page_loads — Verify the page loads successfully
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Wait for page to fully load (max 30 seconds)
       3. Check for any error messages
       Expected: Page loads without errors, no 500/404 errors
 
    5. [CRITICAL] console_errors — Check for JavaScript console errors
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Open browser console
       3. Look for any red error messages
       Expected: No critical JavaScript errors in console
 
    6. [HIGH] responsive_layout — Test responsive layout on mobile
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Resize viewport to mobile width (375px)
       3. Check layout doesn't break
       Expected: Layout adapts properly, no horizontal scroll
 
    7. [HIGH] navigation_works — Test main navigation links
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Click on main navigation links
       3. Verify each link works
       Expected: All navigation links work, no broken links
 
    8. [HIGH] forms_work — Test any forms on the page
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Find any forms on the page
       3. Try submitting with valid data
       Expected: Forms submit successfully, show appropriate feedback
 
    9. [MEDIUM] images_load — Verify all images load
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Check all images on the page
       3. Look for broken image icons
       Expected: All images load correctly, no broken images
 
    10. [MEDIUM] performance_check — Basic performance check
       Steps:
-      1. Navigate to https://opensource.org/licenses/MIT
+      1. Navigate to http://localhost:3003
       2. Note time to first content
       3. Check if page feels responsive
       Expected: Page loads in under 3 seconds, interactions are responsive
