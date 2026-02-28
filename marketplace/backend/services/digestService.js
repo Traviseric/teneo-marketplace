@@ -150,15 +150,15 @@ class DigestService {
         try {
             // Try to find category with best average BSR improvement
             const query = `
-                SELECT 
-                    'Fiction' as category,
+                SELECT
+                    COALESCE(pb.primary_category, 'Unknown') as category,
                     COUNT(pb.id) as book_count,
                     AVG(CASE WHEN pb.bestseller_rank > 0 THEN 100000 - pb.bestseller_rank ELSE 0 END) as avg_improvement,
                     COUNT(CASE WHEN pb.bestseller_rank <= 50000 THEN 1 END) as improving_books
                 FROM published_books pb
                 WHERE pb.verification_status = 'verified'
                     AND pb.bestseller_rank IS NOT NULL
-                GROUP BY category
+                GROUP BY COALESCE(pb.primary_category, 'Unknown')
                 HAVING book_count >= 1
                 ORDER BY avg_improvement DESC
                 LIMIT 1
@@ -218,14 +218,14 @@ class DigestService {
         let genreData = [];
         try {
             const genreQuery = `
-                SELECT 
-                    'Fiction' as genre,
+                SELECT
+                    COALESCE(pb.primary_category, 'Unknown') as genre,
                     COUNT(pb.id) as book_count
                 FROM published_books pb
                 WHERE pb.verification_status = 'verified'
-                GROUP BY genre
+                GROUP BY COALESCE(pb.primary_category, 'Unknown')
                 ORDER BY book_count DESC
-                LIMIT 1
+                LIMIT 10
             `;
             
             genreData = await db.all(genreQuery);
