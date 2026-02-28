@@ -1,8 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+// Checkout session rate limiter — 10 per hour per IP (CWE-770)
+// Disabled in test environment to allow test suites to run freely
+const checkoutLimiter = process.env.NODE_ENV === 'test'
+    ? (req, res, next) => next()
+    : rateLimit({
+        windowMs: 60 * 60 * 1000,
+        max: 10,
+        message: { success: false, error: 'Too many checkout attempts. Please try again later.' },
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
@@ -68,7 +81,7 @@ function lookupBookPrice(bookId, format, brandId) {
   return null;
 }
 
-router.post('/create-session', async (req, res) => {
+router.post('/create-session', checkoutLimiter, async (req, res) => {
   try {
     // Do not destructure 'price' from req.body — client-supplied price is untrusted
     const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;

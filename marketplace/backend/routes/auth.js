@@ -7,8 +7,21 @@
 
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const { getAuthProviderInstance, getAuthConfig } = require('../auth/config');
 const { isValidEmail } = require('../utils/validate');
+
+// Rate limiter for magic-link / login / register — 5 attempts per 15 min per IP (CWE-307)
+// Disabled in test environment to allow test suites to run freely
+const magicLinkLimiter = process.env.NODE_ENV === 'test'
+    ? (req, res, next) => next()
+    : rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 5,
+        message: { success: false, error: 'Too many auth requests. Please wait 15 minutes.' },
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
 
 // =====================================
 // Public Routes (No Auth Required)
@@ -31,7 +44,7 @@ router.get('/config', (req, res) => {
  * POST /api/auth/register
  * Register a new user
  */
-router.post('/register', async (req, res) => {
+router.post('/register', magicLinkLimiter, async (req, res) => {
   try {
     const { email, name } = req.body;
 
@@ -83,7 +96,7 @@ router.post('/register', async (req, res) => {
  * POST /api/auth/login
  * Initiate login flow
  */
-router.post('/login', async (req, res) => {
+router.post('/login', magicLinkLimiter, async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -183,7 +196,7 @@ router.get('/callback', async (req, res) => {
  * GET /api/auth/verify-magic-link
  * Verify magic link token (for local auth)
  */
-router.get('/verify-magic-link', async (req, res) => {
+router.get('/verify-magic-link', magicLinkLimiter, async (req, res) => {
   try {
     const { token } = req.query;
 
