@@ -166,6 +166,32 @@ class NFTService {
     }
 
     /**
+     * Pin a purchased book file to IPFS and record in ipfs_pins table.
+     * Non-fatal: caller should catch errors and not block order fulfillment.
+     *
+     * @param {string} bookId - Book ID
+     * @param {string} filePath - Absolute path to the book PDF
+     * @returns {Promise<string>} IPFS hash (CID)
+     */
+    async pinBookToIPFS(bookId, filePath) {
+        const fileBuffer = await fsPromises.readFile(filePath);
+        const ipfsHash = await this.uploadToIPFS(fileBuffer, {
+            filename: `book-${bookId}.pdf`,
+            bookId
+        });
+
+        await db.run(
+            `INSERT OR REPLACE INTO ipfs_pins
+             (ipfs_hash, content_type, book_id, file_size, pin_status, pin_service, pinned_at)
+             VALUES (?, 'book', ?, ?, 'pinned', 'pinata', CURRENT_TIMESTAMP)`,
+            [ipfsHash, bookId, fileBuffer.length]
+        );
+
+        console.log(`[IPFS] Pinned book ${bookId}: ${ipfsHash}`);
+        return ipfsHash;
+    }
+
+    /**
      * Upload metadata to IPFS
      * @param {Object} metadata - NFT metadata
      * @returns {Promise<string>} IPFS hash
