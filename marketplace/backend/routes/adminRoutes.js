@@ -5,11 +5,13 @@ const fs = require('fs').promises;
 const multer = require('multer');
 const { authenticateAdmin, loginLimiter, verifyPassword, getAdminPasswordHash } = require('../middleware/auth');
 const OrderService = require('../services/orderService');
+const AnalyticsService = require('../services/analyticsService');
 const db = require('../database/database');
 const auditService = require('../services/auditService');
 
 // Initialize services
 const orderService = new OrderService();
+const analyticsService = new AnalyticsService();
 
 // Lazy-initialized Stripe client — avoids re-instantiation on every refund request
 let _stripe = null;
@@ -158,14 +160,16 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         const totalRevenue = await getTotalRevenue();
         const totalOrders = await getTotalOrders();
         const activeBooks = await getActiveBooks();
-        const conversionRate = await getConversionRate();
+        const conversionRate = await analyticsService.getConversionRate(30);
+        const revenueStats = await analyticsService.getOrderRevenue(30);
         const recentOrders = await getRecentOrders();
-        
+
         res.json({
             totalRevenue,
             totalOrders,
             activeBooks,
             conversionRate,
+            revenueStats,
             recentOrders
         });
     } catch (error) {
@@ -557,27 +561,6 @@ async function getActiveBooks() {
     } catch (error) {
         return 0;
     }
-}
-
-async function getConversionRate() {
-    return new Promise((resolve) => {
-        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-        const sql = `
-            SELECT
-                COUNT(*) AS total_orders,
-                SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) AS paid_orders
-            FROM orders
-            WHERE created_at >= ?
-        `;
-        db.get(sql, [thirtyDaysAgo], (err, row) => {
-            if (err || !row || row.total_orders === 0) {
-                resolve(null);
-                return;
-            }
-            const rate = (row.paid_orders / row.total_orders) * 100;
-            resolve(Math.round(rate * 10) / 10);
-        });
-    });
 }
 
 async function getRecentOrders() {
