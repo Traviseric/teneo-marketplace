@@ -285,7 +285,7 @@ class DigestService {
                 }
             }
         } catch (error) {
-            console.log('Error generating community insights:', error.message);
+            console.error('Error generating community insights:', error.message);
         }
 
         // Title length analysis
@@ -376,7 +376,7 @@ class DigestService {
             });
             
         } catch (error) {
-            console.log('Recent books query failed:', error.message);
+            console.error('Recent books query failed:', error.message);
         }
 
         try {
@@ -410,32 +410,14 @@ class DigestService {
             });
             
         } catch (error) {
-            console.log('BSR achievements query failed:', error.message);
+            console.error('BSR achievements query failed:', error.message);
         }
         
         return feed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 10);
     }
 
     async getPerformanceComparisons() {
-        // Get performance percentiles for comparison tool
-        const percentileQuery = `
-            SELECT 
-                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY bestseller_rank) as p25_bsr,
-                PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY bestseller_rank) as p50_bsr,
-                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY bestseller_rank) as p75_bsr,
-                PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY bestseller_rank) as p90_bsr,
-                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY rating_count) as p25_reviews,
-                PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY rating_count) as p50_reviews,
-                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY rating_count) as p75_reviews,
-                PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY rating_average) as p25_rating,
-                PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY rating_average) as p50_rating,
-                PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY rating_average) as p75_rating
-            FROM published_books
-            WHERE verification_status = 'verified'
-                AND bestseller_rank IS NOT NULL
-        `;
-
-        // SQLite doesn't support PERCENTILE_CONT, so let's use a different approach
+        // Get performance percentiles for comparison tool using SQLite-compatible approach
         const bsrQuery = `
             SELECT bestseller_rank
             FROM published_books
@@ -515,7 +497,7 @@ class DigestService {
                 };
             }
         } catch (error) {
-            console.log('Error getting latest digest:', error.message);
+            console.error('Error getting latest digest:', error.message);
         }
         return null;
     }
