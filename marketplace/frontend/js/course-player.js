@@ -354,6 +354,12 @@ class CoursePlayer {
     // Update fraction text
     document.getElementById('progress-fraction').textContent = `${completed}/${total}`;
 
+    // Update accessible SVG title
+    const progressTitle = document.getElementById('progress-title');
+    if (progressTitle) {
+      progressTitle.textContent = `Course progress: ${completed} of ${total} lessons completed`;
+    }
+
     // Update circle progress
     const progressPath = document.getElementById('progress-path');
     progressPath.setAttribute('stroke-dasharray', `${percentage}, 100`);

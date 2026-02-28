@@ -38,7 +38,8 @@
     <!-- Sidebar -->
     <aside class="course-sidebar" id="course-sidebar">
       <button class="sidebar-toggle-mobile" id="sidebar-toggle" aria-label="Toggle sidebar">
-        ☰
+        <span aria-hidden="true">☰</span>
+        <span class="sr-only">Toggle sidebar</span>
       </button>
 
       <div class="sidebar-header">
@@ -53,7 +54,8 @@
 
       <!-- Progress Circle -->
       <div class="progress-section">
-        <svg class="progress-circle" viewBox="0 0 36 36">
+        <svg class="progress-circle" role="img" aria-labelledby="progress-title" viewBox="0 0 36 36">
+          <title id="progress-title">Course progress: 1 of 14 lessons completed</title>
           <path class="circle-bg"
             d="M18 2.0845
                a 15.9155 15.9155 0 0 1 0 31.831
@@ -73,7 +75,7 @@
             stroke-width="2.8"
             stroke-linecap="round"
           />
-          <text x="18" y="20.35" class="progress-text" id="progress-fraction">1/14</text>
+          <text x="18" y="20.35" class="progress-text" id="progress-fraction" aria-hidden="true">1/14</text>
         </svg>
         <p class="progress-label">completed</p>
       </div>
@@ -99,6 +101,7 @@
         <div class="video-container">
           <video id="lesson-video" controls controlsList="nodownload">
             <source src="" type="video/mp4">
+            <track kind="captions" src="" srclang="en" label="English" default>
             Your browser does not support the video tag.
           </video>
           <div class="video-overlay" id="video-overlay">
@@ -110,6 +113,7 @@
             </button>
           </div>
         </div>
+      <p class="captions-notice" id="captions-notice">Captions coming soon.</p>
       </div>
 
       <!-- Lesson Content -->
