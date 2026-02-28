@@ -1,5 +1,15 @@
 const nodemailer = require('nodemailer');
 
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
 class EmailService {
   constructor() {
     this.transporter = null;
@@ -33,11 +43,11 @@ class EmailService {
     }
 
     try {
-      const { 
-        userEmail, 
-        bookTitle, 
+      const {
+        userEmail,
+        bookTitle,
         bookAuthor,
-        downloadUrl, 
+        downloadUrl,
         orderId,
         expiresIn = '24 hours',
         maxDownloads = 5
@@ -68,9 +78,9 @@ class EmailService {
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      
+
       console.log(`Download email sent to ${userEmail} for order ${orderId}`);
-      
+
       return {
         success: true,
         messageId: result.messageId,
@@ -189,12 +199,12 @@ class EmailService {
         </div>
 
         <div class="book-info">
-            <div class="book-title">${bookTitle}</div>
-            <div class="book-author">by ${bookAuthor}</div>
+            <div class="book-title">${escapeHtml(bookTitle)}</div>
+            <div class="book-author">by ${escapeHtml(bookAuthor)}</div>
         </div>
 
         <div style="text-align: center;">
-            <a href="${downloadUrl}" class="download-button">
+            <a href="${escapeHtml(downloadUrl)}" class="download-button">
                 📥 Download Your Book
             </a>
         </div>
@@ -202,15 +212,15 @@ class EmailService {
         <div class="important-info">
             <h3>⚠️ Important Information</h3>
             <ul>
-                <li><strong>Expires:</strong> This download link expires in ${expiresIn}</li>
-                <li><strong>Download Limit:</strong> You can download this book up to ${maxDownloads} times</li>
+                <li><strong>Expires:</strong> This download link expires in ${escapeHtml(expiresIn)}</li>
+                <li><strong>Download Limit:</strong> You can download this book up to ${escapeHtml(maxDownloads)} times</li>
                 <li><strong>Save Your Book:</strong> Please save the PDF to your device after downloading</li>
             </ul>
         </div>
 
         <div class="order-details">
-            <strong>Order ID:</strong> ${orderId}<br>
-            <strong>Download URL:</strong> <a href="${downloadUrl}">${downloadUrl}</a>
+            <strong>Order ID:</strong> ${escapeHtml(orderId)}<br>
+            <strong>Download URL:</strong> <a href="${escapeHtml(downloadUrl)}">${escapeHtml(downloadUrl)}</a>
         </div>
 
         <div style="margin: 30px 0; padding: 20px; background-color: #f0f9ff; border-radius: 8px;">
@@ -269,9 +279,9 @@ Questions? Reply to this email or visit our support page.
     }
 
     try {
-      const { 
-        userEmail, 
-        bookTitle, 
+      const {
+        userEmail,
+        bookTitle,
         bookAuthor,
         price,
         orderId,
@@ -301,9 +311,9 @@ Questions? Reply to this email or visit our support page.
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      
+
       console.log(`Order confirmation sent to ${userEmail} for order ${orderId}`);
-      
+
       return {
         success: true,
         messageId: result.messageId,
@@ -396,12 +406,12 @@ Questions? Reply to this email or visit our support page.
         <div class="order-summary">
             <h3>Order Summary</h3>
             <div class="order-item">
-                <span><strong>${bookTitle}</strong><br>by ${bookAuthor}</span>
-                <span>$${price}</span>
+                <span><strong>${escapeHtml(bookTitle)}</strong><br>by ${escapeHtml(bookAuthor)}</span>
+                <span>$${escapeHtml(price)}</span>
             </div>
             <div class="order-item">
                 <span><strong>Total</strong></span>
-                <span><strong>$${price}</strong></span>
+                <span><strong>$${escapeHtml(price)}</strong></span>
             </div>
         </div>
 
@@ -412,8 +422,8 @@ Questions? Reply to this email or visit our support page.
 
         <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <strong>Order Details:</strong><br>
-            Order ID: ${orderId}<br>
-            Payment Method: ${paymentMethod}<br>
+            Order ID: ${escapeHtml(orderId)}<br>
+            Payment Method: ${escapeHtml(paymentMethod)}<br>
             Date: ${new Date().toLocaleDateString()}
         </div>
 
@@ -515,12 +525,12 @@ Questions about your order? Reply to this email or visit our support page.
     <div class="container">
         <div class="header">
             <h1>❌ Payment Failed</h1>
-            <p>We couldn't process your payment for "${bookTitle}"</p>
+            <p>We couldn't process your payment for &quot;${escapeHtml(bookTitle)}&quot;</p>
         </div>
 
         <div class="alert-box">
             <h3>What happened?</h3>
-            <p>${errorMessage || 'Your payment could not be processed. This might be due to insufficient funds, an expired card, or a temporary issue with your payment method.'}</p>
+            <p>${escapeHtml(errorMessage || 'Your payment could not be processed. This might be due to insufficient funds, an expired card, or a temporary issue with your payment method.')}</p>
         </div>
 
         <div style="margin: 30px 0;">
@@ -535,8 +545,8 @@ Questions about your order? Reply to this email or visit our support page.
 
         <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <strong>Order Details:</strong><br>
-            Order ID: ${orderId}<br>
-            Book: ${bookTitle}<br>
+            Order ID: ${escapeHtml(orderId)}<br>
+            Book: ${escapeHtml(bookTitle)}<br>
             Date: ${new Date().toLocaleDateString()}
         </div>
 
@@ -558,7 +568,7 @@ Questions about your order? Reply to this email or visit our support page.
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      
+
       return {
         success: true,
         messageId: result.messageId
@@ -645,15 +655,15 @@ Questions about your order? Reply to this email or visit our support page.
         </div>
 
         <div class="refund-box">
-            <div class="refund-amount">$${refundAmount.toFixed(2)} ${currency}</div>
+            <div class="refund-amount">$${escapeHtml(refundAmount.toFixed(2))} ${escapeHtml(currency)}</div>
             <p>Will be credited to your original payment method</p>
         </div>
 
         <div style="margin: 30px 0;">
             <h3>Refund Details</h3>
-            <p><strong>Book:</strong> ${bookTitle}</p>
-            <p><strong>Order ID:</strong> ${orderId}</p>
-            <p><strong>Refund Amount:</strong> $${refundAmount.toFixed(2)} ${currency}</p>
+            <p><strong>Book:</strong> ${escapeHtml(bookTitle)}</p>
+            <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+            <p><strong>Refund Amount:</strong> $${escapeHtml(refundAmount.toFixed(2))} ${escapeHtml(currency)}</p>
             <p><strong>Processing Time:</strong> 5-10 business days</p>
         </div>
 
@@ -679,7 +689,7 @@ Questions about your order? Reply to this email or visit our support page.
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      
+
       return {
         success: true,
         messageId: result.messageId
@@ -719,16 +729,16 @@ Questions about your order? Reply to this email or visit our support page.
 <body>
     <div class="container">
         <h1>📚 Print Status Update</h1>
-        <div class="status-badge status-${status}">${status.toUpperCase()}</div>
-        
-        <h2>${bookTitle}</h2>
-        <p>${message}</p>
-        
+        <div class="status-badge status-${escapeHtml(status)}">${escapeHtml(status.toUpperCase())}</div>
+
+        <h2>${escapeHtml(bookTitle)}</h2>
+        <p>${escapeHtml(message)}</p>
+
         <div style="background: #F9FAFB; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <strong>Estimated Time:</strong> ${estimatedTime}
+            <strong>Estimated Time:</strong> ${escapeHtml(estimatedTime)}
         </div>
-        
-        <p>Order ID: ${orderId}</p>
+
+        <p>Order ID: ${escapeHtml(orderId)}</p>
         <p>We'll send you another update when your book ships!</p>
     </div>
 </body>
@@ -771,20 +781,20 @@ Questions about your order? Reply to this email or visit our support page.
 <body>
     <div class="container">
         <h1>🚚 Your Book Has Shipped!</h1>
-        
-        <h2>${bookTitle}</h2>
+
+        <h2>${escapeHtml(bookTitle)}</h2>
         <p>Great news! Your book is on its way to you.</p>
-        
+
         <div style="background: #F9FAFB; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <strong>Tracking Number:</strong> ${trackingId}<br>
-            <strong>Estimated Delivery:</strong> ${estimatedDelivery}
+            <strong>Tracking Number:</strong> ${escapeHtml(trackingId)}<br>
+            <strong>Estimated Delivery:</strong> ${escapeHtml(estimatedDelivery)}
         </div>
-        
+
         <div style="text-align: center; margin: 30px 0;">
-            <a href="${trackingUrl}" class="track-button">Track Your Package</a>
+            <a href="${escapeHtml(trackingUrl)}" class="track-button">Track Your Package</a>
         </div>
-        
-        <p>Order ID: ${orderId}</p>
+
+        <p>Order ID: ${escapeHtml(orderId)}</p>
     </div>
 </body>
 </html>`;
@@ -826,15 +836,15 @@ Questions about your order? Reply to this email or visit our support page.
 <body>
     <div class="container">
         <h1>Print Order Cancelled</h1>
-        
+
         <div class="alert">
-            <strong>Order Cancelled:</strong> ${bookTitle}
+            <strong>Order Cancelled:</strong> ${escapeHtml(bookTitle)}
         </div>
-        
-        <p><strong>Reason:</strong> ${reason}</p>
-        <p>${refundInfo}</p>
-        
-        <p>Order ID: ${orderId}</p>
+
+        <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
+        <p>${escapeHtml(refundInfo)}</p>
+
+        <p>Order ID: ${escapeHtml(orderId)}</p>
         <p>If you have any questions, please reply to this email.</p>
     </div>
 </body>
@@ -877,15 +887,15 @@ Questions about your order? Reply to this email or visit our support page.
 <body>
     <div class="container">
         <h1>⚠️ Issue with Print Order</h1>
-        
+
         <div class="alert">
-            <strong>Print Issue:</strong> ${bookTitle}
+            <strong>Print Issue:</strong> ${escapeHtml(bookTitle)}
         </div>
-        
-        <p><strong>Issue:</strong> ${errorMessage}</p>
-        <p>${supportInfo}</p>
-        
-        <p>Order ID: ${orderId}</p>
+
+        <p><strong>Issue:</strong> ${escapeHtml(errorMessage)}</p>
+        <p>${escapeHtml(supportInfo)}</p>
+
+        <p>Order ID: ${escapeHtml(orderId)}</p>
         <p>We apologize for the inconvenience and are working to resolve this quickly.</p>
     </div>
 </body>
@@ -918,7 +928,7 @@ Questions about your order? Reply to this email or visit our support page.
       const digitalSection = digitalItems.length > 0 ? `
         <h3>📱 Digital Items (Ready Now)</h3>
         <ul>
-          ${digitalItems.map(item => `<li>${item.title} - ${item.format} - ${item.status}</li>`).join('')}
+          ${digitalItems.map(item => `<li>${escapeHtml(item.title)} - ${escapeHtml(item.format)} - ${escapeHtml(item.status)}</li>`).join('')}
         </ul>
         <p>Check your email for download links!</p>
       ` : '';
@@ -926,7 +936,7 @@ Questions about your order? Reply to this email or visit our support page.
       const physicalSection = physicalItems.length > 0 ? `
         <h3>📦 Physical Items (Shipping Soon)</h3>
         <ul>
-          ${physicalItems.map(item => `<li>${item.title} - ${item.format} (Qty: ${item.quantity}) - ${item.status}</li>`).join('')}
+          ${physicalItems.map(item => `<li>${escapeHtml(item.title)} - ${escapeHtml(item.format)} (Qty: ${escapeHtml(item.quantity)}) - ${escapeHtml(item.status)}</li>`).join('')}
         </ul>
         <p>We'll email you tracking information when your items ship.</p>
       ` : '';
@@ -944,18 +954,18 @@ Questions about your order? Reply to this email or visit our support page.
 <body>
     <div class="container">
         <h1>✅ Order Confirmed!</h1>
-        
+
         <p>Thank you for your order! Here's what you ordered:</p>
-        
+
         <div class="section">
           ${digitalSection}
         </div>
-        
+
         <div class="section">
           ${physicalSection}
         </div>
-        
-        <p>Order ID: ${orderId}</p>
+
+        <p>Order ID: ${escapeHtml(orderId)}</p>
     </div>
 </body>
 </html>`;
@@ -988,7 +998,7 @@ Questions about your order? Reply to this email or visit our support page.
         html: `
           <p>Thank you for subscribing to censorship alerts.</p>
           <p>Click the link below to verify your email address and activate your subscription:</p>
-          <p><a href="${verifyUrl}">${verifyUrl}</a></p>
+          <p><a href="${escapeHtml(verifyUrl)}">${escapeHtml(verifyUrl)}</a></p>
           <p>If you did not request this subscription, you can ignore this email.</p>
         `,
         text: `Verify your censorship alert subscription:\n\n${verifyUrl}\n\nIf you did not request this, ignore this email.`
