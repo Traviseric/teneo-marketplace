@@ -260,8 +260,8 @@
 
     <main class="main">
         <div class="download-container" id="download-container">
-            <div class="loading">
-                <i class="fas fa-spinner"></i>
+            <div class="loading" role="status" aria-live="polite" aria-label="Loading your downloads">
+                <i class="fas fa-spinner" aria-hidden="true"></i>
                 <p>Loading your downloads...</p>
             </div>
         </div>
@@ -341,7 +341,7 @@
                 <div class="help-section">
                     <h3>Need Help?</h3>
                     <p>If you have any issues downloading your books, please contact our support team.</p>
-                    <a href="mailto:support@example.com" id="supportEmail">support@example.com</a>
+                    <a href="mailto:support@teneolabs.com" id="supportEmail">support@teneolabs.com</a>
                 </div>
             `;
 
@@ -368,11 +368,12 @@
                             <span><i class="fas fa-shield-alt"></i> DRM-Free</span>
                         </div>
                     </div>
-                    <button class="download-btn" 
-                            data-book-id="${item.bookId}" 
+                    <button class="download-btn"
+                            data-book-id="${item.bookId}"
                             data-order-id="${orderId}"
-                            ${!canDownload ? 'disabled' : ''}>
-                        <i class="fas fa-download"></i>
+                            ${!canDownload ? 'disabled aria-disabled="true"' : ''}
+                            aria-label="${canDownload ? `Download ${item.title} (${item.remainingDownloads} downloads remaining)` : `Download limit reached for ${item.title}`}">
+                        <i class="fas fa-download" aria-hidden="true"></i>
                         ${buttonText}
                     </button>
                 </div>
@@ -392,39 +393,49 @@
         async function processDownload(orderId, bookId, button) {
             // Disable button during download
             button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+            button.setAttribute('aria-label', 'Download in progress, please wait');
             const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            const originalLabel = button.dataset.originalLabel || button.getAttribute('aria-label');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Processing...';
 
             try {
                 // Process download
                 const result = window.delivery.processDownload(orderId, bookId);
-                
+
                 if (result.success) {
                     // Show success message
                     showNotification('Download starting...', 'success');
-                    
+
                     // Simulate file download (in production, this would be a real file)
                     downloadFile(result.downloadUrl, result.fileName);
-                    
+
                     // Update button
-                    button.innerHTML = `<i class="fas fa-check"></i> Downloaded! (${result.remainingDownloads} left)`;
-                    
+                    button.innerHTML = `<i class="fas fa-check" aria-hidden="true"></i> Downloaded! (${result.remainingDownloads} left)`;
+                    button.setAttribute('aria-label', 'Download complete');
+
                     // Re-enable button if downloads remain
                     if (result.remainingDownloads > 0) {
                         setTimeout(() => {
                             button.disabled = false;
-                            button.innerHTML = `<i class="fas fa-download"></i> Download (${result.remainingDownloads} left)`;
+                            button.removeAttribute('aria-disabled');
+                            button.setAttribute('aria-label', `Download again (${result.remainingDownloads} downloads remaining)`);
+                            button.innerHTML = `<i class="fas fa-download" aria-hidden="true"></i> Download (${result.remainingDownloads} left)`;
                         }, 2000);
                     }
                 } else {
                     showNotification(result.error, 'error');
                     button.disabled = false;
+                    button.removeAttribute('aria-disabled');
+                    button.setAttribute('aria-label', 'Download failed, click to retry');
                     button.innerHTML = originalText;
                 }
             } catch (error) {
                 console.error('Download error:', error);
                 showNotification('Download failed. Please try again.', 'error');
                 button.disabled = false;
+                button.removeAttribute('aria-disabled');
+                button.setAttribute('aria-label', 'Download failed, click to retry');
                 button.innerHTML = originalText;
             }
         }
