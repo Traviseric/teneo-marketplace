@@ -24,7 +24,12 @@
     "testTimeout": 10000,
     "modulePathIgnorePatterns": [
       "<rootDir>/marketplace/package.json"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^stripe$": "<rootDir>/marketplace/backend/node_modules/stripe",
+      "^axios$": "<rootDir>/marketplace/backend/node_modules/axios"
+    },
+    "forceExit": true
   },
   "keywords": [],
   "author": "",
