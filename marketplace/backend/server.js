@@ -112,7 +112,10 @@ const { requireHTTPS } = require('./middleware/auth');
 app.use(requireHTTPS);
 
 // Session configuration
-const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
+// SESSION_SECRET is guaranteed to be set by validateEnvironment() above:
+//   - production: exits with FATAL error if missing or < 32 chars (CWE-330)
+//   - development: auto-generated random secret if not provided
+const sessionSecret = process.env.SESSION_SECRET;
 app.use(session({
     secret: sessionSecret,
     resave: false,
