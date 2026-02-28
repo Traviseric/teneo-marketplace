@@ -496,8 +496,8 @@
                 <p class="section-subtitle">Discover curated titles from across the network</p>
             </div>
             <div id="books-grid" class="books-grid">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
+                <div id="books-loading-status" class="loading" role="status" aria-live="polite" aria-label="Loading books, please wait">
+                    <div class="loading-spinner" aria-hidden="true"></div>
                     <p>Loading books...</p>
                 </div>
             </div>
@@ -606,6 +606,12 @@
         function displayBooks(books) {
             const grid = document.getElementById('books-grid');
 
+            // Notify screen readers that loading is complete before replacing content
+            const spinnerContainer = document.getElementById('books-loading-status');
+            if (spinnerContainer) {
+                spinnerContainer.setAttribute('aria-label', 'Books loaded');
+            }
+
             if (books.length === 0) {
                 grid.innerHTML = '<p class="loading">No books available</p>';
                 return;
@@ -617,9 +623,9 @@
             grid.innerHTML = featured.map(book => `
                 <a href="/book-detail.html?id=${book.id}" class="book-card">
                     <img src="${book.coverImage || 'https://via.placeholder.com/400x600/F3F4F6/374151?text=' + encodeURIComponent(book.title)}"
-                         alt="${book.title}"
+                         alt="Cover image for ${book.title} by ${book.author || 'Unknown Author'}"
                          class="book-cover"
-                         onerror="this.src='https://via.placeholder.com/400x600/F3F4F6/374151?text=Book+Cover'">
+                         onerror="this.alt='Book cover placeholder';this.src='https://via.placeholder.com/400x600/F3F4F6/374151?text=Book+Cover'">
                     <div class="book-info">
                         ${book.badge ? `<span class="book-badge">${book.badge}</span>` : ''}
                         <h3 class="book-title">${book.title}</h3>
