@@ -2,8 +2,18 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const axios = require('axios');
+const rateLimit = require('express-rate-limit');
 const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
+
+// Rate limiter for crypto payment verification (3 attempts per 15 min per IP)
+const cryptoVerifyLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 3,
+    message: { success: false, error: 'Too many verification attempts. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Generate unique order ID
 function generateOrderId() {
@@ -197,10 +207,18 @@ router.get('/rates', async (req, res) => {
 });
 
 // Verify payment (manual for MVP; automated with BTCPay in future)
-router.post('/verify-payment', async (req, res) => {
+router.post('/verify-payment', cryptoVerifyLimiter, async (req, res) => {
     try {
-        const { orderId, transactionId } = req.body;
+        const { orderId, transactionId, email } = req.body;
         if (!orderId) return res.status(400).json({ success: false, error: 'orderId required' });
+
+        // Verify the email matches the order owner to prevent unauthorized tampering
+        const order = await dbGet('SELECT order_id, customer_email FROM orders WHERE order_id = ?', [orderId]);
+        if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
+
+        if (!email || order.customer_email.toLowerCase() !== email.toLowerCase()) {
+            return res.status(403).json({ success: false, error: 'Verification failed' });
+        }
 
         // Update order with transaction ID for admin review
         await dbRun(
