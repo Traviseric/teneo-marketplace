@@ -35,6 +35,10 @@ function validateEnvironment() {
         'STRIPE_PUBLISHABLE_KEY',
         'EMAIL_USER'
     ];
+
+    if (!process.env.OPENAI_API_KEY) {
+        console.warn('⚠️  OPENAI_API_KEY not set — AI Discovery will use keyword search fallback');
+    }
     
     const missingImportant = importantVars.filter(varName => !process.env[varName]);
     if (missingImportant.length > 0) {
