@@ -3,20 +3,30 @@ require('dotenv').config();
 
 // Environment variable validation
 function validateEnvironment() {
-    // Auto-generate secure defaults if not provided (for production)
-    if (!process.env.ADMIN_PASSWORD_HASH) {
-        // Generate a secure hash for production
-        const bcrypt = require('bcrypt');
-        const defaultPassword = process.env.ADMIN_PASSWORD || 'ChangeMeInProduction2024!';
-        process.env.ADMIN_PASSWORD_HASH = bcrypt.hashSync(defaultPassword, 10);
-        console.warn('⚠️  Using auto-generated admin password hash. Set ADMIN_PASSWORD_HASH in production!');
-    }
-    
-    if (!process.env.SESSION_SECRET) {
-        // Generate a secure session secret
-        const crypto = require('crypto');
-        process.env.SESSION_SECRET = crypto.randomBytes(64).toString('hex');
-        console.warn('⚠️  Using auto-generated session secret. Set SESSION_SECRET in production!');
+    if (process.env.NODE_ENV === 'production') {
+        const fatal = [];
+        if (!process.env.ADMIN_PASSWORD_HASH) {
+            fatal.push('ADMIN_PASSWORD_HASH must be set in production. Run: node scripts/generate-password-hash.js --generate');
+        }
+        if (!process.env.SESSION_SECRET) {
+            fatal.push('SESSION_SECRET must be set in production (min 32 chars)');
+        } else if (process.env.SESSION_SECRET.length < 32) {
+            fatal.push('SESSION_SECRET must be at least 32 characters in production');
+        }
+        if (fatal.length > 0) {
+            console.error('FATAL: Missing required environment configuration:');
+            fatal.forEach(msg => console.error(' -', msg));
+            process.exit(1);
+        }
+    } else {
+        if (!process.env.ADMIN_PASSWORD_HASH) {
+            console.warn('⚠️  ADMIN_PASSWORD_HASH not set. Admin login will fail until configured.');
+        }
+        if (!process.env.SESSION_SECRET) {
+            const crypto = require('crypto');
+            process.env.SESSION_SECRET = crypto.randomBytes(64).toString('hex');
+            console.warn('⚠️  Using auto-generated session secret (dev only). Set SESSION_SECRET in production!');
+        }
     }
     
     // Warn about optional but important variables

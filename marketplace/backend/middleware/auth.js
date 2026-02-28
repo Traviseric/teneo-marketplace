@@ -18,20 +18,33 @@ const loginLimiter = rateLimit({
     }
 });
 
-// Admin credentials - in production, store hashed password in database
-// Default password hash for 'admin123' - MUST BE CHANGED IN PRODUCTION
-const DEFAULT_ADMIN_HASH = '$2b$10$8KqG0H5oGX4gRRrqDv7YxeT1Y0fGzFkiOEi7LvJO8QMo6nPBRqGOu';
-
-// Get admin password hash from environment or use default (for initial setup only)
+// Get admin password hash from environment — no hardcoded fallback
 function getAdminPasswordHash() {
-    return process.env.ADMIN_PASSWORD_HASH || DEFAULT_ADMIN_HASH;
+    const hash = process.env.ADMIN_PASSWORD_HASH;
+    if (!hash) {
+        if (process.env.NODE_ENV === 'production') {
+            console.error('FATAL: ADMIN_PASSWORD_HASH must be set in production environment');
+            process.exit(1);
+        }
+        console.warn('WARNING: ADMIN_PASSWORD_HASH not set. Admin login will fail. Run: node scripts/generate-password-hash.js --generate');
+        return null; // Login will always fail if hash not set
+    }
+    return hash;
 }
 
 // Middleware to check if user is authenticated
 function authenticateAdmin(req, res, next) {
+    // Fail fast if admin auth is not configured
+    if (!process.env.ADMIN_PASSWORD_HASH) {
+        return res.status(503).json({
+            error: 'Admin authentication not configured',
+            message: 'Set ADMIN_PASSWORD_HASH environment variable'
+        });
+    }
+
     // Check if session exists and is valid
     if (!req.session || !req.session.isAdmin) {
-        return res.status(401).json({ 
+        return res.status(401).json({
             error: 'Unauthorized',
             message: 'Please login to access this resource'
         });
