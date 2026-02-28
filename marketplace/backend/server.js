@@ -213,6 +213,25 @@ app.use('/api/funnels', funnelRoutes);
 // Course platform API
 app.use('/api/courses', courseRoutes);
 
+// Public certificate verification (separate mount so it doesn't need /api/courses prefix)
+const { getCertificate } = require('./services/certificateService');
+app.get('/api/verify/certificate/:certId', async (req, res) => {
+    try {
+        const cert = await getCertificate(req.params.certId);
+        if (!cert) return res.status(404).json({ success: false, error: 'Certificate not found' });
+        res.json({
+            success: true,
+            valid: true,
+            course: cert.course_title,
+            issued_at: cert.issued_at
+            // user_email intentionally omitted from public response
+        });
+    } catch (error) {
+        console.error('Verify certificate error:', error);
+        res.status(500).json({ success: false, error: 'Failed to verify certificate' });
+    }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({
