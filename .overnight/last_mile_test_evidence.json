@@ -1,0 +1,516 @@
+{
+  "url": "https://opensource.org/licenses/MIT",
+  "collected_at": "2026-02-28T01:31:49.757568",
+  "project": "teneo-marketplace",
+  "total_scenarios": 10,
+  "scenarios": [
+    {
+      "scenario_name": "auth_flow",
+      "priority": "critical",
+      "page_url": "https://opensource.org/license/MIT/login%20or%20auth%20page",
+      "page_title": "Page not found - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nOops! That page can\u2019t be found.\nWould you like to search for a license?\nSearch\nYou might also like these recent posts:\nFrom Brussels to the World: Open Source as a Global Asset\nMembers Newsletter \u2013 February 2026 Members of OSI staff and board members\u00a0 joined developers, policymakers, foundations, and civil s",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT/login or auth page",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT/login or auth page"
+        },
+        {
+          "step": "Try logging in with test credentials",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step requires complex interaction \u2014 noted for Claude verdict"
+        },
+        {
+          "step": "Verify redirect after login",
+          "action": "verify_page",
+          "success": true,
+          "detail": "Page title: Page not found - Open Source Initiative, has content: True"
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "api_health",
+      "priority": "high",
+      "page_url": "https://opensource.org/license/MIT/api/health%20or%20similar",
+      "page_title": "Page not found - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nOops! That page can\u2019t be found.\nWould you like to search for a license?\nSearch\nYou might also like these recent posts:\nEurope\u2019s Open Source Opportunity: our vision for the EU Open Digital Ecosystems strategy\nThe OSI submitted its feedback to the Open Digital Ecosystems strategy, which comes at a time when bo",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT/api/health or similar",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT/api/health or similar"
+        },
+        {
+          "step": "Check API returns valid JSON",
+          "action": "verify_page",
+          "success": true,
+          "detail": "Page title: Page not found - Open Source Initiative, has content: True"
+        },
+        {
+          "step": "Verify no server errors",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'error': False}",
+          "elements": {
+            "error": false
+          }
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "cart_flow",
+      "priority": "critical",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Add item to cart",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step not automatable via CDP \u2014 noted for Claude verdict"
+        },
+        {
+          "step": "View cart",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step not automatable via CDP \u2014 noted for Claude verdict"
+        },
+        {
+          "step": "Proceed to checkout (don't complete)",
+          "action": "verify_page",
+          "success": true,
+          "detail": "Page title: The MIT License - Open Source Initiative, has content: True"
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "page_loads",
+      "priority": "critical",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Wait for page to fully load (max 30 seconds)",
+          "action": "wait_for_load",
+          "success": true,
+          "detail": "Page load complete"
+        },
+        {
+          "step": "Check for any error messages",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'error': False}",
+          "elements": {
+            "error": false
+          }
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "console_errors",
+      "priority": "critical",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Open browser console",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step not automatable via CDP \u2014 noted for Claude verdict"
+        },
+        {
+          "step": "Look for any red error messages",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'error': False}",
+          "elements": {
+            "error": false
+          }
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "responsive_layout",
+      "priority": "high",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Resize viewport to mobile width (375px)",
+          "action": "check_viewport",
+          "success": true,
+          "detail": "Current viewport: {\"width\":800,\"height\":600}"
+        },
+        {
+          "step": "Check layout doesn't break",
+          "action": "verify_page",
+          "success": true,
+          "detail": "Page title: The MIT License - Open Source Initiative, has content: True"
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "navigation_works",
+      "priority": "high",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Click on main navigation links",
+          "action": "click",
+          "success": true,
+          "detail": "Clicked nav (nav, [role='navigation'])"
+        },
+        {
+          "step": "Verify each link works",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'link': False}",
+          "elements": {
+            "link": false
+          }
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "forms_work",
+      "priority": "high",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Find any forms on the page",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'form': True}",
+          "elements": {
+            "form": true
+          }
+        },
+        {
+          "step": "Try submitting with valid data",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step requires complex interaction \u2014 noted for Claude verdict"
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "images_load",
+      "priority": "medium",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Check all images on the page",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'image': True}",
+          "elements": {
+            "image": true
+          }
+        },
+        {
+          "step": "Look for broken image icons",
+          "action": "verify_elements",
+          "success": true,
+          "detail": "Element check: {'image': True}",
+          "elements": {
+            "image": true
+          }
+        }
+      ],
+      "error": null
+    },
+    {
+      "scenario_name": "performance_check",
+      "priority": "medium",
+      "page_url": "https://opensource.org/license/MIT",
+      "page_title": "The MIT License - Open Source Initiative",
+      "page_text_snippet": "Skip to content\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nGet involved\nAbout\nLicenses\nOpen Source Definition\nOpen Source AI\nPrograms\nBlog\nOpen Main Menu\nPOPULAR / STRONG COMMUNITY\nThe MIT License\n\nVersion N/A\nSPDX short identifier: MIT\n\nCopyright <YEAR> <COPYRIGHT HOLDER>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restricti",
+      "console_errors": [],
+      "network_failures": [],
+      "elements_found": {
+        "email input": false,
+        "password input": false,
+        "login button": false,
+        "form": true,
+        "button": false,
+        "nav": true,
+        "navigation": true,
+        "header": true,
+        "footer": true,
+        "link": false,
+        "image": true,
+        "input": false,
+        "heading": true,
+        "main content": true,
+        "error": false,
+        "loading": false
+      },
+      "steps_executed": [
+        {
+          "step": "Navigate to https://opensource.org/licenses/MIT",
+          "action": "navigate",
+          "success": true,
+          "detail": "Navigated to https://opensource.org/licenses/MIT"
+        },
+        {
+          "step": "Note time to first content",
+          "action": "not_automated",
+          "success": true,
+          "detail": "Step not automatable via CDP \u2014 noted for Claude verdict"
+        },
+        {
+          "step": "Check if page feels responsive",
+          "action": "verify_page",
+          "success": true,
+          "detail": "Page title: The MIT License - Open Source Initiative, has content: True"
+        }
+      ],
+      "error": null
+    }
+  ],
+  "collection_error": null
+}

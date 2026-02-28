@@ -1,0 +1,101 @@
+{
+  "success": true,
+  "next_box": "CONDUCTOR",
+  "context": {
+    "synthesis_round": 3,
+    "prior_tasks_completed": 35,
+    "total_tasks_ever_created": 49,
+    "task_files": [
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\036-P0-fix-price-bypass-in-checkoutproduction.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\037-P0-fix-sql-injection-orderservice-updateorderstatus.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\038-P1-fix-digital-delivery-error-swallowing-checkoutmixed.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\039-P1-fix-nftservice-fake-ipfs-hashes.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\040-P2-implement-real-conversion-rate-in-admin-dashboard.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\041-P2-fix-database-path-inconsistency.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\042-P2-remove-mock-data-from-digest-service.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\043-P2-add-tests-for-revenue-critical-paths.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\044-P3-use-crypto-random-for-audit-ids.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\045-P3-move-stripe-init-outside-route-handler.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\046-P3-fix-math-random-sales-estimates-in-amazon-service.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\047-P3-extract-duplicate-book-database-helpers.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\048-P3-remove-dead-code-download-js.md",
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\049-P3-replace-sync-fs-calls-in-nft-service.md"
+    ],
+    "task_count": 14,
+    "tasks_by_priority": {
+      "P0": 2,
+      "P1": 2,
+      "P2": 4,
+      "P3": 6
+    },
+    "sources": {
+      "code_quality_audit": 14,
+      "project_declared": 0
+    },
+    "audit_review_report": "C:\\code\\teneo-marketplace\\.overnight\\reports\\audit_review.json",
+    "human_tasks_file": "C:\\code\\teneo-marketplace\\.overnight\\HUMAN_TASKS.md",
+    "human_tasks_added_this_round": 0,
+    "findings_disposition": {
+      "total_audit_findings": 20,
+      "accepted_as_worker_tasks": 14,
+      "classified_as_human_task": 0,
+      "rejected": 1,
+      "deferred": 5
+    },
+    "task_groups": {
+      "checkout_module": {
+        "tasks": [
+          "036-P0-fix-price-bypass-in-checkoutproduction.md",
+          "038-P1-fix-digital-delivery-error-swallowing-checkoutmixed.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "Both touch checkout routes (checkoutProduction.js and checkoutMixed.js). Same feature area — warm context helps ensure consistent patterns and no OrderService call conflicts."
+      },
+      "database_layer": {
+        "tasks": [
+          "037-P0-fix-sql-injection-orderservice-updateorderstatus.md",
+          "041-P2-fix-database-path-inconsistency.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "037 modifies orderService.js internals; 041 also modifies orderService.js (DB path). Must be sequential to avoid merge conflicts. Do 037 first (P0), then 041."
+      },
+      "admin_dashboard": {
+        "tasks": [
+          "040-P2-implement-real-conversion-rate-in-admin-dashboard.md",
+          "045-P3-move-stripe-init-outside-route-handler.md",
+          "047-P3-extract-duplicate-book-database-helpers.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "All three modify adminRoutes.js. Sequential to avoid merge conflicts. Do 040 first (P2), then 045 and 047."
+      },
+      "nft_module": {
+        "tasks": [
+          "039-P1-fix-nftservice-fake-ipfs-hashes.md",
+          "049-P3-replace-sync-fs-calls-in-nft-service.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "Both modify nftService.js. 039 must be done first (adds throws instead of fake returns), then 049 makes fs calls async. Sequential to avoid conflicts."
+      },
+      "independent": {
+        "tasks": [
+          "042-P2-remove-mock-data-from-digest-service.md",
+          "043-P2-add-tests-for-revenue-critical-paths.md",
+          "044-P3-use-crypto-random-for-audit-ids.md",
+          "046-P3-fix-math-random-sales-estimates-in-amazon-service.md",
+          "048-P3-remove-dead-code-download-js.md"
+        ],
+        "execution_hint": "parallel",
+        "reason": "Each touches a completely different file (digestService.js, __tests__/, auditService.js, amazonService.js, download.js). No overlap — safe to parallelize."
+      }
+    },
+    "recommended_mode": "managed",
+    "recommended_lanes": 3,
+    "mode_rationale": "Mix of 4 sequential groups and 1 parallel group. Managed mode allows sequential tasks within groups to share warm context. 3 lanes: Lane 1 = P0s sequentially (036→037 or 036+037 in checkout/db groups), Lane 2 = P1s sequentially (038+039 in checkout/nft groups), Lane 3 = P2/P3 independent tasks in parallel.",
+    "critical_path": [
+      "036-P0: checkoutProduction.js price bypass — live revenue loss in production (NODE_ENV=production uses this route)",
+      "037-P0: orderService SQL injection via Object.keys — latent injection vector in all order status updates",
+      "038-P1: checkoutMixed digital delivery error swallowing — customers silently get no download after paying",
+      "039-P1: nftService fake IPFS hashes — data corruption when NFT feature is activated"
+    ]
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "rejected_findings": [],
+  "unproductive_audits": [],
+  "verified_facts": [
+    {
+      "fact": "package.json is missing bcrypt, express-session, csurf, express-rate-limit, body-parser — all required by server.js",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "Read package.json directly + grep server.js for require statements"
+    },
+    {
+      "fact": "Auth routes (/api/auth/*) are not mounted in server.js despite being implemented",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "grep for authRoutes in server.js returned no matches"
+    },
+    {
+      "fact": "brandRoutes.js has zero authentication middleware — all 10 endpoints are public",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "grep for requireAdmin/authenticateAdmin in brandRoutes.js returned no matches"
+    },
+    {
+      "fact": "aiDiscovery.js admin endpoints have no auth middleware",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "grep for requireAdmin/authenticateAdmin in aiDiscovery.js returned no matches"
+    },
+    {
+      "fact": "Client-side coupon codes SAVE10, 10OFF, WELCOME20 are hardcoded in cart-custom.html line 529",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "grep for coupon codes in cart-custom.html confirmed exact line numbers"
+    },
+    {
+      "fact": "course-module has only course-config.js — no backend routes, no schema, no API",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "feature_audit verified against file system; confirmed by gap_analyzer"
+    },
+    {
+      "fact": "Two email service files exist: email-service.js (379 lines) and emailService.js (978 lines)",
+      "verified_at": "2026-02-28T00:00:00Z",
+      "method": "Confirmed by gap_analyzer analysis of service files"
+    }
+  ],
+  "verified_facts_round2": [
+    {
+      "fact": "checkout.js uses client-supplied price directly in Stripe session (no server-side catalog lookup)",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed line 10; conductor cross-referenced"
+    },
+    {
+      "fact": "courseRoutes.js requireEnrollment uses email-only auth (no session check) — trivial bypass via ?email= param",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed line 121; review_audit confirmed courseRoutes.js was freshly implemented in task 015"
+    },
+    {
+      "fact": "brandRoutes.js and server.js both construct file paths from unsanitized brandId param",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed both at lines 13 and 329 respectively"
+    },
+    {
+      "fact": "auth.js line 23 has DEFAULT_ADMIN_HASH = bcrypt hash of admin123 as fallback",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed with code snippet"
+    },
+    {
+      "fact": "downloadRoutes.js uses custom Basic Auth with plaintext comparison and 'use-admin-dashboard' default",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed line 44"
+    },
+    {
+      "fact": "TENEO_CLIENT_SECRET production OAuth secret committed to .env.example line 96 with comment calling it the actual production secret",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "security_audit confirmed with code snippet showing the secret value"
+    },
+    {
+      "fact": "All 19 original tasks (001-019) are status: completed — confirmed by review_audit (100% verification score, 37/37 tests pass)",
+      "verified_at": "2026-02-28T06:00:00Z",
+      "method": "review_audit_output.json verified 12 tasks, conductor_output.json confirmed all 19"
+    }
+  ],
+  "rejected_findings": [
+    {
+      "source": "code_quality_audit",
+      "finding": "download.js HIGH — in-memory token store lost on server restart",
+      "reason": "download.js is NOT mounted in server.js (only downloadRoutes.js is). The in-memory Map is dead code. Risk is zero in production. Reclassified as P3 dead-code removal.",
+      "rejected_at": "2026-02-28T08:00:00Z"
+    }
+  ],
+  "false_positive_patterns": [
+    {
+      "pattern": "Audit says 'service was cut off during analysis' or 'suggesting'",
+      "lesson": "This indicates uncertain analysis, not a confirmed bug. Verify before accepting as task.",
+      "example": "Lulu integration gap — gap_analyzer said 'may be incomplete' due to analysis cutoff, not a confirmed bug"
+    }
+  ]
+}
