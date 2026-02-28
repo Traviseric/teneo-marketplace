@@ -50,6 +50,7 @@ const brandRoutes = require('./routes/brandRoutes');
 const checkoutRoutes = process.env.NODE_ENV === 'production'
   ? require('./routes/checkoutProduction')
   : require('./routes/checkout');
+const { router: checkoutMixedRoutes } = require('./routes/checkoutMixed');
 const cryptoCheckoutRoutes = require('./routes/cryptoCheckout');
 const catalogRoutes = require('./routes/catalogRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
@@ -115,6 +116,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const csrfProtection = csurf({ cookie: false });
 const csrfExcludePaths = [
     '/api/checkout/webhook',
+    '/api/checkout/mixed',
     '/api/lulu/webhook',
     '/webhooks' // Orchestrator webhooks
 ]; // Webhook endpoints need to be excluded
@@ -138,6 +140,7 @@ app.get('/api/csrf-token', (req, res) => {
 });
 app.use('/api/brands', brandRoutes);
 app.use('/api/checkout', checkoutRoutes);
+app.use('/api/checkout/mixed', checkoutMixedRoutes);
 app.use('/api/crypto', cryptoCheckoutRoutes);
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/download', downloadRoutes);

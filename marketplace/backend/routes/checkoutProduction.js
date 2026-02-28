@@ -4,6 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const axios = require('axios');
+const { processMixedOrder } = require('./checkoutMixed');
 
 // Initialize order service
 const orderService = new OrderService();
@@ -209,7 +210,13 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 // Handle successful checkout
 async function handleCheckoutCompleted(session) {
     console.log('Processing successful checkout:', session.id);
-    
+
+    // Route mixed orders (digital + physical) to the dedicated mixed fulfillment handler
+    if (session.metadata && session.metadata.orderType === 'mixed') {
+        console.log('Mixed order detected, routing to processMixedOrder');
+        return await processMixedOrder(session);
+    }
+
     const { orderId, bookId, bookTitle, bookAuthor, userEmail } = session.metadata;
 
     try {
