@@ -345,14 +345,24 @@
 
 **Status:** Not implemented. Crypto checkout endpoints exist but not connected to ArxMint.
 
+**Architecture (Research #4):**
+- **BIP21 unified QR** — on-chain URI with `lightning=` BOLT11 parameter; wallet auto-selects best path
+- **Payment-method-agnostic order state machine** — `pending → confirmed → fulfilled → delivered`; order doesn't care how it was paid
+- **Zap-to-unlock** for items <$5 (NIP-57 zap → content unlocked, no cart)
+- **Three-mode checkout (Research #7):** instant-final (LN/ecash) / escrowed (Cashu P2PK) / card (Stripe)
+- **Creator payout routing policy:** destination × conversion × settlement timing
+- **Tax data model from day one:** `(timestamp, asset_type, amount, USD_fmv_source, USD_fmv_value)` per payment
+
 **Needs:**
 - Lightning invoice generation at checkout via ArxMint
 - Ecash token acceptance (Cashu/Fedimint)
+- BIP21 unified QR code generation
 - Payment confirmation webhook handling
-- Creator payout dashboard (sats earned, settlement history)
-- Dual checkout UX (Stripe + crypto as parallel options)
+- Creator payout dashboard (sats earned, settlement history, conversion policy)
+- Dual checkout UX (Stripe + crypto as parallel tenders on same page)
+- Tax fair market value capture at moment of receipt (CoinGecko/Coinbase API)
 
-**Time Estimate:** 20-24 hours
+**Time Estimate:** 24-30 hours
 **Priority:** **HIGH** — the core differentiator, built after switching baseline (Phases 1-2)
 
 ---
@@ -385,6 +395,73 @@
 
 **Time Estimate:** 12-16 hours
 **Priority:** **HIGH** — creator-facing workflow, not Merchant of Record
+
+---
+
+### **12. Dispute Resolution & Refunds** ❌ **[NEW]**
+
+**Status:** Not implemented. Research #7 provides full architecture.
+
+**Architecture (Research #7):**
+- **Split settlement:** 80-90% instant to seller, 10-20% escrowed with locktime auto-release
+- **Cashu 2-of-3 P2PK multisig escrow** (NUT-10/NUT-11) — buyer/seller/arbiter keys
+- **Signed purchase receipts** as Nostr events (cryptographic proof of transaction)
+- **Receipt-referenced reviews** with NIP-13 Proof-of-Work (spam resistance)
+
+**Refund mechanisms (Research #4 + #7):**
+- Stripe refunds: standard Stripe API (already works)
+- Lightning refunds: BTCPay Pull Payments + LNURL-withdraw
+- Ecash refunds: store-credit bearer tokens (Cashu)
+- On-chain refunds: BTCPay Pull Payments with on-chain claim
+
+**Implementation phases:**
+1. Phase 3a: Receipts + manual refund UX (seller-initiated)
+2. Phase 3b: Cashu P2PK escrow for escrowed checkout mode
+3. Phase 3c: Arbiter marketplace (community arbiters)
+
+**Legal:** EU 14-day withdrawal — capture "performance begins" consent; ~1% dispute rate for digital products
+
+**Time Estimate:** 16-20 hours (Phase 3a: 6h, 3b: 8h, 3c: 6h)
+**Priority:** **HIGH** — ships with crypto differentiators (Phase 3)
+
+---
+
+### **13. Regulatory Compliance** ❌ **[NEW — PARALLEL TRACK]**
+
+**Status:** Not implemented. Research #8: ecash mints = money transmitters, NO exemptions.
+
+**Path B recommended for Longmont pilot:** Partner with licensed MSB for mint operations (avoids $250K bond).
+
+**Compliance requirements:**
+- FinCEN MSB registration within 180 days (if operating mint directly)
+- Colorado money transmitter license ($250K surety bond, $100K net worth)
+- AML/KYC program at mint deposit/withdrawal points
+- SARs for >$2,000 suspicious; CTRs for >$10,000
+
+**Compliance-safe design patterns:**
+- Don't market with "privacy" or "anonymity" language
+- Cap balances and velocity in pilot
+- Structure federation as incorporated entity
+- Separate mint operations (ArxMint) from marketplace operations
+- Creators are sellers, not money transmitters (clear in ToS)
+
+**Time Estimate:** Ongoing (legal + partnership work, not pure engineering)
+**Priority:** **CRITICAL** — blocks ecash features; must run parallel to Phase 3
+
+---
+
+### **14. L402 Paywalls** ❌ **[NEW]**
+
+**Status:** Not implemented. Research #4 provides architecture.
+
+**Architecture:**
+- Aperture reverse proxy pattern (sits in front of content endpoints)
+- HTTP 402 + `WWW-Authenticate: L402` header with macaroon + Lightning invoice
+- Macaroon caveats: time-limited, usage-capped, content-specific
+- Machine-payable (AI agents can pay invoices autonomously)
+
+**Time Estimate:** 8-12 hours
+**Priority:** **MEDIUM** — ships with crypto differentiators (Phase 3)
 
 ---
 
@@ -462,15 +539,19 @@ Priority: **HIGH**
 
 ---
 
-### **Phase 3: Crypto Differentiators** (28-36 hours)
+### **Phase 3: Crypto Differentiators** (52-70 hours)
 
 Priority: **HIGH** — the unique value prop, built on Phase 1-2 foundation
 
-1. **ArxMint payment integration** (20 hours) — Lightning + ecash checkout
-2. **Nostr auth** (8 hours) — NIP-07 + NIP-98 + NIP-05
-3. **L402 paywalls** (8 hours) — micro-content pay-per-view
+1. **ArxMint payment integration** (24 hours) — BIP21 unified QR, three-mode checkout, payout routing
+2. **Dispute resolution Phase 3a** (6 hours) — receipts + manual refund UX (Pull Payments, ecash store credit)
+3. **Nostr auth** (8 hours) — NIP-07 + NIP-98 + NIP-05
+4. **L402 paywalls** (10 hours) — Aperture reverse proxy, macaroons, zap-to-unlock <$5
+5. **Dispute resolution Phase 3b** (8 hours) — Cashu P2PK escrow for escrowed checkout
+6. **Tax data model** (4 hours) — FMV capture at payment receipt, crypto tax export
+7. **Regulatory compliance** (parallel) — Path B partnership, compliance-safe design patterns
 
-**Deliverable:** No incumbent offers this — Bitcoin/Lightning/ecash + Nostr identity
+**Deliverable:** No incumbent offers this — Bitcoin/Lightning/ecash + Nostr identity + crypto-native disputes
 
 ---
 

@@ -1,7 +1,7 @@
 # Teneo Marketplace — Roadmap
 
 **Updated:** 2026-02-28
-**Informed by:** Gemini Deep Research outputs 1-6 (product-market fit, monetization, feature gaps, positioning/GTM, federated network design)
+**Informed by:** Gemini Deep Research outputs 1-9 (product-market fit, monetization, feature gaps, crypto payments UX, positioning/GTM, federated network design, dispute resolution, regulatory compliance, Bitcoin creator ecosystem)
 **Supersedes:** `IMPLEMENTATION_PLAN.md` (scope), `REVOLUTIONARY_FEATURES_ROADMAP.md` (priorities), `IMPLEMENTATION_MAP.md` (phases)
 
 ---
@@ -42,6 +42,23 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 | "Gumroad alternative" or "Teachable alternative" competitor wedge works for SEO | Research #5 | GTM strategy |
 | Two-rate referral model: higher for new customers, lower/zero for repeat | Research #6 | Referral system design |
 | 50 activated creators + 5 communities with ecash mints = scale sprint target | Research #5 | Success metrics |
+| BIP21 unified QR: on-chain URI with `lightning=` BOLT11 for frictionless checkout | Research #4 | Checkout UX pattern |
+| Order state machine must be payment-method-agnostic | Research #4 | Architecture decision |
+| Zap-to-unlock for items <$5; structured checkout for everything else | Research #4 | Micro-content pricing model |
+| BTCPay Pull Payments + LNURL-withdraw for crypto refunds | Research #4 | Refund mechanism |
+| Creator payout as routing policy: destination × conversion × settlement timing | Research #4 | Payout architecture |
+| Tax schema: persist (timestamp, asset_type, amount, USD_fmv_source, USD_fmv_value) per payment | Research #4 | Tax data model |
+| Three-mode checkout: instant-final (LN/ecash), escrowed (Cashu P2PK), card (Stripe) | Research #7 | Checkout architecture |
+| Split settlement: 80-90% instant to seller, 10-20% escrowed with locktime refund | Research #7 | Dispute resolution |
+| Signed purchase receipts (Nostr events) as trust foundation | Research #7 | Reputation system |
+| Cashu 2-of-3 P2PK multisig escrow (NUT-10/NUT-11) for disputes | Research #7 | Escrow mechanism |
+| Ecash mint = money transmitter, NO small-values exemption | Research #8 | Regulatory compliance |
+| Path B (licensed partner) for Longmont pilot — avoids $250K bond | Research #8 | Compliance strategy |
+| Don't market with "privacy" or "anonymity" language | Research #8 | Regulatory messaging |
+| Total Bitcoin creator economy ~$65K/month — manufacture liquidity or import it | Research #9 | Market sizing |
+| Make payments social and visible (Fountain/Alby pattern) | Research #9 | Adoption strategy |
+| Wallets as replaceable middleware reduces regulatory burden | Research #9 | Architecture decision |
+| "No fees + meaningful infra costs" kills projects (OpenBazaar) | Research #9 | Sustainability warning |
 
 ---
 
@@ -213,14 +230,27 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 **Why after Phases 1-2:** Research #3 — "The platform's crypto/Nostr differentiators should come AFTER the switching baseline is met."
 
 ### 3.1 ArxMint Payment Integration
-- Dual checkout: Stripe (fiat) + ArxMint (crypto) as parallel options
-- Lightning invoice generation at checkout
-- Ecash token acceptance (Cashu/Fedimint)
-- Payment confirmation and order fulfillment
-- Creator payout dashboard (sats earned, settlement history)
+**Architecture from Research #4:**
+
+- **Dual checkout:** Stripe (fiat) + ArxMint (crypto) as parallel payment tenders on a single checkout page — not separate flows
+- **BIP21 unified QR:** On-chain URI with `lightning=` BOLT11 parameter — wallets auto-select the best path
+- **Payment-method-agnostic order state machine:** `pending → confirmed → fulfilled → delivered`. The order object doesn't care how it was paid — only the payment adapter does
+- **Ecash token acceptance:** Cashu/Fedimint tokens via paste or QR
+- Payment confirmation via webhook/polling, then identical fulfillment pipeline
 - Auto-rebalance: ecash → Lightning above risk thresholds (Research #6)
 
-**Checkout UX:** Research #4 (pending) will inform the specific dual-checkout UX pattern. BTCPay Server, OpenNode, and Strike are reference implementations.
+**Micro-content pricing (Research #4):**
+- Items < $5: **zap-to-unlock** (NIP-57 zap → content unlocked, no cart needed)
+- Items ≥ $5: structured checkout with cart, order bumps, upsells
+- Threshold is configurable per store
+
+**Creator payout routing policy (Research #4):**
+Payouts defined as a policy on three axes:
+1. **Destination type:** Lightning address, on-chain address, ecash mint, Stripe Connect, bank (via partner)
+2. **Conversion policy:** hold BTC, auto-convert to USD (via Strike/River API), mixed ratio
+3. **Settlement timing:** instant (Lightning), daily batch, weekly batch
+
+Instant conversion to USD minimizes creator tax complexity (Research #4).
 
 ### 3.2 Nostr Authentication (NIP-07)
 - Sign in with Nostr browser extension (Alby, nos2x)
@@ -230,21 +260,111 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 - Portable identity: creator's audience follows their keypair, not the platform
 
 ### 3.3 L402 Paywalls for Micro-Content
-- Pay-per-article, pay-per-lesson via Lightning
-- Machine-payable API endpoints (AI agent commerce)
-- Research #4 (pending) will provide implementation guidance
+**Architecture from Research #4:**
 
-### 3.4 Refund/Dispute Mechanism
-- Time-limited refund windows (e.g., 14 days)
-- Ecash refund tokens (Research #7 — pending)
-- Hybrid model: ecash for trusted/repeat buyers, Stripe for first-time (Research #7)
-- Nostr-based reviews/reputation (signed, verifiable)
+- HTTP 402 response with `WWW-Authenticate: L402` header containing macaroon + Lightning invoice
+- **Aperture reverse proxy pattern** — sits in front of content endpoints, handles payment verification
+- Pay-per-article, pay-per-lesson, pay-per-API-call
+- Machine-payable API endpoints (AI agent commerce — agents can pay invoices autonomously)
+- Macaroons enable caveats: time-limited access, usage caps, content-specific restrictions
+
+### 3.4 Refund & Dispute Resolution
+**Architecture from Research #7:**
+
+**Three-mode checkout (buyer chooses based on trust level):**
+1. **Instant-final** (Lightning/ecash) — lowest cost, no recourse, for trusted/repeat purchases
+2. **Escrowed** (Cashu 2-of-3 P2PK multisig) — buyer/seller/arbiter keys, 10-20% held in escrow
+3. **Card fallback** (Stripe) — full chargeback protection, highest cost, for first-time buyers
+
+**Split settlement (Research #7):**
+- 80-90% of crypto payment released instantly to seller
+- 10-20% held in Cashu escrow with locktime auto-release (e.g., 14 days)
+- If no dispute filed within window → escrowed portion auto-releases to seller
+- If dispute filed → arbiter evaluates evidence, releases to winner
+
+**Refund mechanisms (Research #4 + #7):**
+- **Stripe refunds:** Standard Stripe API (already works)
+- **Lightning refunds:** BTCPay Pull Payments (seller creates pull payment, buyer claims via LNURL-withdraw)
+- **Ecash refunds:** Store-credit bearer tokens (Cashu tokens minted by store's mint — simplest UX)
+- **On-chain refunds:** BTCPay Pull Payments with on-chain claim
+
+**Trust & reputation (Research #7):**
+- Signed purchase receipts as Nostr events (cryptographic proof of transaction)
+- Receipt-referenced reviews (only buyers who purchased can review)
+- NIP-13 Proof-of-Work on reviews (spam resistance without moderation)
+- Dispute rate and resolution stats published per-store (opt-in)
+
+**Implementation phasing (Research #7):**
+- Phase 3a: Receipts + manual refund UX (seller-initiated refunds via Pull Payments)
+- Phase 3b: Cashu P2PK escrow (NUT-10/NUT-11) for escrowed checkout mode
+- Phase 3c: Arbiter marketplace (community arbiters stake reputation, earn dispute fees)
+
+**Legal compliance (Research #7 + #8):**
+- EU: Capture "performance begins" consent before delivering digital content (14-day withdrawal right)
+- Planning heuristic: ~1% dispute rate for digital products
+- Clear ToS: instant-final means no refund; escrowed means arbiter-mediated
+
+### 3.5 Crypto Tax Data Model
+**Architecture from Research #4 + #8:**
+
+Build the tax persistence layer from day one — retrofitting is painful.
+
+**Per-payment record schema:**
+```
+timestamp_received, asset_type, amount, USD_fmv_source, USD_fmv_value
+```
+
+- Capture fair market value at moment of receipt (CoinGecko/Coinbase API)
+- Works for Lightning sats, ecash tokens, and on-chain BTC
+- Creators who auto-convert to USD (via payout routing policy) minimize tax complexity
+- Export as CSV/PDF for creator's accountant
+- Clear documentation: "You received X BTC worth $Y at time of sale — report as income"
+
+---
+
+## Phase 3.5: Regulatory Compliance (Parallel Track)
+
+**Goal:** Operate legally from day one. Research #8 found ecash mints are classified as money transmitters with NO exemptions.
+
+**This runs parallel to Phase 3 — do not ship ecash features without compliance in place.**
+
+### Compliance Paths (Research #8)
+
+| Path | Description | Cost | Timeline |
+|------|-------------|------|----------|
+| **A: Non-custodial** | Don't operate mints; users run their own | $0 | Immediate |
+| **B: Licensed partner** | Partner with licensed MSB for mint operations | Partnership fee | 1-3 months |
+| **C: Own MSB license** | Register as MSB, get CO money transmitter license | $250K bond + $100K net worth | 6-12 months |
+
+**Recommended for Longmont pilot: Path B** — partner with a licensed entity to operate the community mint. Avoids the $250K bond requirement while maintaining ecash UX.
+
+### Compliance Requirements
+- **FinCEN MSB registration** within 180 days if operating a mint directly
+- **Colorado state license** — $250K surety bond, $100K net worth minimums
+- **AML/KYC program** — even for ecash; applies at mint deposit/withdrawal points
+- **Suspicious Activity Reports (SARs)** — required for transactions >$2,000 or suspicious patterns
+- **Currency Transaction Reports (CTRs)** — required for >$10,000
+
+### Compliance-Safe Design Patterns (Research #8)
+- **Don't market with "privacy" or "anonymity" language** — regulators flag this
+- **Cap balances and velocity in pilot** — demonstrates good faith controls
+- **Structure federation as incorporated entity** — legal clarity for multi-mint operations
+- **Wallets as replaceable middleware** (Research #9) — reduces our regulatory surface
+- **Blinded signatures are a feature, not a marketing point** — don't lead with "untraceable payments"
+
+### What This Means for Architecture
+- Mint operations separated from marketplace operations (different regulatory requirements)
+- ArxMint handles mint compliance; marketplace handles commerce compliance
+- Creators are sellers (not money transmitters) — clear in ToS and documentation
+- Tax workflow (Phase 2.2) provides creator-side compliance tools
 
 ---
 
 ## Phase 4: Federation & Circular Economy
 
 **Goal:** Independent creator stores that discover each other, share audiences, and transact in a circular economy.
+
+**Market context (Research #9):** The total Bitcoin creator economy is ~$65K/month (Stacker News ~$6K + Geyser ~$59K). This is tiny but growing. To succeed, we must either **manufacture liquidity** (subsidize early transactions, seed creator balances) or **import it** (integrate with existing Lightning wallets like Alby, connect to Fountain/Stacker News user bases). Make payments social and visible — the Fountain "boostagram" and Stacker News zap patterns prove that public payment activity drives more payments.
 
 ### 4.1 Product Listings via Nostr (NIP-99)
 **Architecture decisions from Research #6:**
@@ -283,7 +403,21 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 - Auto-rebalance ecash → Lightning above risk thresholds
 - Keep ecash balances small by default; "withdraw to self-custody" as first-class UX
 
-### 4.5 Circular Economy Metrics
+### 4.5 Liquidity Bootstrap Strategy
+**From Research #9:**
+
+The cold-start problem is real — the Bitcoin creator economy is small. Strategies:
+
+1. **Manufacture liquidity:** Seed creator wallets with sats for first purchases; subsidize early cross-store transactions
+2. **Import liquidity:** Alby wallet integration (largest Lightning browser wallet), Fountain podcast app cross-promotion
+3. **Make payments social:** Public boost/zap feeds on store pages (Fountain pattern); "top supporters" leaderboards
+4. **Crowdfunding + rewards:** Largest proven volume in Bitcoin commerce (Geyser Fund model) — consider pre-sale/crowdfunding as a product type
+5. **Ship own metric layer:** Transaction volume, creator earnings, network growth — visible on a public dashboard. Competitive advantage: incumbents don't publish this
+6. **Revenue splits:** 90/5/5 (creator/platform/referrer) proven viable at Wavlake — use as starting point
+
+**Key insight:** BTCPay Server is substrate, not competitor. Differentiate on layers BTCPay omits: storefront, courses, email, affiliates, discovery.
+
+### 4.6 Circular Economy Metrics
 **From Research #6:**
 
 | Metric | Definition |
@@ -294,7 +428,7 @@ Research found that the biggest barrier to creator adoption is **missing checkou
 | Cycle density | A→B→C→A transaction patterns (structural health) |
 | Referral ROI | Incremental GMV / referral payouts |
 
-### 4.6 Privacy Design
+### 4.7 Privacy Design
 **From Research #6:**
 
 - Opt-in, aggregated telemetry published as signed events
@@ -415,25 +549,50 @@ Lead with **"Gumroad alternative"** (fastest demo path: sell a digital product i
 | Tax strategy | Tax workflow (calculation + invoicing + export), NOT Merchant of Record | Research #3 |
 | Ecash balances | Small by default; auto-rebalance to Lightning above risk thresholds | Research #6 |
 | Telemetry | Opt-in, aggregated, per-mint local metrics; no global surveillance | Research #6 |
+| Checkout UX | BIP21 unified QR (on-chain + Lightning in one); crypto as parallel tender, not separate flow | Research #4 |
+| Order model | Payment-method-agnostic state machine; order doesn't know how it was paid | Research #4 |
+| Micro-content | Zap-to-unlock (NIP-57) for items <$5; structured checkout for everything else | Research #4 |
+| Refund mechanism | BTCPay Pull Payments + LNURL-withdraw for Lightning; Cashu tokens for store credit | Research #4, #7 |
+| Creator payouts | Routing policy: destination × conversion × settlement timing; instant USD conversion minimizes tax | Research #4 |
+| Tax data model | Persist (timestamp, asset_type, amount, USD_fmv_source, USD_fmv_value) per payment from day one | Research #4, #8 |
+| L402 implementation | Aperture reverse proxy pattern; macaroons with caveats for access control | Research #4 |
+| Checkout modes | Three-mode: instant-final (LN/ecash), escrowed (Cashu P2PK), card fallback (Stripe) | Research #7 |
+| Escrow mechanism | Cashu 2-of-3 P2PK multisig (NUT-10/NUT-11); 80-90% instant, 10-20% escrowed | Research #7 |
+| Trust/reputation | Signed purchase receipts (Nostr events); receipt-referenced reviews with NIP-13 PoW | Research #7 |
+| Mint compliance | Path B (licensed partner) for Longmont pilot; no privacy/anonymity marketing | Research #8 |
+| Regulatory messaging | Frame ecash as UX improvement, not privacy tool; blinded signatures are a feature, not marketing | Research #8 |
+| Federation legal | Structure as incorporated entity; cap balances and velocity in pilot | Research #8 |
+| Liquidity strategy | Manufacture or import liquidity; make payments social and visible | Research #9 |
+| BTCPay relationship | Substrate, not competitor; differentiate on storefront/courses/email/affiliates/discovery | Research #9 |
 
 ---
 
-## Cautionary Tales (Research #6)
+## Cautionary Tales (Research #6, #8, #9)
 
-- **OpenBazaar** — fully decentralized marketplace, discontinued. Lesson: you still need reliable discovery, trust/dispute primitives, and durable infrastructure funding.
+- **OpenBazaar** — fully decentralized marketplace, discontinued. Lesson: you still need reliable discovery, trust/dispute primitives, and durable infrastructure funding. "No fees + meaningful infra costs" is not a sustainable model (Research #9).
 - **Fedimint "two mints" problem** — mints won't accept each other's notes, creating centralization pressure. Mitigation: Lightning as the bridge.
 - **Cashu custodial risk** — explicitly custodial at mint layer. Mitigation: small balances, first-class withdraw-to-self-custody UX.
 - **LETS systems** — mutual credit networks historically struggle to reach critical mass. Plan for cold start.
+- **Tornado Cash / Samourai Wallet** — enforcement actions triggered by privacy marketing and facilitating illicit flows. Lesson: don't lead with "anonymity" or "untraceable"; frame ecash as UX improvement, not privacy tool (Research #8).
+- **Shopstr / Plebeian Market** — Nostr-native marketplaces with minimal traction. Lesson: protocol-native doesn't sell; product-market fit and UX sell. Ship the storefront features first (Research #9).
+- **Bitcoin creator economy is tiny** — ~$65K/mo total across all platforms. Don't plan for Bitcoin-only revenue. Stripe fiat must remain a first-class payment path alongside crypto (Research #9).
 
 ---
 
-## Research Still Pending
+## Research Status
 
-| # | Topic | Status | Expected Impact |
-|---|-------|--------|----------------|
-| 4 | Crypto Payments UX | Pending | Dual checkout UX pattern, refund mechanics, L402 implementation |
-| 7 | Dispute Resolution & Trust | Not started | Refund/escrow design for ecash, legal liability |
-| 8 | Regulatory & Compliance | Not started | Money transmission rules for ecash mints (CO pilot) |
-| 9 | Bitcoin Creator Ecosystem | Not started | Competitive landscape (Fountain, Stacker News, Wavlake) |
+All 9 Gemini Deep Research prompts are complete. Key findings have been integrated into this roadmap.
 
-Prompts and tracking in: `C:\code\te-btc\internal\docs\teneo-marketplace\research\GEMINI RESEARCH.md`
+| # | Topic | Status | Key Impact on Roadmap |
+|---|-------|--------|----------------------|
+| 1 | Product-Market Fit | Done | TAM $11.57B; 5 early-adopter segments; target segments |
+| 2 | Monetization | Done | Revenue roadmap; managed hosting first |
+| 3 | Feature Gaps | Done | Phase 1 priorities (checkout conversion, content protection) |
+| 4 | Crypto Payments UX | Done | BIP21 unified QR; payment-agnostic order model; payout routing policy; tax schema |
+| 5 | Positioning & GTM | Done | Messaging hierarchy; competitor wedge strategy; 90-day targets |
+| 6 | Federated Network | Done | NIP-99; centralized index first; two-rate referral; payment architecture |
+| 7 | Dispute Resolution | Done | Three-mode checkout; Cashu P2PK escrow; split settlement; receipt-based reviews |
+| 8 | Regulatory & Compliance | Done | Money transmitter classification; Path B for pilot; compliance-safe design |
+| 9 | Bitcoin Creator Ecosystem | Done | ~$65K/mo market; manufacture liquidity; payments social; BTCPay as substrate |
+
+Prompts and detailed tracking in: `C:\code\te-btc\internal\docs\teneo-marketplace\research\GEMINI RESEARCH.md`
