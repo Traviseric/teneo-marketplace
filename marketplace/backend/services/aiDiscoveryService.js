@@ -8,7 +8,6 @@
  * - Turns censorship into marketing
  */
 
-const OpenAI = require('openai');
 const db = require('../database/database');
 
 class AIDiscoveryService {
@@ -20,17 +19,41 @@ class AIDiscoveryService {
 
     /**
      * Initialize OpenAI client (lazy loading)
+     * @returns {boolean} true if OpenAI is available, false otherwise
      */
     _initOpenAI() {
-        if (!this.openai && process.env.OPENAI_API_KEY) {
-            this.openai = new OpenAI({
-                apiKey: process.env.OPENAI_API_KEY
-            });
+        if (this.openai) return true;
+        if (!process.env.OPENAI_API_KEY) return false;
+        try {
+            const OpenAI = require('openai');
+            this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+            return true;
+        } catch (e) {
+            console.warn('⚠️  openai package not installed — AI discovery using keyword fallback');
+            return false;
         }
+    }
 
-        if (!this.openai) {
-            throw new Error('OpenAI API key not configured. Set OPENAI_API_KEY environment variable.');
-        }
+    /**
+     * Keyword-based search fallback when OpenAI is unavailable
+     * @param {string} query - Search query
+     * @param {number} limit - Max results
+     * @returns {Promise<Array>} Search results
+     */
+    async _keywordSearch(query, limit = 20) {
+        const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+        const likeClause = terms.map(() => '(LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(description) LIKE ?)').join(' OR ');
+        const params = terms.flatMap(t => [`%${t}%`, `%${t}%`, `%${t}%`]);
+
+        const books = await db.all(
+            `SELECT book_id as bookId, brand, title, author, description, category
+             FROM book_embeddings
+             WHERE ${likeClause || '1=1'}
+             LIMIT ?`,
+            [...params, limit]
+        );
+
+        return books.map(b => ({ ...b, score: 0.5, matchReason: 'keyword_match' }));
     }
 
     /**
@@ -261,6 +284,13 @@ class AIDiscoveryService {
             minScore = 0.6
         } = options;
 
+        const hasOpenAI = this._initOpenAI();
+
+        if (!hasOpenAI) {
+            console.warn('⚠️  AI Discovery: OpenAI unavailable, using keyword fallback for query:', query);
+            return this._keywordSearch(query, limit);
+        }
+
         try {
             // Generate embedding for search query
             const queryEmbedding = await this.generateQueryEmbedding(query);
@@ -328,8 +358,8 @@ class AIDiscoveryService {
             return filtered;
 
         } catch (error) {
-            console.error('Error in semantic search:', error);
-            throw error;
+            console.error('Semantic search failed, falling back to keyword search:', error.message);
+            return this._keywordSearch(query, limit);
         }
     }
 
