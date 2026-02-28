@@ -50,6 +50,7 @@
     "helmet": "^8.1.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.0",
+    "nostr-tools": "^1.17.0",
     "openai": "^6.25.0",
     "sqlite3": "^5.1.6",
     "stripe": "^14.5.0"

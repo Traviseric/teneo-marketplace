@@ -10,6 +10,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { getAuthProviderInstance, getAuthConfig } = require('../auth/config');
 const { isValidEmail, safeMessage } = require('../utils/validate');
+const NostrAuthProvider = require('../auth/providers/NostrAuthProvider');
 
 // Rate limiter for magic-link / login / register — 5 attempts per 15 min per IP (CWE-307)
 // Disabled in test environment to allow test suites to run freely
@@ -22,6 +23,27 @@ const magicLinkLimiter = process.env.NODE_ENV === 'test'
         standardHeaders: true,
         legacyHeaders: false,
     });
+
+// Rate limiter for Nostr verify — 10 attempts per 5 min per IP
+const nostrVerifyLimiter = process.env.NODE_ENV === 'test'
+    ? (req, res, next) => next()
+    : rateLimit({
+        windowMs: 5 * 60 * 1000,
+        max: 10,
+        message: { success: false, error: 'Too many Nostr auth attempts. Please wait 5 minutes.' },
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
+
+// Singleton NostrAuthProvider (used regardless of AUTH_PROVIDER setting)
+// Nostr verify is always available as an opt-in method
+let _nostrProvider = null;
+function getNostrProvider() {
+    if (!_nostrProvider) {
+        _nostrProvider = new NostrAuthProvider();
+    }
+    return _nostrProvider;
+}
 
 // =====================================
 // Public Routes (No Auth Required)
@@ -253,6 +275,65 @@ router.post('/verify', async (req, res) => {
       message: safeMessage(error),
     });
   }
+});
+
+/**
+ * POST /api/auth/nostr/verify
+ * Verify a NIP-98 HTTP auth event and establish a session.
+ *
+ * Body: { event: <base64-encoded NIP-98 signed event JSON> }
+ *
+ * The NIP-98 event must:
+ * - Have kind 27235
+ * - Have a valid Schnorr signature from the user's Nostr keypair
+ * - Have been created within the last 60 seconds
+ * - Include the URL and method tags matching this endpoint
+ */
+router.post('/nostr/verify', nostrVerifyLimiter, async (req, res) => {
+    try {
+        const { event: eventToken } = req.body;
+
+        if (!eventToken || typeof eventToken !== 'string') {
+            return res.status(400).json({
+                error: 'Missing event',
+                message: 'A base64-encoded NIP-98 signed event is required',
+            });
+        }
+
+        // Build the expected URL for NIP-98 validation
+        // Use the full URL that the client sent the request to
+        const protocol = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        const expectedUrl = host ? `${protocol}://${host}/api/auth/nostr/verify` : null;
+
+        const nostrProvider = getNostrProvider();
+        const user = await nostrProvider.verifyNostrToken(eventToken, expectedUrl, 'POST');
+
+        // Establish session
+        req.session.userId = user.id;
+        req.session.email = user.email;
+        req.session.name = user.name;
+        req.session.isAuthenticated = true;
+        req.session.authProvider = 'nostr';
+        req.session.nostrPubkey = user.pubkey;
+
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                pubkey: user.pubkey,
+                email: user.email,
+            },
+        });
+    } catch (error) {
+        console.error('[Auth] Nostr verification error:', error.message);
+
+        res.status(401).json({
+            error: 'Nostr verification failed',
+            message: safeMessage(error),
+        });
+    }
 });
 
 // =====================================

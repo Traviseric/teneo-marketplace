@@ -6,10 +6,12 @@
  * Supported providers:
  * - 'local' (default) - SQLite + magic links for self-hosted deployments
  * - 'teneo-auth' - TENEO Auth SSO for TENEO Cloud deployment
+ * - 'nostr' - Nostr NIP-07 browser extension authentication
  */
 
 const TeneoAuthProvider = require('./providers/TeneoAuthProvider');
 const LocalAuthProvider = require('./providers/LocalAuthProvider');
+const NostrAuthProvider = require('./providers/NostrAuthProvider');
 
 /**
  * Get configured authentication provider
@@ -52,6 +54,15 @@ function getAuthProvider() {
         console.error('Falling back to local auth provider');
         return new LocalAuthProvider();
       }
+    }
+
+    case 'nostr': {
+      // Nostr NIP-07 authentication
+      const config = {
+        maxEventAgeSec: parseInt(process.env.NOSTR_MAX_EVENT_AGE_SEC || '60'),
+      };
+
+      return new NostrAuthProvider(config);
     }
 
     case 'local':

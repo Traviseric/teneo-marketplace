@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS orders (
     refund_amount DECIMAL(10,2),
     refund_reason TEXT,
     metadata TEXT,
+    abandonment_email_sent_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     completed_at DATETIME,

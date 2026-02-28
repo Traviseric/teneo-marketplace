@@ -2,6 +2,34 @@ const cron = require('node-cron');
 const db = require('../database/database');
 const AmazonService = require('./amazonService');
 const LeaderboardService = require('./leaderboardService');
+const emailService = require('./emailService');
+
+// Minimal HTML escaper for email templates in cron jobs
+function escapeHtmlCron(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// Promise wrappers for the raw sqlite3 db connection
+function dbGet(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.get(sql, params, (err, row) => { if (err) reject(err); else resolve(row); });
+    });
+}
+function dbAll(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.all(sql, params, (err, rows) => { if (err) reject(err); else resolve(rows || []); });
+    });
+}
+function dbRun(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function(err) { if (err) reject(err); else resolve(this); });
+    });
+}
 
 class CronJobService {
     constructor() {
@@ -9,6 +37,7 @@ class CronJobService {
         this.leaderboardService = new LeaderboardService();
         this.isRunning = false;
         this.leaderboardRunning = false;
+        this.cartAbandonmentRunning = false;
     }
 
     start() {
@@ -30,6 +59,12 @@ class CronJobService {
             console.log('🏆 Starting hourly leaderboard update...');
             await this.updateLeaderboards();
         });
+
+        // Cart abandonment recovery — runs every 2 hours
+        cron.schedule('0 */2 * * *', async () => {
+            console.log('🛒 Starting cart abandonment check...');
+            await this.processAbandonedCarts();
+        }, { timezone: 'UTC' });
 
         console.log('✅ Cron jobs scheduled successfully');
     }
@@ -296,6 +331,97 @@ class CronJobService {
     async runManualLeaderboardUpdate() {
         console.log('🔄 Manual leaderboard update triggered...');
         await this.updateLeaderboards();
+    }
+
+    /**
+     * Process abandoned carts and send recovery emails.
+     * An abandoned cart is an order with status='pending' created 2–24 hours ago
+     * where the customer has NOT completed a purchase for the same book, and
+     * no abandonment email has been sent yet.
+     */
+    async processAbandonedCarts() {
+        if (this.cartAbandonmentRunning) {
+            console.log('⏸️ Cart abandonment check already running, skipping...');
+            return;
+        }
+
+        this.cartAbandonmentRunning = true;
+        let processed = 0;
+        let errors = 0;
+
+        try {
+            const abandoned = await dbAll(
+                `SELECT o.order_id, o.customer_email, o.customer_name,
+                        o.book_title, o.book_id
+                 FROM orders o
+                 WHERE o.status = 'pending'
+                   AND o.abandonment_email_sent_at IS NULL
+                   AND o.created_at <= datetime('now', '-2 hours')
+                   AND o.created_at >= datetime('now', '-24 hours')
+                   AND NOT EXISTS (
+                     SELECT 1 FROM orders c
+                     WHERE c.customer_email = o.customer_email
+                       AND c.book_id = o.book_id
+                       AND c.status = 'completed'
+                   )`,
+                []
+            );
+
+            console.log(`🛒 Found ${abandoned.length} abandoned cart(s) to recover`);
+
+            const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+
+            for (const order of abandoned) {
+                try {
+                    const checkoutUrl = `${baseUrl}/checkout?book=${encodeURIComponent(order.book_id)}`;
+                    const name = order.customer_name || 'there';
+
+                    const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+<h2>You left something in your cart 📚</h2>
+<p>Hi ${escapeHtmlCron(name)},</p>
+<p>We noticed you were interested in <strong>${escapeHtmlCron(order.book_title)}</strong> but didn't complete your purchase.</p>
+<p>Your cart is still waiting. Complete your order now while it's available:</p>
+<p style="text-align:center;margin:30px 0">
+  <a href="${escapeHtmlCron(checkoutUrl)}" style="background:#1a56db;color:#fff;padding:14px 28px;text-decoration:none;border-radius:6px;font-weight:bold">Complete My Order</a>
+</p>
+<p style="color:#6b7280;font-size:12px">Order reference: ${escapeHtmlCron(order.order_id)}</p>
+</body></html>`;
+
+                    const text = `Hi ${name},\n\nYou left "${order.book_title}" in your cart.\n\nComplete your order: ${checkoutUrl}\n\nOrder: ${order.order_id}`;
+
+                    const result = await emailService.sendEmail({
+                        to: order.customer_email,
+                        subject: `You left something behind — ${order.book_title}`,
+                        html,
+                        text
+                    });
+
+                    if (result.success) {
+                        await dbRun(
+                            `UPDATE orders SET abandonment_email_sent_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
+                            [order.order_id]
+                        );
+                        processed++;
+                        console.log(`✉️  Cart abandonment email sent to ${order.customer_email} (order ${order.order_id})`);
+                    } else {
+                        errors++;
+                        console.error(`❌ Failed to send cart abandonment email for order ${order.order_id}: ${result.error}`);
+                    }
+                } catch (err) {
+                    errors++;
+                    console.error(`❌ Error processing abandoned cart ${order.order_id}:`, err.message);
+                }
+            }
+
+            await this.logCronExecution('cart_abandonment', true, `Processed ${processed} carts, ${errors} errors`);
+        } catch (err) {
+            console.error('💥 Critical error in cart abandonment job:', err);
+            await this.logCronExecution('cart_abandonment', false, err.message);
+        } finally {
+            this.cartAbandonmentRunning = false;
+        }
+
+        return { processed, errors };
     }
 
     sleep(ms) {

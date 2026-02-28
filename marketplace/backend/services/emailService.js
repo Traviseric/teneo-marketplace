@@ -984,6 +984,31 @@ Questions about your order? Reply to this email or visit our support page.
     }
   }
 
+  /**
+   * Generic email sender used by emailMarketingService and cronJobs.
+   * Accepts standard nodemailer fields: { to, subject, html, text, from, replyTo }
+   */
+  async sendEmail({ to, subject, html, text, from, replyTo }) {
+    if (!this.transporter) {
+      console.warn('Email service not configured — cannot send email');
+      return { success: false, error: 'Email service not configured' };
+    }
+    try {
+      const result = await this.transporter.sendMail({
+        from: from || process.env.EMAIL_USER,
+        to,
+        subject,
+        html,
+        text,
+        replyTo
+      });
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   async sendAlertVerificationEmail({ to, verifyUrl }) {
     if (!this.transporter) {
       console.warn('Email service not configured — cannot send verification email');
