@@ -941,12 +941,12 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Book</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Book</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
                                 </tr>
                             </thead>
                             <tbody id="recentOrdersTable">
@@ -1063,14 +1063,14 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Book</th>
-                                    <th>Format</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Book</th>
+                                    <th scope="col">Format</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="ordersTable">
@@ -1607,7 +1607,7 @@
 
             tbody.innerHTML = orders.slice(0, 5).map(order => `
                 <tr>
-                    <td>${order.order_id}</td>
+                    <th scope="row">${order.order_id}</th>
                     <td>${order.customer_email}</td>
                     <td>${order.book_title}</td>
                     <td>$${order.price.toFixed(2)}</td>
@@ -2054,7 +2054,7 @@
 
             tbody.innerHTML = orders.map(order => `
                 <tr>
-                    <td>${order.order_id}</td>
+                    <th scope="row">${order.order_id}</th>
                     <td>${order.customer_email}</td>
                     <td>${order.book_title}</td>
                     <td>${order.format}</td>
