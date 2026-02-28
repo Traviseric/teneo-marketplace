@@ -386,7 +386,7 @@ class ProductPageEnhanced {
         message.innerHTML = `
             <div class="message-content">
                 <span>✓ Added to cart!</span>
-                <a href="/cart.html" class="view-cart-link">View Cart</a>
+                <a href="/cart-custom.html" class="view-cart-link">View Cart</a>
             </div>
         `;
         document.body.appendChild(message);
