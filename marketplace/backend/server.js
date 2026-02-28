@@ -93,6 +93,8 @@ const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 const courseRoutes = require('./routes/courseRoutes');
 
 const { safeMessage } = require('./utils/validate');
+const axios = require('axios');
+const networkConfig = require('./config/network');
 
 const app = express();
 
@@ -426,26 +428,65 @@ app.get('/api/brands/:brandId/catalog', async (req, res) => {
     }
 });
 
+// Helper: fan out search to configured federation peers (3s timeout per peer)
+async function searchPeers(query) {
+    if (!networkConfig.networkEnabled || !networkConfig.networkPeers.length) {
+        return [];
+    }
+
+    const nodeId = process.env.STORE_ID || 'teneo-main';
+    const peerRequests = networkConfig.networkPeers.map(peer =>
+        axios.get(`${peer.endpoint}/api/search`, {
+            params: { q: query },
+            timeout: 3000,
+            headers: { 'X-Node-Id': nodeId }
+        }).then(r => ({
+            peer,
+            results: (r.data.results || []).map(book => ({
+                ...book,
+                source_node: peer.endpoint,
+                source_node_id: peer.id,
+                revenue_share_pct: peer.revenueShare || networkConfig.referralPercentage || 10
+            }))
+        })).catch(err => {
+            console.warn(`[Federation] Peer ${peer.id} (${peer.endpoint}) unreachable: ${err.message}`);
+            return { peer, results: [] };
+        })
+    );
+
+    const settled = await Promise.all(peerRequests);
+    return settled.flatMap(s => s.results);
+}
+
 // Network API endpoints
 app.get('/api/network/search', async (req, res) => {
     try {
         const { q } = req.query;
-        // For now, return results from local search
-        // In future, this will aggregate from network stores
-        const localResults = await searchBooks(q);
-        
+        const [localResults, peerResults] = await Promise.all([
+            searchBooks(q),
+            searchPeers(q)
+        ]);
+
+        const allResults = [...localResults, ...peerResults];
+        const nodeId = process.env.STORE_ID || 'teneo-main';
+
         res.json({
             success: true,
             query: q,
-            results: localResults,
-            stores: [{
-                id: 'teneo-main',
-                name: 'Teneo Marketplace',
-                resultCount: localResults.length
-            }]
+            results: allResults,
+            stores: [
+                { id: nodeId, name: 'Teneo Marketplace', resultCount: localResults.length },
+                ...networkConfig.networkPeers
+                    .filter(p => peerResults.some(r => r.source_node_id === p.id))
+                    .map(p => ({
+                        id: p.id,
+                        endpoint: p.endpoint,
+                        resultCount: peerResults.filter(r => r.source_node_id === p.id).length
+                    }))
+            ]
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             error: 'Network search failed',
             message: safeMessage(error)

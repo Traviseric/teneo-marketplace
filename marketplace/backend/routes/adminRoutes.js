@@ -11,7 +11,7 @@ const auditService = require('../services/auditService');
 
 // Initialize services
 const orderService = new OrderService();
-const analyticsService = new AnalyticsService();
+const analyticsService = new AnalyticsService(db);
 
 // Lazy-initialized Stripe client — avoids re-instantiation on every refund request
 let _stripe = null;
