@@ -142,6 +142,12 @@ router.get('/reading-paths', publicApiLimit, async (req, res) => {
         const params = [];
 
         if (topic) {
+            if (topic.length > 100) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Topic search term too long (max 100 characters)'
+                });
+            }
             query += ' AND topic LIKE ?';
             params.push(`%${topic}%`);
         }
