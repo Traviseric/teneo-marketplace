@@ -2,13 +2,33 @@
 
 **The open source creator platform with a discovery network.** Every store that joins makes the network stronger.
 
-Store. Courses. Funnels. Email marketing. Cross-store discovery. $0/month. Self-hosted or cloud. Crypto payments via [ArxMint](https://github.com/Traviseric/arxmint). Nostr identity. Can't be deplatformed.
+Store. Courses. Funnels. Email marketing. Cross-store discovery. $0/month. Self-hosted or cloud. Built for censorship resistance — with a roadmap to full crypto sovereignty.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
-[![Payments](https://img.shields.io/badge/Payments-Stripe%20%7C%20Lightning%20%7C%20Ecash-success.svg)](./docs/features/INFORMATION_ASYMMETRY_IMPLEMENTATION.md)
-[![Auth](https://img.shields.io/badge/Auth-Nostr%20%7C%20OAuth%20%7C%20Magic%20Links-orange.svg)](./docs/integration/AUTH_SETUP.md)
+[![Payments](https://img.shields.io/badge/Payments-Stripe%20%7C%20Crypto%20Manual-success.svg)](./docs/features/INFORMATION_ASYMMETRY_IMPLEMENTATION.md)
+[![Auth](https://img.shields.io/badge/Auth-OAuth%20%7C%20Magic%20Links-orange.svg)](./docs/integration/AUTH_SETUP.md)
 [![Network](https://img.shields.io/badge/Network-Federated-blueviolet.svg)](./docs/core/DUAL_MODE_ARCHITECTURE.md)
+
+---
+
+## Feature Status
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Stripe payments | ✅ Working | Full checkout flow |
+| Magic link auth | ✅ Working | Zero external deps |
+| Teneo Auth SSO | ✅ Working | OAuth 2.0 + PKCE |
+| Course platform | ✅ Partial | Missing quizzes, certs, forums |
+| Email sequences | ✅ Working | Welcome series, cart abandonment |
+| Funnel builder | ✅ Working | Landing pages, conversion tracking |
+| AI page builder | ✅ Partial | Uses OpenAI for intent parsing |
+| AI semantic search | ✅ Partial | Requires OPENAI_API_KEY |
+| Crypto checkout | ⚠️ Manual | Send BTC to address + email proof; automated detection coming |
+| Nostr NIP-07 auth | 🚧 In Progress | See task 074 |
+| ArxMint / L402 / ecash | 🗺️ Roadmap | Phase 3 — see roadmap below |
+| NFT Proof of Read | 🗺️ Roadmap | Contracts not deployed |
+| Stripe→Crypto auto-failover | 🗺️ Roadmap | Phase 3 |
 
 ---
 
@@ -25,7 +45,7 @@ Creators are paying $5,000–$16,000/year in platform fees and payment processin
 | Podia | $89 | Stripe 2.9% | **$4,548** |
 | **Teneo Marketplace** | **$0** | **$0 (crypto) or 2.9% (Stripe)** | **$0–$3,480** |
 
-Open source means no subscription. Crypto payments via ArxMint mean no transaction fees. **A creator doing $10k/month on Gumroad keeps an extra $16,200/year.**
+Open source means no subscription. Manual crypto checkout means no transaction fees today; automated ArxMint Lightning/ecash payments (zero fees) are on the Phase 3 roadmap. **A creator doing $10k/month on Gumroad keeps an extra $16,200/year.**
 
 But this isn't just about saving money.
 
@@ -33,16 +53,16 @@ But this isn't just about saving money.
 
 ## The Bigger Picture: A Circular Creator Economy
 
-> **Part of the open creator economy.** Teneo Marketplace is the storefront. [ArxMint](https://github.com/Traviseric/arxmint) is the payment network — private Fedimint/Cashu mints, Lightning rails, L402 paywalls. Together: a complete creator platform where money circulates and nobody can shut you down.
+> **Part of the open creator economy.** Teneo Marketplace is the storefront. [ArxMint](https://github.com/Traviseric/arxmint) is the planned payment network — private Fedimint/Cashu mints, Lightning rails, L402 paywalls. Together (Phase 3): a complete creator platform where money circulates and nobody can shut you down.
 
-Bitcoin's biggest problem: it's held, not spent. There's nothing to buy. ArxMint builds the payment rails (community ecash mints, Lightning). **Teneo Marketplace gives people a reason to spend** — courses, books, digital products, all purchasable with ecash.
+Bitcoin's biggest problem: it's held, not spent. There's nothing to buy. ArxMint will build the payment rails (community ecash mints, Lightning). **Teneo Marketplace gives people a reason to spend** — courses, books, digital products.
 
-A community spins up a Fedimint mint via ArxMint. Members hold ecash. A creator sells a course on Teneo Marketplace. Members pay with ecash. The creator spends those sats at another creator's store. **That's a circular economy** — not a whitepaper, an actual working loop.
+**The vision (Phase 3 roadmap):** A community spins up a Fedimint mint via ArxMint. Members hold ecash. A creator sells a course on Teneo Marketplace. Members pay with ecash. The creator spends those sats at another creator's store. That's a circular economy.
 
-**Three layers of sovereignty:**
-- **Own your store** — open source, self-hosted, no platform can ban you or change their ToS
-- **Own your payments** — decentralized ecash via ArxMint, no Stripe/PayPal freezing your funds
-- **Own your identity** — Nostr keypair (sign in with [Alby](https://getalby.com)), no platform owns your account
+**Three layers of sovereignty (today → roadmap):**
+- **Own your store** ✅ — open source, self-hosted, no platform can ban you or change their ToS
+- **Own your payments** 🗺️ — ArxMint ecash integration is Phase 3; today: Stripe + manual crypto
+- **Own your identity** 🚧 — Nostr NIP-07 auth in progress; today: magic links + OAuth SSO
 
 ---
 
@@ -50,21 +70,21 @@ A community spins up a Fedimint mint via ArxMint. Members hold ecash. A creator 
 
 Everything you need to replace paid creator platforms:
 
-**Store** — Digital products, cart, checkout, order management. Stripe for fiat, ArxMint for crypto.
+**Store** ✅ — Digital products, cart, checkout, order management. Stripe for fiat; manual crypto (BTC address + email proof) with automated checkout on the roadmap.
 
-**Courses** — Video, audio, text, quizzes. Drip content, cohort delivery, progress tracking, certificates, discussion forums. [Docs →](./docs/features/COURSES_PLATFORM_IMPLEMENTATION.md)
+**Courses** ✅ Partial — Video, audio, text, drip content, cohort delivery, progress tracking. Quizzes, certificates, and discussion forums are on the roadmap. [Docs →](./docs/features/COURSES_PLATFORM_IMPLEMENTATION.md)
 
-**Funnels** — Landing pages, sales funnels, conversion tracking.
+**Funnels** ✅ — Landing pages, sales funnels, conversion tracking.
 
-**Email Marketing** — List management, segmentation, automation sequences (welcome series, cart abandonment), open/click tracking. [Docs →](./docs/features/EMAIL_MARKETING_IMPLEMENTATION.md)
+**Email Marketing** ✅ — List management, segmentation, automation sequences (welcome series, cart abandonment), open/click tracking. [Docs →](./docs/features/EMAIL_MARKETING_IMPLEMENTATION.md)
 
-**Website Builder** — Templates with AI customization, multi-brand support, mobile-responsive.
+**Website Builder** ✅ Partial — Templates with AI customization (requires OPENAI_API_KEY), multi-brand support, mobile-responsive.
 
-**Analytics** — Sales, email performance, student engagement, funnel conversions.
+**Analytics** ✅ — Sales, email performance, student engagement, funnel conversions.
 
-**Authentication** — Three options: local magic links (zero deps), Teneo Auth SSO (OAuth 2.0 + PKCE), Nostr (NIP-07 via Alby). [Auth setup →](./docs/integration/AUTH_SETUP.md)
+**Authentication** ✅ — Two working options: local magic links (zero deps) and Teneo Auth SSO (OAuth 2.0 + PKCE). Nostr NIP-07 auth is in progress. [Auth setup →](./docs/integration/AUTH_SETUP.md)
 
-**Dual-Mode Operation** — Primary: Stripe + standard hosting. Fallback: crypto + offshore VPS. Automatic failover when primary is disrupted. [Architecture →](./docs/core/DUAL_MODE_ARCHITECTURE.md)
+**Dual-Mode Architecture** — Designed for primary (Stripe) + fallback (crypto) operation. Automatic failover is a roadmap item; today the fallback requires manual operator action. [Architecture →](./docs/core/DUAL_MODE_ARCHITECTURE.md)
 
 ---
 
@@ -142,8 +162,8 @@ API at `http://localhost:3001/api`. Edit `.env` for Stripe keys, auth provider, 
 
 - **Runtime**: Node.js + Express.js
 - **Database**: SQLite (PostgreSQL ready)
-- **Auth**: Pluggable providers (local, OAuth SSO, Nostr)
-- **Payments**: Stripe (fiat) + ArxMint (Lightning/ecash)
+- **Auth**: Pluggable providers (local magic links, OAuth SSO; Nostr NIP-07 in progress)
+- **Payments**: Stripe (fiat) + manual crypto; ArxMint/Lightning/ecash on Phase 3 roadmap
 - **Frontend**: Multi-brand template system, mobile-responsive
 
 Full API docs: [API-DOCUMENTATION.md](./marketplace/backend/API-DOCUMENTATION.md)
@@ -208,4 +228,4 @@ MIT — see [LICENSE](./LICENSE).
 
 ---
 
-**Part of the open creator economy.** [ArxMint](https://github.com/Traviseric/arxmint) (payments) + Teneo Marketplace (storefront + discovery network) + [Nostr](https://nostr.com) (identity) = a circular crypto economy where every store makes the network stronger.
+**Part of the open creator economy.** Today: Teneo Marketplace gives you a self-hosted store, courses, email, and funnels with zero platform fees. Roadmap (Phase 3): [ArxMint](https://github.com/Traviseric/arxmint) (Lightning/ecash payments) + [Nostr](https://nostr.com) (identity) = a circular crypto economy where every store makes the network stronger.
