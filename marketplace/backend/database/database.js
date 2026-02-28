@@ -109,6 +109,13 @@ function initializeDatabase() {
         if (err) console.error('Error creating course tables:', err);
     });
 
+    // Migration: add abandonment_email_sent_at to orders (idempotent)
+    db.run(`ALTER TABLE orders ADD COLUMN abandonment_email_sent_at DATETIME`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding abandonment_email_sent_at column:', err);
+        }
+    });
+
     // Funnel persistence tables
     db.exec(`
         CREATE TABLE IF NOT EXISTS funnels (

@@ -306,6 +306,7 @@
     </main>
 
     <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script>
         // Redirect already-authenticated users to dashboard
         (async function checkSession() {
@@ -337,10 +338,8 @@
             })
             .catch(() => {});
 
-        // Show Nostr button if NIP-07 extension detected
-        if (typeof window.nostr !== 'undefined') {
-            document.getElementById('nostr-section').style.display = 'block';
-        }
+        // Show Nostr button if NIP-07 extension is detected (with 1.5s wait)
+        TeneoAuth.initNostrUI();
 
         // Magic link form submission
         document.getElementById('magic-link-form').addEventListener('submit', async function(e) {
@@ -399,15 +398,19 @@
 
         async function loginWithNostr() {
             clearAlerts();
-            if (!window.nostr) {
-                showError('No Nostr extension detected. Install Alby or nos2x to continue.');
-                return;
-            }
+            const btn = document.getElementById('nostr-btn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting…';
+
             try {
-                const pubkey = await window.nostr.getPublicKey();
-                showSuccess('Nostr public key: ' + pubkey.substring(0, 16) + '… (NIP-98 auth coming soon)');
+                const user = await TeneoAuth.loginWithNostr();
+                showSuccess('Connected as ' + (user.name || user.pubkey.substring(0, 16) + '…') + '. Redirecting…');
+                setTimeout(() => { window.location.href = '/account-dashboard.html'; }, 800);
             } catch (err) {
-                showError('Nostr login cancelled or failed.');
+                showError(err.message || 'Nostr login failed. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         }
 

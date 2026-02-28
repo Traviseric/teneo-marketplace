@@ -380,6 +380,41 @@ BEGIN
     UPDATE email_sequences SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
+-- Cart Abandonment email template
+INSERT OR IGNORE INTO email_templates (name, subject, body_html, body_text, category, from_name, from_email) VALUES
+(
+  'Cart Abandonment - Email 1',
+  'You left something behind 📚',
+  '<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+<h2>You left something in your cart</h2>
+<p>Hi there,</p>
+<p>We noticed you were interested in <strong>{{BOOK_TITLE}}</strong> but didn''t complete your purchase.</p>
+<p>Your cart is still waiting for you. Complete your order now while it''s still available.</p>
+<p style="text-align:center;margin:30px 0">
+  <a href="{{CHECKOUT_URL}}" style="background:#1a56db;color:#fff;padding:14px 28px;text-decoration:none;border-radius:6px;font-weight:bold">Complete My Order</a>
+</p>
+<p style="color:#6b7280;font-size:12px">If you no longer wish to receive these reminders, you can ignore this email.</p>
+</body></html>',
+  'You left {{BOOK_TITLE}} in your cart. Complete your order: {{CHECKOUT_URL}}',
+  'sequence',
+  'Teneo Marketplace',
+  'noreply@teneo.io'
+);
+
+-- Cart abandonment sequence emails (email 1: immediate, email 2: 24h later)
+INSERT OR IGNORE INTO sequence_emails (sequence_id, order_number, delay_days, delay_hours, template_id, subject_override, active)
+SELECT
+  seq.id,
+  1,
+  0,
+  0,
+  t.id,
+  NULL,
+  1
+FROM email_sequences seq, email_templates t
+WHERE seq.name = 'Abandoned Cart Sequence'
+  AND t.name = 'Cart Abandonment - Email 1';
+
 -- Email Events (individual open/click event log for per-send analytics)
 CREATE TABLE IF NOT EXISTS email_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

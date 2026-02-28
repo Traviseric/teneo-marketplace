@@ -8,8 +8,9 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL,
 
     -- Authentication provider tracking
-    auth_provider TEXT DEFAULT 'local', -- 'local' or 'teneo-auth'
+    auth_provider TEXT DEFAULT 'local', -- 'local', 'teneo-auth', or 'nostr'
     teneo_user_id TEXT UNIQUE, -- For TENEO Auth SSO users
+    nostr_pubkey TEXT UNIQUE,  -- For Nostr NIP-07 users (32-byte hex pubkey)
 
     -- Profile data
     avatar_url TEXT,
@@ -126,6 +127,7 @@ CREATE TABLE IF NOT EXISTS auth_audit_log (
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_teneo_id ON users(teneo_user_id);
+CREATE INDEX IF NOT EXISTS idx_users_nostr_pubkey ON users(nostr_pubkey);
 CREATE INDEX IF NOT EXISTS idx_users_provider ON users(auth_provider);
 CREATE INDEX IF NOT EXISTS idx_users_status ON users(account_status);
 
