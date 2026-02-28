@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{BOOK_TITLE}} — {{AUTHOR}}</title>
+  <style>
+    :root {
+      --bg: #fdf6ee;
+      --text: #2c1a0e;
+      --accent: #b85c38;
+      --muted: #7a5c4a;
+      --border: #e8d5c4;
+      --quote-bg: #f5e6d8;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* Hero: Author + headline, editorial feel */
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 24px;
+      font-style: italic;
+    }
+    .hero-byline { font-size: 0.95rem; color: var(--muted); }
+
+    /* Author story section */
+    .author-story {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 52px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .author-story h2 {
+      font-size: 1.55rem;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+    .author-story p { margin-bottom: 18px; font-size: 1.05rem; }
+    .pull-quote {
+      background: var(--quote-bg);
+      border-left: 4px solid var(--accent);
+      padding: 22px 28px;
+      margin: 32px 0;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    /* Testimonials: 3-column grid */
+    .testimonials {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px;
+    }
+    .testimonials h2 {
+      text-align: center;
+      font-size: 1.65rem;
+      margin-bottom: 36px;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .testimonial-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      background: var(--bg);
+    }
+    .testimonial-text {
+      font-style: italic;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 0.97rem;
+    }
+    .testimonial-author {
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-family: -apple-system, sans-serif;
+    }
+
+    /* "My Journey" narrative with pull quote */
+    .narrative {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 52px 24px;
+    }
+    .narrative h2 { font-size: 1.55rem; margin-bottom: 22px; }
+    .narrative p { margin-bottom: 18px; font-size: 1.05rem; }
+
+    /* Book preview / excerpt */
+    .preview {
+      background: var(--quote-bg);
+      border-top: 1px solid var(--border);
+      padding: 48px 24px;
+    }
+    .preview-inner { max-width: 640px; margin: 0 auto; }
+    .preview h2 { font-size: 1.5rem; margin-bottom: 22px; }
+    .excerpt-block {
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text);
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Subtle bottom CTA */
+    .cta-section {
+      background: var(--text);
+      color: var(--bg);
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .cta-section h2 { font-size: 1.7rem; margin-bottom: 10px; }
+    .cta-section p { color: #c8b4a4; margin-bottom: 30px; font-size: 1rem; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 15px 46px;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-family: Georgia, serif;
+    }
+    .cta-btn:hover { opacity: 0.9; }
+    .cta-guarantee {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: #c8b4a4;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero: editorial, author-centric -->
+  <section class="hero">
+    <p class="hero-eyebrow">A book by {{AUTHOR}}</p>
+    <h1>{{BOOK_TITLE}}</h1>
+    <p class="hero-subtitle">{{BOOK_SUBTITLE}}</p>
+    <p class="hero-byline">by {{AUTHOR}}</p>
+  </section>
+
+  <!-- Author story section above the fold -->
+  <section class="author-story">
+    <h2>The Story Behind This Book</h2>
+    <p>{{DESCRIPTION}}</p>
+    <blockquote class="pull-quote">
+      "What I discovered changed everything I thought I knew about this subject."
+    </blockquote>
+    <p>Every chapter in <em>{{BOOK_TITLE}}</em> grew from lived experience — not theory.
+      {{AUTHOR}} shares the unfiltered journey that led to writing this book, including
+      the moments of doubt, discovery, and eventual clarity.</p>
+  </section>
+
+  <!-- Testimonial grid: 3 columns -->
+  <section class="testimonials">
+    <h2>What Readers Are Saying</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">"This book gave me a completely new perspective. Honest and beautifully written."</p>
+        <p class="testimonial-author">— A.R., Verified Reader</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Vulnerable, real, and incredibly well-crafted. I couldn't put it down."</p>
+        <p class="testimonial-author">— S.M., Book Club Member</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"The kind of book that stays with you long after you close it."</p>
+        <p class="testimonial-author">— P.L., Educator</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- "My Journey" narrative section with pull quote -->
+  <section class="narrative">
+    <h2>A Journey Worth Sharing</h2>
+    <p>Writing <em>{{BOOK_TITLE}}</em> meant confronting questions most people avoid.
+      {{AUTHOR}} takes readers along for every step — from the earliest doubts to the
+      breakthroughs that made this book possible.</p>
+    <blockquote class="pull-quote">
+      "I wrote this book because I needed it to exist. I hope it finds you when you need it most."<br>
+      <cite style="font-size:0.85rem;margin-top:8px;display:block">— {{AUTHOR}}</cite>
+    </blockquote>
+    <p>Whether you're at the beginning of your own journey or somewhere in the middle,
+      the stories and insights in these pages were written with you in mind.</p>
+  </section>
+
+  <!-- Preview / excerpt -->
+  <section class="preview">
+    <div class="preview-inner">
+      <h2>A Taste of What's Inside</h2>
+      <div class="excerpt-block">{{DESCRIPTION}}</div>
+      <p style="margin-top:16px;font-size:0.85rem;color:var(--muted);font-style:italic">
+        — from <em>{{BOOK_TITLE}}</em> by {{AUTHOR}}
+      </p>
+    </div>
+  </section>
+
+  <!-- Subtle bottom CTA (not aggressive) -->
+  <section class="cta-section">
+    <h2>Ready to Begin?</h2>
+    <p>Get your copy of <em>{{BOOK_TITLE}}</em> — ${{PRICE}}</p>
+    <a href="{{BASE_URL}}/checkout?book={{BOOK_TITLE}}" class="cta-btn">{{CTA_TEXT}}</a>
+    <p class="cta-guarantee">{{GUARANTEE_TEXT}}</p>
+  </section>
+
+  <footer>
+    <p>© {{AUTHOR}}. All rights reserved.
+      | <a href="{{BASE_URL}}/privacy" style="color:inherit">Privacy</a>
+    </p>
+  </footer>
+
+  <script>
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType: 'page_view', pageUrl: window.location.pathname, template: 'story-driven' })
+    }).catch(() => {});
+  </script>
+</body>
+</html>

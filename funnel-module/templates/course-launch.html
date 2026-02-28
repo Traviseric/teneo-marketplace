@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{BOOK_TITLE}} — Enroll Now</title>
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #5b21b6;
+      --accent: #f59e0b;
+      --bg: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --text: #e8e8f0;
+      --muted: #9090b0;
+      --border: #2a2a45;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Launch hero */
+    .launch-hero {
+      padding: 72px 24px 56px;
+      text-align: center;
+      background: radial-gradient(ellipse at top, #1a0a3d 0%, var(--bg) 65%);
+    }
+    .launch-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 3px;
+      margin-bottom: 22px;
+    }
+    .launch-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 18px;
+    }
+    .launch-hero .byline { color: var(--muted); margin-bottom: 10px; }
+    .launch-hero .subhead {
+      font-size: 1.1rem;
+      color: #c8c8e0;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Countdown timer */
+    .countdown-section {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .countdown-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+    .countdown-unit {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      min-width: 70px;
+    }
+    .countdown-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .countdown-unit-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 5px;
+      letter-spacing: 0.06em;
+    }
+
+    /* Course curriculum */
+    .curriculum {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+    .curriculum h2 { font-size: 1.8rem; margin-bottom: 8px; }
+    .curriculum .intro { color: var(--muted); margin-bottom: 32px; font-size: 0.95rem; }
+    .module {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .module-header {
+      padding: 16px 20px;
+      background: var(--bg-card);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .module-num {
+      background: var(--primary);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .module-title { font-weight: 600; font-size: 0.97rem; }
+    .module-meta { color: var(--muted); font-size: 0.82rem; margin-left: auto; white-space: nowrap; }
+
+    /* Instructor bio */
+    .instructor {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px;
+      text-align: center;
+    }
+    .instructor-inner { max-width: 580px; margin: 0 auto; }
+    .instructor-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      object-fit: cover;
+      margin: 0 auto 20px;
+      display: block;
+      background: var(--border);
+    }
+    .instructor h2 { font-size: 1.55rem; margin-bottom: 6px; }
+    .instructor .role {
+      color: var(--accent);
+      margin-bottom: 14px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .instructor p { color: #c8c8e0; font-size: 0.97rem; }
+
+    /* FAQ accordion */
+    .faq {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+    .faq h2 { font-size: 1.8rem; margin-bottom: 28px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      text-align: left;
+      padding: 20px 0;
+      font-size: 0.97rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq-question::after {
+      content: '+';
+      font-size: 1.4rem;
+      color: var(--primary);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-answer {
+      color: #c8c8e0;
+      padding-bottom: 20px;
+      display: none;
+      font-size: 0.93rem;
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-question::after { transform: rotate(45deg); }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* Enrollment CTA with price + guarantee */
+    .enrollment {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 64px 24px;
+      text-align: center;
+    }
+    .enrollment h2 { font-size: 1.8rem; margin-bottom: 8px; }
+    .enrollment p { color: var(--muted); margin-bottom: 24px; }
+    .price-display {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .price-note { font-size: 0.85rem; color: var(--muted); margin-bottom: 32px; }
+    .enroll-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 18px 56px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    }
+    .enroll-btn:hover { opacity: 0.9; }
+    .guarantee {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Launch hero -->
+  <section class="launch-hero">
+    <p class="launch-tag">Now Enrolling</p>
+    <h1>{{BOOK_TITLE}}</h1>
+    <p class="byline">with {{AUTHOR}}</p>
+    <p class="subhead">{{BOOK_SUBTITLE}}</p>
+  </section>
+
+  <!-- Countdown timer placeholder (data-launch-date attribute) -->
+  <section class="countdown-section" data-launch-date="{{LAUNCH_DATE}}">
+    <p class="countdown-label">Enrollment closes in</p>
+    <div class="countdown-timer" id="countdown">
+      <div class="countdown-unit">
+        <div class="countdown-number" id="cd-days">07</div>
+        <div class="countdown-unit-label">Days</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-number" id="cd-hours">00</div>
+        <div class="countdown-unit-label">Hours</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-number" id="cd-mins">00</div>
+        <div class="countdown-unit-label">Minutes</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-number" id="cd-secs">00</div>
+        <div class="countdown-unit-label">Seconds</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module / lesson outline section -->
+  <section class="curriculum">
+    <h2>What You'll Learn</h2>
+    <p class="intro">{{DESCRIPTION}}</p>
+    <div class="module">
+      <div class="module-header">
+        <span class="module-num">1</span>
+        <span class="module-title">Foundation &amp; Framework</span>
+        <span class="module-meta">3 lessons · 45 min</span>
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-header">
+        <span class="module-num">2</span>
+        <span class="module-title">Core Principles in Action</span>
+        <span class="module-meta">4 lessons · 60 min</span>
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-header">
+        <span class="module-num">3</span>
+        <span class="module-title">Advanced Strategies</span>
+        <span class="module-meta">5 lessons · 75 min</span>
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-header">
+        <span class="module-num">4</span>
+        <span class="module-title">Implementation &amp; Next Steps</span>
+        <span class="module-meta">3 lessons · 40 min</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructor bio section -->
+  <section class="instructor">
+    <div class="instructor-inner">
+      <img src="{{BOOK_COVER_URL}}" alt="{{AUTHOR}}" class="instructor-avatar">
+      <h2>{{AUTHOR}}</h2>
+      <p class="role">Your Instructor</p>
+      <p>{{DESCRIPTION}}</p>
+    </div>
+  </section>
+
+  <!-- FAQ accordion -->
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-question">Who is this course for?</button>
+      <p class="faq-answer">This course is ideal for {{TARGET_AUDIENCE}} who want structured guidance through the material in <em>{{BOOK_TITLE}}</em>. No prior experience required.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">How long do I have access?</button>
+      <p class="faq-answer">You get lifetime access to all lessons, recordings, and any future updates to the course.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Is there a refund policy?</button>
+      <p class="faq-answer">Yes — {{GUARANTEE_TEXT}}. Contact us within the guarantee period for a full refund, no questions asked.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">When does the course start?</button>
+      <p class="faq-answer">The course opens on the launch date shown in the countdown above. Enroll now to lock in your spot at the current price.</p>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Can I go at my own pace?</button>
+      <p class="faq-answer">Absolutely. All lessons are pre-recorded and available on demand. Work through the material on your own schedule.</p>
+    </div>
+  </section>
+
+  <!-- Enrollment CTA with price and guarantee -->
+  <section class="enrollment">
+    <h2>Enroll in {{BOOK_TITLE}}</h2>
+    <p>Join hundreds of students already learning from {{AUTHOR}}</p>
+    <div class="price-display">${{PRICE}}</div>
+    <p class="price-note">One-time payment · Lifetime access · All future updates included</p>
+    <a href="{{BASE_URL}}/checkout?course={{BOOK_TITLE}}" class="enroll-btn">{{CTA_TEXT}}</a>
+    <p class="guarantee">🔒 {{GUARANTEE_TEXT}}</p>
+  </section>
+
+  <footer>
+    <p>© {{AUTHOR}}. All rights reserved.
+      | <a href="{{BASE_URL}}/privacy" style="color:inherit">Privacy</a>
+    </p>
+  </footer>
+
+  <script>
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.faq-item').classList.toggle('open');
+      });
+    });
+
+    // Countdown timer
+    const launchDate = document.querySelector('[data-launch-date]')?.dataset.launchDate;
+    if (launchDate) {
+      const target = new Date(launchDate).getTime();
+      const pad = n => String(n).padStart(2, '0');
+      const tick = () => {
+        const diff = target - Date.now();
+        if (diff <= 0) return;
+        document.getElementById('cd-days').textContent  = pad(Math.floor(diff / 86400000));
+        document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        document.getElementById('cd-mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+        document.getElementById('cd-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType: 'page_view', pageUrl: window.location.pathname, template: 'course-launch' })
+    }).catch(() => {});
+  </script>
+</body>
+</html>

@@ -17,6 +17,14 @@ const path = require('path');
 const intentCache = new Map();
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
+// Map template_type → HTML template file paths
+const TEMPLATE_MAP = {
+  'story-driven': path.join(__dirname, '../../../funnel-module/templates/story-driven.html'),
+  'reader-magnet': path.join(__dirname, '../../../funnel-module/templates/reader-magnet.html'),
+  'direct-sale':   path.join(__dirname, '../../../funnel-module/templates/book-sales-page.html'),
+  'course-launch': path.join(__dirname, '../../../funnel-module/templates/course-launch.html')
+};
+
 class AIPageBuilder {
   constructor(db) {
     this.db = db;
@@ -56,7 +64,25 @@ class AIPageBuilder {
     const intent = await this.parseIntent(prompt, data);
     console.log('📋 Intent:', intent);
 
-    // 2. Select best components based on intent
+    // 1a. Try template-based rendering (preferred when template files exist)
+    if (intent.template_type) {
+      const templateHtml = await this._generateFromTemplate(intent, data, brand);
+      if (templateHtml) {
+        const route = this.generateRoute(data.title || 'page');
+        const filePath = await this.savePage(templateHtml, route);
+        console.log(`✅ Page generated from template '${intent.template_type}': ${route}`);
+        return {
+          success: true,
+          route,
+          filePath,
+          template: intent.template_type,
+          components: [],
+          preview: `http://localhost:3001${route}`
+        };
+      }
+    }
+
+    // 2. Select best components based on intent (fallback: component assembly)
     const components = this.selectComponents(intent);
     console.log('🧩 Selected components:', components);
 
@@ -103,10 +129,14 @@ class AIPageBuilder {
     const openai = this._getOpenAI();
     if (openai) {
       try {
-        const systemPrompt = `You are a page builder assistant. Analyze the user's description and return a JSON object with these fields:
+        const systemPrompt = `You are a landing page intent parser. Analyze the user's description and return a JSON object with these fields:
+- template_type: one of "story-driven", "reader-magnet", "direct-sale", "course-launch". Choose "story-driven" for narrative/author-focused pages, "reader-magnet" for lead capture/free content, "course-launch" for courses/training, "direct-sale" for direct purchase pages.
 - pageType: one of "sales-page", "checkout", "upsell", "thank-you"
 - style: one of "professional", "modern", "luxury", "friendly"
-- tone: one of "authoritative", "casual", "sophisticated"
+- tone: one of "authoritative", "casual", "sophisticated", "inspiring"
+- target_audience: brief description of the target audience (1 sentence)
+- primary_cta: the main call-to-action button text
+- color_scheme_hint: one of "warm", "cool", "neutral", "dark"
 - urgency: boolean
 - socialProof: boolean
 - productType: one of "book", "course", "service", or null
@@ -124,10 +154,14 @@ class AIPageBuilder {
 
         const parsed = JSON.parse(completion.choices[0].message.content);
         const intent = {
+          template_type: parsed.template_type || 'direct-sale',
           pageType: parsed.pageType || 'sales-page',
           style: parsed.style || 'professional',
           features: Array.isArray(parsed.features) ? parsed.features : [],
           tone: parsed.tone || 'authoritative',
+          target_audience: parsed.target_audience || '',
+          primary_cta: parsed.primary_cta || '',
+          color_scheme_hint: parsed.color_scheme_hint || 'neutral',
           urgency: !!parsed.urgency,
           socialProof: parsed.socialProof !== false,
           productType: parsed.productType || (data.type === 'book' ? 'book' : undefined)
@@ -149,15 +183,30 @@ class AIPageBuilder {
    */
   _parseIntentKeywords(prompt, data) {
     const intent = {
+      template_type: 'direct-sale',
       pageType: 'sales-page',
       style: 'professional',
       features: [],
       tone: 'authoritative',
+      target_audience: '',
+      primary_cta: '',
+      color_scheme_hint: 'neutral',
       urgency: false,
       socialProof: true
     };
 
     const lower = prompt.toLowerCase();
+
+    // Detect template type
+    if (lower.match(/course|curriculum|lesson|module|enroll|teach|training/)) {
+      intent.template_type = 'course-launch';
+    } else if (lower.match(/free|magnet|subscribe|email list|lead capture|opt.?in|download/)) {
+      intent.template_type = 'reader-magnet';
+    } else if (lower.match(/story|journey|narrative|memoir|author story|my life|background/)) {
+      intent.template_type = 'story-driven';
+    } else {
+      intent.template_type = 'direct-sale';
+    }
 
     // Detect page type
     if (lower.includes('landing page') || lower.includes('sales page')) {
@@ -214,6 +263,62 @@ class AIPageBuilder {
     }
 
     return intent;
+  }
+
+  /**
+   * Replace {{VARIABLES}} in a raw HTML template string
+   */
+  _substituteVars(html, data, intent = {}) {
+    const launchDate = data.launchDate ||
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const vars = {
+      BOOK_TITLE:     data.title        || 'Your Book Title',
+      BOOK_SUBTITLE:  data.subtitle     || '',
+      AUTHOR:         data.author       || 'Author Name',
+      PRICE:          data.price        || '27',
+      ORIGINAL_PRICE: data.originalPrice || '',
+      BOOK_COVER_URL: data.coverUrl     || '/images/book-cover-placeholder.jpg',
+      DESCRIPTION:    data.description  || 'Book description goes here...',
+      CTA_TEXT:       data.ctaText      || intent.primary_cta || 'Get Your Copy Now',
+      GUARANTEE_TEXT: data.guarantee    || '30-Day Money-Back Guarantee',
+      TARGET_AUDIENCE: intent.target_audience || 'readers',
+      LAUNCH_DATE:    launchDate,
+      BASE_URL:       process.env.BASE_URL || 'http://localhost:3001',
+      UPSELL_TITLE:   data.upsellTitle  || '',
+      UPSELL_PRICE:   data.upsellPrice  || ''
+    };
+    let result = html;
+    for (const [name, value] of Object.entries(vars)) {
+      result = result.replace(new RegExp(`\\{\\{${name}\\}\\}`, 'g'), value || '');
+    }
+    return result;
+  }
+
+  /**
+   * Inject brand CSS into template <head>
+   */
+  _injectBrandCSS(html, brand) {
+    const css = `\n  <link rel="stylesheet" href="/components-library/brand-themes/${brand}-brand.css">`;
+    return html.includes('</head>') ? html.replace('</head>', `${css}\n</head>`) : html;
+  }
+
+  /**
+   * Render a full-page HTML template based on intent.template_type.
+   * Returns null if template file not found (caller falls back to component approach).
+   */
+  async _generateFromTemplate(intent, data, brand) {
+    const templatePath = TEMPLATE_MAP[intent.template_type || 'direct-sale'];
+    if (!templatePath) return null;
+    let html;
+    try {
+      html = fs.readFileSync(templatePath, 'utf8');
+    } catch (e) {
+      console.warn(`⚠️  Template not found: ${templatePath} — falling back to component assembly`);
+      return null;
+    }
+    html = this._substituteVars(html, data, intent);
+    html = this._injectBrandCSS(html, brand);
+    return html;
   }
 
   /**
