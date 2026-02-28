@@ -1,333 +1,65 @@
-# CLAUDE.md
+# Teneo Marketplace
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Decentralized book marketplace with dual-mode payments (Stripe + crypto fallback), federation network, and censorship resistance. Public open-source repo — content generation lives in teneo-production (private).
 
----
+## Lookup Table
 
-## 🚨 CRITICAL: Git Safety Protocols (READ FIRST)
+| Concept | Files | Search Terms |
+|---------|-------|--------------|
+| Server Entry | marketplace/backend/server.js | express, app, listen, PORT |
+| Routes | marketplace/backend/routes/ | checkout, admin, brands, network, auth |
+| Services | marketplace/backend/services/ | email, lulu, audit, order, health |
+| Database | marketplace/backend/database/schema.sql, init.js | sqlite, CREATE TABLE, orders |
+| Auth System | marketplace/backend/auth/, routes/auth.js | AuthProvider, magic link, OAuth, session |
+| Teneo Auth SSO | See C:\code\.claude\TENEO-AUTH-SETUP.md Part 2B | OAuth 2.0, PKCE, JWT, teneo-auth, SSO |
+| Nostr/Alby Auth | Port from C:\code\arxmint\lib\nostr-auth.ts | NIP-07, NIP-98, Alby, nos2x, window.nostr |
+| Frontend | marketplace/frontend/ | brand-manager, cart, checkout, template |
+| Brand System | marketplace/frontend/brands/ | config.json, catalog.json, variables |
+| Course Module | course-module/ | progress, module, lesson |
+| Funnel Module | funnel-module/ | funnel, landing, template |
+| Setup Wizard | setup-wizard/index.html | wizard, configure, setup |
+| Payments | routes/checkout.js, routes/cryptoCheckout.js | stripe, bitcoin, lightning, monero |
+| Federation | routes/network.js, network-registry.json | node, peer, discovery, revenue share |
+| Docker | docker-compose.yml, Dockerfile | container, nginx, redis |
+| Config | .env.example, marketplace/backend/.env.example | STRIPE, SESSION_SECRET, EMAIL |
+| Component Library | marketplace/frontend/components-library/, COMPONENT_MANIFEST.json | component, template, {{VARIABLE}}, hero, CTA |
+| AI Builder Strategy | docs/development/AI_BUILDER_STRATEGY.md | natural language, page builder, Claude Code, ClickFunnels killer |
+| AI Discovery | marketplace/backend/routes/discovery.js, docs/features/AI_DISCOVERY_ENGINE.md | semantic search, embeddings, knowledge graph, suppression |
+| ArxMint Payments | See C:\code\arxmint — L402, Cashu, Fedimint, spend router | L402, ecash, NUT-24, Lightning, micropayments, payment SDK |
+| Docs | docs/ (75+ files by category) | architecture, deployment, features |
 
-**BEFORE ANY `git commit` or `git push`, READ: [DEPLOYMENT.md](./DEPLOYMENT.md)**
+## Stack
 
-### ❌ NEVER COMMIT:
-- `.env` files (except .env.example)
-- `.db` or `.sqlite` files (customer data)
-- PDF files in `marketplace/frontend/books/` (copyrighted content)
-- `claude-files/` directory (private business docs)
-- `teneo-express/` directory (private SaaS code)
-- Any credentials, API keys, private keys
-- Customer data, order data, analytics
+- Runtime: Node.js 18+
+- Framework: Express.js
+- Database: SQLite
+- Payments: Stripe + Bitcoin/Lightning/Monero
+- Frontend: Vanilla HTML/CSS/JS (no framework)
+- Email: Nodemailer
+- Print: Lulu API
+- Deploy: Docker, Vercel (frontend), Render (backend)
 
-### ✅ Safe to Commit:
-- Code files (`.js`, `.html`, `.css`, `.json`)
-- Documentation (`.md` files)
-- Config templates (`.env.example`)
-- Empty database schemas (`.sql`)
-- Docker configs
+## Commands
 
-### 🤖 AI Assistant Protocol:
-
-**When user asks to commit, ALWAYS:**
-
-1. Run `git status` and review ALL files
-2. Flag sensitive files with ⚠️
-3. Show user EXACTLY what will be committed
-4. Ask for confirmation if ANY file is flagged
-5. Never commit without user verification
-
-**Example Response:**
-```
-I'm about to commit:
-
-✅ README.md (safe)
-✅ marketplace/backend/routes/newRoute.js (safe)
-⚠️  .env (WARNING - credentials, should not commit)
-
-Files marked ⚠️ are sensitive. Should I:
-1. Skip .env and commit only safe files?
-2. Cancel entirely?
-```
-
-**When in doubt, ASK. Never guess about sensitive data.**
-
-**Full guide:** [DEPLOYMENT.md](./DEPLOYMENT.md)
-
----
-
-## Development Commands
-
-### Starting the application
 ```bash
-# From project root - start production server
-npm start
-
-# Development with auto-restart
-npm run dev
-
-# From backend directory specifically
-cd marketplace/backend
-npm start
-npm run dev
+npm start                                          # Production server (port 3001)
+npm run dev                                        # Dev with nodemon auto-restart
+node marketplace/backend/database/init.js          # Init/reset database
+node marketplace/backend/scripts/create-real-data.js  # Load authentic book data
+node marketplace/backend/scripts/generate-password-hash.js --generate  # Admin password
+node test-api.js                                   # Test API endpoints
+node test-purchase-flow.js                         # Test purchase flow
 ```
 
-### Database operations
-```bash
-# Initialize/reset database
-node marketplace/backend/database/init.js
+## Conventions
 
-# Setup authentic data (real Teneo books only)
-node marketplace/backend/scripts/create-real-data.js
+- Public repo: never commit .env, .db, .sqlite, PDFs, claude-files/, teneo-express/
+- Brand configs: each brand gets config.json + catalog.json in frontend/brands/
+- Routes: one file per domain (checkout, admin, brands, network, auth)
+- Services: business logic separate from routes
+- Auth: pluggable providers (local magic link OR teneo-auth SSO)
+- Dual-mode: primary (Stripe) auto-fails-over to fallback (crypto)
 
-# Generate admin password hash
-node marketplace/backend/scripts/generate-password-hash.js "YourPassword123!"
-node marketplace/backend/scripts/generate-password-hash.js --generate  # Auto-generate secure password
-```
+## Current Focus
 
-### Testing
-```bash
-# Test purchase flow directly
-node test-purchase-direct.js
-node test-purchase-flow.js
-
-# Test Stripe configuration
-node test-stripe-key.js
-
-# Test API endpoints
-node test-api.js
-```
-
----
-
-## 🏗️ Public/Private Repository Strategy
-
-**IMPORTANT: This is the PUBLIC open-source repository.**
-
-### What This Repo Contains (Public):
-- ✅ Book marketplace (display & sales infrastructure)
-- ✅ Generic funnel builder (templates, no Teneo Engine logic)
-- ✅ Course player UI (consumption, not generation)
-- ✅ Federation network infrastructure
-- ✅ Multi-brand system
-- ✅ Generic e-commerce features
-
-### What This Repo Does NOT Contain (Private):
-- ❌ Book/course/funnel generation logic (Teneo Engine)
-- ❌ Proprietary AI prompts and orchestration
-- ❌ "Course-as-Code" automation (Shadow Repository)
-- ❌ Advanced brand profile analysis
-- ❌ Teneo Engine 7-phase generation pattern
-
-**Content Generation**: Books and courses are created in the **teneo-production** (private repo) using Teneo Engine, then published to this marketplace via API.
-
-**Full Documentation**: See [docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md](./docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md)
-
-**API Specification**: See [docs/reference/API_SPECIFICATION.md](./docs/reference/API_SPECIFICATION.md)
-
----
-
-## Architecture Overview
-
-### Project Structure
-- **Root**: Contains main package.json, scripts, and documentation
-- **marketplace/backend/**: Express.js API server with SQLite database
-- **marketplace/frontend/**: Static frontend files with multi-brand support
-- **teneo-express/**: Multi-tenant marketplace platform (separate service, PRIVATE)
-
-### Dual-Mode + Federation Architecture
-
-**See: [DUAL_MODE_ARCHITECTURE.md](./DUAL_MODE_ARCHITECTURE.md) for complete details**
-
-**Primary Mode (Default):**
-- Stripe payments for easy UX
-- Standard hosting (Vercel/Render)
-- Mainstream acceptable
-
-**Fallback Mode (Automatic):**
-- Crypto payments (Bitcoin/Lightning/Monero)
-- Offshore VPS (Iceland/Romania)
-- Tor hidden service (.onion)
-- Activates automatically when primary fails
-
-**Federation Network:**
-- Open source - anyone can deploy a node
-- Cross-node discovery
-- Revenue sharing (10-20%)
-- Distributed resilience
-
-### Backend Architecture (marketplace/backend/)
-
-**Core Server**: `server.js` - Express server with security middleware (CSRF, session management, rate limiting)
-
-**Key Routes**:
-- `/api/checkout` - Stripe payment processing (production vs development routes)
-- `/api/crypto` - Crypto payment processing (Bitcoin/Lightning/Monero)
-- `/api/admin` - Admin dashboard and book management
-- `/api/brands` - Multi-brand catalog management
-- `/api/network` - Federation and network search
-- `/api/download` - Secure PDF download with token validation
-- `/api/lulu` - Lulu print-on-demand integration
-
-**Services**:
-- `emailService.js` - Email notifications (order confirmations, downloads)
-- `luluService.js` - Print-on-demand API integration
-- `auditService.js` - Admin action logging
-- `orderService.js` - Order processing and management
-- `healthMonitor.js` - Automatic failover monitoring (dual-mode)
-
-**Database**: SQLite with schemas in `database/schema.sql` and `database/schema-lulu.sql`
-
-### Frontend Architecture (marketplace/frontend/)
-
-**Multi-Brand System**: `brands/` directory contains brand-specific configurations
-- Each brand has `catalog.json` (books), `config.json` (branding), and optional CSS themes
-- `master-templates/` provides base templates for new brands
-- `information_asymmetry/` brand for backend-only books (censored content)
-
-**Key JavaScript Modules**:
-- `brand-manager.js` - Dynamic brand switching and configuration
-- `cart.js` - Shopping cart functionality
-- `network-client.js` - Federation network communication
-- `template-processor.js` - Dynamic template rendering
-- `crypto-checkout.js` - Crypto payment flow (Bitcoin/Lightning/Monero)
-
-### Configuration Management
-
-**Environment Variables** (`.env` in backend/, NEVER COMMIT):
-- `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` - Payment processing (primary mode)
-- `BTC_ADDRESS`, `LIGHTNING_ADDRESS`, `XMR_ADDRESS` - Crypto payments (fallback mode)
-- `ADMIN_PASSWORD_HASH` - bcrypt hashed admin password
-- `SESSION_SECRET` - Session encryption key
-- `EMAIL_*` - SMTP configuration for notifications
-- `LULU_*` - Print-on-demand API credentials
-- `NODE_ID`, `NETWORK_REGISTRY_URL` - Federation network config
-
-**Brand Configuration**: Each brand in `frontend/brands/` has:
-- `config.json` - Theme colors, features, payment settings
-- `catalog.json` - Book listings with pricing and metadata
-- `variables.json` - Template variables for customization
-
-### Security Implementation
-
-**Authentication**: bcrypt password hashing with express-session
-**CSRF Protection**: csurf middleware (excludes webhook endpoints)
-**Rate Limiting**: express-rate-limit on API endpoints
-**Audit Trail**: All admin actions logged to database
-**Secure Downloads**: Time-limited tokens for PDF access
-**Failover Protection**: Automatic switch to censorship-resistant mode
-**Offshore Hosting**: Iceland/Romania VPS for fallback mode
-**Tor Integration**: .onion address for maximum censorship resistance
-
-### Payment Processing
-
-**Primary Mode:**
-- Stripe checkout (cards, Apple Pay, Google Pay)
-- Easy UX, mainstream hosting
-- Uses `routes/checkout.js` (development) or `routes/checkoutProduction.js` (production)
-
-**Fallback Mode (Crypto):**
-- Bitcoin on-chain
-- Lightning Network (instant, low fees)
-- Monero (maximum privacy)
-- Uses `routes/cryptoCheckout.js`
-- BTCPay Server integration for automation
-
-**Print Integration**: Lulu.com API for physical book fulfillment
-
-**Order Flow**:
-- Primary: Cart → Stripe → Email → Download tokens
-- Fallback: Cart → Crypto address → Manual verification → Download tokens
-
-### Federation Network
-
-**Network Registry**: `network-registry.json` defines connected marketplaces
-**Peer Discovery**: Network search aggregates results from federated stores
-**Revenue Sharing**: Configurable referral percentages (10-20%) between network partners
-**Cross-Node Checkout**: Buy from any node in the network
-**Automatic Load Balancing**: Redirect to healthy nodes if primary fails
-
----
-
-## Development Workflow
-
-1. **Setup**: Copy `.env.example` to `.env` and configure required variables
-2. **Admin Access**: Generate password hash using the provided script
-3. **Database**: Initialize with `database/init.js` on first run
-4. **Development**: Use `npm run dev` for auto-restart during development
-5. **Brand Management**: Add new brands via admin dashboard or by creating brand directories
-6. **Testing**: Use provided test scripts to validate payment and API functionality
-
----
-
-## Deployment Notes
-
-- Server runs on PORT environment variable (default 3001)
-- Static files served from `marketplace/frontend/` in production
-- Database auto-initializes on startup
-- Supports deployment to VPS, PaaS (Heroku/Railway), or containerized environments
-- Production requires HTTPS for secure cookies and Stripe webhooks
-
-### Dual-Mode Deployment
-
-**Primary Mode (Easy UX):**
-- Deploy to Vercel (frontend) + Render (backend)
-- Configure Stripe keys in environment
-- Automatic HTTPS and CDN
-
-**Fallback Mode (Censorship Resistant):**
-- Deploy to offshore VPS (Njalla, FlokiNET)
-- Configure crypto wallets (Bitcoin/Monero)
-- Set up Tor hidden service
-- Deploy as Docker container
-
-**Automatic Failover:**
-- Health monitoring runs every 60 seconds
-- Detects Stripe API failures, hosting issues, domain problems
-- Automatically switches to fallback mode
-- Updates DNS to point to offshore VPS
-- Notifies network nodes of failover
-
-**See:** [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment guide
-
----
-
-## 📖 Documentation
-
-**→ START HERE: [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)**
-
-### Key Documents:
-- **[DUAL_MODE_ARCHITECTURE.md](./DUAL_MODE_ARCHITECTURE.md)** - Complete system architecture
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Authoritative deployment guide (READ BEFORE GIT OPS)
-- **[CENSORSHIP_RESISTANT_MVP.md](./CENSORSHIP_RESISTANT_MVP.md)** - Infrastructure strategy
-- **[INFORMATION_ASYMMETRY_IMPLEMENTATION.md](./INFORMATION_ASYMMETRY_IMPLEMENTATION.md)** - Backend books setup
-- **[MVP_48_HOUR_LAUNCH.md](./MVP_48_HOUR_LAUNCH.md)** - Quick deployment guide
-- **[PUBLIC_VS_PRIVATE_STRATEGY.md](./PUBLIC_VS_PRIVATE_STRATEGY.md)** - What to commit vs keep private
-
----
-
-## 🎯 Repository Status
-
-**Public Repo:** https://github.com/Traviseric/teneo-marketplace
-
-**Protected by .gitignore (NEVER commit):**
-- ✅ `.env` files (credentials)
-- ✅ Database files (`.db`, `.sqlite`)
-- ✅ PDF books (except `sample-*.pdf`)
-- ✅ `claude-files/` (private business docs)
-- ✅ `teneo-express/` (private SaaS)
-
-**Safe to commit (public):**
-- ✅ All code files
-- ✅ Documentation
-- ✅ Config templates
-- ✅ Database schemas (empty)
-
-**This enables:**
-- Federation (anyone can deploy a node)
-- Community contributions
-- Network growth
-- Censorship resistance
-
----
-
-**IMPORTANT:** This context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.
-
-**ALWAYS check [DEPLOYMENT.md](./DEPLOYMENT.md) before any git operations.**
+See OVERNIGHT_TASKS.md for active roadmap.

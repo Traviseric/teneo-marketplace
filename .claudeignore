@@ -1,0 +1,30 @@
+# Binary/large files — never read directly
+**/*.pdf
+**/*.epub
+**/*.mobi
+**/*.db
+**/*.sqlite
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.svg
+**/*.ico
+**/*.woff
+**/*.woff2
+**/*.ttf
+
+# Private directories
+claude-files/
+teneo-express/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+*.env.local
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -12,6 +12,8 @@ The only all-in-one platform designed for creators who value freedom. Like Podia
 [![Auth](https://img.shields.io/badge/Auth-Local%20%7C%20SSO-orange.svg)](./docs/integration/AUTH_SETUP.md)
 [![Security](https://img.shields.io/badge/Security-Production%20Ready-red.svg)](./docs/reference/SECURITY_SETUP_GUIDE.md)
 
+> **Part of the open creator economy.** Teneo Marketplace is the storefront. [ArxMint](https://github.com/Traviseric/arxmint) is the payment network — L402 paywalls, Cashu ecash, Fedimint federations. Same Nostr identity, zero platform fees on crypto, can't be deplatformed.
+
 ---
 
 ## 🎉 **What's New**
