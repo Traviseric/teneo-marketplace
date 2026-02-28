@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{BOOK_TITLE}} — {{AUTHOR}}</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%);
+      color: #fff;
+      padding: 64px 24px;
+    }
+    .hero-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-book-cover {
+      width: 200px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+    }
+    .hero-copy h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .hero-copy .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+    .hero-copy .byline {
+      font-size: 0.95rem;
+      opacity: 0.65;
+      margin-bottom: 28px;
+    }
+    .hero-price {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .price-current {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #facc15;
+    }
+    .price-original {
+      font-size: 1.1rem;
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: #facc15;
+      color: #0f172a;
+      padding: 15px 40px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.9; }
+    .hero-guarantee {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+    @media (max-width: 640px) {
+      .hero-inner { flex-direction: column; text-align: center; }
+      .hero-book-cover { width: 140px; margin: 0 auto; }
+    }
+
+    /* Benefits */
+    .benefits {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+    .benefits h2 {
+      font-size: 1.7rem;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .benefit-list {
+      list-style: none;
+      display: grid;
+      gap: 16px;
+    }
+    .benefit-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-alt);
+    }
+    .benefit-check {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--success);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .benefit-item strong { display: block; margin-bottom: 2px; }
+    .benefit-item span { font-size: 0.9rem; color: var(--muted); }
+
+    /* Social proof */
+    .social-proof {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px;
+    }
+    .social-proof h2 {
+      text-align: center;
+      font-size: 1.7rem;
+      margin-bottom: 32px;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .testimonial-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .stars { color: #f59e0b; margin-bottom: 10px; font-size: 0.9rem; }
+    .testimonial-text { font-style: italic; margin-bottom: 14px; color: var(--text); font-size: 0.95rem; }
+    .testimonial-author { font-weight: 600; font-size: 0.85rem; color: var(--primary); }
+
+    /* Description */
+    .description {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+    .description h2 { font-size: 1.7rem; margin-bottom: 20px; }
+    .description p { font-size: 1.05rem; color: var(--muted); }
+
+    /* Final CTA */
+    .final-cta {
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .final-cta h2 { font-size: 1.8rem; margin-bottom: 10px; }
+    .final-cta p { opacity: 0.85; margin-bottom: 28px; }
+    .final-cta .price-display {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: #facc15;
+      margin-bottom: 24px;
+    }
+    .final-cta-btn {
+      display: inline-block;
+      background: #facc15;
+      color: #0f172a;
+      padding: 18px 56px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .final-cta-btn:hover { opacity: 0.9; }
+    .guarantee-badge {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero with book cover -->
+  <section class="hero">
+    <div class="hero-inner">
+      <img src="{{BOOK_COVER_URL}}" alt="{{BOOK_TITLE}} cover" class="hero-book-cover">
+      <div class="hero-copy">
+        <h1>{{BOOK_TITLE}}</h1>
+        <p class="subtitle">{{BOOK_SUBTITLE}}</p>
+        <p class="byline">by {{AUTHOR}}</p>
+        <div class="hero-price">
+          <span class="price-current">${{PRICE}}</span>
+          <span class="price-original">${{ORIGINAL_PRICE}}</span>
+        </div>
+        <a href="{{BASE_URL}}/checkout?book={{BOOK_TITLE}}" class="hero-cta">{{CTA_TEXT}}</a>
+        <p class="hero-guarantee">{{GUARANTEE_TEXT}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="benefits">
+    <h2>What You'll Get Inside</h2>
+    <ul class="benefit-list">
+      <li class="benefit-item">
+        <span class="benefit-check">✓</span>
+        <div>
+          <strong>Complete Framework</strong>
+          <span>{{DESCRIPTION}}</span>
+        </div>
+      </li>
+      <li class="benefit-item">
+        <span class="benefit-check">✓</span>
+        <div>
+          <strong>Immediate Download</strong>
+          <span>Get instant access after purchase — no waiting, no shipping</span>
+        </div>
+      </li>
+      <li class="benefit-item">
+        <span class="benefit-check">✓</span>
+        <div>
+          <strong>Proven by {{AUTHOR}}</strong>
+          <span>Real strategies that work, written by an expert in the field</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Social proof -->
+  <section class="social-proof">
+    <h2>What Readers Are Saying</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p class="stars">★★★★★</p>
+        <p class="testimonial-text">"This book changed how I approach the entire subject. Practical and actionable from page one."</p>
+        <p class="testimonial-author">— J.M., Verified Buyer</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="stars">★★★★★</p>
+        <p class="testimonial-text">"Worth every penny. I applied one concept from chapter 3 and saw results within a week."</p>
+        <p class="testimonial-author">— T.K., Verified Buyer</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="stars">★★★★★</p>
+        <p class="testimonial-text">"Clear, well-written, and packed with insights I haven't seen anywhere else."</p>
+        <p class="testimonial-author">— R.A., Verified Buyer</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Description -->
+  <section class="description">
+    <h2>About This Book</h2>
+    <p>{{DESCRIPTION}}</p>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Get Your Copy Today</h2>
+    <p>Instant digital download — read it in minutes</p>
+    <div class="price-display">${{PRICE}}</div>
+    <a href="{{BASE_URL}}/checkout?book={{BOOK_TITLE}}" class="final-cta-btn">{{CTA_TEXT}}</a>
+    <p class="guarantee-badge">🔒 {{GUARANTEE_TEXT}}</p>
+  </section>
+
+  <footer>
+    <p>© {{AUTHOR}}. All rights reserved. | <a href="{{BASE_URL}}/privacy" style="color:inherit">Privacy</a></p>
+  </footer>
+
+  <script>
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType: 'page_view', pageUrl: window.location.pathname, template: 'direct-sale' })
+    }).catch(() => {});
+  </script>
+</body>
+</html>
