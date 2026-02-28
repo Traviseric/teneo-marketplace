@@ -5,6 +5,8 @@ const axios = require('axios');
 const rateLimit = require('express-rate-limit');
 const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
+const btcpayService = require('../services/btcpayService');
+const emailService = require('../services/emailService');
 
 // Rate limiter for crypto payment verification (3 attempts per 15 min per IP)
 const cryptoVerifyLimiter = rateLimit({
@@ -32,6 +34,7 @@ const COIN_IDS = {
 // Price cache: { coinId: { usdPrice, fetchedAt } }
 const priceCache = new Map();
 const PRICE_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const PRICE_LOCK_TTL_MS = 15 * 60 * 1000; // 15 minutes — price locked per order
 
 /**
  * Fetch real-time USD price for a coin from CoinGecko (free tier, no key needed).
@@ -117,6 +120,29 @@ router.post('/create-order', async (req, res) => {
         const paymentAddress = getPaymentAddress(paymentMethod);
         const cryptoAmount = await getCryptoAmount(paymentMethod, usdAmount);
 
+        const priceLockedAt = new Date();
+        const priceExpiresAt = new Date(priceLockedAt.getTime() + PRICE_LOCK_TTL_MS);
+
+        // ── Try BTCPay automated checkout first ──────────────────────────────
+        // If BTCPay is configured, create a hosted invoice and return its URL.
+        // Otherwise fall through to the existing manual wallet-address flow.
+        let btcpayInvoice = null;
+        try {
+            btcpayInvoice = await btcpayService.createInvoice(usdAmount, orderId, email);
+        } catch (btcErr) {
+            console.warn('⚠️  BTCPay invoice creation failed, falling back to manual flow:', btcErr.message);
+        }
+
+        const metadata = {
+            paymentMethod,
+            cryptoAmount,
+            walletAddress: paymentAddress,
+            brandId: brandId || 'default',
+            priceLockedAt: priceLockedAt.toISOString(),
+            priceExpiresAt: priceExpiresAt.toISOString(),
+            ...(btcpayInvoice && { btcpayInvoiceId: btcpayInvoice.invoiceId }),
+        };
+
         // Save order to database
         await dbRun(
             `INSERT INTO orders
@@ -131,10 +157,27 @@ router.post('/create-order', async (req, res) => {
                 'digital',
                 usdAmount,
                 'USD',
-                JSON.stringify({ paymentMethod, cryptoAmount, walletAddress: paymentAddress, brandId: brandId || 'default' })
+                JSON.stringify(metadata),
             ]
         );
 
+        // ── BTCPay path: redirect customer to hosted invoice ─────────────────
+        if (btcpayInvoice) {
+            return res.json({
+                success: true,
+                orderId,
+                paymentMethod: 'btcpay',
+                btcpayCheckoutUrl: btcpayInvoice.checkoutUrl,
+                btcpayInvoiceId: btcpayInvoice.invoiceId,
+                amountUsd,
+                priceLockedAt: priceLockedAt.toISOString(),
+                priceExpiresAt: priceExpiresAt.toISOString(),
+                book: { id: bookId, title: bookTitle || bookId },
+                statusUrl: `/api/crypto/order-status/${orderId}`,
+            });
+        }
+
+        // ── Manual fallback: show wallet address + instructions ───────────────
         res.json({
             success: true,
             orderId,
@@ -142,6 +185,8 @@ router.post('/create-order', async (req, res) => {
             address: paymentAddress,
             amount: cryptoAmount,
             amountUsd,
+            priceLockedAt: priceLockedAt.toISOString(),
+            priceExpiresAt: priceExpiresAt.toISOString(),
             book: { id: bookId, title: bookTitle || bookId },
             instructions: {
                 step1: `Send ${cryptoAmount} ${paymentMethod.toUpperCase()} to: ${paymentAddress}`,
@@ -213,11 +258,25 @@ router.post('/verify-payment', cryptoVerifyLimiter, async (req, res) => {
         if (!orderId) return res.status(400).json({ success: false, error: 'orderId required' });
 
         // Verify the email matches the order owner to prevent unauthorized tampering
-        const order = await dbGet('SELECT order_id, customer_email FROM orders WHERE order_id = ?', [orderId]);
+        const order = await dbGet('SELECT order_id, customer_email, metadata FROM orders WHERE order_id = ?', [orderId]);
         if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
 
         if (!email || order.customer_email.toLowerCase() !== email.toLowerCase()) {
             return res.status(403).json({ success: false, error: 'Verification failed' });
+        }
+
+        // Enforce price lock expiry — customer must restart checkout if price has expired
+        try {
+            const meta = JSON.parse(order.metadata || '{}');
+            if (meta.priceExpiresAt && Date.now() > new Date(meta.priceExpiresAt).getTime()) {
+                return res.status(410).json({
+                    success: false,
+                    expired: true,
+                    error: 'Price has expired — please refresh your order and try again',
+                });
+            }
+        } catch (_) {
+            // If metadata is unparseable, allow the verification to proceed
         }
 
         // Update order with transaction ID for admin review
@@ -235,6 +294,89 @@ router.post('/verify-payment', cryptoVerifyLimiter, async (req, res) => {
         console.error('Payment verification error:', error);
         res.status(500).json({ success: false, error: 'Failed to verify payment' });
     }
+});
+
+// ─── BTCPay Webhook ───────────────────────────────────────────────────────────
+
+/**
+ * POST /api/crypto/btcpay/webhook
+ *
+ * Receives payment event notifications from BTCPay Server.
+ * On InvoiceSettled (fully paid): mark order completed, send download link.
+ *
+ * Note: this route must be excluded from CSRF middleware (webhook caller has no
+ * session cookie). Server.js already excludes /api/crypto/btcpay/webhook.
+ */
+router.post('/btcpay/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const signature = req.headers['btcpay-sig1'] || '';
+
+    // Validate HMAC signature
+    if (!btcpayService.verifyWebhookSignature(req.body, signature)) {
+        console.warn('BTCPay webhook: invalid signature');
+        return res.status(400).json({ error: 'Invalid signature' });
+    }
+
+    let event;
+    try {
+        event = JSON.parse(req.body.toString());
+    } catch (parseErr) {
+        return res.status(400).json({ error: 'Invalid JSON payload' });
+    }
+
+    // We only care about settled invoices
+    if (event.type !== 'InvoiceSettled') {
+        return res.json({ received: true });
+    }
+
+    try {
+        const invoiceId = event.invoiceId || (event.invoice && event.invoice.id);
+        if (!invoiceId) return res.json({ received: true });
+
+        // Find order by btcpayInvoiceId in metadata
+        const order = await dbGet(
+            `SELECT order_id, customer_email, book_id, book_title, book_author, price FROM orders
+             WHERE json_extract(metadata, '$.btcpayInvoiceId') = ?`,
+            [invoiceId]
+        );
+
+        if (!order) {
+            console.warn(`BTCPay webhook: no order found for invoiceId ${invoiceId}`);
+            return res.json({ received: true });
+        }
+
+        // Mark order as completed
+        await dbRun(
+            `UPDATE orders SET status = 'completed', payment_status = 'paid', updated_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
+            [order.order_id]
+        );
+
+        // Generate download token
+        try {
+            const tokenResp = await axios.post(
+                `${process.env.PUBLIC_URL || 'http://localhost:3001'}/api/download/generate-token`,
+                { bookId: order.book_id, orderId: order.order_id, userEmail: order.customer_email }
+            );
+            if (tokenResp.data && tokenResp.data.success) {
+                await emailService.sendDownloadEmail({
+                    userEmail: order.customer_email,
+                    bookTitle: order.book_title,
+                    bookAuthor: order.book_author || 'Unknown Author',
+                    downloadUrl: tokenResp.data.downloadUrl,
+                    orderId: order.order_id,
+                    expiresIn: '24 hours',
+                    maxDownloads: 5,
+                });
+                console.log(`✅ BTCPay: order ${order.order_id} fulfilled, download sent to ${order.customer_email}`);
+            }
+        } catch (fulfillErr) {
+            console.error('BTCPay webhook: fulfillment error:', fulfillErr.message);
+        }
+    } catch (err) {
+        console.error('BTCPay webhook processing error:', err);
+        return res.status(500).json({ error: 'Internal error' });
+    }
+
+    res.json({ received: true });
 });
 
 module.exports = router;
