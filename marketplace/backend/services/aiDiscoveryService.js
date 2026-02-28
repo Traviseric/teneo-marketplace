@@ -15,6 +15,10 @@ class AIDiscoveryService {
         this.openai = null;
         this.embeddingModel = 'text-embedding-3-small';
         this.embeddingDimensions = 1536;
+
+        if (!process.env.OPENAI_API_KEY) {
+            console.warn('[AI Discovery] OPENAI_API_KEY not set — using keyword search fallback. Set the key to enable semantic search.');
+        }
     }
 
     /**
@@ -292,6 +296,8 @@ class AIDiscoveryService {
         }
 
         try {
+            const searchStart = Date.now();
+
             // Generate embedding for search query
             const queryEmbedding = await this.generateQueryEmbedding(query);
 
@@ -353,7 +359,8 @@ class AIDiscoveryService {
                 .slice(0, limit);
 
             // Log search for analytics
-            await this.logSearch(query, filtered);
+            const duration = Date.now() - searchStart;
+            await this.logSearch(query, filtered, duration);
 
             return filtered;
 
@@ -586,8 +593,9 @@ Return ONLY the JSON object, no other text.`;
      * Log search for analytics
      * @param {string} query - Search query
      * @param {Array} results - Search results
+     * @param {number} durationMs - Actual search duration in milliseconds
      */
-    async logSearch(query, results) {
+    async logSearch(query, results, durationMs = 0) {
         try {
             await db.run(`
                 INSERT INTO semantic_search_log
@@ -597,7 +605,7 @@ Return ONLY the JSON object, no other text.`;
                 query,
                 results.length,
                 results[0]?.bookId || null,
-                0 // Duration tracked elsewhere
+                durationMs
             ]);
         } catch (error) {
             console.error('Error logging search:', error);

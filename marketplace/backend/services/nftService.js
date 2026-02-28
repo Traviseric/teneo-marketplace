@@ -51,6 +51,10 @@ class NFTService {
         this.pinataApiKey = process.env.PINATA_API_KEY;
         this.pinataSecretKey = process.env.PINATA_SECRET_KEY;
         this.pinataJWT = process.env.PINATA_JWT;
+
+        if (!process.env.PINATA_JWT) {
+            console.warn('[NFT Service] PINATA_JWT not set — IPFS pinning disabled.');
+        }
     }
 
     /**
