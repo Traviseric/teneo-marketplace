@@ -6,38 +6,66 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
 
-// Funnel service (will create next)
-// const funnelService = require('../services/funnelService');
+// Shared database connection
+const db = require('../../../marketplace/backend/database/database');
+const { authenticateAdmin } = require('../../../marketplace/backend/middleware/auth');
+
+// DB helpers
+function dbRun(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function(err) { if (err) reject(err); else resolve(this); });
+    });
+}
+function dbGet(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.get(sql, params, (err, row) => { if (err) reject(err); else resolve(row); });
+    });
+}
+function dbAll(sql, params) {
+    return new Promise((resolve, reject) => {
+        db.all(sql, params, (err, rows) => { if (err) reject(err); else resolve(rows); });
+    });
+}
 
 /**
  * Save funnel draft
  * POST /api/funnels/save-draft
  * Body: { userId, funnelName, template, variables, context }
+ * Auth: admin token required
  */
-router.post('/save-draft', async (req, res) => {
+router.post('/save-draft', authenticateAdmin, async (req, res) => {
   try {
     const { userId, funnelName, template, variables, context } = req.body;
 
-    // Validate
     if (!userId || !funnelName) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Missing required fields: userId and funnelName' });
     }
 
-    // For now, just return success
-    // TODO: Integrate with database when funnelService is ready
-    const draft = {
-      id: Date.now(),
-      userId,
-      funnelName,
-      template,
-      variables,
-      context,
-      updatedAt: new Date().toISOString()
-    };
+    const variablesJson = typeof variables === 'string' ? variables : JSON.stringify(variables || {});
+    const contextJson = typeof context === 'string' ? context : JSON.stringify(context || {});
+
+    const result = await dbRun(
+      `INSERT INTO funnel_drafts (user_id, funnel_name, template, variables, context, updated_at)
+       VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+       ON CONFLICT(user_id, funnel_name)
+       DO UPDATE SET template = excluded.template, variables = excluded.variables,
+                     context = excluded.context, updated_at = CURRENT_TIMESTAMP`,
+      [userId, funnelName, template || '', variablesJson, contextJson]
+    );
+
+    const saved = await dbGet('SELECT * FROM funnel_drafts WHERE user_id = ? AND funnel_name = ?', [userId, funnelName]);
 
     res.json({
       success: true,
-      draft: draft,
+      draft: {
+        id: saved.id,
+        userId: saved.user_id,
+        funnelName: saved.funnel_name,
+        template: saved.template,
+        variables: safeParseJson(saved.variables),
+        context: safeParseJson(saved.context),
+        updatedAt: saved.updated_at
+      },
       message: 'Draft saved successfully'
     });
   } catch (error) {
@@ -47,23 +75,46 @@ router.post('/save-draft', async (req, res) => {
 });
 
 /**
- * Get user's draft funnel
- * GET /api/funnels/get-draft?userId=1
+ * Get user's draft funnel(s)
+ * GET /api/funnels/get-draft?userId=1[&funnelName=My+Funnel]
  */
 router.get('/get-draft', async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId, funnelName } = req.query;
 
     if (!userId) {
       return res.status(400).json({ error: 'Missing userId' });
     }
 
-    // TODO: Get from database when ready
-    // For now, return null (frontend will use localStorage)
+    let draft;
+    if (funnelName) {
+      draft = await dbGet(
+        'SELECT * FROM funnel_drafts WHERE user_id = ? AND funnel_name = ?',
+        [userId, funnelName]
+      );
+    } else {
+      // Return most recently updated draft for this user
+      draft = await dbGet(
+        'SELECT * FROM funnel_drafts WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1',
+        [userId]
+      );
+    }
+
+    if (!draft) {
+      return res.json({ success: true, draft: null, message: 'No draft found' });
+    }
+
     res.json({
       success: true,
-      draft: null,
-      message: 'No draft found (using localStorage fallback)'
+      draft: {
+        id: draft.id,
+        userId: draft.user_id,
+        funnelName: draft.funnel_name,
+        template: draft.template,
+        variables: safeParseJson(draft.variables),
+        context: safeParseJson(draft.context),
+        updatedAt: draft.updated_at
+      }
     });
   } catch (error) {
     console.error('Get draft error:', error);
@@ -75,8 +126,9 @@ router.get('/get-draft', async (req, res) => {
  * Deploy funnel to production
  * POST /api/funnels/deploy
  * Body: { userId, funnelName, template, variables }
+ * Auth: admin token required
  */
-router.post('/deploy', async (req, res) => {
+router.post('/deploy', authenticateAdmin, async (req, res) => {
   try {
     const { userId, funnelName, template, variables } = req.body;
 
@@ -111,6 +163,23 @@ router.post('/deploy', async (req, res) => {
       path.join(funnelDir, 'funnel.json'),
       JSON.stringify(metadata, null, 2)
     );
+
+    // Track deployment in database
+    try {
+      // Check if a funnel record with this slug already exists
+      const existing = await dbGet('SELECT id FROM funnels WHERE slug = ? AND user_id = ?', [slug, userId]);
+      if (existing) {
+        await dbRun('UPDATE funnels SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', ['published', existing.id]);
+      } else {
+        await dbRun(
+          'INSERT INTO funnels (brand_id, name, slug, status, user_id) VALUES (?, ?, ?, ?, ?)',
+          [variables.brandId || 'default', funnelName, slug, 'published', userId]
+        );
+      }
+    } catch (dbErr) {
+      // Non-fatal: log but don't fail the deploy
+      console.warn('Failed to track funnel in DB:', dbErr.message);
+    }
 
     // Build URL
     const baseUrl = process.env.SITE_URL || 'http://localhost:3001';
@@ -170,48 +239,23 @@ router.get('/list', async (req, res) => {
       return res.status(400).json({ error: 'Missing userId' });
     }
 
-    // TODO: Get from database
-    // For now, scan funnels directory
-    const funnelsDir = path.join(__dirname, '..', '..', '..', 'marketplace', 'frontend', 'funnels');
+    // Query database for this user's funnels
+    const dbFunnels = await dbAll(
+      'SELECT * FROM funnels WHERE user_id = ? ORDER BY updated_at DESC',
+      [userId]
+    );
 
-    try {
-      const dirs = await fs.readdir(funnelsDir);
-      const funnels = [];
+    const baseUrl = process.env.SITE_URL || 'http://localhost:3001';
+    const funnels = dbFunnels.map(f => ({
+      id: f.id,
+      slug: f.slug,
+      name: f.name,
+      status: f.status,
+      updatedAt: f.updated_at,
+      url: `${baseUrl}/funnels/${f.slug}`
+    }));
 
-      for (const dir of dirs) {
-        const metadataPath = path.join(funnelsDir, dir, 'funnel.json');
-        try {
-          const metadata = await fs.readFile(metadataPath, 'utf-8');
-          const funnel = JSON.parse(metadata);
-
-          // Only return this user's funnels
-          if (funnel.userId == userId) {
-            funnels.push({
-              slug: funnel.slug,
-              name: funnel.funnelName,
-              deployedAt: funnel.deployedAt,
-              url: `${process.env.SITE_URL || 'http://localhost:3001'}/funnels/${funnel.slug}`
-            });
-          }
-        } catch (err) {
-          // Skip funnels without metadata
-          continue;
-        }
-      }
-
-      res.json({
-        success: true,
-        funnels: funnels,
-        count: funnels.length
-      });
-    } catch (error) {
-      // Funnels directory doesn't exist yet
-      res.json({
-        success: true,
-        funnels: [],
-        count: 0
-      });
-    }
+    res.json({ success: true, funnels, count: funnels.length });
   } catch (error) {
     console.error('List funnels error:', error);
     res.status(500).json({ error: 'Failed to list funnels' });
@@ -258,6 +302,12 @@ router.delete('/:slug', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete funnel' });
   }
 });
+
+// Helper: Safe JSON parse (returns original value on failure)
+function safeParseJson(str) {
+  if (!str || typeof str !== 'string') return str;
+  try { return JSON.parse(str); } catch (e) { return str; }
+}
 
 // Helper: Sanitize slug
 function sanitizeSlug(str) {

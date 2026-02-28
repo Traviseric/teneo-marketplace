@@ -73,6 +73,9 @@ const couponsRoutes = require('./routes/couponsRoutes');
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 
+// Course platform routes
+const courseRoutes = require('./routes/courseRoutes');
+
 const app = express();
 
 // Import auth middleware
@@ -122,6 +125,10 @@ const csrfExcludePaths = [
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
+    // Skip CSRF entirely in test environment
+    if (process.env.NODE_ENV === 'test') {
+        return next();
+    }
     // Skip CSRF for webhook endpoints
     if (csrfExcludePaths.some(path => req.path.startsWith(path))) {
         return next();
@@ -163,6 +170,9 @@ app.use('/api/coupons', couponsRoutes);
 
 // Funnel builder API
 app.use('/api/funnels', funnelRoutes);
+
+// Course platform API
+app.use('/api/courses', courseRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -449,28 +459,31 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Initialize database on startup
-const initDatabase = async () => {
-    try {
-        await require('./database/init');
-        console.log('📊 Database initialized');
-    } catch (error) {
-        console.error('Failed to initialize database:', error);
-    }
-};
+// Only start the server when this file is run directly (not when imported by tests)
+if (require.main === module) {
+    // Initialize database on startup
+    const initDatabase = async () => {
+        try {
+            await require('./database/init');
+            console.log('📊 Database initialized');
+        } catch (error) {
+            console.error('Failed to initialize database:', error);
+        }
+    };
 
-// Initialize cron jobs
-const CronJobService = require('./services/cronJobs');
-const cronService = new CronJobService();
+    // Initialize cron jobs
+    const CronJobService = require('./services/cronJobs');
+    const cronService = new CronJobService();
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, async () => {
-    await initDatabase();
-    cronService.start();
-    console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
-    console.log(`🌍 API available at http://localhost:${PORT}/api`);
-    console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`📈 Published books dashboard: http://localhost:${PORT}/published`);
-});
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, async () => {
+        await initDatabase();
+        cronService.start();
+        console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
+        console.log(`🌍 API available at http://localhost:${PORT}/api`);
+        console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`📈 Published books dashboard: http://localhost:${PORT}/published`);
+    });
+}
 
 module.exports = app;

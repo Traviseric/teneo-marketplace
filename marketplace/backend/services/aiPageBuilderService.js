@@ -13,11 +13,31 @@
 const fs = require('fs');
 const path = require('path');
 
+// Simple in-memory cache for LLM responses (keyed by prompt)
+const intentCache = new Map();
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
 class AIPageBuilder {
   constructor(db) {
     this.db = db;
     this.componentsPath = path.join(__dirname, '../../frontend/components-library');
     this.manifest = require('../../frontend/components-library/COMPONENT_MANIFEST.json');
+    this._openai = null;
+  }
+
+  /**
+   * Lazy-initialize OpenAI client (only if API key is configured)
+   */
+  _getOpenAI() {
+    if (this._openai) return this._openai;
+    if (!process.env.OPENAI_API_KEY) return null;
+    try {
+      const OpenAI = require('openai');
+      this._openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    } catch (e) {
+      console.warn('⚠️  openai package not installed — AI page builder using keyword fallback');
+    }
+    return this._openai;
   }
 
   /**
@@ -33,7 +53,7 @@ class AIPageBuilder {
     console.log(`🤖 AI Page Builder: "${prompt}"`);
 
     // 1. Parse intent from natural language
-    const intent = this.parseIntent(prompt, data);
+    const intent = await this.parseIntent(prompt, data);
     console.log('📋 Intent:', intent);
 
     // 2. Select best components based on intent
@@ -68,9 +88,66 @@ class AIPageBuilder {
   }
 
   /**
-   * Parse natural language into structured intent
+   * Parse natural language into structured intent.
+   * Uses OpenAI when OPENAI_API_KEY is configured; falls back to keyword matching.
    */
-  parseIntent(prompt, data) {
+  async parseIntent(prompt, data) {
+    // Check cache first
+    const cacheKey = prompt + '|' + (data.type || '');
+    const cached = intentCache.get(cacheKey);
+    if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+      console.log('💾 Using cached intent for prompt');
+      return cached.intent;
+    }
+
+    const openai = this._getOpenAI();
+    if (openai) {
+      try {
+        const systemPrompt = `You are a page builder assistant. Analyze the user's description and return a JSON object with these fields:
+- pageType: one of "sales-page", "checkout", "upsell", "thank-you"
+- style: one of "professional", "modern", "luxury", "friendly"
+- tone: one of "authoritative", "casual", "sophisticated"
+- urgency: boolean
+- socialProof: boolean
+- productType: one of "book", "course", "service", or null
+- features: array containing any of "email-capture", "upsell", "countdown", "reviews", "video"`;
+
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt + (data.type ? ` (product type: ${data.type})` : '') }
+          ],
+          response_format: { type: 'json_object' },
+          max_tokens: 256
+        });
+
+        const parsed = JSON.parse(completion.choices[0].message.content);
+        const intent = {
+          pageType: parsed.pageType || 'sales-page',
+          style: parsed.style || 'professional',
+          features: Array.isArray(parsed.features) ? parsed.features : [],
+          tone: parsed.tone || 'authoritative',
+          urgency: !!parsed.urgency,
+          socialProof: parsed.socialProof !== false,
+          productType: parsed.productType || (data.type === 'book' ? 'book' : undefined)
+        };
+
+        intentCache.set(cacheKey, { intent, ts: Date.now() });
+        return intent;
+      } catch (error) {
+        console.warn('⚠️  OpenAI parseIntent failed, falling back to keyword matching:', error.message);
+      }
+    }
+
+    // Keyword-matching fallback
+    return this._parseIntentKeywords(prompt, data);
+  }
+
+  /**
+   * Keyword-based intent parsing (fallback when OpenAI is unavailable)
+   */
+  _parseIntentKeywords(prompt, data) {
     const intent = {
       pageType: 'sales-page',
       style: 'professional',

@@ -8,6 +8,8 @@ const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
 const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
 const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-tracker.sql');
 const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
+const coursesSchemaPath = path.join(__dirname, 'schema-courses.sql');
+const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -30,6 +32,8 @@ const luluSchema = fs.existsSync(luluSchemaPath) ? fs.readFileSync(luluSchemaPat
 const aiDiscoverySchema = fs.existsSync(aiDiscoverySchemaPath) ? fs.readFileSync(aiDiscoverySchemaPath, 'utf8') : '';
 const censorshipTrackerSchema = fs.existsSync(censorshipTrackerSchemaPath) ? fs.readFileSync(censorshipTrackerSchemaPath, 'utf8') : '';
 const nftSchema = fs.existsSync(nftSchemaPath) ? fs.readFileSync(nftSchemaPath, 'utf8') : '';
+const coursesSchema = fs.existsSync(coursesSchemaPath) ? fs.readFileSync(coursesSchemaPath, 'utf8') : '';
+const funnelsSchema = fs.existsSync(funnelsSchemaPath) ? fs.readFileSync(funnelsSchemaPath, 'utf8') : '';
 
 db.serialize(() => {
     // Execute main schema
@@ -81,6 +85,28 @@ db.serialize(() => {
                 console.error('Error creating NFT schema:', err);
             } else {
                 console.log('✅ NFT schema created successfully');
+            }
+        });
+    }
+
+    // Execute Courses schema if exists
+    if (coursesSchema) {
+        db.exec(coursesSchema, (err) => {
+            if (err) {
+                console.error('Error creating Courses schema:', err);
+            } else {
+                console.log('✅ Courses schema created successfully');
+            }
+        });
+    }
+
+    // Execute Funnels schema if exists
+    if (funnelsSchema) {
+        db.exec(funnelsSchema, (err) => {
+            if (err) {
+                console.error('Error creating Funnels schema:', err);
+            } else {
+                console.log('✅ Funnels schema created successfully');
             }
         });
     }
