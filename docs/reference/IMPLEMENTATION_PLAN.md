@@ -1,61 +1,86 @@
 # teneo-marketplace: Implementation Plan
 
+> **Note:** Strategic roadmap, phased priorities, and architecture decisions are now in **[docs/ROADMAP.md](../ROADMAP.md)**, informed by Gemini Deep Research outputs 1-6. This file retains the technical implementation scope.
+
 ## Mission Statement
 
-**Build focused, portable infrastructure for book marketing:**
-- Course platform for teaching funnel frameworks
-- Template-based funnel builder
-- Integration layer for external services (email, payment, analytics)
-- Plugin system for extensibility
-- Federation network for distributed commerce
+**The open source creator platform with crypto payments.** Replace ClickFunnels, Gumroad, Teachable, Kajabi, and Podia with:
+- $0 platform fees (open source, self-hosted)
+- $0 transaction fees via Bitcoin/Lightning/ecash payments (ArxMint)
+- Nostr identity (NIP-07/NIP-98) — no platform owns your account
+- Can't be deplatformed — self-hosted with decentralized payments
+- Dual-mode: Stripe for fiat, ArxMint for crypto
 
-**Philosophy**: Build what's unique, integrate what exists, keep it lean.
+**Part of a circular creator economy:** ArxMint (payment rails) + Teneo Marketplace (storefront) + Nostr (identity). Creators sell, buyers pay with ecash from community mints, money circulates.
+
+**Philosophy**: Build the switching baseline first (checkout conversion, content protection, affiliates), then layer crypto differentiators on a solid foundation. Build what's unique, integrate what exists.
 
 ---
 
-## Project Scope (Final)
+## Project Scope
 
 ### ✅ What We Build
 
-**1. Course Platform**
-- Video/content player
-- Progress tracking
-- Quiz engine
-- Certificate generation
+**1. Creator Storefront**
+- Digital products (books, downloads, templates, software)
+- Cart, checkout, order management
+- Coupons, order bumps, post-purchase upsells, cart abandonment recovery
+- Content protection (PDF stamping, watermarks, license keys, versioning)
+- Reviews and ratings
+
+**2. Course Platform**
+- Video/content player with progress tracking
+- Quiz engine and certificate generation
+- Drip content and cohort delivery
+- Discussion forums (Nostr-aligned federated community)
 - Markdown lesson support
 
-**2. Funnel Builder**
-- 4 proven templates (Gated, Bundle, Magnet, Direct)
-- Manual variable entry
-- Live preview
-- Export (HTML, ZIP, Deploy)
-- Copy-paste AI prompts (optional helpers)
+**3. Email Marketing**
+- Built-in list management and segmentation
+- Automation sequences (welcome, cart abandonment, post-purchase)
+- Open/click tracking
+- SMTP + Resend adapters
 
-**3. Integration Layer**
-- Email service adapters (ConvertKit, Mailchimp, etc.)
-- Payment processor adapters (Stripe, PayPal)
-- Analytics tracking (GA4)
-- Storage adapters (Local, S3, Cloudflare R2)
+**4. Funnel Builder**
+- Landing pages and sales funnels
+- Conversion tracking
+- Templates (Gated, Bundle, Magnet, Direct, VSL)
 
-**4. Plugin System**
-- Plugin manifest spec
-- Hook points in UI
-- Plugin manager (load/execute)
-- Plugin marketplace directory
+**5. Affiliate System**
+- Self-serve affiliate signup
+- Tracking links, commission calculation
+- Automated payouts (Stripe + Lightning)
+- Anti-fraud controls
 
-**5. Federation Network**
-- Node registry
-- Cross-node discovery
-- Revenue sharing protocol
-- Distributed catalog
+**6. Payment Processing**
+- Stripe (fiat — cards, BNPL)
+- ArxMint (crypto — Lightning invoices, ecash tokens via Cashu/Fedimint)
+- Tax calculation workflow (not MoR — creators are sellers)
+
+**7. Authentication**
+- Local magic links (zero dependencies)
+- Teneo Auth SSO (OAuth 2.0 + PKCE)
+- Nostr (NIP-07 browser extension signing)
+
+**8. Plugin System**
+- Plugin manifest spec and hook points
+- Plugin manager (load/execute/sandbox)
+- Premium theme marketplace
+
+**9. Federation Network**
+- NIP-99 product listings (kind 30402)
+- Centralized discovery index (→ multiple competing indexes later)
+- Two-rate cross-store referral system (15-20% new customer / 0-5% repeat)
+- Lightning-based instant affiliate settlement
+- Circular economy metrics tracking
 
 ### ❌ What We Don't Build
 
-**Email Marketing Platform** → Use ConvertKit/Mailchimp APIs
-**Payment Processor** → Use Stripe/PayPal
-**Video Hosting CDN** → Use Vimeo/YouTube/S3
-**CRM System** → Use HubSpot/Salesforce APIs
-**Advanced Analytics** → Use Google Analytics
+**Merchant of Record** → Creators are sellers; we provide tax workflow tools
+**Video Hosting CDN** → Use Vimeo/YouTube/S3/Cloudflare R2
+**CRM System** → Use HubSpot/Salesforce APIs (or build later)
+**Native Mobile App** → PWA first; native app is Phase 5
+**Full Marketplace Ranking** → Directory-level discovery first; ranking after supply exists
 
 ---
 

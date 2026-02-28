@@ -1,7 +1,10 @@
 # TENEO Marketplace - Status & TODO
 
-**Updated:** November 17, 2025
+**Updated:** February 28, 2026
 **Status:** 🟡 **Core functional, Auth complete, Frontend integration needed**
+
+> **Strategic roadmap:** See **[docs/ROADMAP.md](../ROADMAP.md)** for research-informed priorities.
+> Priorities in this file updated to match Gemini Deep Research findings (Feb 2026).
 
 ---
 
@@ -296,14 +299,92 @@
 **Status:** Documented, not implemented
 
 **Needs:**
-- Affiliate registration
-- Tracking links
-- Commission calculation
-- Affiliate dashboard
-- Payout system
+- Self-serve affiliate signup
+- Unique tracking links per affiliate
+- Commission configuration per product (% or fixed)
+- Real-time affiliate dashboard (clicks, conversions, earnings)
+- Automated payouts (Stripe + optional Lightning for crypto affiliates)
+- Anti-fraud: one-time-use codes, payout delays past refund window, per-buyer caps
 
 **Time Estimate:** 12-16 hours
-**Priority:** LOW (post-launch)
+**Priority:** ~~LOW~~ → **HIGH** (Research #3: non-negotiable for creators with 50k+ students)
+
+---
+
+### **7. Checkout Conversion Stack** ❌ **[NEW — P0]**
+
+**Status:** Not implemented. Research #3 identified this as the #1 blocker for creator switching.
+
+**Needs:**
+- Coupons & discount codes (percentage, fixed, time-limited, usage limits)
+- Order bumps (pre-checkout "add this for $X")
+- Post-purchase upsells (one-click offers after payment)
+- Cart abandonment recovery (automated email sequences at 1h/24h/72h)
+
+**Time Estimate:** 16-20 hours
+**Priority:** **CRITICAL** — standard on every incumbent; blocks switching
+
+---
+
+### **8. Content Protection** ❌ **[NEW — P0]**
+
+**Status:** Not implemented. Research #3: cited as "mandatory" by Gumroad sellers.
+
+**Needs:**
+- PDF stamping (buyer email/name watermarked on download)
+- Per-buyer watermarking for images
+- License key generation and validation
+- File versioning (update products, buyers get latest)
+
+**Time Estimate:** 10-14 hours
+**Priority:** **CRITICAL** — primary reason Gumroad sellers say they can't leave
+
+---
+
+### **9. ArxMint Payment Integration** ❌ **[NEW]**
+
+**Status:** Not implemented. Crypto checkout endpoints exist but not connected to ArxMint.
+
+**Needs:**
+- Lightning invoice generation at checkout via ArxMint
+- Ecash token acceptance (Cashu/Fedimint)
+- Payment confirmation webhook handling
+- Creator payout dashboard (sats earned, settlement history)
+- Dual checkout UX (Stripe + crypto as parallel options)
+
+**Time Estimate:** 20-24 hours
+**Priority:** **HIGH** — the core differentiator, built after switching baseline (Phases 1-2)
+
+---
+
+### **10. Nostr Authentication** ❌ **[NEW]**
+
+**Status:** Not implemented. Already built in ArxMint (NIP-07 + NIP-98).
+
+**Needs:**
+- NIP-07 `window.nostr` integration (Alby, nos2x browser extensions)
+- NIP-98 HTTP auth for API requests
+- NIP-05 DNS verification for merchant credibility
+- Session bridging with existing auth system
+
+**Time Estimate:** 8-12 hours
+**Priority:** **MEDIUM** — ships with crypto differentiators (Phase 3)
+
+---
+
+### **11. Tax Workflow** ❌ **[NEW — P1]**
+
+**Status:** Not implemented. Research #3: tax handling is decisive for switching but MoR is the hardest moat — don't try to replicate.
+
+**Needs:**
+- Tax calculation integration (TaxJar/Avalara or manual rates)
+- Tax-inclusive pricing option
+- Invoice generation with tax line items
+- Tax export for creator's accountant (CSV/PDF)
+- EU VAT validation (VIES check)
+
+**Time Estimate:** 12-16 hours
+**Priority:** **HIGH** — creator-facing workflow, not Merchant of Record
 
 ---
 
@@ -330,19 +411,21 @@
 
 ---
 
-## 📋 Recommended Build Order
+## 📋 Recommended Build Order (Research-Informed)
 
-### **Phase 1: MVP Launch** (6-8 hours)
+> Updated Feb 2026 based on Gemini Deep Research findings. Full roadmap: [docs/ROADMAP.md](../ROADMAP.md)
+
+### **Phase 0: MVP Launch** (6-8 hours)
 
 Priority: **CRITICAL**
 
-1. ✅ **Auth integration** (6 hours)
+1. **Auth integration** (6 hours)
    - Create login.html, register.html
    - Update frontend auth.js
    - Test both auth flows
    - Configure email service
 
-2. ✅ **Integration testing** (2 hours)
+2. **Integration testing** (2 hours)
    - Test full purchase flow (Stripe)
    - Test crypto checkout
    - Test download delivery
@@ -352,52 +435,69 @@ Priority: **CRITICAL**
 
 ---
 
-### **Phase 2: Conversion Optimization** (12-16 hours)
+### **Phase 1: Checkout Conversion Stack** (26-34 hours)
+
+Priority: **CRITICAL** — Research #3: blocks all creator switching
+
+1. **Coupons & discount codes** (6 hours)
+2. **Order bumps** (4 hours)
+3. **Post-purchase upsells** (6 hours)
+4. **Cart abandonment recovery** (6 hours)
+5. **Content protection** (PDF stamping, watermarks, license keys, versioning) (10 hours)
+
+**Deliverable:** Feature parity on checkout conversion — creators can now credibly switch
+
+---
+
+### **Phase 2: Revenue & Distribution** (40-48 hours)
 
 Priority: **HIGH**
 
-1. **Recommendation engine** (8 hours)
-   - "Also bought" carousel
-   - Category recommendations
-   - Bundle suggestions
+1. **Affiliate program** (16 hours) — Research #3: non-negotiable
+2. **Tax workflow** (12 hours) — calculation, invoicing, export (NOT MoR)
+3. **Migration tooling** (8 hours) — Gumroad import, "Switch from X" pages
+4. **Managed hosting infrastructure** (12 hours) — first revenue stream
 
-2. **Advanced search** (6 hours)
-   - Filters (category, price, format)
-   - Sort options
-   - Search autocomplete
-
-3. **Product page optimization** (4 hours)
-   - Better book detail pages
-   - Preview functionality
-   - Multiple format selection
-
-**Deliverable:** Higher conversion rates, better UX
+**Deliverable:** Creator growth tools + our own revenue
 
 ---
 
-### **Phase 3: Advanced Features** (20-24 hours)
+### **Phase 3: Crypto Differentiators** (28-36 hours)
 
-Priority: **MEDIUM**
+Priority: **HIGH** — the unique value prop, built on Phase 1-2 foundation
 
-1. **Review system** (8 hours)
-2. **Wishlist** (4 hours)
-3. **Course integration** (8 hours)
-4. **Affiliate system** (12 hours)
+1. **ArxMint payment integration** (20 hours) — Lightning + ecash checkout
+2. **Nostr auth** (8 hours) — NIP-07 + NIP-98 + NIP-05
+3. **L402 paywalls** (8 hours) — micro-content pay-per-view
 
-**Deliverable:** Feature-complete marketplace
+**Deliverable:** No incumbent offers this — Bitcoin/Lightning/ecash + Nostr identity
 
 ---
 
-### **Phase 4: Resilience** (12-16 hours)
+### **Phase 4: Federation & Circular Economy** (32-40 hours)
+
+Priority: **MEDIUM** — network effects after core is solid
+
+1. **NIP-99 product listings** (8 hours)
+2. **Discovery index** (12 hours) — centralized first, federate later
+3. **Cross-store referral system** (12 hours) — two-rate model + Lightning payouts
+4. **Circular economy metrics** (8 hours) — velocity, recirculation, cross-store rate
+
+**Deliverable:** Independent stores discover each other, money circulates
+
+---
+
+### **Phase 5: Scale & Polish** (ongoing)
 
 Priority: **LOW** (post-launch)
 
-1. **Health monitoring** (8 hours)
-2. **Automatic failover** (6 hours)
-3. **Tor integration** (4 hours)
-4. **IPFS hosting** (6 hours)
-
-**Deliverable:** Censorship-resistant infrastructure
+1. **Premium themes marketplace** — revenue
+2. **Memberships & subscriptions**
+3. **Community features** (Nostr-aligned)
+4. **PWA for mobile engagement**
+5. **Integrations** (webhooks, API, Zapier)
+6. **Advanced search & recommendations**
+7. **Review system**
 
 ---
 
