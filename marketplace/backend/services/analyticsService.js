@@ -419,6 +419,63 @@ class AnalyticsService {
   }
 
   // ================================================
+  // CONVERSION ANALYTICS
+  // ================================================
+
+  /**
+   * Get order conversion rate from real orders data.
+   * Conversion = orders with payment_status='paid' / total orders * 100
+   */
+  async getConversionRate(days = 30) {
+    const result = await this.db.get(
+      `SELECT
+         COUNT(*) AS total_orders,
+         COUNT(CASE WHEN payment_status = 'paid' THEN 1 END) AS paid_orders
+       FROM orders
+       WHERE created_at >= datetime('now', '-' || ? || ' days')`,
+      [days]
+    );
+
+    if (!result || result.total_orders === 0) {
+      return { rate: 0, totalOrders: 0, paidOrders: 0, period: `Last ${days} days` };
+    }
+
+    const rate = (result.paid_orders / result.total_orders) * 100;
+    return {
+      rate: Math.round(rate * 10) / 10,
+      totalOrders: result.total_orders,
+      paidOrders: result.paid_orders,
+      period: `Last ${days} days`
+    };
+  }
+
+  /**
+   * Get revenue metrics directly from orders table (authoritative source).
+   * Supplements analytics_events-based revenue with guaranteed-accurate totals.
+   */
+  async getOrderRevenue(days = 30) {
+    const result = await this.db.get(
+      `SELECT
+         COUNT(*) AS total_orders,
+         SUM(price) AS total_revenue,
+         AVG(price) AS avg_order_value,
+         COUNT(DISTINCT customer_email) AS unique_customers
+       FROM orders
+       WHERE payment_status = 'paid'
+         AND created_at >= datetime('now', '-' || ? || ' days')`,
+      [days]
+    );
+
+    return {
+      period: `Last ${days} days`,
+      totalOrders: result?.total_orders || 0,
+      totalRevenue: result?.total_revenue || 0,
+      avgOrderValue: result?.avg_order_value || 0,
+      uniqueCustomers: result?.unique_customers || 0
+    };
+  }
+
+  // ================================================
   // REVENUE ANALYTICS
   // ================================================
 
@@ -500,7 +557,8 @@ class AnalyticsService {
     );
 
     const emailStats = await this.getEmailCampaignStats(30);
-    const revenueStats = await this.getRevenueMetrics(30);
+    const revenueStats = await this.getOrderRevenue(30);
+    const conversionStats = await this.getConversionRate(30);
 
     const topSegments = await this.db.all(
       `SELECT s.name, COUNT(ss.subscriber_id) as count
@@ -528,8 +586,14 @@ class AnalyticsService {
       email: emailStats,
       revenue: {
         total_30_days: revenueStats.totalRevenue,
-        purchases_30_days: revenueStats.totalPurchases,
-        avg_order_value: revenueStats.avgOrderValue
+        purchases_30_days: revenueStats.totalOrders,
+        avg_order_value: revenueStats.avgOrderValue,
+        unique_customers_30_days: revenueStats.uniqueCustomers
+      },
+      conversion: {
+        rate: conversionStats.rate,
+        total_orders_30_days: conversionStats.totalOrders,
+        paid_orders_30_days: conversionStats.paidOrders
       },
       topSegments,
       recentActivity: recentEvents
