@@ -91,6 +91,7 @@ const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 
 // Course platform routes
 const courseRoutes = require('./routes/courseRoutes');
+const quizRoutes = require('./routes/quiz');
 
 const { safeMessage } = require('./utils/validate');
 const axios = require('axios');
@@ -214,6 +215,7 @@ app.use('/api/funnels', funnelRoutes);
 
 // Course platform API
 app.use('/api/courses', courseRoutes);
+app.use('/api/quizzes', quizRoutes);
 
 // Public certificate verification (separate mount so it doesn't need /api/courses prefix)
 const { getCertificate } = require('./services/certificateService');
