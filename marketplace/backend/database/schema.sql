@@ -459,8 +459,8 @@ CREATE TABLE IF NOT EXISTS publisher_rewards (
 CREATE INDEX IF NOT EXISTS idx_rewards_user_status ON publisher_rewards(user_id, status);
 
 -- Insert default milestones for new publishers
-INSERT OR IGNORE INTO publisher_milestones (user_id, milestone_type, milestone_category, target_value, reward_description, badge_id) 
-VALUES 
+INSERT OR IGNORE INTO publisher_milestones (user_id, milestone_type, milestone_category, target_value, reward_description, badge_id)
+VALUES
 ('default', '5', 'books_published', 5, '1 free book generation', 'bronze_book'),
 ('default', '10', 'books_published', 10, '2 free book generations', 'silver_stack'),
 ('default', '25', 'books_published', 25, '5 free book generations', 'gold_trophy'),
@@ -468,3 +468,25 @@ VALUES
 ('default', '100', 'books_published', 100, '20 free book generations', 'crown'),
 ('default', '250', 'books_published', 250, '50 free book generations', 'rocket'),
 ('default', '500', 'books_published', 500, '100 free book generations', 'star');
+
+-- Federation network revenue shares table
+-- Records the originating peer node that should receive a revenue share for each federated order
+CREATE TABLE IF NOT EXISTS network_revenue_shares (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id TEXT NOT NULL REFERENCES orders(order_id),
+    peer_node_id TEXT NOT NULL,
+    peer_node_url TEXT,
+    revenue_share_pct REAL NOT NULL DEFAULT 0.0,
+    revenue_share_amount REAL,
+    currency TEXT DEFAULT 'USD',
+    status TEXT NOT NULL DEFAULT 'pending',  -- pending | paid | failed
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    paid_at DATETIME
+);
+
+CREATE INDEX IF NOT EXISTS idx_network_revenue_shares_order_id
+    ON network_revenue_shares(order_id);
+CREATE INDEX IF NOT EXISTS idx_network_revenue_shares_peer_node_id
+    ON network_revenue_shares(peer_node_id);
+CREATE INDEX IF NOT EXISTS idx_network_revenue_shares_status
+    ON network_revenue_shares(status);
