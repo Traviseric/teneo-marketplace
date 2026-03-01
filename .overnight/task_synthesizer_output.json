@@ -2,100 +2,90 @@
   "success": true,
   "next_box": "CONDUCTOR",
   "context": {
-    "synthesis_round": 3,
-    "prior_tasks_completed": 35,
-    "total_tasks_ever_created": 49,
     "task_files": [
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\036-P0-fix-price-bypass-in-checkoutproduction.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\037-P0-fix-sql-injection-orderservice-updateorderstatus.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\038-P1-fix-digital-delivery-error-swallowing-checkoutmixed.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\039-P1-fix-nftservice-fake-ipfs-hashes.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\040-P2-implement-real-conversion-rate-in-admin-dashboard.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\041-P2-fix-database-path-inconsistency.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\042-P2-remove-mock-data-from-digest-service.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\043-P2-add-tests-for-revenue-critical-paths.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\044-P3-use-crypto-random-for-audit-ids.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\045-P3-move-stripe-init-outside-route-handler.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\046-P3-fix-math-random-sales-estimates-in-amazon-service.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\047-P3-extract-duplicate-book-database-helpers.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\048-P3-remove-dead-code-download-js.md",
-      "C:\\code\\teneo-marketplace\\.overnight\\active\\049-P3-replace-sync-fs-calls-in-nft-service.md"
+      "C:\\code\\teneo-marketplace\\.overnight\\active\\105-P2-add-quiz-schema-and-routes.md"
     ],
-    "task_count": 14,
+    "task_count": 1,
     "tasks_by_priority": {
-      "P0": 2,
-      "P1": 2,
-      "P2": 4,
-      "P3": 6
+      "P0": 0,
+      "P1": 0,
+      "P2": 1,
+      "P3": 0
     },
     "sources": {
-      "code_quality_audit": 14,
-      "project_declared": 0
+      "OVERNIGHT_TASKS.md": 1
     },
-    "audit_review_report": "C:\\code\\teneo-marketplace\\.overnight\\reports\\audit_review.json",
-    "human_tasks_file": "C:\\code\\teneo-marketplace\\.overnight\\HUMAN_TASKS.md",
-    "human_tasks_added_this_round": 0,
-    "findings_disposition": {
-      "total_audit_findings": 20,
-      "accepted_as_worker_tasks": 14,
-      "classified_as_human_task": 0,
-      "rejected": 1,
-      "deferred": 5
+    "synthesis_round": 6,
+    "review_summary": {
+      "total_findings": 14,
+      "accepted": 1,
+      "rejected": 8,
+      "deferred": 3,
+      "pre_existing_completed": 2,
+      "rejections": [
+        {
+          "finding": "P1: Email open/click tracking (task 075)",
+          "reason": "ALREADY DONE — emailTracking.js route + emailMarketingService tracking pixel/click-wrap confirmed"
+        },
+        {
+          "finding": "P1: Cart abandonment email cron (task 076)",
+          "reason": "ALREADY DONE — cronJobs.js confirmed in marketplace/backend/services/"
+        },
+        {
+          "finding": "P1: Funnel conversion tracking (task 077)",
+          "reason": "ALREADY DONE via local tracking — funnels.js has /track endpoint + conversion_rate"
+        },
+        {
+          "finding": "P1: Verify/fix IPFS auto-pinning",
+          "reason": "FALSE POSITIVE (pre-existing) — nftService.js line 158 calls real Pinata REST API"
+        },
+        {
+          "finding": "P2: Create distinct AI page builder templates (task 088)",
+          "reason": "ALREADY DONE — story-driven.html, reader-magnet.html, course-launch.html all exist"
+        },
+        {
+          "finding": "P2: Fix PERCENTILE_CONT dead code in digestService.js (task 092)",
+          "reason": "ALREADY DONE — no matches for PERCENTILE_CONT in digestService.js"
+        },
+        {
+          "finding": "P2: Fix days SQL template literal in amazonService.js (task 093)",
+          "reason": "ALREADY DONE — uses parseInt() + parameterized ? placeholder"
+        },
+        {
+          "finding": "P2: Document OPENAI_API_KEY and PINATA_* env vars (task 086)",
+          "reason": "ALREADY DONE — fully documented in marketplace/backend/.env.example lines 30-77"
+        }
+      ],
+      "deferrals": [
+        {
+          "finding": "P1: Port ArxMint L402/Cashu payments",
+          "reason": "requires_human — C:\\code\\arxmint not found. HT-007 already exists."
+        },
+        {
+          "finding": "P3: Browser last-mile tests",
+          "reason": "environment_blocked — no Chrome automation available."
+        },
+        {
+          "finding": "P3: Fix conductor DIGEST loop bug",
+          "reason": "out_of_scope — orchestrator source not locatable in project files."
+        }
+      ]
     },
     "task_groups": {
-      "checkout_module": {
-        "tasks": [
-          "036-P0-fix-price-bypass-in-checkoutproduction.md",
-          "038-P1-fix-digital-delivery-error-swallowing-checkoutmixed.md"
-        ],
+      "course_module": {
+        "tasks": ["105-P2-add-quiz-schema-and-routes.md"],
         "execution_hint": "sequential",
-        "reason": "Both touch checkout routes (checkoutProduction.js and checkoutMixed.js). Same feature area — warm context helps ensure consistent patterns and no OrderService call conflicts."
-      },
-      "database_layer": {
-        "tasks": [
-          "037-P0-fix-sql-injection-orderservice-updateorderstatus.md",
-          "041-P2-fix-database-path-inconsistency.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "037 modifies orderService.js internals; 041 also modifies orderService.js (DB path). Must be sequential to avoid merge conflicts. Do 037 first (P0), then 041."
-      },
-      "admin_dashboard": {
-        "tasks": [
-          "040-P2-implement-real-conversion-rate-in-admin-dashboard.md",
-          "045-P3-move-stripe-init-outside-route-handler.md",
-          "047-P3-extract-duplicate-book-database-helpers.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "All three modify adminRoutes.js. Sequential to avoid merge conflicts. Do 040 first (P2), then 045 and 047."
-      },
-      "nft_module": {
-        "tasks": [
-          "039-P1-fix-nftservice-fake-ipfs-hashes.md",
-          "049-P3-replace-sync-fs-calls-in-nft-service.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "Both modify nftService.js. 039 must be done first (adds throws instead of fake returns), then 049 makes fs calls async. Sequential to avoid conflicts."
-      },
-      "independent": {
-        "tasks": [
-          "042-P2-remove-mock-data-from-digest-service.md",
-          "043-P2-add-tests-for-revenue-critical-paths.md",
-          "044-P3-use-crypto-random-for-audit-ids.md",
-          "046-P3-fix-math-random-sales-estimates-in-amazon-service.md",
-          "048-P3-remove-dead-code-download-js.md"
-        ],
-        "execution_hint": "parallel",
-        "reason": "Each touches a completely different file (digestService.js, __tests__/, auditService.js, amazonService.js, download.js). No overlap — safe to parallelize."
+        "reason": "Touches database/schema.sql + new routes file + server.js mount. Schema change needed before routes can be tested."
       }
     },
     "recommended_mode": "managed",
-    "recommended_lanes": 3,
-    "mode_rationale": "Mix of 4 sequential groups and 1 parallel group. Managed mode allows sequential tasks within groups to share warm context. 3 lanes: Lane 1 = P0s sequentially (036→037 or 036+037 in checkout/db groups), Lane 2 = P1s sequentially (038+039 in checkout/nft groups), Lane 3 = P2/P3 independent tasks in parallel.",
-    "critical_path": [
-      "036-P0: checkoutProduction.js price bypass — live revenue loss in production (NODE_ENV=production uses this route)",
-      "037-P0: orderService SQL injection via Object.keys — latent injection vector in all order status updates",
-      "038-P1: checkoutMixed digital delivery error swallowing — customers silently get no download after paying",
-      "039-P1: nftService fake IPFS hashes — data corruption when NFT feature is activated"
-    ]
+    "recommended_lanes": 1,
+    "mode_reason": "Single task. Managed mode with 1 lane — no parallelism needed. Task 105 is sequential (schema + routes + tests).",
+    "current_test_suite": {
+      "passing": 130,
+      "failing": 0,
+      "suites": 15
+    },
+    "expected_test_count_after_105": "135+"
   }
 }

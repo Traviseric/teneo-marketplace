@@ -12,7 +12,7 @@ REM Use OAuth token for Pro subscription (env var only — no file swap to avoid
 set CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-REDACTED
 
 echo ========================================
-echo WORKER_002 BOX v2.0.0
+echo WORKER_002 BOX v2.1.0
 echo Using Pro subscription (OAuth)
 echo ========================================
 echo.

@@ -1,12 +1,12 @@
 {
   "lane": 2,
-  "status": "working",
+  "status": "done",
   "task_file": "C:\\code\\teneo-marketplace\\.overnight\\active",
   "tasks_total": 0,
-  "tasks_completed": 0,
+  "tasks_completed": 1,
   "tasks_blocked": 0,
   "commits": [],
-  "started_at": "2026-02-28T03:06:54.588370",
-  "updated_at": "2026-02-28T03:06:54.588464",
+  "started_at": "2026-02-28T19:01:17.561400",
+  "updated_at": "2026-02-28T19:05:44.321292",
   "error": null
 }

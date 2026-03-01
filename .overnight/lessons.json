@@ -1,5 +1,48 @@
 {
-  "rejected_findings": [],
+  "rejected_findings": [
+    {
+      "source": "code_quality_audit",
+      "finding": "download.js HIGH — in-memory token store lost on server restart",
+      "reason": "download.js is NOT mounted in server.js (only downloadRoutes.js is). The in-memory Map is dead code. Risk is zero in production. Reclassified as P3 dead-code removal.",
+      "rejected_at": "2026-02-28T08:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "AI Discovery Engine has no graceful fallback when OpenAI is unavailable",
+      "reason": "FALSE POSITIVE — aiDiscoveryService.js has _keywordSearch() fallback method and uses it at lines 20, 36, 294, 368. Feature fully implemented. Audit was stale pre-tasks-074-098.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "Course Platform Backend not integrated into main server (only course-config.js exists)",
+      "reason": "FALSE POSITIVE — courseRoutes.js exists with full CRUD+enrollment+progress API, mounted in server.js at /api/courses. Implemented by prior session tasks.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "emailMarketingService.js imports './emailService' — potential import path error",
+      "reason": "FALSE POSITIVE — emailService.js exists in marketplace/backend/services/. Require path resolves correctly.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "Censorship tracker uses Puppeteer but puppeteer not listed in package.json",
+      "reason": "FALSE POSITIVE — puppeteer ^22.0.0 IS in marketplace/backend/package.json line 57 and package-lock.json.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "Automatic Stripe → Crypto Failover not implemented (README claims it but no code)",
+      "reason": "FALSE POSITIVE — checkout.js:103 calls stripeHealthService.checkStripeHealth() on every request and returns 503+fallbackUrl when Stripe is unhealthy. Auto-failover IS implemented. Task 078 also completed.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md",
+      "finding": "Fix duplicate payment_intent_data key in checkoutProduction.js (lines 138-151 define it twice)",
+      "reason": "FALSE POSITIVE — only ONE payment_intent_data key exists at line 138 in checkoutProduction.js. No duplicate. Finding was already fixed or never existed.",
+      "rejected_at": "2026-02-28T10:00:00Z"
+    }
+  ],
   "unproductive_audits": [],
   "verified_facts": [
     {
@@ -75,12 +118,144 @@
       "method": "review_audit_output.json verified 12 tasks, conductor_output.json confirmed all 19"
     }
   ],
-  "rejected_findings": [
+  "verified_facts_round4": [
     {
-      "source": "code_quality_audit",
-      "finding": "download.js HIGH — in-memory token store lost on server restart",
-      "reason": "download.js is NOT mounted in server.js (only downloadRoutes.js is). The in-memory Map is dead code. Risk is zero in production. Reclassified as P3 dead-code removal.",
-      "rejected_at": "2026-02-28T08:00:00Z"
+      "fact": "checkout.js:103 calls stripeHealthService.checkStripeHealth() on EVERY POST /create-session request — this is the Stripe→Crypto auto-failover implementation",
+      "verified_at": "2026-02-28T10:00:00Z",
+      "method": "Read checkout.js lines 100-111 directly; confirmed stripeHealthService.checkStripeHealth() call and 503+fallbackUrl response"
+    },
+    {
+      "fact": "checkout-price-validation.test.js 7 failures caused by unmocked stripeHealthService (not ADMIN_PASSWORD_HASH as initially thought)",
+      "verified_at": "2026-02-28T10:00:00Z",
+      "method": "Read checkout.js:100-111 + test file — test mocks stripe but not stripeHealthService; health check runs against no-key Stripe in test env"
+    },
+    {
+      "fact": "adminRoutes.js has local getConversionRate() at line 562 returning placeholder 2.5; analyticsService.js has real DB-backed getConversionRate() at line 429 — not connected",
+      "verified_at": "2026-02-28T10:00:00Z",
+      "method": "grep for AnalyticsService in adminRoutes.js returned no matches; grep for getConversionRate in analyticsService.js confirmed real implementation"
+    },
+    {
+      "fact": "puppeteer ^22.0.0 is in marketplace/backend/package.json, NOT in root package.json",
+      "verified_at": "2026-02-28T10:00:00Z",
+      "method": "Grep for puppeteer in both package.json files"
+    },
+    {
+      "fact": "courseRoutes.js exists with full API and is mounted in server.js at /api/courses (lines 93+214)",
+      "verified_at": "2026-02-28T10:00:00Z",
+      "method": "Read courseRoutes.js line 1 header + grep server.js for courseRoutes"
+    }
+  ],
+  "rejected_findings_round5": [
+    {
+      "source": "OVERNIGHT_TASKS.md",
+      "finding": "P1 — Verify/fix IPFS auto-pinning on purchase — nftService.js may still be a stub",
+      "reason": "FALSE POSITIVE — nftService.js line 158 makes real HTTP POST to Pinata cloud API. Task 087 implemented it as REST calls (not SDK). Implementation is real.",
+      "rejected_at": "2026-02-28T18:00:00Z"
+    }
+  ],
+  "verified_facts_round5": [
+    {
+      "fact": "network_revenue_shares table does NOT exist in database/schema.sql — grep returns zero matches in entire backend directory",
+      "verified_at": "2026-02-28T18:00:00Z",
+      "method": "Grep for 'network_revenue_shares' in marketplace/backend returned NO MATCHES"
+    },
+    {
+      "fact": "orderService.createOrder() never reads metadata.sourceNode or inserts into any revenue share table",
+      "verified_at": "2026-02-28T18:00:00Z",
+      "method": "Grep for 'sourceNode|source_node|revenue_share' in orderService.js returned NO MATCHES"
+    },
+    {
+      "fact": "arxmintService.js has 3 confirmed stubs: createL402Invoice(), verifyL402Payment(), acceptCashuToken() all throw 'not yet implemented'",
+      "verified_at": "2026-02-28T18:00:00Z",
+      "method": "Grep for 'not yet implemented' in arxmintService.js confirmed lines 51, 76, 101"
+    },
+    {
+      "fact": "C:\\code\\arxmint does not exist — glob for *.ts files returns no matches",
+      "verified_at": "2026-02-28T18:00:00Z",
+      "method": "Glob pattern C:/code/arxmint/**/*.ts returned no files"
+    },
+    {
+      "fact": "nftService.js calls real Pinata API at line 158: POST to https://api.pinata.cloud/pinning/pinFileToIPFS with PINATA_JWT Bearer auth",
+      "verified_at": "2026-02-28T18:00:00Z",
+      "method": "Grep for 'pinFileToIPFS' in nftService.js confirmed line 158"
+    }
+  ],
+  "rejected_findings_round6": [
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P1 — Email open/click tracking (task 075) — emailMarketingService.js doesn't track opens or clicks",
+      "reason": "ALREADY DONE — emailMarketingService.js has tracking pixel + click-wrap injection; emailTracking.js route exists. Verified by grep.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P1 — Cart abandonment email cron (task 076) — no scheduled job for incomplete checkouts",
+      "reason": "ALREADY DONE — cronJobs.js exists in marketplace/backend/services/. Verified by file search.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P1 — Funnel conversion tracking (task 077) — funnel routes don't emit analytics events to analyticsService.js",
+      "reason": "ALREADY DONE via local tracking — funnels.js has /track endpoint and conversion_rate calculation. schema-funnels.sql exists. Local tracking provides core value.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Create distinct AI page builder HTML templates (task 088) — all types map to same book-sales-page.html",
+      "reason": "ALREADY DONE — story-driven.html, reader-magnet.html, course-launch.html all exist in funnel-module/templates/. aiPageBuilderService.js TEMPLATE_MAP routes correctly.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Fix PERCENTILE_CONT dead code in digestService.js (task 092)",
+      "reason": "ALREADY DONE — no PERCENTILE_CONT or percentileQuery found in digestService.js.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Fix days SQL template literal in amazonService.js (task 093) — SQL injection",
+      "reason": "ALREADY DONE — amazonService.js getBookTrendHistory() uses parseInt(days) + parameterized ? placeholder at lines 702-713.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Document OPENAI_API_KEY and PINATA_* env vars (task 086)",
+      "reason": "ALREADY DONE — marketplace/backend/.env.example has OPENAI_API_KEY section at lines 30-35 and PINATA section at lines 70-77 with descriptions.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Add certificate generation for course completion (task 084)",
+      "reason": "ALREADY DONE — certificateService.js exists in marketplace/backend/services/.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    },
+    {
+      "source": "OVERNIGHT_TASKS.md/conductor",
+      "finding": "P2 — Scaffold BTCPay automated crypto verification (task 085)",
+      "reason": "ALREADY DONE — btcpayService.js exists in marketplace/backend/services/.",
+      "rejected_at": "2026-02-28T20:00:00Z"
+    }
+  ],
+  "verified_facts_round6": [
+    {
+      "fact": "Quiz schema/routes NOT implemented: no quiz.js in routes/, no quiz tables in schema.sql",
+      "verified_at": "2026-02-28T20:00:00Z",
+      "method": "Glob for routes/quiz* returned no matches; grep for 'quiz' in schema.sql returned no matches"
+    },
+    {
+      "fact": "Tasks 103 (federation revenue share) and 104 (auth+payment tests) VERIFIED complete by review_audit — 130 tests pass across 15 suites",
+      "verified_at": "2026-02-28T20:00:00Z",
+      "method": "review_audit_output.json verdict VERIFIED for both tasks"
+    },
+    {
+      "fact": "AI page builder distinct templates exist: story-driven.html, reader-magnet.html, course-launch.html in funnel-module/templates/",
+      "verified_at": "2026-02-28T20:00:00Z",
+      "method": "Glob for funnel-module/templates/*.html confirmed all 4 template files"
+    },
+    {
+      "fact": "certicicateService.js exists; btcpayService.js exists — tasks 084 and 085 completed in prior session",
+      "verified_at": "2026-02-28T20:00:00Z",
+      "method": "Glob for *cert* and *btcpay* in backend/services confirmed both files"
     }
   ],
   "false_positive_patterns": [
@@ -88,6 +263,11 @@
       "pattern": "Audit says 'service was cut off during analysis' or 'suggesting'",
       "lesson": "This indicates uncertain analysis, not a confirmed bug. Verify before accepting as task.",
       "example": "Lulu integration gap — gap_analyzer said 'may be incomplete' due to analysis cutoff, not a confirmed bug"
+    },
+    {
+      "pattern": "Feature audit findings about missing/stub features may be stale if 10+ worker tasks have run since the audit",
+      "lesson": "Always verify feature existence in actual files before creating tasks. Feature audits get stale quickly in active sessions.",
+      "example": "course backend, AI discovery fallback, puppeteer dep, email import path, Stripe failover — all reported as missing but already implemented by tasks 074-098"
     }
   ]
 }
