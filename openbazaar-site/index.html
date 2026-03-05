@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://openbazaar.ai">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏪</text></svg>">
 </head>
@@ -22,7 +22,7 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
-        <span class="logo-icon">⬡</span>
+        <span class="logo-icon">🏛️</span>
         <span class="logo-text">OpenBazaar<span class="logo-dot">.ai</span></span>
       </a>
       <div class="nav-links" id="navLinks">
@@ -110,19 +110,19 @@
         <div class="steps-grid">
           <div class="step-card animate-up">
             <div class="step-number">1</div>
-            <div class="step-icon">🏪</div>
+            <div class="step-icon" style="font-size:2.5rem; color:var(--brand); font-weight:300;">🏛️</div>
             <h3>List Anything</h3>
             <p>Products, courses, freelance services, or agent capabilities. Set your price, write a description, go live in minutes.</p>
           </div>
           <div class="step-card animate-up" style="animation-delay: 100ms">
             <div class="step-number">2</div>
-            <div class="step-icon">⚡</div>
+            <div class="step-icon" style="font-size:2.5rem; color:var(--brand); font-weight:300;">🕊️</div>
             <h3>Get Paid Instantly</h3>
             <p>Lightning and ecash settle in seconds. Stripe for cards. ArxMint routes to the best option. You keep 100%.</p>
           </div>
           <div class="step-card animate-up" style="animation-delay: 200ms">
             <div class="step-number">3</div>
-            <div class="step-icon">🔑</div>
+            <div class="step-icon" style="font-size:2.5rem; color:var(--brand); font-weight:300;">🗝️</div>
             <h3>Own Your Business</h3>
             <p>Open source and self-hostable. Your data, your keys, your customers. Fork it, run it, make it yours.</p>
           </div>
@@ -172,6 +172,48 @@
         </div>
       </div>
     </section>
+
+    
+    <!-- ─── Store / Merch ─── -->
+    <section class="section section-dark" id="store">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag tag-glow" style="background: white; border-color: var(--border);">Dogfooding</span>
+          <h2 class="section-title" style="font-family: var(--font-display); color: var(--text);">Support the Network.</h2>
+          <p class="section-desc">OpenBazaar is 100% free and open source. We fund development by using our own marketplace to sell physical goods via our Headless Lulu & Printful integrations. You buy merch -> the protocol improves -> we all win.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">📖</div>
+            <h3 style="font-family: var(--font-display);">The Network State Handbook</h3>
+            <p>Our comprehensive 400-page operational manual on building federated economies. Printed on demand via Lulu and shipped globally.</p>
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-weight: 700; color: var(--text);">$24.00</span>
+              <button class="btn btn-sm btn-outline">Buy via Lightning</button>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">👕</div>
+            <h3 style="font-family: var(--font-display);">"Builders Only" Heavyweight Tee</h3>
+            <p>Premium 100% cotton tee with the OpenBazaar architecture diagram on the back. Fulfilled headlessly via Printful direct to your door.</p>
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-weight: 700; color: var(--text);">$35.00</span>
+              <button class="btn btn-sm btn-outline">Buy via ArxMint</button>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">☕</div>
+            <h3 style="font-family: var(--font-display);">The Protocol Mug</h3>
+            <p>15oz ceramic mug for deep coding sessions. Because writing open source software requires massive amounts of caffeine.</p>
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-weight: 700; color: var(--text);">$18.00</span>
+              <button class="btn btn-sm btn-outline">Buy via Stripe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
 
     <!-- ─── Gigs ─── -->
     <section class="section" id="gigs">
@@ -438,7 +480,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="/" class="nav-logo">
-            <span class="logo-icon">⬡</span>
+            <span class="logo-icon">🏛️</span>
             <span class="logo-text">OpenBazaar<span class="logo-dot">.ai</span></span>
           </a>
           <p class="footer-tagline">The open marketplace for creators, freelancers, and agents.</p>

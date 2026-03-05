@@ -9,7 +9,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "register-node": "node marketplace/backend/scripts/register-node.js"
+    "register-node": "node marketplace/backend/scripts/register-node.js",
+    "trademark:report": "node tools/trademark-filing.js --report",
+    "trademark:prepare": "node tools/trademark-filing.js",
+    "trademark:prepare:openbazaar": "node tools/trademark-filing.js --mark openbazaar-ai-wordmark"
   },
   "jest": {
     "testEnvironment": "node",

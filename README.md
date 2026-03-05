@@ -216,6 +216,7 @@ docker-compose up -d    # Deploy
 | [Dual-Mode Architecture](./docs/core/DUAL_MODE_ARCHITECTURE.md) | Primary + fallback payments |
 | [Auth Setup](./docs/integration/AUTH_SETUP.md) | Magic links, OAuth, Nostr |
 | [Security Guide](./docs/reference/SECURITY_SETUP_GUIDE.md) | Hardening for production |
+| [Trademark Automation](./docs/legal/TRADEMARK_AUTOMATION.md) | Filing packet + docket workflow for brand protection |
 | [API Reference](./marketplace/backend/API-DOCUMENTATION.md) | Full REST API docs |
 | [Roadmap](./docs/ROADMAP.md) | Where this is going |
 

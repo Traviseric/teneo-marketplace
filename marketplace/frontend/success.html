@@ -263,6 +263,8 @@
                         Continue Shopping
                     </a>
                 </div>
+
+                <div class="next-read-offer" id="next-read-offer"></div>
             </div>
         </div>
     </main>
@@ -337,6 +339,8 @@
                     window.cart.clearCart(false);
                 }
 
+                renderNextReadOffer(orderData);
+
                 // Fire analytics only once per session
                 if (!alreadyFired) {
                     sessionStorage.setItem(analyticsKey, '1');
@@ -351,6 +355,7 @@
                 document.getElementById('amount').textContent = 'Paid';
                 document.getElementById('processing').style.display = 'none';
                 document.getElementById('action-buttons').style.display = 'flex';
+                document.getElementById('next-read-offer').style.display = 'none';
             }
         });
 
@@ -378,6 +383,87 @@
                     currency: (orderData.currency || 'USD').toUpperCase(),
                     order_id: orderData.orderId
                 });
+            }
+        }
+
+        function formatUsd(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(value);
+        }
+
+        function renderNextReadOffer(orderData) {
+            const offer = orderData && orderData.nextReadOffer;
+            const container = document.getElementById('next-read-offer');
+            if (!container) return;
+
+            if (!offer || !offer.bookId || !offer.title || !orderData.customerEmail) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const original = Number(offer.originalPrice || offer.offerPrice || 0);
+            const offered = Number(offer.offerPrice || original);
+
+            container.innerHTML = `
+                <h3>Continue Your Momentum</h3>
+                <div class="next-read-meta">
+                    <strong>${offer.title}</strong> by ${offer.author || 'Teneo'}
+                </div>
+                <div class="next-read-pricing">
+                    <span class="original">${formatUsd(original)}</span>
+                    <span class="offer">${formatUsd(offered)}</span>
+                </div>
+                <p class="next-read-reason">${offer.reason || 'Readers who buy this title next have the highest repeat order rates.'}</p>
+                <button class="btn btn-primary" id="next-read-btn">
+                    Add This Next Read
+                </button>
+            `;
+
+            const button = document.getElementById('next-read-btn');
+            button.addEventListener('click', function() {
+                startNextReadCheckout(button, offer, orderData);
+            });
+
+            container.style.display = 'block';
+        }
+
+        async function startNextReadCheckout(button, offer, orderData) {
+            button.disabled = true;
+            const originalLabel = button.innerHTML;
+            button.innerHTML = 'Starting checkout...';
+
+            try {
+                const response = await fetch('/api/checkout/create-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        bookId: offer.bookId,
+                        format: offer.format || 'ebook',
+                        brandId: offer.brandId || orderData.brandId || 'teneo',
+                        bookTitle: offer.title,
+                        bookAuthor: offer.author || 'Teneo',
+                        userEmail: orderData.customerEmail,
+                        couponCode: offer.couponCode || null,
+                        funnelId: orderData.funnelId || null,
+                        funnelSessionId: orderData.funnelSessionId || null
+                    })
+                });
+
+                const result = await response.json();
+                if (!response.ok || !result.checkoutUrl) {
+                    throw new Error(result.error || 'Unable to start checkout');
+                }
+
+                window.location.href = result.checkoutUrl;
+            } catch (error) {
+                console.error('Next read checkout error:', error);
+                button.disabled = false;
+                button.innerHTML = originalLabel;
+                alert('Could not start the next-read checkout. Please try again.');
             }
         }
 

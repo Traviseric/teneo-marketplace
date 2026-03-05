@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-03-05T05:40:39.823Z",
+  "packet_date": "2026-03-04",
+  "disclaimer": "Prepared for internal legal ops. Human legal review and manual TEAS submission are required.",
+  "mark": {
+    "id": "openbazaar-ai-wordmark",
+    "brand": "OpenBazaar.ai",
+    "text": "OPENBAZAAR.AI",
+    "type": "standard_character"
+  },
+  "owner": {
+    "legal_name": "OpenBazaar AI LLC",
+    "entity_type": "Limited Liability Company",
+    "state_or_country": "Delaware, United States",
+    "email": "legal@openbazaar.ai",
+    "address_1": "TODO",
+    "city": "TODO",
+    "state": "TODO",
+    "postal_code": "TODO"
+  },
+  "filing": {
+    "basis": "1(b)",
+    "application_type": "TEAS Plus",
+    "intent_to_use_verified": true,
+    "first_use_anywhere": null,
+    "first_use_in_commerce": null,
+    "priority_date": null,
+    "classes": [
+      {
+        "class_number": "035",
+        "goods_services": "On-line marketplace services for buyers and sellers of digital and physical goods; online retail store services featuring digital publications, software templates, and educational content; providing online business referrals among marketplace sellers."
+      },
+      {
+        "class_number": "042",
+        "goods_services": "Providing temporary use of non-downloadable software for operating online marketplaces, managing digital product catalogs, processing order workflows, and analytics for creators, freelancers, and service providers."
+      }
+    ]
+  },
+  "correspondence": {
+    "attorney_name": "TODO",
+    "attorney_email": "TODO",
+    "correspondence_email": "legal@openbazaar.ai"
+  },
+  "evidence": {
+    "specimen_paths": [
+      "openbazaar-site/",
+      "README.md",
+      "openbazaar-site/assets/"
+    ],
+    "proof_of_use_notes": "Capture dated screenshots of checkout and paid invoices before filing Statement of Use."
+  },
+  "monitoring": {
+    "watch_terms": [
+      "open bazaar",
+      "openbazaar",
+      "openbazar",
+      "openbazaar marketplace"
+    ],
+    "high_risk_domains": [
+      "openbazaar.ai",
+      "openbazaar.com",
+      "openbazaar.org"
+    ]
+  },
+  "status": {
+    "pipeline_stage": "draft_ready",
+    "target_filing_date": "2026-03-15",
+    "last_reviewed": "2026-03-05",
+    "uspto_serial_number": null,
+    "office_action_issued_date": null,
+    "notice_of_allowance_date": null,
+    "registration_date": null
+  }
+}
