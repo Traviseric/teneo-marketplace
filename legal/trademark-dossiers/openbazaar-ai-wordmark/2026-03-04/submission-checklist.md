@@ -16,7 +16,10 @@ Pipeline Stage: draft_ready
 [ ] Plan Statement of Use evidence capture workflow.
 
 ## Missing Required Data
-- None.
+- [ ] owner.address_1
+- [ ] owner.city
+- [ ] owner.state
+- [ ] owner.postal_code
 
 ## After Filing
 - [ ] Save USPTO serial number in `legal/trademarks.registry.json`.

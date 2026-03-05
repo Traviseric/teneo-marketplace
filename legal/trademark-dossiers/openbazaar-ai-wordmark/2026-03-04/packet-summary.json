@@ -7,6 +7,11 @@
   "target_filing_date": "2026-03-15",
   "filing_basis": "1(b)",
   "class_count": 2,
-  "missing_required_fields": [],
+  "missing_required_fields": [
+    "owner.address_1",
+    "owner.city",
+    "owner.state",
+    "owner.postal_code"
+  ],
   "output_path": "D:\\Travis Eric\\TE Code\\teneo-marketplace\\legal\\trademark-dossiers\\openbazaar-ai-wordmark\\2026-03-04"
 }

@@ -77,6 +77,10 @@ Contributing and extending the platform
 - **[Contributing Guide](development/CONTRIBUTING.md)**
 - **[AI Builder Strategy](development/AI_BUILDER_STRATEGY.md)** - Build with Claude Code
 
+### [legal/](legal/)
+Brand protection and legal operations
+- **[Trademark Filing Automation](legal/TRADEMARK_AUTOMATION.md)** - Filing packets and docket workflow
+
 ### [operations/](operations/)
 Day-to-day operations and maintenance
 - Health monitoring
