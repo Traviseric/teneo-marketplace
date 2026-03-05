@@ -5,10 +5,20 @@
     "completed": 1,
     "blocked": 0,
     "in_progress": 0,
-    "commits": ["ddca11c"],
-    "files_changed": ["marketplace/backend/services/auditService.js"],
-    "task_file": "044-P3-use-crypto-random-for-audit-ids.md",
-    "blockers": [],
-    "follow_up_tasks": []
+    "tasks": [
+      {
+        "file": "105-P2-add-quiz-schema-and-routes.md",
+        "status": "completed",
+        "commit": "57de459"
+      }
+    ],
+    "commits": ["57de459"],
+    "files_changed": [
+      "marketplace/backend/routes/quiz.js",
+      "marketplace/backend/server.js",
+      "__tests__/quiz.test.js"
+    ],
+    "session_tasks_assigned": 1,
+    "session_tasks_completed": 1
   }
 }

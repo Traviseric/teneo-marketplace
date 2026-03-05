@@ -1,37 +1,22 @@
 {
   "success": true,
-  "next_box": "TASK_SYNTHESIZER",
+  "next_box": "REVIEW_AUDIT",
   "next_workflow": null,
   "context": {
     "project_slug": "teneo-marketplace",
     "project_path": "C:\\code\\teneo-marketplace",
     "relay_dir": "C:\\code\\teneo-marketplace\\.overnight",
-    "phase": "synthesize",
-    "decision_reason": "Priority tier: core_flow + features. CODE_QUALITY_AUDIT (round 12) found 20 real findings including 2 CRITICAL: (1) checkoutProduction.js line 19 trusts client-supplied price in Stripe — price manipulation bypass (checkout.js was fixed but NOT checkoutProduction.js — this is a live revenue risk); (2) orderService.js line 70 updateOrderStatus() builds SQL from unsanitized Object.keys — SQL injection vector. Plus 4 HIGH: in-memory download tokens lost on restart, digital delivery error swallowing in checkoutMixed.js, NFT fake IPFS hashes on error, hardcoded fake conversion rate in adminRoutes. All 35 previous tasks (001-035) are completed (verified by review_audit at 100% score). TASK_SYNTHESIZER should read code_quality_audit_output.json and create focused fix tasks for critical and high findings first.",
+    "phase": "evaluate",
+    "decision_reason": "Priority tier 3 (missing critical features): WORKER (round 8) completed task 105-P2-add-quiz-schema-and-routes. Existing REVIEW_AUDIT (round 5) only verified tasks 103+104 — task 105 has NOT been reviewed yet. Standard pipeline after WORKER with all tasks completed = REVIEW_AUDIT. After review passes, need to run FEATURE_AUDIT, CODE_QUALITY_AUDIT, SECURITY_AUDIT, and UX_AUDIT (all absent from relay dir) before SWITCH_PROJECT gate can pass.",
     "what_you_read": [
       ".overnight/progress.json",
-      ".overnight/code_quality_audit_output.json",
-      ".overnight/decision_log.jsonl",
-      ".overnight/lessons.json",
-      ".overnight/last_mile_test_output.json",
       ".overnight/review_audit_output.json",
-      ".overnight/active/020-P0-add-server-side-price-validation-in-checkout.md",
-      ".overnight/active/021-P0-fix-course-enrollment-auth-bypass.md",
-      ".overnight/active/035-P3-require-session-secret-in-production.md"
+      ".overnight/active/103-P0-persist-federation-revenue-share-to-db.md",
+      ".overnight/active/104-P3-expand-auth-payment-integration-tests.md",
+      ".overnight/active/105-P2-add-quiz-schema-and-routes.md",
+      ".overnight/HUMAN_TASKS.md"
     ],
-    "what_you_learned": "CODE_QUALITY_AUDIT found 20 actionable findings (2 critical, 4 high, 8 medium, 6 low). The decision_log round 12 shows 'unproductive (findings=0)' but this is a stale counter — the actual audit output clearly has substantial findings that have not been synthesized into tasks. All 35 prior tasks (001-035) are status: completed. The LAST_MILE_TEST NO_GO verdict is invalid — tests ran against opensource.org not teneo-marketplace. The critical price bypass in checkoutProduction.js is a direct revenue risk: customers can pay $0.01 for any product by crafting the request body.",
-    "sources_to_synthesize": ["code_quality_audit"],
-    "audit_findings_summary": {
-      "critical": 2,
-      "high": 4,
-      "medium": 8,
-      "low": 6,
-      "total": 20,
-      "top_critical": [
-        "checkoutProduction.js line 19: client-supplied price used directly in Stripe — price manipulation (checkout.js was fixed but not checkoutProduction.js)",
-        "orderService.js line 70: updateOrderStatus() SQL built from unsanitized Object.keys — SQL injection risk"
-      ]
-    },
+    "what_you_learned": "All 3 active tasks (103, 104, 105) are status:completed. REVIEW_AUDIT only verified tasks 103+104 (round 5); task 105 (quiz schema/routes) was created in round 7 and completed in round 8 — never reviewed. Missing audit outputs: feature_audit_output.json, ux_audit_output.json, code_quality_audit_output.json, security_audit_output.json — all required before SWITCH_PROJECT gate. Human tasks HT-001 to HT-005 and HT-007 are uncompleted but not blocking automated work. ArxMint stubs are intentional scaffolds. Test suite at 130 tests passing across 15 suites.",
     "stuck_rounds": 0,
     "confidence": "high"
   }

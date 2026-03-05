@@ -9,10 +9,10 @@ REM Allow spawning from within a Claude Code session (e.g. testing)
 set CLAUDECODE=
 
 REM Use OAuth token for Pro subscription (env var only — no file swap to avoid race conditions)
-set CLAUDE_CODE_OAUTH_TOKEN=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
+set CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-REDACTED
 
 echo ========================================
-echo WORKER_001 BOX v2.0.0
+echo WORKER_001 BOX v2.1.0
 echo Using Pro subscription (OAuth)
 echo ========================================
 echo.

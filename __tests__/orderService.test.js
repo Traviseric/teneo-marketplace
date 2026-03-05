@@ -8,7 +8,22 @@
 const sqlite3 = require('sqlite3').verbose();
 const OrderService = require('../marketplace/backend/services/orderService');
 
-// Orders table DDL matching schema.sql
+// Orders and network_revenue_shares DDL matching schema.sql
+const CREATE_NETWORK_REVENUE_SHARES_SQL = `
+    CREATE TABLE IF NOT EXISTS network_revenue_shares (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_id TEXT NOT NULL REFERENCES orders(order_id),
+        peer_node_id TEXT NOT NULL,
+        peer_node_url TEXT,
+        revenue_share_pct REAL NOT NULL DEFAULT 0.0,
+        revenue_share_amount REAL,
+        currency TEXT DEFAULT 'USD',
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        paid_at DATETIME
+    )
+`;
+
 const CREATE_ORDERS_SQL = `
     CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,7 +75,10 @@ beforeEach(done => {
     // Each test gets a fresh in-memory DB — total isolation
     process.env.DATABASE_PATH = ':memory:';
     service = new OrderService();
-    service.db.run(CREATE_ORDERS_SQL, done);
+    service.db.serialize(() => {
+        service.db.run(CREATE_ORDERS_SQL);
+        service.db.run(CREATE_NETWORK_REVENUE_SHARES_SQL, done);
+    });
 });
 
 afterEach(() => {
@@ -134,6 +152,87 @@ describe('OrderService.updateOrderStatus()', () => {
         await expect(
             service.updateOrderStatus(orderId, { customer_email: 'attacker@evil.com' })
         ).rejects.toThrow(/unknown column/i);
+    });
+});
+
+// Helper: query network_revenue_shares rows for an order
+function getRevenueShares(db, orderId) {
+    return new Promise((resolve, reject) => {
+        db.all(
+            'SELECT * FROM network_revenue_shares WHERE order_id = ?',
+            [orderId],
+            (err, rows) => (err ? reject(err) : resolve(rows))
+        );
+    });
+}
+
+describe('OrderService.createOrder() — federation revenue share persistence', () => {
+    it('inserts a network_revenue_shares row when metadata.sourceNode is set', async () => {
+        const orderId = uniqueOrderId();
+        await service.createOrder({
+            ...SAMPLE_ORDER,
+            orderId,
+            metadata: {
+                sourceNode: 'peer-node-abc',
+                sourceNodeUrl: 'https://peer.example.com',
+                revenueSharePct: 10
+            }
+        });
+
+        // Give SQLite a tick to finish the async INSERT
+        await new Promise(r => setTimeout(r, 50));
+
+        const rows = await getRevenueShares(service.db, orderId);
+        expect(rows).toHaveLength(1);
+        expect(rows[0].peer_node_id).toBe('peer-node-abc');
+        expect(rows[0].peer_node_url).toBe('https://peer.example.com');
+        expect(rows[0].revenue_share_pct).toBe(10);
+        expect(rows[0].revenue_share_amount).toBeCloseTo(19.99 * 0.1, 4);
+        expect(rows[0].currency).toBe('USD');
+        expect(rows[0].status).toBe('pending');
+    });
+
+    it('does NOT insert a network_revenue_shares row when metadata.sourceNode is absent', async () => {
+        const orderId = uniqueOrderId();
+        await service.createOrder({ ...SAMPLE_ORDER, orderId });
+
+        await new Promise(r => setTimeout(r, 50));
+
+        const rows = await getRevenueShares(service.db, orderId);
+        expect(rows).toHaveLength(0);
+    });
+
+    it('does NOT insert a network_revenue_shares row when only sourceNode is set but revenueSharePct is missing', async () => {
+        const orderId = uniqueOrderId();
+        await service.createOrder({
+            ...SAMPLE_ORDER,
+            orderId,
+            metadata: { sourceNode: 'peer-node-xyz' }  // no revenueSharePct
+        });
+
+        await new Promise(r => setTimeout(r, 50));
+
+        const rows = await getRevenueShares(service.db, orderId);
+        expect(rows).toHaveLength(0);
+    });
+
+    it('still resolves the order even if revenue share INSERT were to fail', async () => {
+        // Drop the network_revenue_shares table to simulate a missing/corrupt table
+        await new Promise((resolve, reject) => {
+            service.db.run('DROP TABLE IF EXISTS network_revenue_shares', (err) =>
+                err ? reject(err) : resolve()
+            );
+        });
+
+        const orderId = uniqueOrderId();
+        // Should resolve without throwing — INSERT failure is non-fatal
+        await expect(
+            service.createOrder({
+                ...SAMPLE_ORDER,
+                orderId,
+                metadata: { sourceNode: 'peer-node-abc', revenueSharePct: 5 }
+            })
+        ).resolves.toMatchObject({ orderId });
     });
 });
 

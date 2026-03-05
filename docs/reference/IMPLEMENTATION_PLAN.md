@@ -155,13 +155,24 @@ teneo-marketplace/
 │       ├── cloudflare-r2.js
 │       └── adapter.interface.js
 │
-└── network-module/            # Federation (NEW)
-    ├── frontend/
-    │   └── network-explorer.html
-    └── backend/
-        ├── routes/network.js
-        ├── federation.js
-        └── discovery.js
+├── network-module/            # Federation (BUILT)
+│   ├── frontend/
+│   │   └── network-explorer.html
+│   └── backend/
+│       ├── routes/network.js
+│       ├── federation.js
+│       └── discovery.js
+│
+└── discovery-layer/           # Discovery Network (NEW — parallel track)
+    ├── services/
+    │   ├── semantic-search.js       # Claude/OpenAI embedding search
+    │   ├── knowledge-graph.js       # Citation network engine
+    │   ├── reading-paths.js         # AI learning journey generation
+    │   └── ranking.js               # Transformation-based ranking (Phase 4+)
+    ├── database/
+    │   └── schema-ai-discovery.sql  # Embeddings, citations, paths (BUILT)
+    └── routes/
+        └── aiDiscovery.js           # Discovery API endpoints (BUILT)
 ```
 
 ---
@@ -337,9 +348,11 @@ examples/hello-world-plugin/
 
 ---
 
-### Phase 4: Federation Network (Week 6-8)
+### Phase 4: Federation Network + Discovery (Week 6-8)
 
-**Goal**: Enable distributed marketplace network
+**Goal**: Enable distributed marketplace network with intelligent discovery
+
+**Note:** Federation infrastructure is already 70-80% built. This phase focuses on wiring up existing code, adding the discovery intelligence layer, and transitioning to NIP-99.
 
 #### Task 4.1: Node Registry
 **Files to create**:
@@ -402,7 +415,25 @@ network-module/frontend/
 
 **Timeline**: 3 days
 
-**Phase 4 Total**: 16 days (3 weeks with buffer)
+#### Task 4.5: Discovery Intelligence Layer
+**Files to create/update**:
+```
+discovery-layer/services/
+├── semantic-search.js       # Wire up aiDiscoveryService.js to product catalog
+├── knowledge-graph.js       # Build citation network from product metadata
+└── reading-paths.js         # Generate cross-store learning journeys
+```
+
+**Features**:
+- Semantic search activated (embed all products via Claude/OpenAI API)
+- Knowledge graph: citation relationships between products across stores
+- AI reading paths: curated learning journeys spanning multiple stores
+- "You might also like" cross-store recommendations
+- Search analytics for store owners
+
+**Timeline**: 5 days
+
+**Phase 4 Total**: 21 days (4 weeks with buffer)
 
 ---
 
@@ -462,10 +493,10 @@ docs/
 | Phase 1: Foundation | 1 week | Week 1 | ✅ 75% Complete |
 | Phase 2: Integrations | 2 weeks | Week 3 | 📋 Planned |
 | Phase 3: Plugins | 2 weeks | Week 5 | 📋 Planned |
-| Phase 4: Federation | 3 weeks | Week 8 | 📋 Planned |
+| Phase 4: Federation + Discovery | 4 weeks | Week 9 | 📋 Planned (federation 70% built) |
 | Phase 5: Polish | 2 weeks | Week 10 | 📋 Planned |
 
-**Total**: 10 weeks to production-ready MVP
+**Total**: 11 weeks to production-ready MVP (federation head start reduces effective time)
 
 ---
 
@@ -484,10 +515,13 @@ docs/
 - 🎯 Time to first funnel < 4 hours
 - 🎯 Plugin adoption rate > 20%
 
-### Network Metrics
+### Network & Discovery Metrics
 - 🎯 100+ nodes deployed (6 months)
 - 🎯 10+ community plugins
 - 🎯 1,000+ cross-node transactions/month
+- 🎯 10,000+ products indexed in discovery network
+- 🎯 500+ semantic searches/month
+- 🎯 50+ AI-generated reading paths
 
 ---
 
@@ -622,7 +656,7 @@ docs/
 
 ## Conclusion
 
-**What we're building**: Focused infrastructure for book marketing
+**What we're building**: The open source creator platform with a discovery network — every store that joins makes the network stronger
 **How we're building it**: Lean, modular, integration-first
 **Why it matters**: Own your data, own your revenue, join the network
 

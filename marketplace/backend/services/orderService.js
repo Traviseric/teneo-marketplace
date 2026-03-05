@@ -72,11 +72,35 @@ class OrderService {
                 JSON.stringify(metadata)
             ];
 
+            const db = this.db;
             this.db.run(sql, params, function(err) {
                 if (err) {
                     reject(err);
-                } else {
-                    resolve({ id: this.lastID, orderId });
+                    return;
+                }
+                resolve({ id: this.lastID, orderId });
+
+                // Persist federation revenue share if this order originated from a peer node
+                if (metadata.sourceNode && metadata.revenueSharePct) {
+                    const revShareSql = `
+                        INSERT INTO network_revenue_shares
+                            (order_id, peer_node_id, peer_node_url, revenue_share_pct,
+                             revenue_share_amount, currency, status)
+                        VALUES (?, ?, ?, ?, ?, ?, 'pending')
+                    `;
+                    const revenueAmount = price * (metadata.revenueSharePct / 100);
+                    db.run(revShareSql, [
+                        orderId,
+                        metadata.sourceNode,
+                        metadata.sourceNodeUrl || null,
+                        metadata.revenueSharePct,
+                        revenueAmount,
+                        currency
+                    ], (revErr) => {
+                        if (revErr) {
+                            console.error('[OrderService] Failed to persist revenue share:', revErr.message);
+                        }
+                    });
                 }
             });
         });

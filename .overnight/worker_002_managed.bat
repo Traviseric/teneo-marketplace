@@ -5,10 +5,10 @@ REM Clear API key to prevent fallback
 set ANTHROPIC_API_KEY=
 
 REM Use OAuth token for Pro subscription
-set CLAUDE_CODE_OAUTH_TOKEN=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
+set CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-REDACTED
 
 REM Atomic credential swap (preserves mcpOAuth and other keys)
-python "C:/code/orchestrator/src/orchestrator/tools/creds_swap.py" swap --token "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" --lane-id "worker_002"
+python "C:/code/orchestrator/src/orchestrator/tools/creds_swap.py" swap --token "sk-ant-oat01-REDACTED" --lane-id "worker_002"
 
 echo ========================================
 echo MANAGED WORKER_002 v3.0.0

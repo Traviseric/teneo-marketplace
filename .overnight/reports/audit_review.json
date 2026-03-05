@@ -1,78 +1,80 @@
 {
-  "generated_at": "2026-02-28T08:00:00Z",
-  "sources_processed": ["code_quality_audit"],
-  "synthesis_round": 3,
-  "note": "Round 3: All 35 prior tasks (001-035) completed. Synthesizing 20 new findings from code_quality_audit_output.json.",
-  "total_findings": 20,
-  "accepted": 14,
-  "rejected": 1,
-  "deferred": 5,
+  "generated_at": "2026-02-28T20:00:00Z",
+  "sources_processed": ["OVERNIGHT_TASKS.md", "conductor_output.json", "review_audit_output.json", "worker_001_output.json", "worker_002_output.json"],
+  "synthesis_round": 6,
+  "note": "Round 6: Tasks 103+104 verified complete (review_audit). Synthesizing remaining items from OVERNIGHT_TASKS.md conductor list + direct file verification. 8 items confirmed already done; 1 genuinely missing (quiz schema/routes); 3 deferred.",
+  "total_findings": 14,
+  "accepted": 1,
+  "rejected": 8,
+  "deferred": 3,
   "split": 0,
   "merged": 0,
-  "new_task_files_created": ["036","037","038","039","040","041","042","043","044","045","046","047","048","049"],
+  "new_task_files_created": ["105-P2-add-quiz-schema-and-routes"],
+  "pre_existing_completed": ["103-P0-persist-federation-revenue-share-to-db", "104-P3-expand-auth-payment-integration-tests"],
   "rejections": [
     {
-      "finding": "download.js HIGH — in-memory token store lost on server restart",
-      "reason": "download.js is NOT mounted in server.js (grep confirmed only downloadRoutes.js is required). The in-memory Map is dead code. Risk is zero in production. Reclassified as P3 dead-code removal task (048) instead of HIGH fix."
+      "finding": "P1 — Email open/click tracking (task 075) — emailMarketingService.js doesn't track opens/clicks",
+      "reason": "ALREADY DONE — emailMarketingService.js has tracking methods; emailTracking.js route exists in routes/"
+    },
+    {
+      "finding": "P1 — Cart abandonment email cron (task 076) — no scheduled job",
+      "reason": "ALREADY DONE — cronJobs.js confirmed present in marketplace/backend/services/"
+    },
+    {
+      "finding": "P1 — Funnel conversion tracking (task 077) — funnel routes don't emit analytics events",
+      "reason": "ALREADY DONE (local tracking) — funnels.js has /track endpoint + conversion_rate calculation; schema-funnels.sql exists"
+    },
+    {
+      "finding": "P1 — Verify/fix IPFS auto-pinning on purchase — nftService.js may still be a stub",
+      "reason": "FALSE POSITIVE (pre-existing rejected) — lessons.json round5 confirmed: nftService.js line 158 makes real HTTP POST to Pinata cloud API"
+    },
+    {
+      "finding": "P2 — Create distinct AI page builder HTML templates (task 088)",
+      "reason": "ALREADY DONE — story-driven.html, reader-magnet.html, course-launch.html all exist in funnel-module/templates/"
+    },
+    {
+      "finding": "P2 — Fix PERCENTILE_CONT dead code in digestService.js (task 092)",
+      "reason": "ALREADY DONE — grep for PERCENTILE_CONT in digestService.js returns no matches"
+    },
+    {
+      "finding": "P2 — Fix days SQL template literal in amazonService.js (task 093)",
+      "reason": "ALREADY DONE — amazonService.js uses parseInt(days) + parameterized ? placeholder confirmed at lines 709-713"
+    },
+    {
+      "finding": "P2 — Document OPENAI_API_KEY and PINATA_* env vars (task 086)",
+      "reason": "ALREADY DONE — marketplace/backend/.env.example has OPENAI_API_KEY at line 35 and PINATA_* at lines 70-77 with feature descriptions"
     }
   ],
   "deferrals": [
     {
-      "finding": "God files: emailService.js (1015 lines), publishedBooks.js (808 lines), etc.",
-      "reason": "Major refactoring effort, not blocking revenue or security. Would require multiple coordinated file splits. Not actionable as a single focused worker task."
+      "finding": "P1 — Port ArxMint L402/Cashu payments — arxmintService.js stubs",
+      "reason": "BLOCKED — C:\\code\\arxmint does not exist. Already logged as HT-007 in HUMAN_TASKS.md."
     },
     {
-      "finding": "357 occurrences of console.log/console.error with no structured logging library",
-      "reason": "Major effort to convert all 357 calls across 46 files. Not causing bugs, just technical debt. Needs logging library decision first."
+      "finding": "P3 — Browser last-mile tests (tasks 082/066)",
+      "reason": "BLOCKED — no Chrome automation available. Re-run when Chrome accessible."
     },
     {
-      "finding": "51+ Promise wrapper boilerplate calls scattered across codebase",
-      "reason": "Large-scale refactoring. Not causing bugs. Requires replacing all db.run/get/all callbacks with a centralized async API. Deferred."
-    },
-    {
-      "finding": "nft.js TODO markers for smart contracts not implemented (3 stubs at lines 219, 278, 418)",
-      "reason": "NFT/blockchain features not deployed in production. Stubs are acceptable for a feature not yet live. Would require blockchain infrastructure decisions."
-    },
-    {
-      "finding": "No TypeScript, no ESLint configured across the backend",
-      "reason": "Major toolchain change affecting all 50 source files. Not blocking any current functionality. Would need phased migration plan."
+      "finding": "P3 — Fix conductor DIGEST loop bug",
+      "reason": "DEFERRED — orchestrator source files not locatable; no Python scripts in .overnight/. Out of scope for worker tasks."
     }
   ],
   "accepted_tasks": [
-    {"id": "036", "priority": "P0", "title": "Fix client-supplied price bypass in checkoutProduction.js", "source_severity": "critical"},
-    {"id": "037", "priority": "P0", "title": "Fix SQL injection via unsanitized Object.keys in orderService.updateOrderStatus()", "source_severity": "critical"},
-    {"id": "038", "priority": "P1", "title": "Fix processDigitalDelivery() error swallowing in checkoutMixed.js", "source_severity": "high"},
-    {"id": "039", "priority": "P1", "title": "Fix nftService.js silently returning fake IPFS hashes on error", "source_severity": "high"},
-    {"id": "040", "priority": "P2", "title": "Implement real conversion rate calculation in admin dashboard", "source_severity": "high"},
-    {"id": "041", "priority": "P2", "title": "Fix inconsistent database path defaults across modules", "source_severity": "medium"},
-    {"id": "042", "priority": "P2", "title": "Remove hardcoded mock data from digestService.js email digests", "source_severity": "medium"},
-    {"id": "043", "priority": "P2", "title": "Add Jest tests for revenue-critical paths (webhooks, downloads, orders, crypto)", "source_severity": "low"},
-    {"id": "044", "priority": "P3", "title": "Use crypto.randomUUID() instead of Math.random() in auditService.js", "source_severity": "low"},
-    {"id": "045", "priority": "P3", "title": "Move Stripe client initialization outside route handler in adminRoutes.js", "source_severity": "medium"},
-    {"id": "046", "priority": "P3", "title": "Fix Math.random() sales estimates in amazonService.js analytics", "source_severity": "low"},
-    {"id": "047", "priority": "P3", "title": "Extract duplicate saveBookToDatabase/updateBookInDatabase into shared helper", "source_severity": "medium"},
-    {"id": "048", "priority": "P3", "title": "Remove dead code download.js (replaced by downloadRoutes.js)", "source_severity": "low"},
-    {"id": "049", "priority": "P3", "title": "Replace synchronous fs calls with async in nftService.mintBookNFT()", "source_severity": "medium"}
+    {
+      "id": "105",
+      "priority": "P2",
+      "title": "Add quiz schema and routes for course module",
+      "source": "OVERNIGHT_TASKS.md (task 083)",
+      "verification": "CONFIRMED NOT DONE — no quiz.js in routes/, no quiz table in schema.sql. grep for 'quiz' in schema.sql returns no matches."
+    }
   ],
   "project_declared": {
     "total": 14,
-    "accepted": 0,
+    "accepted": 1,
     "merged": 0,
-    "rejected": 7,
-    "deferred": 7,
-    "notes": "OVERNIGHT_TASKS.md Pre-Flight and Tier 1 items all completed via tasks 001-035. Remaining large items (ArxMint integration, federation testing, component library validation, Nostr auth) require cross-repo coordination with teneo-auth and arxmint — not actionable autonomously. Sources_to_synthesize directive from CONDUCTOR was code_quality_audit only."
-  },
-  "verification_confirmed": {
-    "036_checkoutProduction": "CONFIRMED — server.js line 61-63 loads checkoutProduction.js when NODE_ENV=production. Price from req.body with no catalog lookup.",
-    "037_orderService_sql": "CONFIRMED — updateOrderStatus() line 70 uses Object.keys(updates) in SQL string, no whitelist.",
-    "038_checkoutMixed_swallow": "CONFIRMED — processDigitalDelivery() line 244-246: catch block only logs, no re-throw or customer notification.",
-    "039_nft_fake_ipfs": "CONFIRMED — 4 locations in nftService.js return Math.random() IPFS hashes (lines 123, 162, 174, 192).",
-    "040_fake_conversion_rate": "CONFIRMED — getConversionRate() line 550-552 returns hardcoded 2.5 with comment 'Placeholder'.",
-    "041_db_path": "CONFIRMED — orderService.js: orders.db, database-service.js: marketplace.db, setup.js: marketplace.db, database.js: orders.db. Data split across 2 files.",
-    "042_digest_mock": "CONFIRMED — digestService.js line 178 returns mock Fiction/15 data on DB failure.",
-    "044_audit_random": "CONFIRMED — auditService.js uses Math.random() in generateActionId().",
-    "045_stripe_reinit": "CONFIRMED — adminRoutes.js line 200 calls require('stripe')(key) inside refund route handler.",
-    "046_amazon_random": "CONFIRMED — amazonService.js estimateDailySales() uses Math.random().",
-    "048_dead_code": "CONFIRMED — download.js exists but server.js only requires downloadRoutes.js."
+    "rejected": 8,
+    "deferred": 3,
+    "completed_already": 2,
+    "notes": "Human-required items (ArxMint, TENEO_CLIENT_SECRET rotation) already tracked in HUMAN_TASKS.md."
   }
 }

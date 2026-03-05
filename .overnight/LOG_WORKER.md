@@ -1,4 +1,22 @@
 
+## Task: 105-P2-add-quiz-schema-and-routes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/quiz.js (new), marketplace/backend/server.js, __tests__/quiz.test.js (new)
+- **Commit:** 57de459
+- **Notes:** Schema tables already existed in schema-courses.sql (course_quizzes, quiz_questions, quiz_attempts) — created via init.js. Created standalone routes/quiz.js mounted at /api/quizzes with full CRUD (admin-protected) + learner submit/results endpoints. 18 new tests; all 148 tests pass.
+
+## Task: 104-P3-expand-auth-payment-integration-tests.md
+- **Status:** COMPLETE
+- **Changes:** __tests__/auth-magic-link.test.js, __tests__/stripe-webhook-idempotency.test.js, __tests__/lulu-pod.test.js
+- **Commit:** 68ca077
+- **Notes:** Added 29 new tests (101 → 130 total, target was ≥116). auth-magic-link: 10 tests for LocalAuthProvider token generation/verification/expiry and user enumeration protection. stripe-webhook-idempotency: 6 tests for checkoutProduction.js idempotency (duplicate event skipped, payment_failed → failOrder, event logged before processing, signature validation, missing webhook secret). lulu-pod: 13 tests for LuluService createPrintJob(), getShippingOptions(), getPrintJobStatus() using jest.mock for axios and sqlite3.
+
+## Task: 103-P0-persist-federation-revenue-share-to-db.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/database/schema.sql, marketplace/backend/services/orderService.js, __tests__/orderService.test.js
+- **Commit:** 27df21a
+- **Notes:** Added network_revenue_shares table to schema.sql; updated createOrder() to INSERT revenue share row when metadata.sourceNode+revenueSharePct present (non-fatal on failure); added 4 new tests (all 13 tests pass)
+
 ## Task: 044-P3-use-crypto-random-for-audit-ids.md
 - **Status:** COMPLETE
 - **Changes:** marketplace/backend/services/auditService.js
@@ -160,3 +178,39 @@
 - **Changes:** marketplace/backend/services/digestService.js, marketplace/backend/services/simpleDigestService.js, marketplace/backend/routes/digestRoutes.js
 - **Commit:** 1861b36 (included in NFT commit by prior worker staging)
 - **Notes:** digestService.js: getRisingCategory() catch returns null (not Fiction mock), getCollectiveIntelligence() genre catch returns [] (not fake genre list), getMilestonesFeed() no longer appends fake welcome/launch messages, getCommunityInsights() drops fabricated % tips. simpleDigestService.js: inline risingCategory set to null, communityInsights set to [], getSimpleBookOfTheDay() catch returns null (not fake book), getSimpleIntelligence() returns real metrics with empty genreData/successRates=null (not hardcoded stats), catch returns null, getSimpleFeed() no fake messages when empty, getMockVelocityData() removed entirely. digestRoutes.js /insights now queries real digest data instead of hardcoded strings.
+
+## Task: 046-P3-fix-math-random-sales-estimates-in-amazon-service.md + 048-P3-remove-dead-code-download-js.md
+- **Status:** COMPLETE
+- **Changes:** (none — both already implemented by prior workers)
+- **Commit:** (pre-existing)
+- **Notes:** Audit found both fixes already in place: estimateDailySales() in amazonService.js uses deterministic BSR tiers (no Math.random()), and download.js was already deleted (only downloadRoutes.js remains). Updated both task files from status:pending to status:completed.
+
+## Task: 097-P3-expand-integration-test-coverage.md
+- **Status:** COMPLETE
+- **Changes:** __tests__/course-enrollment.test.js, __tests__/email-sequences.test.js
+- **Commit:** 4412dd8
+- **Notes:** Both test files already existed as untracked files. Verified all 17 tests pass. Pre-existing 7 failures in checkout-price-validation.test.js are unrelated. No regressions.
+
+## Task: 100-P3-wire-analytics-service-into-admin-routes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/adminRoutes.js
+- **Commit:** a6a6899 + 31f2091
+- **Notes:** Imported AnalyticsService and instantiated analyticsService at module level. Replaced local getConversionRate() call in dashboard endpoint with analyticsService.getConversionRate(30) (returns {rate, totalOrders, paidOrders, period}). Added revenueStats from analyticsService.getOrderRevenue(30). Removed local getConversionRate() function. FIXED by worker_001: `new AnalyticsService()` was missing `db` arg → changed to `new AnalyticsService(db)` so `this.db.get(...)` works at runtime.
+
+## Task: 099-P2-fix-checkout-price-validation-test-stripe-health-mock.md
+- **Status:** COMPLETE
+- **Changes:** __tests__/checkout-price-validation.test.js
+- **Commit:** 7b23b06
+- **Notes:** Added `jest.mock('../marketplace/backend/services/stripeHealthService', ...)` returning `{ healthy: true }`. All 10 tests now pass (were 7 failing). No production code changes.
+
+## Task: 101-P3-add-download-routes-tests.md
+- **Status:** COMPLETE
+- **Changes:** __tests__/downloadRoutes.test.js (new)
+- **Commit:** 31f2091
+- **Notes:** Created 9-test suite covering downloadRoutes.js: token not found (404), expired token (410), max downloads (429), file not found (404), successful stream (200), upload without auth (401), upload without file (400), token info 404, token info 200. All pass.
+
+## Task: 102-P3-implement-federation-peer-http-sync.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/server.js, marketplace/backend/scripts/register-node.js, package.json
+- **Commit:** 31f2091
+- **Notes:** /api/network/search now fans out to networkConfig.networkPeers with 3s timeout via axios. Peer errors caught gracefully (unreachable = empty results). Peer results tagged with source_node/source_node_id/revenue_share_pct for checkout attribution. searchPeers() skips when networkEnabled=false or no peers. Added scripts/register-node.js (posts node info to REGISTRY_URL). Added `register-node` to package.json scripts.

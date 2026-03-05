@@ -8,7 +8,8 @@
     "dev": "nodemon marketplace/backend/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "register-node": "node marketplace/backend/scripts/register-node.js"
   },
   "jest": {
     "testEnvironment": "node",

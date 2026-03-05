@@ -1,0 +1,45 @@
+{
+  "checks": 43,
+  "popups_found": 7,
+  "popups_dismissed": 7,
+  "errors": 0,
+  "uptime_seconds": 90.920448,
+  "last_popup": "2026-02-28T04:48:57.054783",
+  "recent_popups": [
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:42.818396"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:45.241009"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:47.600824"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:49.966727"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:52.332765"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:54.687772"
+    },
+    {
+      "type": "overlay:dark_overlay",
+      "action": "escape",
+      "time": "2026-02-28T04:48:57.054766"
+    }
+  ]
+}
