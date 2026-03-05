@@ -3,9 +3,14 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const { safeMessage } = require('../utils/validate');
 const path = require('path');
-const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const stripeHealthService = require('../services/stripeHealthService');
+const {
+  sanitizeBrandId,
+  lookupBookPrice,
+  applyCouponToPrice,
+  getNextReadOffer
+} = require('../services/checkoutOfferService');
 
 // Checkout session rate limiter — 10 per hour per IP (CWE-770)
 // Disabled in test environment to allow test suites to run freely
@@ -24,72 +29,28 @@ const { processMixedOrder } = require('./checkoutMixed');
 const nftService = require('../services/nftService');
 const db = require('../database/database');
 
-// Sanitize brandId to prevent path traversal
-function sanitizeBrandId(brandId) {
-  if (!brandId || typeof brandId !== 'string') return null;
-  // Allow only alphanumeric, underscores, hyphens (matches actual brand directory names)
-  if (!/^[a-zA-Z0-9_-]+$/.test(brandId)) return null;
-  return brandId;
-}
-
-// Look up authoritative book price server-side from brand catalogs.
-// Never trust the client-supplied price.
-function lookupBookPrice(bookId, format, brandId) {
-  const brandsPath = path.join(__dirname, '../../frontend/brands');
-
-  let brandsToSearch;
-  if (brandId) {
-    brandsToSearch = [brandId];
-  } else {
-    try {
-      brandsToSearch = fs.readdirSync(brandsPath).filter(entry => {
-        try {
-          return fs.statSync(path.join(brandsPath, entry)).isDirectory();
-        } catch (e) {
-          return false;
-        }
-      });
-    } catch (err) {
-      console.error('Error reading brands directory:', err);
-      return null;
-    }
-  }
-
-  for (const brand of brandsToSearch) {
-    const catalogPath = path.join(brandsPath, brand, 'catalog.json');
-    try {
-      if (!fs.existsSync(catalogPath)) continue;
-      const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
-
-      // Search individual books
-      const books = catalog.books || [];
-      const book = books.find(b => b.id === bookId);
-      if (book) {
-        if (format === 'hardcover' && book.hardcoverPrice != null) {
-          return book.hardcoverPrice;
-        }
-        return book.price;
-      }
-
-      // Search collections/bundles
-      const collections = catalog.collections || [];
-      const collection = collections.find(c => c.id === bookId);
-      if (collection) {
-        return collection.price;
-      }
-    } catch (err) {
-      console.error(`Error reading catalog for brand ${brand}:`, err);
-    }
-  }
-
-  return null;
+function sanitizeMetadataValue(value, maxLength = 120) {
+  if (!value || typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, maxLength);
 }
 
 router.post('/create-session', checkoutLimiter, async (req, res) => {
   try {
     // Do not destructure 'price' from req.body — client-supplied price is untrusted
-    const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+    const {
+      bookId,
+      format,
+      brandId: rawBrandId,
+      bookTitle,
+      bookAuthor,
+      userEmail,
+      couponCode
+    } = req.body;
     const brandId = sanitizeBrandId(rawBrandId);
+    const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
+    const funnelSessionId = sanitizeMetadataValue(req.body.funnelSessionId, 120);
 
     if (!bookId || !format || !bookTitle || !bookAuthor || !userEmail) {
       return res.status(400).json({
@@ -116,7 +77,10 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Book not found in catalog' });
     }
 
+    const pricing = applyCouponToPrice(catalogPrice, couponCode);
+    const unitPrice = pricing.finalPrice;
     const orderId = `order_${Date.now()}_${bookId}`;
+    const nextReadOffer = getNextReadOffer(bookId, brandId);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -134,7 +98,7 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
                 bookAuthor: bookAuthor
               }
             },
-            unit_amount: Math.round(catalogPrice * 100),
+            unit_amount: Math.round(unitPrice * 100),
           },
           quantity: 1,
         },
@@ -150,14 +114,26 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
         bookAuthor: bookAuthor,
         userEmail: userEmail,
         orderId: orderId,
-        fulfillmentStatus: 'pending'
+        fulfillmentStatus: 'pending',
+        brandId: brandId || '',
+        couponCode: pricing.couponCode || '',
+        couponDiscount: pricing.discountAmount ? String(pricing.discountAmount) : '',
+        funnelId: funnelId || '',
+        funnelSessionId: funnelSessionId || ''
       }
     });
 
     res.json({ 
       checkoutUrl: session.url,
       sessionId: session.id,
-      orderId: orderId
+      orderId: orderId,
+      pricing: {
+        basePrice: pricing.basePrice,
+        finalPrice: pricing.finalPrice,
+        discountAmount: pricing.discountAmount,
+        couponCode: pricing.couponCode
+      },
+      nextReadOffer
     });
   } catch (error) {
     console.error('Stripe session creation error:', error);
@@ -183,11 +159,20 @@ router.get('/session/:sessionId', async (req, res) => {
     res.json({
       success: true,
       orderId: session.metadata?.orderId || sessionId,
+      bookId: session.metadata?.bookId || '',
       bookTitle: session.metadata?.bookTitle || 'Book purchase',
       bookAuthor: session.metadata?.bookAuthor || '',
+      brandId: session.metadata?.brandId || '',
+      format: session.metadata?.format || '',
       amount: session.amount_total || 0,
       currency: session.currency || 'usd',
       customerEmail: session.customer_email || session.customer_details?.email || '',
+      funnelId: session.metadata?.funnelId || '',
+      funnelSessionId: session.metadata?.funnelSessionId || '',
+      nextReadOffer: getNextReadOffer(
+        session.metadata?.bookId,
+        sanitizeBrandId(session.metadata?.brandId)
+      ),
       items: (session.line_items?.data || []).map(item => ({
         name: item.description || item.price?.product_data?.name || 'Book',
         quantity: item.quantity,
@@ -237,11 +222,35 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         bookTitle,
         bookAuthor,
         userEmail,
-        orderId,
-        format
+        orderId
       } = session.metadata;
 
       try {
+        if (session.metadata?.funnelId) {
+          const purchaseMetadata = JSON.stringify({
+            orderId,
+            amount: session.amount_total ? session.amount_total / 100 : null,
+            currency: session.currency || 'usd',
+            bookId,
+            bookTitle
+          });
+          db.run(
+            `INSERT INTO funnel_events (funnel_id, page_slug, event_type, session_id, metadata)
+             VALUES (?, ?, 'purchase', ?, ?)`,
+            [
+              session.metadata.funnelId,
+              session.metadata.funnelId,
+              session.metadata.funnelSessionId || null,
+              purchaseMetadata
+            ],
+            err => {
+              if (err) {
+                console.warn('Failed to record funnel purchase event:', err.message);
+              }
+            }
+          );
+        }
+
         // Send order confirmation email
         await emailService.sendOrderConfirmation({
           userEmail,

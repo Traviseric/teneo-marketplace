@@ -1,70 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
 const { safeMessage } = require('../utils/validate');
+const db = require('../database/database');
+const {
+    sanitizeBrandId,
+    lookupBookPrice,
+    applyCouponToPrice,
+    getNextReadOffer
+} = require('../services/checkoutOfferService');
 
-// Sanitize brandId to prevent path traversal
-function sanitizeBrandId(brandId) {
-    if (!brandId || typeof brandId !== 'string') return null;
-    if (!/^[a-zA-Z0-9_-]+$/.test(brandId)) return null;
-    return brandId;
-}
-
-// Look up authoritative book price server-side from brand catalogs.
-// Never trust the client-supplied price.
-function lookupBookPrice(bookId, format, brandId) {
-    const brandsPath = path.join(__dirname, '../../frontend/brands');
-
-    let brandsToSearch;
-    if (brandId) {
-        brandsToSearch = [brandId];
-    } else {
-        try {
-            brandsToSearch = fs.readdirSync(brandsPath).filter(entry => {
-                try {
-                    return fs.statSync(path.join(brandsPath, entry)).isDirectory();
-                } catch (e) {
-                    return false;
-                }
-            });
-        } catch (err) {
-            console.error('Error reading brands directory:', err);
-            return null;
-        }
-    }
-
-    for (const brand of brandsToSearch) {
-        const catalogPath = path.join(brandsPath, brand, 'catalog.json');
-        try {
-            if (!fs.existsSync(catalogPath)) continue;
-            const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
-
-            const books = catalog.books || [];
-            const book = books.find(b => b.id === bookId);
-            if (book) {
-                if (format === 'hardcover' && book.hardcoverPrice != null) {
-                    return book.hardcoverPrice;
-                }
-                return book.price;
-            }
-
-            const collections = catalog.collections || [];
-            const collection = collections.find(c => c.id === bookId);
-            if (collection) {
-                return collection.price;
-            }
-        } catch (err) {
-            console.error(`Error reading catalog for brand ${brand}:`, err);
-        }
-    }
-
-    return null;
+function sanitizeMetadataValue(value, maxLength = 120) {
+    if (!value || typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    return trimmed.slice(0, maxLength);
 }
 
 // Initialize order service
@@ -77,8 +31,18 @@ const isProduction = process.env.NODE_ENV === 'production';
 router.post('/create-session', async (req, res) => {
     try {
         // Do not destructure 'price' from req.body — client-supplied price is untrusted
-        const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+        const {
+            bookId,
+            format,
+            brandId: rawBrandId,
+            bookTitle,
+            bookAuthor,
+            userEmail,
+            couponCode
+        } = req.body;
         const brandId = sanitizeBrandId(rawBrandId);
+        const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
+        const funnelSessionId = sanitizeMetadataValue(req.body.funnelSessionId, 120);
 
         // Validate required fields
         if (!bookId || !format || !bookTitle || !bookAuthor || !userEmail) {
@@ -97,6 +61,10 @@ router.post('/create-session', async (req, res) => {
                 format
             });
         }
+
+        const pricing = applyCouponToPrice(catalogPrice, couponCode);
+        const unitPrice = pricing.finalPrice;
+        const nextReadOffer = getNextReadOffer(bookId, brandId);
 
         // Generate order ID
         const orderId = `order_${Date.now()}_${bookId}`;
@@ -119,7 +87,7 @@ router.post('/create-session', async (req, res) => {
                             bookAuthor
                         }
                     },
-                    unit_amount: Math.round(catalogPrice * 100),
+                    unit_amount: Math.round(unitPrice * 100),
                 },
                 quantity: 1,
             }],
@@ -132,7 +100,12 @@ router.post('/create-session', async (req, res) => {
                 format,
                 bookTitle,
                 bookAuthor,
-                userEmail
+                userEmail,
+                brandId: brandId || '',
+                couponCode: pricing.couponCode || '',
+                couponDiscount: pricing.discountAmount ? String(pricing.discountAmount) : '',
+                funnelId: funnelId || '',
+                funnelSessionId: funnelSessionId || ''
             },
             // Production-specific settings
             payment_intent_data: {
@@ -161,14 +134,25 @@ router.post('/create-session', async (req, res) => {
             currency: 'USD',
             metadata: {
                 sessionUrl: session.url,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                couponCode: pricing.couponCode || null,
+                discountAmount: pricing.discountAmount || 0,
+                brandId: brandId || null,
+                nextReadOffer
             }
         });
 
         res.json({ 
             checkoutUrl: session.url,
             sessionId: session.id,
-            orderId
+            orderId,
+            pricing: {
+                basePrice: pricing.basePrice,
+                finalPrice: pricing.finalPrice,
+                discountAmount: pricing.discountAmount,
+                couponCode: pricing.couponCode
+            },
+            nextReadOffer
         });
 
     } catch (error) {
@@ -191,6 +175,47 @@ router.post('/create-session', async (req, res) => {
                 message: isProduction ? 'An error occurred' : error.message
             });
         }
+    }
+});
+
+// Retrieve Stripe session details for success page analytics
+router.get('/session/:sessionId', async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+        if (!sessionId || !sessionId.startsWith('cs_')) {
+            return res.status(400).json({ error: 'Invalid session ID' });
+        }
+
+        const session = await stripe.checkout.sessions.retrieve(sessionId, {
+            expand: ['line_items']
+        });
+
+        res.json({
+            success: true,
+            orderId: session.metadata?.orderId || sessionId,
+            bookId: session.metadata?.bookId || '',
+            bookTitle: session.metadata?.bookTitle || 'Book purchase',
+            bookAuthor: session.metadata?.bookAuthor || '',
+            brandId: session.metadata?.brandId || '',
+            format: session.metadata?.format || '',
+            amount: session.amount_total || 0,
+            currency: session.currency || 'usd',
+            customerEmail: session.customer_email || session.customer_details?.email || '',
+            funnelId: session.metadata?.funnelId || '',
+            funnelSessionId: session.metadata?.funnelSessionId || '',
+            nextReadOffer: getNextReadOffer(
+                session.metadata?.bookId,
+                sanitizeBrandId(session.metadata?.brandId)
+            ),
+            items: (session.line_items?.data || []).map(item => ({
+                name: item.description || item.price?.product_data?.name || 'Book',
+                quantity: item.quantity,
+                amount: item.amount_total
+            }))
+        });
+    } catch (error) {
+        console.error('Error retrieving Stripe session:', error);
+        res.status(500).json({ error: 'Failed to retrieve session', message: safeMessage(error) });
     }
 });
 
@@ -283,6 +308,31 @@ async function handleCheckoutCompleted(session) {
     const { orderId, bookId, bookTitle, bookAuthor, userEmail } = session.metadata;
 
     try {
+        if (session.metadata?.funnelId) {
+            const purchaseMetadata = JSON.stringify({
+                orderId,
+                amount: session.amount_total ? session.amount_total / 100 : null,
+                currency: session.currency || 'usd',
+                bookId,
+                bookTitle
+            });
+            db.run(
+                `INSERT INTO funnel_events (funnel_id, page_slug, event_type, session_id, metadata)
+                 VALUES (?, ?, 'purchase', ?, ?)`,
+                [
+                    session.metadata.funnelId,
+                    session.metadata.funnelId,
+                    session.metadata.funnelSessionId || null,
+                    purchaseMetadata
+                ],
+                err => {
+                    if (err) {
+                        console.warn('Failed to record funnel purchase event:', err.message);
+                    }
+                }
+            );
+        }
+
         // Update order status to completed
         const { downloadToken, downloadExpiry } = await orderService.completeOrder(
             orderId,

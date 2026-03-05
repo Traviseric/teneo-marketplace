@@ -15,7 +15,8 @@ function getCoupons() {
     return {
         'SAVE10':    { type: 'percent', value: 10 },
         '10OFF':     { type: 'fixed',   value: 10 },
-        'WELCOME20': { type: 'percent', value: 20 }
+        'WELCOME20': { type: 'percent', value: 20 },
+        'NEXTREAD15': { type: 'percent', value: 15 }
     };
 }
 

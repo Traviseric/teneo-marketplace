@@ -1,6 +1,6 @@
-# Teneo Marketplace
+# OpenBazaar.ai
 
-Decentralized book marketplace with dual-mode payments (Stripe + crypto fallback), federation network, and censorship resistance. Public open-source repo — content generation lives in teneo-production (private).
+Open-source marketplace for creators, freelancers, and AI agents. Three pillars: product marketplace, gig platform, agent services. Dual-mode payments (Stripe + crypto), federation network, zero platform fees. Public repo — content generation lives in teneo-production (private).
 
 ## Lookup Table
 
@@ -14,26 +14,29 @@ Decentralized book marketplace with dual-mode payments (Stripe + crypto fallback
 | Teneo Auth SSO | See C:\code\.claude\TENEO-AUTH-SETUP.md Part 2B | OAuth 2.0, PKCE, JWT, teneo-auth, SSO |
 | Nostr/Alby Auth | Port from C:\code\arxmint\lib\nostr-auth.ts | NIP-07, NIP-98, Alby, nos2x, window.nostr |
 | Frontend | marketplace/frontend/ | brand-manager, cart, checkout, template |
+| Landing Site | openbazaar-site/ | index.html, style.css, main.js |
 | Brand System | marketplace/frontend/brands/ | config.json, catalog.json, variables |
 | Course Module | course-module/ | progress, module, lesson |
 | Funnel Module | funnel-module/ | funnel, landing, template |
 | Setup Wizard | setup-wizard/index.html | wizard, configure, setup |
 | Payments | routes/checkout.js, routes/cryptoCheckout.js | stripe, bitcoin, lightning, monero |
 | Federation | routes/network.js, network-registry.json | node, peer, discovery, revenue share |
+| Gig Platform | docs/OPENBAZAAR_AI_SPEC.md | gigs, jobs, proposals, contracts, escrow |
 | Docker | docker-compose.yml, Dockerfile | container, nginx, redis |
 | Config | .env.example, marketplace/backend/.env.example | STRIPE, SESSION_SECRET, EMAIL |
 | Component Library | marketplace/frontend/components-library/, COMPONENT_MANIFEST.json | component, template, {{VARIABLE}}, hero, CTA |
-| AI Builder Strategy | docs/development/AI_BUILDER_STRATEGY.md | natural language, page builder, Claude Code, ClickFunnels killer |
-| AI Discovery | marketplace/backend/routes/discovery.js, docs/features/AI_DISCOVERY_ENGINE.md | semantic search, embeddings, knowledge graph, suppression |
-| ArxMint Payments | See C:\code\arxmint — L402, Cashu, Fedimint, spend router | L402, ecash, NUT-24, Lightning, micropayments, payment SDK |
+| AI Builder Strategy | docs/development/AI_BUILDER_STRATEGY.md | natural language, page builder, Claude Code |
+| AI Discovery | marketplace/backend/routes/discovery.js, docs/features/AI_DISCOVERY_ENGINE.md | semantic search, embeddings, knowledge graph |
+| ArxMint Payments | See C:\code\arxmint — L402, Cashu, Fedimint, spend router | L402, ecash, NUT-24, Lightning, micropayments |
 | Docs | docs/ (75+ files by category) | architecture, deployment, features |
 
 ## Stack
 
 - Runtime: Node.js 18+
 - Framework: Express.js
-- Database: SQLite
-- Payments: Stripe + Bitcoin/Lightning/Monero
+- Database: SQLite (Postgres-ready)
+- Payments: Stripe + ArxMint (Lightning/ecash)
+- Auth: Magic links, OAuth SSO, Nostr NIP-07
 - Frontend: Vanilla HTML/CSS/JS (no framework)
 - Email: Nodemailer
 - Print: Lulu API
@@ -57,12 +60,13 @@ node test-purchase-flow.js                         # Test purchase flow
 - Brand configs: each brand gets config.json + catalog.json in frontend/brands/
 - Routes: one file per domain (checkout, admin, brands, network, auth)
 - Services: business logic separate from routes
-- Auth: pluggable providers (local magic link OR teneo-auth SSO)
+- Auth: pluggable providers (local magic link OR teneo-auth SSO OR Nostr)
 - Dual-mode: primary (Stripe) auto-fails-over to fallback (crypto)
+- Landing site: openbazaar-site/ (vanilla HTML, deployed to Vercel)
 
 ## Current Focus
 
-See OVERNIGHT_TASKS.md for active roadmap.
+See OVERNIGHT_TASKS.md for active roadmap. See docs/OPENBAZAAR_AI_SPEC.md for the full site spec including gig platform and agent services.
 
 ## TE Code Ecosystem Capabilities
 

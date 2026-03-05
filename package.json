@@ -1,7 +1,7 @@
 {
-  "name": "teneo-marketplace",
-  "version": "1.0.0",
-  "description": "Teneo Marketplace - Decentralized Book Network",
+  "name": "openbazaar-ai",
+  "version": "2.0.0",
+  "description": "OpenBazaar.ai — The open marketplace for creators, freelancers, and agents.",
   "main": "marketplace/backend/server.js",
   "scripts": {
     "start": "node marketplace/backend/server.js",
@@ -32,9 +32,14 @@
     },
     "forceExit": true
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["marketplace", "freelance", "gig-economy", "open-source", "bitcoin", "lightning", "ecash", "federation", "decentralized", "arxmint"],
+  "author": "Travis Eric",
+  "license": "MIT",
+  "homepage": "https://openbazaar.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Traviseric/openbazaar-ai.git"
+  },
   "dependencies": {
     "archiver": "^6.0.1",
     "axios": "^1.6.0",
