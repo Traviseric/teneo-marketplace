@@ -56,7 +56,7 @@
     <!-- Announcement Bar (Optional) -->
     <div class="bg-accent-color text-white text-center py-2 text-sm" x-data="{ show: true }" x-show="show">
         <span>{{ANNOUNCEMENT_TEXT|🚀 Limited Time: 20% Off Our Premium Package}}</span>
-        <button @click="show = false" class="ml-4">×</button>
+        <button @click="show = false" class="ml-4" aria-label="Dismiss announcement">×</button>
     </div>
 
     <!-- Navigation -->
@@ -79,13 +79,16 @@
                 </a>
                 
                 <!-- Mobile Menu Toggle -->
-                <button @click="mobileMenu = !mobileMenu" class="md:hidden">
-                    <i class="fas fa-bars text-2xl"></i>
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden"
+                        aria-label="Toggle navigation menu"
+                        :aria-expanded="mobileMenu.toString()"
+                        aria-controls="mobile-nav-menu">
+                    <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
                 </button>
             </div>
-            
+
             <!-- Mobile Menu -->
-            <div x-show="mobileMenu" x-transition class="md:hidden pb-4">
+            <div id="mobile-nav-menu" x-show="mobileMenu" x-transition class="md:hidden pb-4">
                 <a href="#features" class="block py-2 hover:text-accent-color">Features</a>
                 <a href="#books" class="block py-2 hover:text-accent-color">Books</a>
                 <a href="#about" class="block py-2 hover:text-accent-color">About</a>
@@ -223,10 +226,12 @@
                 </div>
                 
                 <!-- Navigation dots -->
-                <div class="flex justify-center mt-6 space-x-2">
-                    <button @click="activeTestimonial = 0" 
+                <div class="flex justify-center mt-6 space-x-2" role="group" aria-label="Testimonial navigation">
+                    <button @click="activeTestimonial = 0"
                             :class="{ 'bg-accent-color': activeTestimonial === 0, 'bg-gray-300': activeTestimonial !== 0 }"
-                            class="w-3 h-3 rounded-full"></button>
+                            class="w-3 h-3 rounded-full"
+                            aria-label="Go to testimonial 1"
+                            :aria-current="activeTestimonial === 0 ? 'true' : 'false'"></button>
                     <!-- Add more dots -->
                 </div>
             </div>
@@ -273,9 +278,9 @@
                 <div>
                     <h4 class="font-semibold mb-4">Connect</h4>
                     <div class="flex space-x-4 text-2xl">
-                        <a href="{{SOCIAL_FACEBOOK}}" class="hover:text-accent-color"><i class="fab fa-facebook"></i></a>
-                        <a href="{{SOCIAL_TWITTER}}" class="hover:text-accent-color"><i class="fab fa-twitter"></i></a>
-                        <a href="{{SOCIAL_INSTAGRAM}}" class="hover:text-accent-color"><i class="fab fa-instagram"></i></a>
+                        <a href="{{SOCIAL_FACEBOOK}}" class="hover:text-accent-color" aria-label="Facebook"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                        <a href="{{SOCIAL_TWITTER}}" class="hover:text-accent-color" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="{{SOCIAL_INSTAGRAM}}" class="hover:text-accent-color" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
