@@ -22,6 +22,8 @@ class ArxMintService {
     } else {
       console.log(`[ArxMint] Enabled — API at ${this.apiUrl}`);
     }
+    // Indicate which methods are live vs stub so operators see this at startup
+    console.warn('[ArxMint] Stub methods (return NOT_IMPLEMENTED): createL402Invoice, verifyL402Payment, acceptCashuToken');
   }
 
   /**
@@ -36,10 +38,6 @@ class ArxMintService {
    * TODO: port from C:\code\arxmint\app\api\l402\route.ts
    */
   async createL402Invoice(amountSats, resourceId, description) {
-    if (!this.enabled) {
-      throw new Error('[ArxMint] Not configured — set ARXMINT_API_URL');
-    }
-
     // TODO: implement once ArxMint SDK is available
     // const response = await axios.post(`${this.apiUrl}/l402/invoice`, {
     //   amount_sats: amountSats,
@@ -48,7 +46,8 @@ class ArxMintService {
     // });
     // return response.data; // { invoice, macaroon, payment_hash }
 
-    throw new Error('[ArxMint] createL402Invoice: not yet implemented — see TODO in arxmintService.js');
+    console.warn('[ArxMint] createL402Invoice not yet implemented — L402 payment unavailable');
+    return { success: false, error: 'L402 payments not yet implemented', code: 'NOT_IMPLEMENTED' };
   }
 
   /**
@@ -62,10 +61,6 @@ class ArxMintService {
    * TODO: port from C:\code\arxmint\app\api\l402\route.ts
    */
   async verifyL402Payment(preimage, macaroon) {
-    if (!this.enabled) {
-      throw new Error('[ArxMint] Not configured — set ARXMINT_API_URL');
-    }
-
     // TODO: implement once ArxMint SDK is available
     // const response = await axios.post(`${this.apiUrl}/l402/verify`, {
     //   preimage,
@@ -73,7 +68,8 @@ class ArxMintService {
     // });
     // return response.data; // { valid, resource_id }
 
-    throw new Error('[ArxMint] verifyL402Payment: not yet implemented — see TODO in arxmintService.js');
+    console.warn('[ArxMint] verifyL402Payment not yet implemented');
+    return { valid: false, error: 'L402 payment verification not yet implemented', code: 'NOT_IMPLEMENTED' };
   }
 
   /**
@@ -87,10 +83,6 @@ class ArxMintService {
    * TODO: port from C:\code\arxmint\lib\cashu-paywall.ts
    */
   async acceptCashuToken(token, expectedAmount) {
-    if (!this.enabled) {
-      throw new Error('[ArxMint] Not configured — set ARXMINT_API_URL');
-    }
-
     // TODO: implement once ArxMint SDK is available
     // const response = await axios.post(`${this.apiUrl}/cashu/melt`, {
     //   token,
@@ -98,7 +90,8 @@ class ArxMintService {
     // });
     // return response.data; // { accepted, amount_sats }
 
-    throw new Error('[ArxMint] acceptCashuToken: not yet implemented — see TODO in arxmintService.js');
+    console.warn('[ArxMint] acceptCashuToken not yet implemented — Cashu payments unavailable');
+    return { success: false, error: 'Cashu payments not yet implemented', code: 'NOT_IMPLEMENTED' };
   }
 
   /**
