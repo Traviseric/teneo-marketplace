@@ -114,10 +114,9 @@ describe('POST /api/crypto/create-order — successful order creation', () => {
         await request(app)
             .post('/api/crypto/create-order')
             .send({
-                bookId: 'test-book',
+                bookId: 'consciousness-revolution',
                 email: 'buyer@example.com',
-                paymentMethod: 'monero',
-                amountUsd: 15.00
+                paymentMethod: 'monero'
             });
 
         expect(mockDbRun).toHaveBeenCalledTimes(1);
