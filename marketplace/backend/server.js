@@ -115,7 +115,7 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`, "https://js.stripe.com"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`, "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
             imgSrc: ["'self'", "data:", "https:"],
@@ -605,16 +605,21 @@ app.use('/api/*', (req, res) => {
 });
 
 // Helper: serve an HTML file with the per-request CSP nonce injected into
-// all inline <script> blocks (those without a src= attribute). CWE-693.
+// all inline <script> and <style> blocks. CWE-693.
 const _frontendDir = path.resolve(path.join(__dirname, '..', 'frontend'));
 async function sendNoncedHTML(res, filePath) {
     try {
         const html = await fs.readFile(filePath, 'utf8');
         const nonce = res.locals.cspNonce || '';
         // Inject nonce only on inline scripts (no src= attribute)
-        const injected = html.replace(
+        let injected = html.replace(
             /<script(?!\s[^>]*\bsrc\s*=)([^>]*)>/g,
             (_, attrs) => `<script${attrs} nonce="${nonce}">`
+        );
+        // Inject nonce into inline <style> blocks (styleSrc nonce, CWE-693)
+        injected = injected.replace(
+            /<style([^>]*)>/g,
+            (_, attrs) => `<style${attrs} nonce="${nonce}">`
         );
         res.type('html').send(injected);
     } catch (err) {
