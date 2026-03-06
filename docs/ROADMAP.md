@@ -33,7 +33,7 @@ This is what makes the project worth using over everything else — not the cryp
 | Payments | Stripe + ArxMint Lightning | Stripe working, ArxMint provider built |
 | Auth | Magic links + OAuth SSO + Nostr (backend) | Backend done, frontend partial |
 | Email | Nodemailer (SMTP + Resend) | Working |
-| Print | Lulu API | Working |
+| Print/POD | Lulu API + Printful API | Lulu working; Printful order + webhook backend integrated |
 | Frontend | Vanilla HTML/CSS/JS | Working |
 | Deploy | Vercel (frontend + serverless API) | Live at openbazaar.ai |
 | File storage | Supabase Storage (planned) | Not wired |
@@ -43,7 +43,7 @@ This is what makes the project worth using over everything else — not the cryp
 - **Project:** `ncddvxglmnnfagyyupeu`
 - **Dashboard:** https://supabase.com/dashboard/project/ncddvxglmnnfagyyupeu
 - **API URL:** `https://ncddvxglmnnfagyyupeu.supabase.co`
-- **Schema:** 40 tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs
+- **Schema:** 40+ tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs, webhooks
 - **Migration file:** `marketplace/backend/database/supabase-migration.sql`
 - **Note:** App users table is `profiles` (not `users` — Supabase reserves that for `auth.users`)
 
@@ -62,7 +62,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 
 ## What's Built (Inventory)
 
-### Working (26 routes, 27+ services, 17 test suites passing)
+### Working (27+ routes, 30+ services, 17 test suites passing)
 
 - [x] Express.js backend with Supabase Postgres (40 tables, migrated from SQLite)
 - [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
@@ -75,13 +75,14 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - [x] Course platform (CRUD, enrollment, quizzes, certificates, progress tracking)
 - [x] Funnel builder module (4 templates, save/load/deploy)
 - [x] AI discovery engine (semantic search via OpenAI + keyword fallback)
-- [x] Print-on-demand (full Lulu API integration)
+- [x] Print-on-demand (Lulu integration + Printful provider integration scaffold)
 - [x] Publisher features (Amazon book tracking, leaderboards, badges, digests)
 - [x] Component library (12/50 — heroes, CTAs, base system)
 - [x] Network/federation registry and cross-node search (RSA-signed)
 - [x] Secure download system with token validation and rate limiting
 - [x] Rate limiting, CSRF protection, Helmet headers, session management
-- [x] Storefront API (`/api/storefront/catalog`, `/api/storefront/fulfill`)
+- [x] Storefront API (`/api/storefront/catalog`, `/api/storefront/checkout`, `/api/storefront/fulfill`)
+- [x] Printful webhook endpoint (`/api/webhooks/printful`) with signature verification and idempotent event logging
 - [x] Payment provider interface + ArxMint provider (redirect to arxmint.com/pay)
 - [x] Landing page with Persian bazaar design system (Cinzel, gold/teal/lapis palette)
 - [x] Vercel deployment config (landing page + store + API routing)
@@ -92,6 +93,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - [ ] Frontend auth UI (backend done, login/register pages exist but not unified)
 - [ ] Course checkout flow (components exist, not integrated into marketplace checkout)
 - [ ] Email service production config (code done, needs SMTP credentials on Vercel)
+- [ ] Printful production wiring (set `PRINTFUL_*` env vars, register webhook, validate first live POD order)
 - [ ] Unified design system across 33 HTML pages (each has different styling)
 - [ ] Federation revenue sharing (schema exists, not wired to checkout flow)
 
@@ -130,6 +132,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - [ ] **Verify API responds** at openbazaar.ai/api/storefront/catalog
 - [ ] **Wire login flow** — login.html and account-dashboard.html work with auth backend
 - [ ] **Test purchase flow** — Stripe test checkout → order created in Supabase → download delivered
+- [ ] **Test POD purchase flow** — storefront checkout → `/api/storefront/fulfill` → Printful order created → webhook updates order status/tracking
 - [ ] **Unify nav links** — landing page CTAs ("Start Selling", "Browse Marketplace") go to working pages
 
 ### Success Criteria
@@ -138,6 +141,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - openbazaar.ai/api/health returns 200
 - A test user can sign up, browse products, and complete a Stripe test purchase
 - Order appears in Supabase `orders` table
+- A POD test order reaches `pod_submitted` and receives shipping/tracking updates via webhook
 
 ---
 
@@ -172,6 +176,7 @@ Creator gets: a working store in 60 seconds
   - Store name, tagline, description
   - Color palette and font selections (from design system presets)
   - Product list (title, description, price, image placeholder, fulfillment type)
+  - POD metadata (provider, variant/product IDs, shipping requirements) for physical goods
   - Email capture enabled/disabled
   - Payment provider (Stripe / ArxMint / both)
 - [ ] **AI prompt pipeline** — takes natural language input, outputs store config JSON:
@@ -261,6 +266,13 @@ These features don't exist yet. Research #3 says they BLOCK switching — creato
 - [ ] License key generation and validation
 - [ ] File versioning (update products, buyers get latest)
 
+### 2.6 Physical & POD Operations
+
+- [ ] Printful catalog/variant sync so merchants can choose valid `variant_id`s in UI
+- [ ] Shipping rate estimation wiring in checkout for physical/POD products
+- [ ] Merchant UI for mapping products to fulfillment providers and variants
+- [ ] Fulfillment status dashboard (submitted, in production, shipped, failed/canceled)
+
 ### Success Criteria
 
 - A creator can build a funnel: landing page → email capture → sequence → sale
@@ -284,7 +296,7 @@ Provider built (`services/arxmintProvider.js`), storefront API built (`routes/st
 - [ ] **BIP21 unified QR** — on-chain URI with `lightning=` BOLT11 for frictionless crypto checkout
 - [ ] **Payment-agnostic order state machine** — `pending → confirmed → fulfilled → delivered`; order doesn't care how it was paid
 - [ ] **ArxMint Bazaar integration** — arxmint.com/bazaar fetches from openbazaar.ai/api/storefront/catalog
-- [ ] **Fulfillment webhook** — ArxMint POSTs to /api/storefront/fulfill after payment
+- [ ] **ArxMint fulfillment webhook** — ArxMint POSTs to `/api/storefront/fulfill` after payment (Printful webhook pattern is already implemented at `/api/webhooks/printful`)
 - [ ] **Zap-to-unlock** — NIP-57 zap → content unlocked for items < $5 (no cart needed)
 
 ### 3.2 Nostr Authentication
