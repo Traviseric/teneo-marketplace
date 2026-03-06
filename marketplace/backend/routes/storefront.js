@@ -407,15 +407,25 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
     // Parse body — may arrive as raw buffer (for signature verification) or parsed JSON
     let body;
     if (Buffer.isBuffer(req.body)) {
-      // Verify webhook signature if ArxMint
-      const isValid = arxmintProvider.verifyWebhook(req.body, req.headers);
-      if (arxmintProvider.webhookSecret && !isValid) {
-        console.warn('[Fulfill] Invalid webhook signature');
-        return res.status(401).json({ error: 'Invalid signature' });
-      }
       body = JSON.parse(req.body.toString());
     } else {
       body = req.body;
+    }
+
+    // Fail closed in production when no webhook secret is configured
+    if (process.env.NODE_ENV === 'production' && !arxmintProvider.webhookSecret) {
+      console.error('[Fulfill] ARXMINT_WEBHOOK_SECRET not set — rejecting unauthenticated fulfill request');
+      return res.status(401).json({ error: 'Webhook authentication not configured' });
+    }
+
+    // Always verify signature when secret is configured, regardless of body type (CWE-306 fix)
+    if (arxmintProvider.webhookSecret) {
+      const bodyBuffer = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(body));
+      const isValid = arxmintProvider.verifyWebhook(bodyBuffer, req.headers);
+      if (!isValid) {
+        console.warn('[Fulfill] Invalid webhook signature');
+        return res.status(401).json({ error: 'Invalid signature' });
+      }
     }
 
     const {
