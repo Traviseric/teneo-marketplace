@@ -1,80 +1,96 @@
 {
-  "generated_at": "2026-02-28T20:00:00Z",
-  "sources_processed": ["OVERNIGHT_TASKS.md", "conductor_output.json", "review_audit_output.json", "worker_001_output.json", "worker_002_output.json"],
-  "synthesis_round": 6,
-  "note": "Round 6: Tasks 103+104 verified complete (review_audit). Synthesizing remaining items from OVERNIGHT_TASKS.md conductor list + direct file verification. 8 items confirmed already done; 1 genuinely missing (quiz schema/routes); 3 deferred.",
-  "total_findings": 14,
-  "accepted": 1,
+  "generated_at": "2026-03-06T00:00:00Z",
+  "sources_processed": ["security_audit_output.json", "review_audit_output.json", "OVERNIGHT_TASKS.md"],
+  "synthesis_round": 8,
+  "note": "Round 8: All 10 prior tasks completed (verified by review_audit). 1 partial: magic link verify redirect still leaks error.message at auth.js:243. CSRF exemption for /api/storefront was previously deferred but remains unaddressed — accepting this session. 2 tasks created.",
+  "total_findings": 19,
+  "accepted": 2,
   "rejected": 8,
-  "deferred": 3,
+  "deferred": 9,
   "split": 0,
   "merged": 0,
-  "new_task_files_created": ["105-P2-add-quiz-schema-and-routes"],
-  "pre_existing_completed": ["103-P0-persist-federation-revenue-share-to-db", "104-P3-expand-auth-payment-integration-tests"],
+  "new_task_files_created": [
+    "001-P2-fix-magic-link-error-message-leak",
+    "002-P2-fix-csrf-exemption-storefront-routes"
+  ],
   "rejections": [
     {
-      "finding": "P1 — Email open/click tracking (task 075) — emailMarketingService.js doesn't track opens/clicks",
-      "reason": "ALREADY DONE — emailMarketingService.js has tracking methods; emailTracking.js route exists in routes/"
+      "finding": "security_audit: Session ID leaked in /api/admin/auth-status response (CWE-200)",
+      "reason": "Already fixed — review_audit VERIFIED commit 3224e89"
     },
     {
-      "finding": "P1 — Cart abandonment email cron (task 076) — no scheduled job",
-      "reason": "ALREADY DONE — cronJobs.js confirmed present in marketplace/backend/services/"
+      "finding": "security_audit: PDF upload uses unsanitized bookId as filename (CWE-22)",
+      "reason": "Already fixed — review_audit VERIFIED commit 8a41ece (task 003)"
     },
     {
-      "finding": "P1 — Funnel conversion tracking (task 077) — funnel routes don't emit analytics events",
-      "reason": "ALREADY DONE (local tracking) — funnels.js has /track endpoint + conversion_rate calculation; schema-funnels.sql exists"
+      "finding": "security_audit: Crypto checkout accepts client-supplied price (CWE-602)",
+      "reason": "Already fixed — review_audit VERIFIED commit 1f43f84 (task 001)"
     },
     {
-      "finding": "P1 — Verify/fix IPFS auto-pinning on purchase — nftService.js may still be a stub",
-      "reason": "FALSE POSITIVE (pre-existing rejected) — lessons.json round5 confirmed: nftService.js line 158 makes real HTTP POST to Pinata cloud API"
+      "finding": "security_audit: multer <2.1.1 DoS vulnerability (CWE-674)",
+      "reason": "Already fixed — review_audit VERIFIED commit ad5ee75 (task 004)"
     },
     {
-      "finding": "P2 — Create distinct AI page builder HTML templates (task 088)",
-      "reason": "ALREADY DONE — story-driven.html, reader-magnet.html, course-launch.html all exist in funnel-module/templates/"
+      "finding": "security_audit: CSP unsafe-inline for scripts and styles (CWE-693)",
+      "reason": "Already fixed — review_audit VERIFIED commit 9e0dec2 (nonces)"
     },
     {
-      "finding": "P2 — Fix PERCENTILE_CONT dead code in digestService.js (task 092)",
-      "reason": "ALREADY DONE — grep for PERCENTILE_CONT in digestService.js returns no matches"
+      "finding": "security_audit: SSRF via federation peer endpoints (CWE-918)",
+      "reason": "Already fixed — review_audit VERIFIED commit ae63af1"
     },
     {
-      "finding": "P2 — Fix days SQL template literal in amazonService.js (task 093)",
-      "reason": "ALREADY DONE — amazonService.js uses parseInt(days) + parameterized ? placeholder confirmed at lines 709-713"
+      "finding": "security_audit: Error masking — full messages in non-production (CWE-209)",
+      "reason": "Already fixed — review_audit VERIFIED commit 62d36da (EXPOSE_ERRORS flag)"
     },
     {
-      "finding": "P2 — Document OPENAI_API_KEY and PINATA_* env vars (task 086)",
-      "reason": "ALREADY DONE — marketplace/backend/.env.example has OPENAI_API_KEY at line 35 and PINATA_* at lines 70-77 with feature descriptions"
+      "finding": "OVERNIGHT_TASKS.md P0: Persist federation revenue share to DB",
+      "reason": "Already implemented — orderService.js:92 has INSERT INTO network_revenue_shares; schema.sql has the table. Task 103 was verified complete."
     }
   ],
   "deferrals": [
     {
-      "finding": "P1 — Port ArxMint L402/Cashu payments — arxmintService.js stubs",
-      "reason": "BLOCKED — C:\\code\\arxmint does not exist. Already logged as HT-007 in HUMAN_TASKS.md."
+      "finding": "security_audit: OAuth callback error.message in redirect URL (CWE-209) at auth.js:213",
+      "reason": "Already fixed — VERIFIED commit 9ce08d3. Remaining issue (line 243) captured as task 001."
     },
     {
-      "finding": "P3 — Browser last-mile tests (tasks 082/066)",
-      "reason": "BLOCKED — no Chrome automation available. Re-run when Chrome accessible."
+      "finding": "security_audit: tar transitive dep path traversal (CWE-22, devdep)",
+      "reason": "Transitive devdep, not directly controllable. Toolbox upgrade already reduced total vulns 51→10."
     },
     {
-      "finding": "P3 — Fix conductor DIGEST loop bug",
-      "reason": "DEFERRED — orchestrator source files not locatable; no Python scripts in .overnight/. Out of scope for worker tasks."
-    }
-  ],
-  "accepted_tasks": [
+      "finding": "security_audit: serialize-javascript devdep RCE (CWE-96)",
+      "reason": "DevDep only, not production runtime. Toolbox upgrade already applied."
+    },
     {
-      "id": "105",
-      "priority": "P2",
-      "title": "Add quiz schema and routes for course module",
-      "source": "OVERNIGHT_TASKS.md (task 083)",
-      "verification": "CONFIRMED NOT DONE — no quiz.js in routes/, no quiz table in schema.sql. grep for 'quiz' in schema.sql returns no matches."
+      "finding": "security_audit: immutable <4.3.8 prototype pollution (CWE-1321, devdep)",
+      "reason": "DevDep only, not production runtime. Toolbox upgrade already applied."
+    },
+    {
+      "finding": "security_audit: csurf deprecated package (CWE-1188)",
+      "reason": "sameSite=strict provides strong CSRF protection. Migration non-trivial, low urgency."
+    },
+    {
+      "finding": "security_audit: Stripe key runtime update via admin UI (CWE-798)",
+      "reason": "Admin-only behind auth. Low real-world impact. Requires product decision to remove."
+    },
+    {
+      "finding": "security_audit: Download abuse tracking in-memory Map (CWE-404)",
+      "reason": "Low severity. Redis not yet justified at current scale."
+    },
+    {
+      "finding": "OVERNIGHT_TASKS.md P1: Implement ArxMint L402 payments",
+      "reason": "requires_human — C:\\code\\arxmint source does not exist. Cannot port from non-existent codebase."
+    },
+    {
+      "finding": "OVERNIGHT_TASKS.md P3: Browser last-mile tests, integration tests",
+      "reason": "Blocked (no Chrome) or low priority. Not blocking revenue."
     }
   ],
   "project_declared": {
-    "total": 14,
-    "accepted": 1,
+    "total": 5,
+    "accepted": 0,
     "merged": 0,
-    "rejected": 8,
-    "deferred": 3,
-    "completed_already": 2,
-    "notes": "Human-required items (ArxMint, TENEO_CLIENT_SECRET rotation) already tracked in HUMAN_TASKS.md."
+    "rejected": 1,
+    "deferred": 4,
+    "notes": "P0 federation revenue share already done. P1 ArxMint deferred (human-blocked). P3 tests deferred."
   }
 }

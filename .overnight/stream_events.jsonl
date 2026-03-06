@@ -1,231 +1,391 @@
-{"ts": "2026-03-01T01:56:26.397059+00:00", "type": "run_start", "run_id": "run_20260228_185625"}
-{"ts": "2026-03-01T01:56:27.214224+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "discovery", "round": 1}
-{"ts": "2026-03-01T01:58:03.834018+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "TASK_SYNTHESIZER", "duration_s": 96.0}
-{"ts": "2026-03-01T01:58:04.643769+00:00", "type": "progress", "total": 0, "fixed": 0, "remaining": 0, "phase": "discovery", "stuck_rounds": 1, "status": "in_progress"}
-{"ts": "2026-03-01T01:58:05.047975+00:00", "type": "box_start", "box": "TASK_SYNTHESIZER", "phase": "discovery", "round": 1}
-{"ts": "2026-03-01T02:01:15.950922+00:00", "type": "box_complete", "box": "TASK_SYNTHESIZER", "success": true, "next_box": "WORKER", "duration_s": 190.5}
-{"ts": "2026-03-01T02:01:16.493049+00:00", "type": "progress", "total": 0, "fixed": 0, "remaining": 0, "phase": "synthesize", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:01:16.950022+00:00", "type": "box_start", "box": "WORKER", "phase": "synthesize", "round": 1}
-{"ts": "2026-03-01T02:01:17.592459+00:00", "type": "worker_start", "lane": 1, "task": "active"}
-{"ts": "2026-03-01T02:01:33.339246+00:00", "type": "worker_start", "lane": 2, "task": "active"}
-{"ts": "2026-03-01T02:03:28.842587+00:00", "type": "worker_complete", "lane": 1, "success": true, "tasks_completed": 1}
-{"ts": "2026-03-01T02:05:44.322127+00:00", "type": "worker_complete", "lane": 2, "success": true, "tasks_completed": 1}
-{"ts": "2026-03-01T02:05:45.050599+00:00", "type": "box_complete", "box": "WORKER", "success": true, "next_box": "CONDUCTOR", "duration_s": 267.7}
-{"ts": "2026-03-01T02:05:45.628070+00:00", "type": "progress", "total": 0, "fixed": 2, "remaining": 0, "phase": "execute", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:05:46.100584+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "execute", "round": 1}
-{"ts": "2026-03-01T02:06:52.044670+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "REVIEW_AUDIT", "duration_s": 65.4}
-{"ts": "2026-03-01T02:06:52.668775+00:00", "type": "progress", "total": 0, "fixed": 2, "remaining": 0, "phase": "execute", "stuck_rounds": 1, "status": "in_progress"}
-{"ts": "2026-03-01T02:06:53.103947+00:00", "type": "box_start", "box": "REVIEW_AUDIT", "phase": "execute", "round": 1}
-{"ts": "2026-03-01T02:08:38.799566+00:00", "type": "box_complete", "box": "REVIEW_AUDIT", "success": true, "next_box": "CONDUCTOR", "duration_s": 105.4}
-{"ts": "2026-03-01T02:08:39.214913+00:00", "type": "progress", "total": 2, "fixed": 2, "remaining": 0, "phase": "audit", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:08:39.623431+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:10:10.415259+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "TASK_SYNTHESIZER", "duration_s": 90.4}
-{"ts": "2026-03-01T02:10:11.024935+00:00", "type": "progress", "total": 2, "fixed": 2, "remaining": 0, "phase": "audit", "stuck_rounds": 1, "status": "in_progress"}
-{"ts": "2026-03-01T02:10:11.476711+00:00", "type": "box_start", "box": "TASK_SYNTHESIZER", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:17:37.562662+00:00", "type": "box_complete", "box": "TASK_SYNTHESIZER", "success": true, "next_box": "WORKER", "duration_s": 445.7}
-{"ts": "2026-03-01T02:17:38.343821+00:00", "type": "progress", "total": 2, "fixed": 2, "remaining": 0, "phase": "synthesize", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:17:38.752315+00:00", "type": "box_start", "box": "WORKER", "phase": "synthesize", "round": 1}
-{"ts": "2026-03-01T02:17:39.455275+00:00", "type": "worker_start", "lane": 1, "task": "active"}
-{"ts": "2026-03-01T02:22:10.479769+00:00", "type": "worker_complete", "lane": 1, "success": true, "tasks_completed": 1}
-{"ts": "2026-03-01T02:22:11.244747+00:00", "type": "box_complete", "box": "WORKER", "success": true, "next_box": "CONDUCTOR", "duration_s": 272.0}
-{"ts": "2026-03-01T02:22:11.903577+00:00", "type": "progress", "total": 2, "fixed": 1, "remaining": 1, "phase": "execute", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:22:12.326649+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "execute", "round": 1}
-{"ts": "2026-03-01T02:23:18.044378+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "REVIEW_AUDIT", "duration_s": 65.4}
-{"ts": "2026-03-01T02:23:18.582825+00:00", "type": "progress", "total": 2, "fixed": 1, "remaining": 1, "phase": "execute", "stuck_rounds": 1, "status": "in_progress"}
-{"ts": "2026-03-01T02:23:18.980140+00:00", "type": "box_start", "box": "REVIEW_AUDIT", "phase": "execute", "round": 1}
-{"ts": "2026-03-01T02:25:09.857573+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 4, "recent_history": ["CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:25:09.857878+00:00", "type": "box_complete", "box": "REVIEW_AUDIT", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
-{"ts": "2026-03-01T02:25:10.362367+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 0, "status": "in_progress"}
-{"ts": "2026-03-01T02:25:10.780320+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:27:11.716218+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 4, "recent_history": ["REVIEW_AUDIT", "CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:27:11.716532+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
-{"ts": "2026-03-01T02:27:12.456985+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 1, "status": "in_progress"}
-{"ts": "2026-03-01T02:27:12.858979+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:29:43.783252+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 5, "recent_history": ["CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:29:43.783514+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
-{"ts": "2026-03-01T02:29:44.515892+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 2, "status": "in_progress"}
-{"ts": "2026-03-01T02:29:44.911669+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:32:00.717512+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 5, "recent_history": ["TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:32:00.717799+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
-{"ts": "2026-03-01T02:32:01.397386+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 3, "status": "in_progress"}
-{"ts": "2026-03-01T02:32:01.793172+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:34:37.737138+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 6, "recent_history": ["WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:34:37.737598+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
-{"ts": "2026-03-01T02:34:38.425239+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 4, "status": "in_progress"}
-{"ts": "2026-03-01T02:34:38.951370+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:37:09.907273+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 7, "recent_history": ["CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:37:09.907668+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
-{"ts": "2026-03-01T02:37:10.369029+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 5, "status": "in_progress"}
-{"ts": "2026-03-01T02:37:10.784097+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:40:21.761682+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 7, "recent_history": ["REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:40:21.762020+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 190.5}
-{"ts": "2026-03-01T02:40:22.553855+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 6, "status": "in_progress"}
-{"ts": "2026-03-01T02:40:22.971220+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:41:53.830912+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:41:53.831203+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 90.4}
-{"ts": "2026-03-01T02:41:54.309693+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 7, "status": "in_progress"}
-{"ts": "2026-03-01T02:41:54.733789+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:43:35.635559+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:43:35.635804+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 100.4}
-{"ts": "2026-03-01T02:43:36.142620+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 8, "status": "plateaued"}
-{"ts": "2026-03-01T02:43:36.555088+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:44:52.454027+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:44:52.454364+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 75.4}
-{"ts": "2026-03-01T02:44:52.959111+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 9, "status": "plateaued"}
-{"ts": "2026-03-01T02:44:53.362892+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:46:59.100534+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:46:59.100883+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
-{"ts": "2026-03-01T02:46:59.582229+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 10, "status": "plateaued"}
-{"ts": "2026-03-01T02:47:00.019172+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:49:30.803444+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:49:30.803928+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
-{"ts": "2026-03-01T02:49:31.419297+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 11, "status": "plateaued"}
-{"ts": "2026-03-01T02:49:31.912423+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:52:07.710285+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:52:07.710634+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
-{"ts": "2026-03-01T02:52:08.474171+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 12, "status": "plateaued"}
-{"ts": "2026-03-01T02:52:08.896067+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:54:24.829381+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:54:24.829793+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
-{"ts": "2026-03-01T02:54:25.452328+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 13, "status": "plateaued"}
-{"ts": "2026-03-01T02:54:25.851460+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:56:06.586894+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:56:06.587185+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 100.4}
-{"ts": "2026-03-01T02:56:07.008680+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 14, "status": "plateaued"}
-{"ts": "2026-03-01T02:56:07.405522+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T02:58:23.311366+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T02:58:23.311691+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
-{"ts": "2026-03-01T02:58:23.971698+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 15, "status": "plateaued"}
-{"ts": "2026-03-01T02:58:24.378495+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:00:55.311295+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:00:55.311594+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
-{"ts": "2026-03-01T03:00:55.726088+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 16, "status": "plateaued"}
-{"ts": "2026-03-01T03:00:56.122929+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:02:36.991776+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:02:36.992052+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 100.4}
-{"ts": "2026-03-01T03:02:37.811519+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 17, "status": "plateaued"}
-{"ts": "2026-03-01T03:02:38.214533+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:05:18.956849+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:05:18.957130+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 160.4}
-{"ts": "2026-03-01T03:05:19.444390+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 18, "status": "plateaued"}
-{"ts": "2026-03-01T03:05:19.848647+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:07:15.757160+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:07:15.757514+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 115.4}
-{"ts": "2026-03-01T03:07:16.378671+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 19, "status": "plateaued"}
-{"ts": "2026-03-01T03:07:16.829747+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:08:32.548463+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:08:32.548743+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 75.4}
-{"ts": "2026-03-01T03:08:33.115315+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 20, "status": "plateaued"}
-{"ts": "2026-03-01T03:08:33.516800+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:11:24.497897+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:11:24.498313+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 170.4}
-{"ts": "2026-03-01T03:11:24.929173+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 21, "status": "plateaued"}
-{"ts": "2026-03-01T03:11:25.361606+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:14:41.184498+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:14:41.184891+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 195.5}
-{"ts": "2026-03-01T03:14:41.726254+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 22, "status": "plateaued"}
-{"ts": "2026-03-01T03:14:42.114035+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:17:33.075152+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:17:33.075505+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 170.5}
-{"ts": "2026-03-01T03:17:33.476472+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 23, "status": "plateaued"}
-{"ts": "2026-03-01T03:17:33.878696+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:19:54.647839+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:19:54.648200+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
-{"ts": "2026-03-01T03:19:55.141365+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 24, "status": "plateaued"}
-{"ts": "2026-03-01T03:19:55.559505+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:22:16.479452+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:22:16.479794+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
-{"ts": "2026-03-01T03:22:16.892298+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 25, "status": "plateaued"}
-{"ts": "2026-03-01T03:22:17.333138+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:24:43.282177+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:24:43.282636+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 145.4}
-{"ts": "2026-03-01T03:24:43.705654+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 26, "status": "plateaued"}
-{"ts": "2026-03-01T03:24:45.232314+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:27:36.190058+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:27:36.190444+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 170.4}
-{"ts": "2026-03-01T03:27:36.832680+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 27, "status": "plateaued"}
-{"ts": "2026-03-01T03:27:37.247569+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:30:13.076317+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:30:13.076693+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
-{"ts": "2026-03-01T03:30:13.653247+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 28, "status": "plateaued"}
-{"ts": "2026-03-01T03:30:14.047507+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:32:04.845937+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:32:04.846288+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
-{"ts": "2026-03-01T03:32:05.450953+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 29, "status": "plateaued"}
-{"ts": "2026-03-01T03:32:05.875827+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:33:51.553484+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:33:51.553826+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 105.4}
-{"ts": "2026-03-01T03:33:52.045519+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 30, "status": "plateaued"}
-{"ts": "2026-03-01T03:33:52.467370+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:35:53.291337+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:35:53.291647+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
-{"ts": "2026-03-01T03:35:53.684165+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 31, "status": "plateaued"}
-{"ts": "2026-03-01T03:35:54.117158+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:38:20.052841+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:38:20.053190+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 145.4}
-{"ts": "2026-03-01T03:38:20.484380+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 32, "status": "plateaued"}
-{"ts": "2026-03-01T03:38:20.928903+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:40:26.884336+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:40:26.884601+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
-{"ts": "2026-03-01T03:40:27.643530+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 33, "status": "plateaued"}
-{"ts": "2026-03-01T03:40:28.077420+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:42:34.992704+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:42:34.993026+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
-{"ts": "2026-03-01T03:42:35.505950+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 34, "status": "plateaued"}
-{"ts": "2026-03-01T03:42:35.925369+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:44:56.690928+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:44:56.691361+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
-{"ts": "2026-03-01T03:44:57.373609+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 35, "status": "plateaued"}
-{"ts": "2026-03-01T03:44:57.773014+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:46:13.663853+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:46:13.664261+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 75.4}
-{"ts": "2026-03-01T03:46:14.277984+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 36, "status": "plateaued"}
-{"ts": "2026-03-01T03:46:14.708319+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:48:20.648843+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:48:20.649142+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
-{"ts": "2026-03-01T03:48:21.153772+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 37, "status": "plateaued"}
-{"ts": "2026-03-01T03:48:21.564279+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:50:07.453737+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:50:07.454017+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 105.4}
-{"ts": "2026-03-01T03:50:08.025419+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 38, "status": "plateaued"}
-{"ts": "2026-03-01T03:50:08.425665+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:51:44.111924+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:51:44.112326+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 95.4}
-{"ts": "2026-03-01T03:51:44.952380+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 39, "status": "plateaued"}
-{"ts": "2026-03-01T03:51:45.409261+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:53:46.353583+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:53:46.353821+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
-{"ts": "2026-03-01T03:53:46.955357+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 40, "status": "plateaued"}
-{"ts": "2026-03-01T03:53:47.376506+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:55:53.176067+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:55:53.176357+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
-{"ts": "2026-03-01T03:55:53.615431+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 41, "status": "plateaued"}
-{"ts": "2026-03-01T03:55:54.160734+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T03:58:29.975557+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T03:58:29.975824+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
-{"ts": "2026-03-01T03:58:30.610777+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 42, "status": "plateaued"}
-{"ts": "2026-03-01T03:58:31.014366+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:00:26.914374+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:00:26.914672+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 115.4}
-{"ts": "2026-03-01T04:00:27.663725+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 43, "status": "plateaued"}
-{"ts": "2026-03-01T04:00:28.081730+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:02:48.903975+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:02:48.904377+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
-{"ts": "2026-03-01T04:02:49.726823+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 44, "status": "plateaued"}
-{"ts": "2026-03-01T04:02:50.281122+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:04:41.176414+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:04:41.176818+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
-{"ts": "2026-03-01T04:04:41.694010+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 45, "status": "plateaued"}
-{"ts": "2026-03-01T04:04:42.098927+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:06:22.845527+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:06:22.845794+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 100.4}
-{"ts": "2026-03-01T04:06:23.582698+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 46, "status": "plateaued"}
-{"ts": "2026-03-01T04:06:24.010153+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:08:54.943744+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:08:54.944010+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
-{"ts": "2026-03-01T04:08:55.929172+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 47, "status": "plateaued"}
-{"ts": "2026-03-01T04:08:56.361406+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
-{"ts": "2026-03-01T04:10:47.144308+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
-{"ts": "2026-03-01T04:10:47.144702+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
-{"ts": "2026-03-01T04:10:47.649729+00:00", "type": "progress", "total": 4, "fixed": 1, "remaining": 3, "phase": "audit", "stuck_rounds": 48, "status": "plateaued"}
-{"ts": "2026-03-01T04:10:48.065141+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T09:16:04.017553+00:00", "type": "run_start", "run_id": "run_20260306_021602"}
+{"ts": "2026-03-06T09:16:07.054771+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "discovery", "round": 1}
+{"ts": "2026-03-06T09:17:13.695010+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "SECURITY_AUDIT", "duration_s": 66.0}
+{"ts": "2026-03-06T09:17:16.751921+00:00", "type": "progress", "total": 0, "fixed": 0, "remaining": 0, "phase": "discovery", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T09:17:17.266807+00:00", "type": "box_start", "box": "SECURITY_AUDIT", "phase": "discovery", "round": 1}
+{"ts": "2026-03-06T09:20:48.264469+00:00", "type": "box_complete", "box": "SECURITY_AUDIT", "success": true, "next_box": "CONDUCTOR", "duration_s": 210.5}
+{"ts": "2026-03-06T09:20:49.202617+00:00", "type": "progress", "total": 17, "fixed": 0, "remaining": 17, "phase": "audit", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:20:49.641416+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T09:21:35.658038+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "TASK_SYNTHESIZER", "duration_s": 45.4}
+{"ts": "2026-03-06T09:21:36.331591+00:00", "type": "progress", "total": 17, "fixed": 0, "remaining": 17, "phase": "audit", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T09:21:36.820924+00:00", "type": "box_start", "box": "TASK_SYNTHESIZER", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T09:27:22.915779+00:00", "type": "box_complete", "box": "TASK_SYNTHESIZER", "success": true, "next_box": "WORKER", "duration_s": 345.6}
+{"ts": "2026-03-06T09:27:26.462422+00:00", "type": "progress", "total": 17, "fixed": 0, "remaining": 17, "phase": "synthesize", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:27:26.910820+00:00", "type": "box_start", "box": "WORKER", "phase": "synthesize", "round": 1}
+{"ts": "2026-03-06T09:27:27.597273+00:00", "type": "worker_start", "lane": 1, "task": "active"}
+{"ts": "2026-03-06T09:27:43.127378+00:00", "type": "worker_start", "lane": 2, "task": "active"}
+{"ts": "2026-03-06T09:27:58.710730+00:00", "type": "worker_start", "lane": 3, "task": "active"}
+{"ts": "2026-03-06T09:29:42.397745+00:00", "type": "worker_complete", "lane": 2, "success": true, "tasks_completed": 1}
+{"ts": "2026-03-06T09:29:56.854085+00:00", "type": "worker_complete", "lane": 1, "success": true, "tasks_completed": 1}
+{"ts": "2026-03-06T09:30:47.192386+00:00", "type": "worker_complete", "lane": 3, "success": true, "tasks_completed": 2}
+{"ts": "2026-03-06T09:30:48.068113+00:00", "type": "worker_start", "lane": 2, "task": "active"}
+{"ts": "2026-03-06T09:31:03.422939+00:00", "type": "worker_start", "lane": 1, "task": "active"}
+{"ts": "2026-03-06T09:35:08.946497+00:00", "type": "worker_complete", "lane": 2, "success": true, "tasks_completed": 1}
+{"ts": "2026-03-06T09:38:50.406346+00:00", "type": "worker_complete", "lane": 1, "success": true, "tasks_completed": 3}
+{"ts": "2026-03-06T09:38:51.338651+00:00", "type": "box_complete", "box": "WORKER", "success": true, "next_box": "CONDUCTOR", "duration_s": 683.9}
+{"ts": "2026-03-06T09:38:52.074708+00:00", "type": "progress", "total": 17, "fixed": 8, "remaining": 9, "phase": "execute", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:38:52.509769+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "execute", "round": 1}
+{"ts": "2026-03-06T09:40:08.440241+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "REVIEW_AUDIT", "duration_s": 75.4}
+{"ts": "2026-03-06T09:40:09.095095+00:00", "type": "progress", "total": 17, "fixed": 8, "remaining": 9, "phase": "execute", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T09:40:09.515760+00:00", "type": "box_start", "box": "REVIEW_AUDIT", "phase": "execute", "round": 1}
+{"ts": "2026-03-06T09:43:20.543640+00:00", "type": "box_complete", "box": "REVIEW_AUDIT", "success": true, "next_box": "CONDUCTOR", "duration_s": 190.5}
+{"ts": "2026-03-06T09:43:21.287395+00:00", "type": "progress", "total": 8, "fixed": 8, "remaining": 0, "phase": "audit", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:43:21.704962+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T09:44:52.511208+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "TASK_SYNTHESIZER", "duration_s": 90.4}
+{"ts": "2026-03-06T09:44:53.212601+00:00", "type": "progress", "total": 8, "fixed": 8, "remaining": 0, "phase": "audit", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T09:44:53.644848+00:00", "type": "box_start", "box": "TASK_SYNTHESIZER", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T09:50:34.534330+00:00", "type": "box_complete", "box": "TASK_SYNTHESIZER", "success": true, "next_box": "WORKER", "duration_s": 340.6}
+{"ts": "2026-03-06T09:50:35.568832+00:00", "type": "progress", "total": 8, "fixed": 8, "remaining": 0, "phase": "synthesize", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:50:36.010542+00:00", "type": "box_start", "box": "WORKER", "phase": "synthesize", "round": 1}
+{"ts": "2026-03-06T09:50:36.699058+00:00", "type": "worker_start", "lane": 1, "task": "active"}
+{"ts": "2026-03-06T09:50:52.234216+00:00", "type": "worker_start", "lane": 2, "task": "active"}
+{"ts": "2026-03-06T09:51:32.597257+00:00", "type": "worker_complete", "lane": 1, "success": true, "tasks_completed": 1}
+{"ts": "2026-03-06T09:52:48.032786+00:00", "type": "worker_complete", "lane": 2, "success": true, "tasks_completed": 1}
+{"ts": "2026-03-06T09:52:48.867826+00:00", "type": "box_complete", "box": "WORKER", "success": true, "next_box": "CONDUCTOR", "duration_s": 132.3}
+{"ts": "2026-03-06T09:52:49.362136+00:00", "type": "progress", "total": 8, "fixed": 2, "remaining": 6, "phase": "execute", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:52:49.782040+00:00", "type": "box_start", "box": "CONDUCTOR", "phase": "execute", "round": 1}
+{"ts": "2026-03-06T09:54:20.676226+00:00", "type": "box_complete", "box": "CONDUCTOR", "success": true, "next_box": "REVIEW_AUDIT", "duration_s": 90.4}
+{"ts": "2026-03-06T09:54:21.353518+00:00", "type": "progress", "total": 8, "fixed": 2, "remaining": 6, "phase": "execute", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T09:54:21.788284+00:00", "type": "box_start", "box": "REVIEW_AUDIT", "phase": "execute", "round": 1}
+{"ts": "2026-03-06T09:57:57.680551+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 4, "recent_history": ["CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T09:57:57.680822+00:00", "type": "box_complete", "box": "REVIEW_AUDIT", "success": true, "next_box": "DIGEST", "duration_s": 215.5}
+{"ts": "2026-03-06T09:57:58.538408+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 0, "status": "in_progress"}
+{"ts": "2026-03-06T09:57:59.000788+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:02:20.024537+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 4, "recent_history": ["REVIEW_AUDIT", "CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:02:20.024847+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 260.5}
+{"ts": "2026-03-06T10:02:20.824894+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 1, "status": "in_progress"}
+{"ts": "2026-03-06T10:02:21.332118+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:06:17.333400+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 5, "recent_history": ["CONDUCTOR", "TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:06:17.333731+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 235.5}
+{"ts": "2026-03-06T10:06:18.109914+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 2, "status": "in_progress"}
+{"ts": "2026-03-06T10:06:18.657292+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:10:49.676484+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 5, "recent_history": ["TASK_SYNTHESIZER", "WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:10:49.676800+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 270.5}
+{"ts": "2026-03-06T10:10:50.633268+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 3, "status": "in_progress"}
+{"ts": "2026-03-06T10:10:51.101256+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:13:47.061644+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 6, "recent_history": ["WORKER", "CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:13:47.061983+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.4}
+{"ts": "2026-03-06T10:13:47.891698+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 4, "status": "in_progress"}
+{"ts": "2026-03-06T10:13:48.358063+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:18:34.399068+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 7, "recent_history": ["CONDUCTOR", "REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:18:34.399318+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 285.5}
+{"ts": "2026-03-06T10:18:35.415371+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 5, "status": "in_progress"}
+{"ts": "2026-03-06T10:18:35.833733+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:21:36.761770+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 7, "recent_history": ["REVIEW_AUDIT", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:21:36.762057+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 180.4}
+{"ts": "2026-03-06T10:21:37.526584+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 6, "status": "in_progress"}
+{"ts": "2026-03-06T10:21:37.950118+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:25:08.758952+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:25:08.759308+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 210.5}
+{"ts": "2026-03-06T10:25:09.595589+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 7, "status": "in_progress"}
+{"ts": "2026-03-06T10:25:10.051246+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:29:46.148050+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:29:46.148461+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 275.5}
+{"ts": "2026-03-06T10:29:47.276041+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 8, "status": "plateaued"}
+{"ts": "2026-03-06T10:29:47.728616+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:33:43.725927+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:33:43.726144+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 235.5}
+{"ts": "2026-03-06T10:33:44.806261+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 9, "status": "plateaued"}
+{"ts": "2026-03-06T10:33:45.239875+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:36:16.166844+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:36:16.167169+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
+{"ts": "2026-03-06T10:36:17.024139+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 10, "status": "plateaued"}
+{"ts": "2026-03-06T10:36:17.490339+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:39:54.861109+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:39:54.861649+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 216.8}
+{"ts": "2026-03-06T10:39:55.618751+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 11, "status": "plateaued"}
+{"ts": "2026-03-06T10:39:56.067621+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:44:37.103165+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:44:37.103556+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 280.5}
+{"ts": "2026-03-06T10:44:38.141690+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 12, "status": "plateaued"}
+{"ts": "2026-03-06T10:44:38.568464+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:48:04.563008+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:48:04.563279+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 205.5}
+{"ts": "2026-03-06T10:48:05.485084+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 13, "status": "plateaued"}
+{"ts": "2026-03-06T10:48:05.917273+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:52:31.947254+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:52:31.947502+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 265.5}
+{"ts": "2026-03-06T10:52:33.124065+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 14, "status": "plateaued"}
+{"ts": "2026-03-06T10:52:33.568012+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:55:59.546017+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:55:59.546346+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 205.5}
+{"ts": "2026-03-06T10:56:00.256409+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 15, "status": "plateaued"}
+{"ts": "2026-03-06T10:56:00.661515+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T10:58:51.587966+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T10:58:51.588239+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 170.4}
+{"ts": "2026-03-06T10:58:52.451054+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 16, "status": "plateaued"}
+{"ts": "2026-03-06T10:58:52.903644+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:01:58.920407+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:01:58.920690+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 185.5}
+{"ts": "2026-03-06T11:01:59.668662+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 17, "status": "plateaued"}
+{"ts": "2026-03-06T11:02:00.112707+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:04:40.879828+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:04:40.880158+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 160.4}
+{"ts": "2026-03-06T11:04:41.705623+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 18, "status": "plateaued"}
+{"ts": "2026-03-06T11:04:42.151775+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:08:48.154928+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:08:48.155223+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 245.5}
+{"ts": "2026-03-06T11:08:49.007108+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 19, "status": "plateaued"}
+{"ts": "2026-03-06T11:08:49.450631+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:10:25.385903+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:10:25.386253+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 95.4}
+{"ts": "2026-03-06T11:10:26.179425+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 20, "status": "plateaued"}
+{"ts": "2026-03-06T11:10:26.593916+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:13:37.456562+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:13:37.457148+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 190.5}
+{"ts": "2026-03-06T11:13:38.223388+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 21, "status": "plateaued"}
+{"ts": "2026-03-06T11:13:38.687245+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:17:14.679358+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:17:14.679601+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 215.5}
+{"ts": "2026-03-06T11:17:15.503069+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 22, "status": "plateaued"}
+{"ts": "2026-03-06T11:17:15.903600+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:19:26.837505+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:19:26.837741+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 130.4}
+{"ts": "2026-03-06T11:19:27.551086+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 23, "status": "plateaued"}
+{"ts": "2026-03-06T11:19:27.986803+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:23:13.954117+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:23:13.954386+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 225.5}
+{"ts": "2026-03-06T11:23:14.815675+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 24, "status": "plateaued"}
+{"ts": "2026-03-06T11:23:15.263537+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:26:26.264676+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:26:26.264958+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 190.5}
+{"ts": "2026-03-06T11:26:27.033426+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 25, "status": "plateaued"}
+{"ts": "2026-03-06T11:26:27.472696+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:29:23.410061+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:29:23.410350+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.4}
+{"ts": "2026-03-06T11:29:24.243487+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 26, "status": "plateaued"}
+{"ts": "2026-03-06T11:29:24.684733+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:32:50.654893+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:32:50.655218+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 205.5}
+{"ts": "2026-03-06T11:32:51.426686+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 27, "status": "plateaued"}
+{"ts": "2026-03-06T11:32:51.849366+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:36:12.833137+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:36:12.833467+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 200.5}
+{"ts": "2026-03-06T11:36:13.637847+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 28, "status": "plateaued"}
+{"ts": "2026-03-06T11:36:14.090949+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:40:40.118641+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:40:40.118946+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 265.5}
+{"ts": "2026-03-06T11:40:42.729867+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 29, "status": "plateaued"}
+{"ts": "2026-03-06T11:40:43.204850+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:45:39.242053+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:45:39.242428+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 295.5}
+{"ts": "2026-03-06T11:45:40.148422+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 30, "status": "plateaued"}
+{"ts": "2026-03-06T11:45:40.599272+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:48:21.552141+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:48:21.552424+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 160.4}
+{"ts": "2026-03-06T11:48:22.498915+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 31, "status": "plateaued"}
+{"ts": "2026-03-06T11:48:22.928209+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:51:43.923106+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:51:43.923396+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 200.5}
+{"ts": "2026-03-06T11:51:44.804301+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 32, "status": "plateaued"}
+{"ts": "2026-03-06T11:51:45.258016+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:54:46.196102+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:54:46.196594+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 180.4}
+{"ts": "2026-03-06T11:54:47.022363+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 33, "status": "plateaued"}
+{"ts": "2026-03-06T11:54:47.472537+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T11:58:18.473215+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T11:58:18.473493+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 210.5}
+{"ts": "2026-03-06T11:58:20.325419+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 34, "status": "plateaued"}
+{"ts": "2026-03-06T11:58:20.776823+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:01:56.791075+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:01:56.791324+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 215.5}
+{"ts": "2026-03-06T12:01:57.484871+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 35, "status": "plateaued"}
+{"ts": "2026-03-06T12:01:57.915269+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:05:08.871060+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:05:08.871387+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 190.4}
+{"ts": "2026-03-06T12:05:09.667721+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 36, "status": "plateaued"}
+{"ts": "2026-03-06T12:05:10.110018+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:08:55.926582+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:08:55.926880+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 225.5}
+{"ts": "2026-03-06T12:08:56.723514+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 37, "status": "plateaued"}
+{"ts": "2026-03-06T12:08:57.180988+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:13:58.208329+00:00", "type": "box_complete", "box": "DIGEST", "success": false, "next_box": "DIGEST", "duration_s": 300.5}
+{"ts": "2026-03-06T12:14:00.506632+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:16:41.471788+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:16:41.472340+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 160.4}
+{"ts": "2026-03-06T12:16:42.309532+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 38, "status": "plateaued"}
+{"ts": "2026-03-06T12:16:42.744560+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:21:33.780196+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:21:33.780492+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 290.5}
+{"ts": "2026-03-06T12:21:34.692086+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 39, "status": "plateaued"}
+{"ts": "2026-03-06T12:21:35.123036+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:24:36.109973+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:24:36.110393+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 180.4}
+{"ts": "2026-03-06T12:24:36.909021+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 40, "status": "plateaued"}
+{"ts": "2026-03-06T12:24:37.372796+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:28:13.432077+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:28:13.432313+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 215.4}
+{"ts": "2026-03-06T12:28:14.358538+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 41, "status": "plateaued"}
+{"ts": "2026-03-06T12:28:14.781939+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:33:15.817334+00:00", "type": "box_complete", "box": "DIGEST", "success": false, "next_box": "DIGEST", "duration_s": 300.5}
+{"ts": "2026-03-06T12:33:18.001737+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:35:38.785230+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:35:38.785544+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
+{"ts": "2026-03-06T12:35:39.530903+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 42, "status": "plateaued"}
+{"ts": "2026-03-06T12:35:39.935544+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:38:00.858685+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:38:00.858994+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
+{"ts": "2026-03-06T12:38:01.628899+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 43, "status": "plateaued"}
+{"ts": "2026-03-06T12:38:02.061406+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:40:58.000937+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:40:58.001275+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.4}
+{"ts": "2026-03-06T12:40:58.851366+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 44, "status": "plateaued"}
+{"ts": "2026-03-06T12:40:59.280503+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:43:05.249002+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:43:05.249278+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.5}
+{"ts": "2026-03-06T12:43:06.003345+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 45, "status": "plateaued"}
+{"ts": "2026-03-06T12:43:06.426693+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:46:57.244177+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:46:57.244481+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 230.5}
+{"ts": "2026-03-06T12:46:58.056962+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 46, "status": "plateaued"}
+{"ts": "2026-03-06T12:46:58.478010+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:48:59.366344+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:48:59.366661+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
+{"ts": "2026-03-06T12:49:00.090941+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 47, "status": "plateaued"}
+{"ts": "2026-03-06T12:49:00.537756+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:53:01.341017+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:53:01.341385+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 240.5}
+{"ts": "2026-03-06T12:53:02.215405+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 48, "status": "plateaued"}
+{"ts": "2026-03-06T12:53:02.662118+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:54:38.560993+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:54:38.561273+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 95.4}
+{"ts": "2026-03-06T12:54:39.220606+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 49, "status": "plateaued"}
+{"ts": "2026-03-06T12:54:39.665293+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:57:15.604753+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:57:15.605030+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
+{"ts": "2026-03-06T12:57:16.387555+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 50, "status": "plateaued"}
+{"ts": "2026-03-06T12:57:16.821221+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T12:59:27.776925+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T12:59:27.777193+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 130.4}
+{"ts": "2026-03-06T12:59:28.539454+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 51, "status": "plateaued"}
+{"ts": "2026-03-06T12:59:28.959087+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:02:39.759221+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:02:39.759473+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 190.5}
+{"ts": "2026-03-06T13:02:40.589366+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 52, "status": "plateaued"}
+{"ts": "2026-03-06T13:02:41.035663+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:05:36.999315+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:05:36.999585+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.4}
+{"ts": "2026-03-06T13:05:37.767357+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 53, "status": "plateaued"}
+{"ts": "2026-03-06T13:05:38.213028+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:07:44.151114+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:07:44.151372+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
+{"ts": "2026-03-06T13:07:44.907067+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 54, "status": "plateaued"}
+{"ts": "2026-03-06T13:07:45.343317+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:09:51.175328+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:09:51.175709+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
+{"ts": "2026-03-06T13:09:51.931931+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 55, "status": "plateaued"}
+{"ts": "2026-03-06T13:09:52.361293+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:12:13.306914+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:12:13.307220+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
+{"ts": "2026-03-06T13:12:14.166193+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 56, "status": "plateaued"}
+{"ts": "2026-03-06T13:12:14.587859+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:14:30.494974+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:14:30.495248+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
+{"ts": "2026-03-06T13:14:31.201761+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 57, "status": "plateaued"}
+{"ts": "2026-03-06T13:14:31.642618+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:16:52.590170+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:16:52.590502+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
+{"ts": "2026-03-06T13:16:53.362776+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 58, "status": "plateaued"}
+{"ts": "2026-03-06T13:16:53.806684+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:18:54.706305+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:18:54.706578+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
+{"ts": "2026-03-06T13:18:55.442481+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 59, "status": "plateaued"}
+{"ts": "2026-03-06T13:18:55.890096+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:22:41.885570+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:22:41.885847+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 225.5}
+{"ts": "2026-03-06T13:22:42.734780+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 60, "status": "plateaued"}
+{"ts": "2026-03-06T13:22:43.168225+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:25:34.147974+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:25:34.148223+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 170.5}
+{"ts": "2026-03-06T13:25:35.083135+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 61, "status": "plateaued"}
+{"ts": "2026-03-06T13:25:35.544695+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:27:41.470170+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:27:41.470421+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
+{"ts": "2026-03-06T13:27:42.264052+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 62, "status": "plateaued"}
+{"ts": "2026-03-06T13:27:42.869919+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:31:13.745249+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:31:13.745524+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 210.5}
+{"ts": "2026-03-06T13:31:14.565023+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 63, "status": "plateaued"}
+{"ts": "2026-03-06T13:31:15.011699+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:33:05.973881+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:33:05.974134+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
+{"ts": "2026-03-06T13:33:06.623856+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 64, "status": "plateaued"}
+{"ts": "2026-03-06T13:33:07.049705+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:36:03.201067+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:36:03.201669+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.5}
+{"ts": "2026-03-06T13:36:03.953667+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 65, "status": "plateaued"}
+{"ts": "2026-03-06T13:36:04.376509+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:38:45.379295+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:38:45.379598+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 160.4}
+{"ts": "2026-03-06T13:38:46.224401+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 66, "status": "plateaued"}
+{"ts": "2026-03-06T13:38:46.668996+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:40:47.585591+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:40:47.585876+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 120.4}
+{"ts": "2026-03-06T13:40:48.361187+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 67, "status": "plateaued"}
+{"ts": "2026-03-06T13:40:48.803833+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:43:19.807689+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:43:19.807993+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 150.4}
+{"ts": "2026-03-06T13:43:20.640528+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 68, "status": "plateaued"}
+{"ts": "2026-03-06T13:43:21.068200+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:45:36.996096+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:45:36.996365+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
+{"ts": "2026-03-06T13:45:37.856959+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 69, "status": "plateaued"}
+{"ts": "2026-03-06T13:45:38.286756+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:47:59.246655+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:47:59.246905+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 140.4}
+{"ts": "2026-03-06T13:48:00.014676+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 70, "status": "plateaued"}
+{"ts": "2026-03-06T13:48:00.451246+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:51:01.430206+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:51:01.430490+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 180.4}
+{"ts": "2026-03-06T13:51:02.360775+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 71, "status": "plateaued"}
+{"ts": "2026-03-06T13:51:02.805857+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:53:38.757315+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:53:38.757733+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
+{"ts": "2026-03-06T13:53:39.552799+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 72, "status": "plateaued"}
+{"ts": "2026-03-06T13:53:40.008207+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T13:55:50.930652+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T13:55:50.930919+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 130.4}
+{"ts": "2026-03-06T13:55:51.675266+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 73, "status": "plateaued"}
+{"ts": "2026-03-06T13:55:52.093498+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:00:53.113449+00:00", "type": "box_complete", "box": "DIGEST", "success": false, "next_box": "DIGEST", "duration_s": 300.5}
+{"ts": "2026-03-06T14:00:55.091733+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:03:51.066091+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:03:51.066380+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 175.4}
+{"ts": "2026-03-06T14:03:51.881521+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 74, "status": "plateaued"}
+{"ts": "2026-03-06T14:03:52.320426+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:07:08.320024+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:07:08.320578+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 195.5}
+{"ts": "2026-03-06T14:07:09.192450+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 75, "status": "plateaued"}
+{"ts": "2026-03-06T14:07:09.600479+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:07:15.466239+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:07:15.466487+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 5.4}
+{"ts": "2026-03-06T14:07:15.933550+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 76, "status": "plateaued"}
+{"ts": "2026-03-06T14:07:16.385435+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:09:27.378132+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:09:27.378445+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 130.4}
+{"ts": "2026-03-06T14:09:28.140646+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 77, "status": "plateaued"}
+{"ts": "2026-03-06T14:09:28.585705+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:11:34.540536+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:11:34.540868+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 125.4}
+{"ts": "2026-03-06T14:11:35.327133+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 78, "status": "plateaued"}
+{"ts": "2026-03-06T14:11:35.752531+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:13:26.646487+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:13:26.646718+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 110.4}
+{"ts": "2026-03-06T14:13:27.325860+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 79, "status": "plateaued"}
+{"ts": "2026-03-06T14:13:27.756830+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:16:48.720296+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:16:48.720841+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 200.4}
+{"ts": "2026-03-06T14:16:49.576685+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 80, "status": "plateaued"}
+{"ts": "2026-03-06T14:16:50.009593+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:19:05.774624+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:19:05.775066+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 135.4}
+{"ts": "2026-03-06T14:19:06.581844+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 81, "status": "plateaued"}
+{"ts": "2026-03-06T14:19:07.039222+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:23:23.086798+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:23:23.087069+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 255.5}
+{"ts": "2026-03-06T14:23:23.878425+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 82, "status": "plateaued"}
+{"ts": "2026-03-06T14:23:24.316501+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}
+{"ts": "2026-03-06T14:26:00.243360+00:00", "type": "circuit_breaker", "pattern": "repeated_box", "box": "CONDUCTOR", "count": 8, "recent_history": ["CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR", "CONDUCTOR"], "override": "DIGEST"}
+{"ts": "2026-03-06T14:26:00.243627+00:00", "type": "box_complete", "box": "DIGEST", "success": true, "next_box": "DIGEST", "duration_s": 155.4}
+{"ts": "2026-03-06T14:26:01.069689+00:00", "type": "progress", "total": 10, "fixed": 2, "remaining": 8, "phase": "audit", "stuck_rounds": 83, "status": "plateaued"}
+{"ts": "2026-03-06T14:26:01.539875+00:00", "type": "box_start", "box": "DIGEST", "phase": "audit", "round": 1}

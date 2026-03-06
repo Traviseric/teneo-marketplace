@@ -5,20 +5,10 @@
     "completed": 1,
     "blocked": 0,
     "in_progress": 0,
-    "tasks": [
-      {
-        "file": "105-P2-add-quiz-schema-and-routes.md",
-        "status": "completed",
-        "commit": "57de459"
-      }
-    ],
-    "commits": ["57de459"],
-    "files_changed": [
-      "marketplace/backend/routes/quiz.js",
-      "marketplace/backend/server.js",
-      "__tests__/quiz.test.js"
-    ],
-    "session_tasks_assigned": 1,
-    "session_tasks_completed": 1
+    "commits": ["8d257ed"],
+    "files_changed": ["marketplace/backend/routes/auth.js"],
+    "task_file": "001-P2-fix-magic-link-error-message-leak.md",
+    "blockers": [],
+    "follow_up_tasks": []
   }
 }

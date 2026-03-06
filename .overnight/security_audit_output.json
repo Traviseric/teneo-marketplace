@@ -5,202 +5,182 @@
     "audit_type": "security",
     "findings": [
       {
-        "severity": "critical",
-        "category": "secrets",
-        "file": ".env.example",
-        "line": 96,
-        "code_snippet": "# TENEO_CLIENT_SECRET=[REDACTED]",
-        "description": "A production OAuth client secret is committed to the public repository inside .env.example. The comment on line 100 explicitly states: 'The CLIENT_SECRET above is the actual production secret for official OpenBazaar AI.' Even though it is commented out with #, the value is plaintext in a publicly accessible file in the repo's history.",
-        "recommendation": "Immediately rotate/revoke the TENEO_CLIENT_SECRET value [REDACTED]. Remove the actual secret value from .env.example and replace with a placeholder like 'your-client-secret-here'. Scan git history for any other committed secrets using git-secrets or trufflehog.",
-        "cwe": "CWE-312"
+        "severity": "high",
+        "category": "auth",
+        "file": "marketplace/backend/routes/adminRoutes.js",
+        "line": 152,
+        "code_snippet": "res.json({ authenticated: isAuthenticated, sessionId: isAuthenticated ? req.sessionID : null });",
+        "description": "The /api/admin/auth-status endpoint exposes the session ID in the response body. Session IDs should never be transmitted in response bodies as they can be captured by XSS or logged by proxies, enabling session hijacking.",
+        "recommendation": "Remove sessionId from the response. The session cookie is already httpOnly and sameSite=strict; clients do not need the raw session ID.",
+        "cwe": "CWE-200"
       },
       {
         "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/routes/checkout.js",
-        "line": 10,
-        "code_snippet": "const { bookId, format, price, bookTitle, bookAuthor, userEmail } = req.body;",
-        "description": "The Stripe checkout session is created using the client-supplied `price` value directly, with no server-side validation against the actual book price in the catalog. An attacker can send any arbitrary price (e.g., 0.01) to purchase any book at that price. The price is passed straight to stripe.checkout.sessions.create() as `unit_amount: Math.round(price * 100)`.",
-        "recommendation": "Look up the price server-side from the catalog using bookId and format before creating the Stripe session. Never trust price values from the client. Compare `price` against the authoritative catalog price and reject if they don't match.",
+        "category": "injection",
+        "file": "marketplace/backend/routes/downloadRoutes.js",
+        "line": 26,
+        "code_snippet": "const bookId = req.body.bookId || 'unknown';\ncb(null, `${bookId}.pdf`);",
+        "description": "The multer storage configuration uses the client-supplied bookId directly as the filename for PDF uploads (in the /api/download/upload admin endpoint). While admin auth is required, a compromised admin account could supply bookId values like '../../../server' to write files outside the books directory.",
+        "recommendation": "Sanitize bookId with path.basename() before using as filename: const safeId = path.basename(req.body.bookId || 'unknown').replace(/[^a-zA-Z0-9_-]/g, '_'); cb(null, safeId + '.pdf');",
+        "cwe": "CWE-22"
+      },
+      {
+        "severity": "high",
+        "category": "injection",
+        "file": "marketplace/backend/routes/cryptoCheckout.js",
+        "line": 118,
+        "code_snippet": "const usdAmount = parseFloat(amountUsd) || 10; // default $10 if not provided",
+        "description": "The crypto checkout /api/crypto/create-order endpoint accepts the price from the client body (amountUsd) with no validation against the catalog price. An attacker can send amountUsd=0.01 to purchase any book for $0.01 worth of crypto. Unlike the Stripe checkout (which uses lookupBookPrice), this flow has no server-side price enforcement.",
+        "recommendation": "Use lookupBookPrice(bookId, format, brandId) from checkoutOfferService to fetch the authoritative catalog price server-side, identical to how checkout.js handles it. Reject or override any client-supplied price.",
         "cwe": "CWE-602"
       },
       {
         "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/routes/courseRoutes.js",
-        "line": 121,
-        "code_snippet": "async function requireEnrollment(req, res, next) {\n    const email = req.query.email || req.body.email;\n    if (!email) return res.status(401).json(...);\n    ...\n    const enrollment = await dbGet('SELECT * FROM course_enrollments WHERE course_id = ? AND user_email = ?', [course.id, email.toLowerCase()]);",
-        "description": "Course enrollment authentication only checks for an email address in query params or body — no session, no token, no cryptographic proof of identity. Anyone who knows the email address of an enrolled user can access all paid course content by passing ?email=victim@example.com. This is a trivial auth bypass for all enrolled course content.",
-        "recommendation": "Replace the email-only check with proper session-based authentication. Require the user to be logged in via req.session.isAuthenticated and verify req.session.email matches the enrollment. The comment '// Middleware: check enrollment (expects ?email= query param for MVP)' indicates this was always meant to be temporary — it must be replaced before launch.",
-        "cwe": "CWE-287"
+        "category": "deps",
+        "file": "marketplace/backend/package.json",
+        "line": 57,
+        "code_snippet": "\"multer\": \"^2.1.0\"",
+        "description": "Multer <2.1.1 is vulnerable to Denial of Service via uncontrolled recursion when parsing deeply nested multipart form data (GHSA-5528-5vmv-3xc2, CWE-674). The installed version 2.1.0 falls in the affected range.",
+        "recommendation": "Upgrade multer to >=2.1.1: npm install multer@latest",
+        "cwe": "CWE-674"
       },
       {
         "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/routes/brandRoutes.js",
-        "line": 13,
-        "code_snippet": "const brandId = req.params.brandId || req.body.brandId;\nconst uploadPath = path.join(__dirname, '../../frontend/brands', brandId, 'assets');",
-        "description": "The `brandId` parameter is not sanitized before being used in a file system path. An attacker with admin access can supply a brandId containing path traversal sequences (e.g., '../../etc') to write uploaded files to arbitrary locations on the filesystem. The same vulnerability exists in loadBrandConfig() and loadBrandCatalog() helpers which construct paths using unsanitized brandId, allowing read of arbitrary JSON files.",
-        "recommendation": "Sanitize brandId before using it in file paths. Use path.basename(brandId) to strip any directory components, then validate the resulting path stays within the brands directory using path.resolve() and checking it starts with the expected base path. Example: const safeBrandId = path.basename(brandId); const fullPath = path.resolve(brandsBase, safeBrandId); if (!fullPath.startsWith(brandsBase)) throw new Error('Invalid brand ID');",
+        "category": "deps",
+        "file": "marketplace/backend/node_modules/tar",
+        "line": null,
+        "code_snippet": "\"tar\": \"<=7.5.9\" (transitive via sqlite3, node-gyp)",
+        "description": "The tar package (transitive dep via sqlite3 and node-gyp) has multiple high-severity path traversal vulnerabilities: GHSA-34x7-hfp2-rc4v (CVSS 8.2, arbitrary file overwrite via hardlink), GHSA-8qq5-rm4j-mr97 (arbitrary file overwrite via symlink), GHSA-83g3-92jg-28cx (arbitrary file read/write via symlink chain), GHSA-qffp-2rhf-9h96 (hardlink path traversal). While exploited during package installation, these are present in the lock file.",
+        "recommendation": "Run npm audit fix or upgrade the sqlite3 package which will pull in a fixed tar version. For devDependencies, upgrade @nomicfoundation/hardhat-toolbox to >=7.0.0.",
         "cwe": "CWE-22"
       },
       {
         "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/server.js",
-        "line": 329,
-        "code_snippet": "const { brandId } = req.params;\nconst catalogPath = path.join(__dirname, '..', 'frontend', 'brands', brandId, 'catalog.json');",
-        "description": "The /api/brands/:brandId/catalog GET endpoint in server.js constructs a file path using an unsanitized brandId parameter. A request to /api/brands/../../../etc/passwd/catalog.json could potentially traverse the directory structure, though the .json extension mitigates immediate code execution. Still enables information disclosure of filesystem layout and any JSON files on the server.",
-        "recommendation": "Apply the same path traversal fix: normalize brandId with path.basename() and validate the resolved path stays within the brands directory.",
-        "cwe": "CWE-22"
-      },
-      {
-        "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/middleware/auth.js",
-        "line": 23,
-        "code_snippet": "const DEFAULT_ADMIN_HASH = '$2b$10$8KqG0H5oGX4gRRrqDv7YxeT1Y0fGzFkiOEi7LvJO8QMo6nPBRqGOu'; // 'admin123'",
-        "description": "A hardcoded bcrypt hash for the password 'admin123' is present as the DEFAULT_ADMIN_HASH fallback. While server.js generates a hash for 'ChangeMeInProduction2024!' at startup if ADMIN_PASSWORD_HASH is unset, the auth.js file still contains this fallback for 'admin123'. Additionally, 'ChangeMeInProduction2024!' is a known default documented in the source code, making it trivially guessable for any attacker who reads the repo.",
-        "recommendation": "Remove the DEFAULT_ADMIN_HASH entirely. Require ADMIN_PASSWORD_HASH to be explicitly set in environment — fail hard with an error if missing in production rather than falling back to any default. Add a startup check: if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_PASSWORD_HASH) { console.error('FATAL: ADMIN_PASSWORD_HASH must be set in production'); process.exit(1); }",
-        "cwe": "CWE-798"
-      },
-      {
-        "severity": "high",
-        "category": "auth",
-        "file": "marketplace/backend/routes/downloadRoutes.js",
-        "line": 44,
-        "code_snippet": "const AUTH_PASSWORD = process.env.ADMIN_PASSWORD || 'use-admin-dashboard';\n...\nif (password !== AUTH_PASSWORD) { return res.status(401)... }",
-        "description": "The download routes use a custom Basic Auth implementation with plaintext password comparison (no timing-safe comparison), falling back to the literal string 'use-admin-dashboard' if ADMIN_PASSWORD is not set. This is a second authentication mechanism separate from the admin session system, creating inconsistency. The comparison is not timing-safe and the default is a public default value.",
-        "recommendation": "Remove this custom Basic Auth and replace with the existing authenticateAdmin session middleware for consistency. If a separate credential is needed, use bcrypt.compare for timing-safe comparison and require the secret to come from an environment variable with no default.",
-        "cwe": "CWE-916"
-      },
-      {
-        "severity": "medium",
-        "category": "auth",
-        "file": "marketplace/backend/routes/censorshipTracker.js",
-        "line": 427,
-        "code_snippet": "res.json({\n    success: true,\n    message: 'Subscription created. Please check your email to verify.',\n    verificationToken // Remove in production, send via email only\n});",
-        "description": "The email verification token for censorship alert subscriptions is returned in the API response body. This completely defeats the purpose of email verification — any subscriber can immediately verify themselves by extracting the token from the API response, without actually owning the email address. The TODO comment acknowledges this issue but it remains unaddressed.",
-        "recommendation": "Remove verificationToken from the API response. Only send it via email. Implement the TODO: send a verification email containing the token.",
-        "cwe": "CWE-640"
+        "category": "deps",
+        "file": "marketplace/backend/node_modules/serialize-javascript",
+        "line": null,
+        "code_snippet": "\"serialize-javascript\": \"<=7.0.2\" (via mocha/hardhat devDeps)",
+        "description": "serialize-javascript <=7.0.2 is vulnerable to Remote Code Execution via RegExp.flags and Date.prototype.toISOString() (GHSA-5c6j-r48x-rmvq, CWE-96, CVSS 8.1). While this is via devDependencies (mocha/hardhat), the package is present in node_modules and could be triggered if hardhat scripts are run in a CI/CD context with untrusted input.",
+        "recommendation": "Upgrade @nomicfoundation/hardhat-toolbox to >=7.0.0 which will pull in a fixed version of serialize-javascript.",
+        "cwe": "CWE-96"
       },
       {
         "severity": "medium",
         "category": "config",
         "file": "marketplace/backend/server.js",
-        "line": 41,
-        "code_snippet": "const express = require('express');\n// No helmet import or equivalent security headers middleware",
-        "description": "The server does not set standard HTTP security headers: X-Frame-Options (clickjacking), X-Content-Type-Options (MIME sniffing), Content-Security-Policy (XSS), Strict-Transport-Security (HTTPS enforcement), Referrer-Policy, or Permissions-Policy. Without these headers, the application is vulnerable to clickjacking, MIME confusion attacks, and provides no defense-in-depth against XSS.",
-        "recommendation": "Install and configure helmet.js: npm install helmet, then app.use(helmet()) early in the middleware chain. Configure a strict Content-Security-Policy. At minimum: app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: [\"'self'\"] } } }));",
+        "line": 111,
+        "code_snippet": "scriptSrc: [\"'self'\", \"'unsafe-inline'\", \"https://js.stripe.com\"],\nstyleSrc: [\"'self'\", \"'unsafe-inline'\", \"https://fonts.googleapis.com\"],",
+        "description": "The Content-Security-Policy allows 'unsafe-inline' for both scripts and styles. This negates most XSS protections offered by CSP. Inline scripts/styles injected through an XSS vector would execute freely.",
+        "recommendation": "Replace 'unsafe-inline' with hashes or nonces for the specific inline scripts/styles that are needed. For Stripe, use the strict-dynamic approach with a nonce.",
         "cwe": "CWE-693"
       },
       {
         "severity": "medium",
-        "category": "auth",
-        "file": "marketplace/backend/routes/auth.js",
-        "line": 86,
-        "code_snippet": "router.post('/login', async (req, res) => {\n  try {\n    const { email } = req.body;\n    ...\n    const result = await authProvider.login(email);",
-        "description": "The /api/auth/login and /api/auth/register endpoints have no rate limiting applied. An attacker can send unlimited login requests to enumerate email addresses or spam magic link emails, leading to email flooding of victims or excessive email sending costs. The admin login has a rate limiter (loginLimiter), but user auth routes do not.",
-        "recommendation": "Apply rate limiting to /api/auth/login and /api/auth/register. Use a strict limiter (e.g., 5 requests per 15 minutes per IP) similar to the existing loginLimiter. Also apply rate limiting to /api/auth/verify-magic-link to prevent token brute forcing.",
-        "cwe": "CWE-307"
+        "category": "config",
+        "file": "marketplace/backend/server.js",
+        "line": 187,
+        "code_snippet": "if (req.method === 'GET' || req.path.startsWith('/api/health') || req.path.startsWith('/api/network/status') || req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront')) {\n    return next();\n}",
+        "description": "CSRF protection is completely skipped for all /api/storefront routes including POST/PUT/DELETE operations. While storefront is intended for external consumption, any state-changing storefront endpoints are unprotected. Also /api/apps is CSRF-exempt for all methods.",
+        "recommendation": "Audit all state-changing endpoints under /api/storefront and /api/apps. For those that need external access without CSRF tokens, use webhook signature validation or API key authentication instead.",
+        "cwe": "CWE-352"
       },
       {
         "severity": "medium",
         "category": "auth",
-        "file": "marketplace/backend/routes/checkout.js",
-        "line": 8,
-        "code_snippet": "router.post('/create-session', async (req, res) => {",
-        "description": "The Stripe checkout session creation endpoint has no rate limiting. This allows an attacker to create unlimited pending Stripe sessions, potentially leading to resource exhaustion or Stripe API rate limit abuse. Combined with the missing price validation, this creates a compound risk.",
-        "recommendation": "Apply rate limiting to the /create-session endpoint. Use a per-IP limiter with a reasonable threshold (e.g., 10 requests per hour). Consider also requiring a valid bookId that exists in the catalog before creating any session.",
-        "cwe": "CWE-770"
+        "file": "marketplace/backend/routes/adminRoutes.js",
+        "line": 510,
+        "code_snippet": "if (settings.stripeSecretKey && settings.stripeSecretKey !== '••••••••') {\n    process.env.STRIPE_SECRET_KEY = settings.stripeSecretKey;\n}",
+        "description": "The /api/admin/save-all endpoint allows updating STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY at runtime by writing to process.env. While admin-auth protected, this means any admin session compromise allows replacing payment credentials in-memory without restarting the server or touching the .env file, bypassing normal secret management workflows.",
+        "recommendation": "Remove the ability to update Stripe keys via the admin UI. Require environment variable changes to go through the .env file and server restart. If runtime key rotation is needed, implement it through a dedicated, audited secrets management system.",
+        "cwe": "CWE-798"
       },
       {
         "severity": "medium",
-        "category": "auth",
-        "file": "marketplace/backend/routes/downloadRoutes.js",
-        "line": 79,
-        "code_snippet": "const order = await orderService.getOrderByDownloadToken(token);\n...\nif (order.download_count >= 5) { ... return 429 }\n// No check for download_expiry here",
-        "description": "The download endpoint at GET /api/download/:token checks the download count limit (5 downloads) but does NOT check the download_expiry timestamp. The /token/:token/info endpoint shows expiry information and marks it as expired, but the actual file serving route does not enforce this expiry. Expired download tokens remain functional indefinitely.",
-        "recommendation": "Add an expiry check in the download route before serving the file: if (new Date() > new Date(order.download_expiry)) { return res.status(410).json({ success: false, error: 'Download link has expired' }); }",
-        "cwe": "CWE-613"
+        "category": "config",
+        "file": "marketplace/backend/routes/cryptoCheckout.js",
+        "line": 59,
+        "code_snippet": "const fallbacks = { bitcoin: 65000, monero: 150 };\nreturn fallbacks[coinId] || 65000;",
+        "description": "When CoinGecko is unavailable, hardcoded fallback prices are used ($65,000 for BTC, $150 for XMR). These stale values could significantly over- or under-charge customers if market prices move substantially, and may not be updated as the codebase ages.",
+        "recommendation": "When CoinGecko is unavailable, return an error to the client and require the user to retry rather than silently accepting stale hardcoded prices. Alternatively, use a secondary price oracle (e.g., Kraken API) as fallback instead of hardcoded values.",
+        "cwe": "CWE-330"
+      },
+      {
+        "severity": "medium",
+        "category": "deps",
+        "file": "marketplace/backend/package.json",
+        "line": 46,
+        "code_snippet": "\"csurf\": \"^1.11.0\"",
+        "description": "csurf is a deprecated package that has been archived by its maintainer. The npm registry marks it as deprecated, and known issues include lack of active security maintenance. Using unmaintained security-critical packages is a risk.",
+        "recommendation": "Replace csurf with a maintained alternative such as csrf-csrf (double-submit cookie pattern) or lusca. Alternatively, rely on the sameSite=strict session cookie configuration which already provides strong CSRF protection for same-origin requests.",
+        "cwe": "CWE-1188"
       },
       {
         "severity": "medium",
         "category": "config",
         "file": "marketplace/backend/server.js",
-        "line": 251,
-        "code_snippet": "res.status(500).json({ \n    success: false,\n    error: 'Failed to fetch books',\n    message: error.message \n});",
-        "description": "Many route error handlers return error.message directly to the client (found throughout server.js, checkout.js, adminRoutes.js, etc.). In production, Node.js errors can contain sensitive information such as file paths, database schema details, SQL query fragments, or internal service URLs. This information aids attackers in reconnaissance.",
-        "recommendation": "In production, return generic error messages to clients and log the full error server-side only. Use a pattern like: res.status(500).json({ error: 'Internal server error' }); instead of forwarding error.message. Consider using a centralized error handler middleware that sanitizes errors based on NODE_ENV.",
-        "cwe": "CWE-209"
-      },
-      {
-        "severity": "medium",
-        "category": "injection",
-        "file": "marketplace/backend/routes/aiDiscovery.js",
-        "line": 140,
-        "code_snippet": "let query = 'SELECT * FROM reading_paths WHERE 1=1';\n...\nif (topic) {\n    query += ' AND topic LIKE ?';\n    params.push(`%${topic}%`);\n}",
-        "description": "The reading paths query appears to use parameterized queries correctly. However, the pattern 'SELECT *' with dynamic string concatenation and user-controlled filter parameters could be a code smell if applied elsewhere with string interpolation. Careful review is needed — in this specific case, the use of ? parameterized placeholders appears correct. However, there is a DoS risk with unrestricted LIKE queries on arbitrary user input — LIKE '%<long-string>%' can be very slow.",
-        "recommendation": "Add length validation on `topic` parameter (e.g., max 100 chars). Consider adding an index on the topic column. Ensure all other raw query constructions use parameterized inputs.",
-        "cwe": "CWE-89"
-      },
-      {
-        "severity": "low",
-        "category": "injection",
-        "file": "marketplace/backend/services/emailService.js",
-        "line": 191,
-        "code_snippet": "<div class=\"book-title\">${bookTitle}</div>\n<div class=\"book-author\">by ${bookAuthor}</div>",
-        "description": "Email HTML templates directly interpolate user-supplied data (bookTitle, bookAuthor, orderId, downloadUrl, etc.) into HTML strings without escaping. If any of these fields contain HTML/script tags (e.g., a book title like '<script>alert(1)</script>'), the resulting email would contain malicious HTML. Most email clients strip scripts, but HTML injection can still manipulate email layout and links.",
-        "recommendation": "HTML-escape all user-supplied values before interpolating them into HTML email templates. Create a helper function: function escapeHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;'); } Apply it to all dynamic values: ${escapeHtml(bookTitle)}",
-        "cwe": "CWE-79"
+        "line": 456,
+        "code_snippet": "const peerRequests = networkConfig.networkPeers.map(peer =>\n    axios.get(`${peer.endpoint}/api/search`, { params: { q: query }, timeout: 3000 })",
+        "description": "Federation peer endpoints stored in networkConfig are used as SSRF targets. If an admin can modify the network registry (peer list), the server will make HTTP requests to arbitrary URLs on behalf of the server. This could reach internal services on the same network (e.g., metadata APIs, internal databases) if the server is deployed in a cloud environment.",
+        "recommendation": "Validate federation peer endpoints against an allowlist of known external domains. Block private/loopback IP ranges before making outbound requests. Consider signing or verifying peer registrations.",
+        "cwe": "CWE-918"
       },
       {
         "severity": "low",
         "category": "auth",
-        "file": "marketplace/backend/routes/adminRoutes.js",
-        "line": 86,
-        "code_snippet": "res.json({ \n    success: true, \n    message: 'Login successful',\n    sessionId: req.sessionID\n});",
-        "description": "The admin login response body returns the sessionID. While the session ID is already transmitted via the Set-Cookie header (as 'teneo.sid'), returning it in the JSON body creates an additional attack surface. If the frontend reads this from JSON and stores it in localStorage or logs it, it becomes vulnerable to XSS-based session theft. The session cookie has httpOnly: true specifically to prevent this.",
-        "recommendation": "Remove sessionId from the login response body. The session cookie already handles session management securely. Clients should not need to know the session ID from the response body.",
-        "cwe": "CWE-598"
+        "file": "marketplace/backend/routes/downloadRoutes.js",
+        "line": 17,
+        "code_snippet": "const downloadAttempts = new Map();",
+        "description": "Download abuse tracking (rate limiting repeated download attempts) uses an in-memory Map. This state is lost on every server restart. An attacker can trigger a restart (or wait for a deploy) to reset their download attempt counter. In production with multiple replicas, each instance has its own independent counter.",
+        "recommendation": "Use Redis or the database to persist download attempt counts. The existing download_logs table in the database already has enough information to reconstruct this.",
+        "cwe": "CWE-404"
       },
       {
         "severity": "low",
         "category": "config",
-        "file": "marketplace/backend/routes/cryptoCheckout.js",
-        "line": 200,
-        "code_snippet": "router.post('/verify-payment', async (req, res) => {\n    try {\n        const { orderId, transactionId } = req.body;\n        if (!orderId) return res.status(400)...\n        await dbRun(`UPDATE orders SET metadata = json_set(...)`, [transactionId || '', orderId]);",
-        "description": "The crypto payment verification endpoint accepts any orderId and transactionId without authentication. Anyone can submit bogus transaction IDs for any order, potentially polluting order records. While payment verification is ultimately manual (per the code comments), this still allows denial of service by flooding orders with fake transaction IDs.",
-        "recommendation": "Add rate limiting to this endpoint. Consider requiring the customer's email address to match the order (so only the actual customer can claim to have paid) as a minimum integrity check. Flag orders with multiple conflicting verification attempts for manual review.",
-        "cwe": "CWE-306"
+        "file": "marketplace/backend/routes/downloadRoutes.js",
+        "line": 154,
+        "code_snippet": "res.setHeader('Content-Disposition', `attachment; filename=\"${order.book_title}.pdf\"`);",
+        "description": "The book title from the database is embedded directly in the Content-Disposition header without sanitization. While this data comes from the DB (not direct user input), a book title with special characters (quotes, semicolons) could potentially manipulate the header value.",
+        "recommendation": "Sanitize the filename value: replace any characters that are not alphanumeric, spaces, hyphens, or underscores before embedding in the header. Or use RFC 5987 encoding: `filename*=UTF-8''${encodeURIComponent(title)}`",
+        "cwe": "CWE-116"
       },
       {
         "severity": "low",
         "category": "deps",
-        "file": "marketplace/backend/package.json",
-        "line": 49,
-        "code_snippet": "\"stripe\": \"^14.25.0\"",
-        "description": "The Stripe library is pinned to ^14.25.0 (major version 14), while Stripe has released version 17.x which includes security updates. Additionally, 'multer' is pinned to '1.4.5-lts.1' — multer has known issues with certain file type validation bypasses. The 'express' version ^4.19.2 is still on Express 4 which is receiving only security patches; Express 5 is now stable.",
-        "recommendation": "Run 'npm audit' to check for known CVEs in current dependencies. Update stripe to latest (npm update stripe). Review multer version for any applicable CVEs. Consider migrating to Express 5 for long-term support. Set up automated dependency updates (Dependabot or Renovate).",
-        "cwe": "CWE-1104"
+        "file": "marketplace/backend/node_modules/immutable",
+        "line": null,
+        "code_snippet": "\"immutable\": \"<4.3.8\" (transitive dev dep via hardhat)",
+        "description": "immutable <4.3.8 is vulnerable to Prototype Pollution (GHSA-wf6x-7x77-mvgw, CWE-1321). This is a devDependency path via hardhat, so production runtime is not affected unless hardhat is run in production.",
+        "recommendation": "Upgrade @nomicfoundation/hardhat-toolbox to >=7.0.0 to pull in a fixed immutable version. Ensure hardhat is not executed in production environments.",
+        "cwe": "CWE-1321"
       },
       {
         "severity": "low",
         "category": "config",
-        "file": "marketplace/backend/server.js",
-        "line": 88,
-        "code_snippet": "const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');",
-        "description": "If SESSION_SECRET is not set in production, a new random secret is generated on each process start, invalidating all existing sessions. While the code in validateEnvironment() (lines 15-20) also generates and stores the secret in process.env, there is a subtle double-generation risk and the warning only goes to the console. This can cause user confusion with unexpected logouts.",
-        "recommendation": "Fail hard in production if SESSION_SECRET is not explicitly configured: if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) { process.exit(1); }. Do not silently generate a temporary secret in production.",
-        "cwe": "CWE-330"
+        "file": "marketplace/backend/utils/validate.js",
+        "line": 31,
+        "code_snippet": "if (process.env.NODE_ENV === 'production') return 'Internal server error';\nreturn (err && err.message) ? err.message : String(err);",
+        "description": "In non-production environments (development, staging), full error messages including file paths, SQL fragments, and stack details are returned in API responses. If a staging server is exposed externally, attackers can extract infrastructure details.",
+        "recommendation": "Consider using an intermediate STAGING flag that treats itself like production for error responses. Alternatively, apply the production error masking to any environment where external users have access.",
+        "cwe": "CWE-209"
+      },
+      {
+        "severity": "low",
+        "category": "auth",
+        "file": "marketplace/backend/routes/auth.js",
+        "line": 213,
+        "code_snippet": "res.redirect('/login?error=auth_failed&message=' + encodeURIComponent(error.message));",
+        "description": "OAuth callback errors redirect to /login with the raw error.message in the URL query parameter. This could expose internal error details (auth server URLs, token exchange errors) to the user's browser and browser history, and could be logged by analytics.",
+        "recommendation": "Use a generic error code in the redirect (e.g., ?error=auth_failed) and log the detailed message server-side only.",
+        "cwe": "CWE-209"
       }
     ],
     "severity_counts": {
-      "critical": 1,
+      "critical": 0,
       "high": 6,
       "medium": 6,
-      "low": 6
+      "low": 5
     },
-    "summary": "The openbazaar-ai codebase has a critical secret exposure: a real production OAuth client secret is committed to the public .env.example file and explicitly documented as the 'actual production secret'. This must be rotated immediately. Beyond that, the most impactful security issues are: (1) no server-side price validation in Stripe checkout — clients can purchase books at any price; (2) course enrollment uses email-only auth (no session/token) — trivially bypassed; (3) path traversal in brand routes via unsanitized brandId parameter; (4) hardcoded default admin credentials. The application has good baseline security features (bcrypt for passwords, CSRF protection, session-based auth with httpOnly cookies, Stripe webhook signature verification, rate limiting on admin login), but several high-severity gaps remain. Priority remediation order: 1) rotate the leaked TENEO_CLIENT_SECRET, 2) add server-side price validation, 3) fix course auth, 4) sanitize brandId in file paths, 5) add missing security headers (helmet.js), 6) add rate limiting to user auth routes."
+    "summary": "The codebase demonstrates solid security fundamentals: bcrypt password hashing, parameterized SQL queries throughout, path traversal protection on brand/catalog endpoints, CSRF middleware, helmet security headers, rate limiting on auth and checkout endpoints, httpOnly+sameSite session cookies, and server-side price validation for the Stripe checkout flow. The most significant issues are: (1) the crypto checkout accepts client-supplied prices without server-side catalog validation, enabling price manipulation attacks; (2) the admin auth-status endpoint leaks session IDs in response bodies; (3) the PDF upload uses unsanitized bookId as filename; and (4) 13 high-severity npm vulnerabilities including multer DoS (direct dep) and tar path traversal (transitive). The 'unsafe-inline' CSP directive is a meaningful XSS defense gap. Priority fixes: enforce server-side price in crypto checkout, remove sessionId from auth-status response, sanitize PDF upload filename, and run npm audit fix."
   }
 }

@@ -3,6 +3,7 @@
 **Updated:** 2026-03-06
 **Informed by:** Gemini Deep Research outputs 1-9, current implementation audit
 **Supersedes:** `IMPLEMENTATION_PLAN.md`, `REVOLUTIONARY_FEATURES_ROADMAP.md`, `IMPLEMENTATION_MAP.md`
+**Execution companion:** [development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md) - Concrete execution sequence for Phase 0, AI builder delivery, and managed-service commercialization
 
 ---
 

@@ -5,25 +5,16 @@
     "completed": 1,
     "blocked": 0,
     "in_progress": 0,
-    "tasks": [
-      {
-        "file": "104-P3-expand-auth-payment-integration-tests.md",
-        "status": "completed",
-        "commit": "68ca077"
-      }
-    ],
-    "commits": [
-      "68ca077"
-    ],
+    "commits": ["0082c43"],
     "files_changed": [
-      "__tests__/auth-magic-link.test.js",
-      "__tests__/stripe-webhook-idempotency.test.js",
-      "__tests__/lulu-pod.test.js"
+      "marketplace/backend/server.js",
+      "marketplace/backend/routes/storefront.js",
+      "marketplace/backend/.env.example",
+      ".overnight/active/002-P2-fix-csrf-exemption-storefront-routes.md"
     ],
-    "session_tasks_assigned": 1,
-    "session_tasks_completed": 1,
-    "tests_added": 29,
-    "tests_total_before": 101,
-    "tests_total_after": 130
+    "task_file": "002-P2-fix-csrf-exemption-storefront-routes.md",
+    "blockers": [],
+    "follow_up_tasks": [],
+    "summary": "Narrowed CSRF exemption for /api/storefront and /api/apps routes from all-methods to GET-only. Added requireStorefrontApiKey middleware to POST /api/storefront/checkout — when STOREFRONT_API_KEY env var is set, callers must include X-Api-Key header. POST /api/storefront/fulfill was already excluded from CSRF via csrfExcludePaths with HMAC webhook signature verification. Added STOREFRONT_API_KEY to .env.example with description."
   }
 }

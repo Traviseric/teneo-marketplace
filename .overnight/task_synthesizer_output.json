@@ -3,89 +3,32 @@
   "next_box": "CONDUCTOR",
   "context": {
     "task_files": [
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\105-P2-add-quiz-schema-and-routes.md"
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\001-P2-fix-magic-link-error-message-leak.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\002-P2-fix-csrf-exemption-storefront-routes.md"
     ],
-    "task_count": 1,
-    "tasks_by_priority": {
-      "P0": 0,
-      "P1": 0,
-      "P2": 1,
-      "P3": 0
-    },
+    "task_count": 2,
+    "tasks_by_priority": {"P0": 0, "P1": 0, "P2": 2, "P3": 0},
     "sources": {
-      "OVERNIGHT_TASKS.md": 1
+      "security_audit": 1,
+      "review_audit_new_tasks": 1,
+      "project_declared": 0
     },
-    "synthesis_round": 6,
-    "review_summary": {
-      "total_findings": 14,
-      "accepted": 1,
-      "rejected": 8,
-      "deferred": 3,
-      "pre_existing_completed": 2,
-      "rejections": [
-        {
-          "finding": "P1: Email open/click tracking (task 075)",
-          "reason": "ALREADY DONE — emailTracking.js route + emailMarketingService tracking pixel/click-wrap confirmed"
-        },
-        {
-          "finding": "P1: Cart abandonment email cron (task 076)",
-          "reason": "ALREADY DONE — cronJobs.js confirmed in marketplace/backend/services/"
-        },
-        {
-          "finding": "P1: Funnel conversion tracking (task 077)",
-          "reason": "ALREADY DONE via local tracking — funnels.js has /track endpoint + conversion_rate"
-        },
-        {
-          "finding": "P1: Verify/fix IPFS auto-pinning",
-          "reason": "FALSE POSITIVE (pre-existing) — nftService.js line 158 calls real Pinata REST API"
-        },
-        {
-          "finding": "P2: Create distinct AI page builder templates (task 088)",
-          "reason": "ALREADY DONE — story-driven.html, reader-magnet.html, course-launch.html all exist"
-        },
-        {
-          "finding": "P2: Fix PERCENTILE_CONT dead code in digestService.js (task 092)",
-          "reason": "ALREADY DONE — no matches for PERCENTILE_CONT in digestService.js"
-        },
-        {
-          "finding": "P2: Fix days SQL template literal in amazonService.js (task 093)",
-          "reason": "ALREADY DONE — uses parseInt() + parameterized ? placeholder"
-        },
-        {
-          "finding": "P2: Document OPENAI_API_KEY and PINATA_* env vars (task 086)",
-          "reason": "ALREADY DONE — fully documented in marketplace/backend/.env.example lines 30-77"
-        }
-      ],
-      "deferrals": [
-        {
-          "finding": "P1: Port ArxMint L402/Cashu payments",
-          "reason": "requires_human — C:\\code\\arxmint not found. HT-007 already exists."
-        },
-        {
-          "finding": "P3: Browser last-mile tests",
-          "reason": "environment_blocked — no Chrome automation available."
-        },
-        {
-          "finding": "P3: Fix conductor DIGEST loop bug",
-          "reason": "out_of_scope — orchestrator source not locatable in project files."
-        }
-      ]
-    },
+    "rejected_count": 8,
+    "deferred_count": 9,
     "task_groups": {
-      "course_module": {
-        "tasks": ["105-P2-add-quiz-schema-and-routes.md"],
+      "auth_hardening": {
+        "tasks": ["001-P2-fix-magic-link-error-message-leak.md"],
+        "execution_hint": "parallel",
+        "reason": "Single-line fix in auth.js:243; independent of task 002; matches existing pattern from prior fix at line 213"
+      },
+      "csrf_hardening": {
+        "tasks": ["002-P2-fix-csrf-exemption-storefront-routes.md"],
         "execution_hint": "sequential",
-        "reason": "Touches database/schema.sql + new routes file + server.js mount. Schema change needed before routes can be tested."
+        "reason": "Requires auditing storefront.js routes then editing server.js CSRF config — needs careful route-by-route analysis before making changes"
       }
     },
-    "recommended_mode": "managed",
-    "recommended_lanes": 1,
-    "mode_reason": "Single task. Managed mode with 1 lane — no parallelism needed. Task 105 is sequential (schema + routes + tests).",
-    "current_test_suite": {
-      "passing": 130,
-      "failing": 0,
-      "suites": 15
-    },
-    "expected_test_count_after_105": "135+"
+    "recommended_mode": "1:1",
+    "recommended_lanes": 2,
+    "synthesis_notes": "Round 8. All 10 prior session tasks verified completed by review_audit (score 94%). Only 2 new tasks created this round: (1) magic link error.message leak at auth.js:243 — trivial 1-line fix completing the partial fix from task 010; (2) CSRF exemption for /api/storefront — medium security finding that was previously deferred but remains unaddressed. P0 federation revenue share from OVERNIGHT_TASKS.md rejected: already implemented in orderService.js:92 (task 103 was complete). ArxMint L402 deferred: C:\\code\\arxmint source doesn't exist. Next after worker: FEATURE_AUDIT, UX_AUDIT, CODE_QUALITY_AUDIT per conductor."
   }
 }

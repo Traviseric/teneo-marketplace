@@ -258,6 +258,14 @@
       "method": "Glob for *cert* and *btcpay* in backend/services confirmed both files"
     }
   ],
+  "rejected_findings_round8": [
+    {
+      "source": "OVERNIGHT_TASKS.md",
+      "finding": "P0 — Persist federation revenue share to DB at checkout — orderService.createOrder() never INSERTs into network_revenue_shares",
+      "reason": "FALSE POSITIVE — orderService.js:92 has real INSERT INTO network_revenue_shares with full fields. schema.sql has the table. Task 103 was verified complete by review_audit. Previous lessons.json round5 entry was stale (pre-task-103).",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    }
+  ],
   "false_positive_patterns": [
     {
       "pattern": "Audit says 'service was cut off during analysis' or 'suggesting'",
