@@ -24,6 +24,24 @@
 const AuthProvider = require('../AuthProvider');
 const crypto = require('crypto');
 const db = require('../../database/db');
+const dbGet = async (sql, params = []) => {
+  if (typeof db.get === 'function') {
+    return db.get(sql, params);
+  }
+  if (typeof db.prepare === 'function') {
+    return db.prepare(sql).get(...params);
+  }
+  throw new Error('Database adapter does not implement get/prepare');
+};
+const dbRun = async (sql, params = []) => {
+  if (typeof db.run === 'function') {
+    return db.run(sql, params);
+  }
+  if (typeof db.prepare === 'function') {
+    return db.prepare(sql).run(...params);
+  }
+  throw new Error('Database adapter does not implement run/prepare');
+};
 
 class TeneoAuthProvider extends AuthProvider {
   constructor(config) {
@@ -184,9 +202,7 @@ class TeneoAuthProvider extends AuthProvider {
       const { user } = await response.json();
 
       // Get or create local user record
-      let localUser = db
-        .prepare('SELECT * FROM users WHERE teneo_user_id = ?')
-        .get(user.id);
+      let localUser = await dbGet('SELECT * FROM users WHERE teneo_user_id = ?', [user.id]);
 
       if (!localUser) {
         // Create local user record on first token verification
@@ -211,14 +227,13 @@ class TeneoAuthProvider extends AuthProvider {
    * Get user by local ID
    */
   async getUser(userId) {
-    const user = db
-      .prepare(
-        `SELECT u.*, ot.access_token
-         FROM users u
-         LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
-         WHERE u.id = ? AND u.auth_provider = 'teneo-auth'`
-      )
-      .get(userId);
+    const user = await dbGet(
+      `SELECT u.*, ot.access_token
+       FROM users u
+       LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
+       WHERE u.id = ? AND u.auth_provider = 'teneo-auth'`,
+      [userId]
+    );
 
     if (!user) {
       throw new Error('User not found');
@@ -261,14 +276,13 @@ class TeneoAuthProvider extends AuthProvider {
   async getUserByEmail(email) {
     email = email.toLowerCase().trim();
 
-    const user = db
-      .prepare(
-        `SELECT u.*, ot.access_token
-         FROM users u
-         LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
-         WHERE u.email = ? AND u.auth_provider = 'teneo-auth'`
-      )
-      .get(email);
+    const user = await dbGet(
+      `SELECT u.*, ot.access_token
+       FROM users u
+       LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
+       WHERE u.email = ? AND u.auth_provider = 'teneo-auth'`,
+      [email]
+    );
 
     if (!user) {
       throw new Error('User not found');
@@ -362,68 +376,69 @@ class TeneoAuthProvider extends AuthProvider {
     const now = new Date().toISOString();
 
     // Check if user exists
-    let localUser = db
-      .prepare('SELECT id FROM users WHERE teneo_user_id = ?')
-      .get(teneoUser.id);
+    let localUser = await dbGet('SELECT id FROM users WHERE teneo_user_id = ?', [teneoUser.id]);
 
     if (localUser) {
       // Update existing user
-      db.prepare(
+      await dbRun(
         `UPDATE users SET
           email = ?, name = ?, avatar_url = ?,
           credits = ?, email_verified = ?,
           last_login = ?, updated_at = ?
-         WHERE teneo_user_id = ?`
-      ).run(
-        teneoUser.email,
-        teneoUser.name,
-        teneoUser.avatar_url,
-        teneoUser.credits,
-        teneoUser.email_verified ? 1 : 0,
-        now,
-        now,
-        teneoUser.id
+         WHERE teneo_user_id = ?`,
+        [
+          teneoUser.email,
+          teneoUser.name,
+          teneoUser.avatar_url,
+          teneoUser.credits,
+          teneoUser.email_verified ? 1 : 0,
+          now,
+          now,
+          teneoUser.id,
+        ]
       );
     } else {
       // Create new user
       const localUserId = crypto.randomUUID();
 
-      db.prepare(
+      await dbRun(
         `INSERT INTO users (
           id, email, name, avatar_url, auth_provider, teneo_user_id,
           credits, email_verified, signup_source, created_at, updated_at, last_login
-        ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?, ?)`
-      ).run(
-        localUserId,
-        teneoUser.email,
-        teneoUser.name,
-        teneoUser.avatar_url,
-        teneoUser.id,
-        teneoUser.credits,
-        teneoUser.email_verified ? 1 : 0,
-        now,
-        now,
-        now
+        ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?, ?)`,
+        [
+          localUserId,
+          teneoUser.email,
+          teneoUser.name,
+          teneoUser.avatar_url,
+          teneoUser.id,
+          teneoUser.credits,
+          teneoUser.email_verified ? 1 : 0,
+          now,
+          now,
+          now,
+        ]
       );
 
       localUser = { id: localUserId };
     }
 
     // Store OAuth tokens
-    db.prepare(
+    await dbRun(
       `INSERT OR REPLACE INTO oauth_tokens (
         user_id, access_token, refresh_token, token_type,
         expires_at, provider, provider_user_id, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, 'teneo-auth', ?, ?, ?)`
-    ).run(
-      localUser.id,
-      tokens.access_token,
-      tokens.refresh_token,
-      'Bearer',
-      tokens.expires_at || new Date(Date.now() + 3600000).toISOString(), // 1 hour default
-      teneoUser.id,
-      now,
-      now
+      ) VALUES (?, ?, ?, ?, ?, 'teneo-auth', ?, ?, ?)`,
+      [
+        localUser.id,
+        tokens.access_token,
+        tokens.refresh_token,
+        'Bearer',
+        tokens.expires_at || new Date(Date.now() + 3600000).toISOString(), // 1 hour default
+        teneoUser.id,
+        now,
+        now,
+      ]
     );
 
     teneoUser.localUserId = localUser.id;
@@ -437,21 +452,22 @@ class TeneoAuthProvider extends AuthProvider {
     const localUserId = crypto.randomUUID();
     const now = new Date().toISOString();
 
-    db.prepare(
+    await dbRun(
       `INSERT INTO users (
         id, email, name, avatar_url, auth_provider, teneo_user_id,
         credits, email_verified, signup_source, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?)`
-    ).run(
-      localUserId,
-      teneoUser.email,
-      teneoUser.name,
-      teneoUser.avatar_url,
-      teneoUser.id,
-      teneoUser.credits,
-      teneoUser.email_verified ? 1 : 0,
-      now,
-      now
+      ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?)`,
+      [
+        localUserId,
+        teneoUser.email,
+        teneoUser.name,
+        teneoUser.avatar_url,
+        teneoUser.id,
+        teneoUser.credits,
+        teneoUser.email_verified ? 1 : 0,
+        now,
+        now,
+      ]
     );
 
     return {
@@ -488,22 +504,21 @@ class TeneoAuthProvider extends AuthProvider {
    * Log authentication audit event
    */
   _logAudit(userId, eventType, success, metadata = {}) {
-    try {
-      db.prepare(
-        `INSERT INTO auth_audit_log (
-          user_id, event_type, auth_provider, success,
-          failure_reason, metadata, created_at
-        ) VALUES (?, ?, 'teneo-auth', ?, ?, ?, datetime('now'))`
-      ).run(
+    dbRun(
+      `INSERT INTO auth_audit_log (
+        user_id, event_type, auth_provider, success,
+        failure_reason, metadata, created_at
+      ) VALUES (?, ?, 'teneo-auth', ?, ?, ?, datetime('now'))`,
+      [
         userId,
         eventType,
         success ? 1 : 0,
         success ? null : metadata.error,
-        JSON.stringify(metadata)
-      );
-    } catch (error) {
+        JSON.stringify(metadata),
+      ]
+    ).catch((error) => {
       console.error('Failed to log audit event:', error);
-    }
+    });
   }
 }
 

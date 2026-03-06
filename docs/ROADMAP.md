@@ -30,7 +30,7 @@ This is what makes the project worth using over everything else — not the cryp
 | Component | Technology | Status |
 |-----------|-----------|--------|
 | Runtime | Node.js 18+ / Express.js | Working |
-| Database | SQLite runtime + Supabase (Postgres) target | Supabase project exists (`ncddvxglmnnfagyyupeu`), adapter still pending |
+| Database | SQLite + Supabase Postgres runtime adapter | Runtime adapter shipped (`DATABASE_URL` / `SUPABASE_DB_URL`), production validation ongoing |
 | Payments | Stripe + ArxMint Lightning | Stripe working, ArxMint provider built |
 | Auth | Magic links + OAuth SSO + Nostr (backend) | Backend done, frontend partial |
 | Email | Nodemailer (SMTP + Resend) | Working |
@@ -46,7 +46,7 @@ This is what makes the project worth using over everything else — not the cryp
 - **API URL:** `https://ncddvxglmnnfagyyupeu.supabase.co`
 - **Schema:** 40+ tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs, webhooks
 - **Migration file:** `marketplace/backend/database/supabase-migration.sql`
-- **Runtime note (March 6, 2026):** backend services still instantiate SQLite directly; Supabase adapter work remains in Phase 0
+- **Runtime note (March 6, 2026):** backend DB adapter supports SQLite fallback + Postgres/Supabase runtime via `DATABASE_URL` / `SUPABASE_DB_URL`
 - **Note:** App users table is `profiles` (not `users` — Supabase reserves that for `auth.users`)
 
 ### Deployment
@@ -66,7 +66,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 
 ### Working (27+ routes, 30+ services, 17 test suites passing)
 
-- [x] Express.js backend with SQLite runtime and Supabase migration assets prepared
+- [x] Express.js backend with SQLite fallback + Postgres/Supabase runtime adapter
 - [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
 - [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero — manual verification)
 - [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE + Nostr backend)
@@ -91,7 +91,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 
 ### Needs Wiring
 
-- [ ] **Database adapter** — backend still imports SQLite; needs Supabase client wrapper
+- [ ] Supabase production validation + query hardening (run full checkout/auth/POD flows against Postgres)
 - [ ] Frontend auth UI (backend done, login/register pages exist but not unified)
 - [ ] Course checkout flow (components exist, not integrated into marketplace checkout)
 - [ ] Email service production config (code done, needs SMTP credentials on Vercel)
@@ -121,16 +121,12 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 
 **Goal:** The deployed site at openbazaar.ai actually functions end-to-end. A visitor can browse, sign up, and buy something.
 
-**Why first:** Nothing else matters if the production site is broken. Right now the backend still uses SQLite imports, which fail on Vercel's read-only filesystem.
+**Why first:** Nothing else matters if the production site is broken. The runtime adapter is now in place, so Phase 0 is focused on production env wiring and full Postgres validation on live infrastructure.
 
 ### Tasks
 
-- [ ] **Build Supabase database adapter** — replace SQLite `db.run`/`db.get`/`db.all` calls with Supabase client (`@supabase/supabase-js`). The adapter should:
-  - Export the same interface (`run`, `get`, `all`) so existing services don't need rewriting
-  - Use `SUPABASE_SERVICE_ROLE_KEY` for server-side operations
-  - Fall back to SQLite if `SUPABASE_URL` not set (local dev)
-  - Map `profiles` table to where code references `users`
-- [ ] **Add Supabase env vars to Vercel** — `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [x] **Build Supabase/Postgres database adapter** — runtime now supports `DATABASE_URL` / `SUPABASE_DB_URL` with SQLite fallback and shared `run/get/all/exec` interface
+- [ ] **Add Supabase env vars to Vercel** — `DATABASE_URL` (or `SUPABASE_DB_URL`), plus `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
 - [ ] **Verify landing page loads** at openbazaar.ai/
 - [ ] **Verify API responds** at openbazaar.ai/api/storefront/catalog
 - [ ] **Wire login flow** — login.html and account-dashboard.html work with auth backend

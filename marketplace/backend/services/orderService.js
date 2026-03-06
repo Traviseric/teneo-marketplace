@@ -1,5 +1,3 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 const crypto = require('crypto');
 
 // Whitelist of columns that may be updated via updateOrderStatus().
@@ -31,9 +29,26 @@ const ALLOWED_UPDATE_KEYS = new Set([
 ]);
 
 class OrderService {
-    constructor() {
-        const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/marketplace.db');
-        this.db = new sqlite3.Database(dbPath);
+    constructor(options = {}) {
+        if (options.db) {
+            this.db = options.db;
+            this.ownsConnection = false;
+            return;
+        }
+
+        // Keep test behavior: if tests request in-memory DB, use an isolated sqlite connection.
+        if (process.env.DATABASE_PATH === ':memory:') {
+            // eslint-disable-next-line global-require
+            const sqlite3 = require('sqlite3').verbose();
+            this.db = new sqlite3.Database(':memory:');
+            this.ownsConnection = true;
+            return;
+        }
+
+        // Default runtime path uses shared adapter (SQLite fallback or Postgres via DATABASE_URL).
+        // eslint-disable-next-line global-require
+        this.db = require('../database/database');
+        this.ownsConnection = false;
     }
 
     // Create a new order
@@ -269,50 +284,54 @@ class OrderService {
     // Process refund
     async refundOrder(orderId, refundData) {
         const { refundId, stripeRefundId, amount, reason } = refundData;
+        const updateOrderSql = `
+            UPDATE orders 
+            SET refund_status = 'refunded',
+                refund_amount = ?,
+                refund_reason = ?,
+                refunded_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE order_id = ?
+        `;
 
-        return new Promise((resolve, reject) => {
-            this.db.serialize(() => {
-                // Start transaction
-                this.db.run('BEGIN TRANSACTION');
+        const insertRefundSql = `
+            INSERT INTO refunds (
+                refund_id, order_id, stripe_refund_id, 
+                amount, reason, status
+            ) VALUES (?, ?, ?, ?, ?, 'completed')
+        `;
 
-                // Update order
-                const updateOrderSql = `
-                    UPDATE orders 
-                    SET refund_status = 'refunded',
-                        refund_amount = ?,
-                        refund_reason = ?,
-                        refunded_at = CURRENT_TIMESTAMP,
-                        updated_at = CURRENT_TIMESTAMP
-                    WHERE order_id = ?
-                `;
-
-                this.db.run(updateOrderSql, [amount, reason, orderId], (err) => {
-                    if (err) {
-                        this.db.run('ROLLBACK');
-                        reject(err);
-                        return;
-                    }
-
-                    // Insert refund record
-                    const insertRefundSql = `
-                        INSERT INTO refunds (
-                            refund_id, order_id, stripe_refund_id, 
-                            amount, reason, status
-                        ) VALUES (?, ?, ?, ?, ?, 'completed')
-                    `;
-
-                    this.db.run(insertRefundSql, [refundId, orderId, stripeRefundId, amount, reason], (err) => {
-                        if (err) {
+        if (typeof this.db.transaction === 'function') {
+            await this.db.transaction(async (tx) => {
+                await tx.run(updateOrderSql, [amount, reason, orderId]);
+                await tx.run(insertRefundSql, [refundId, orderId, stripeRefundId, amount, reason]);
+            });
+        } else {
+            await new Promise((resolve, reject) => {
+                this.db.serialize(() => {
+                    this.db.run('BEGIN TRANSACTION');
+                    this.db.run(updateOrderSql, [amount, reason, orderId], (updateErr) => {
+                        if (updateErr) {
                             this.db.run('ROLLBACK');
-                            reject(err);
-                        } else {
-                            this.db.run('COMMIT');
-                            resolve({ success: true });
+                            reject(updateErr);
+                            return;
                         }
+
+                        this.db.run(insertRefundSql, [refundId, orderId, stripeRefundId, amount, reason], (insertErr) => {
+                            if (insertErr) {
+                                this.db.run('ROLLBACK');
+                                reject(insertErr);
+                                return;
+                            }
+                            this.db.run('COMMIT');
+                            resolve();
+                        });
                     });
                 });
             });
-        });
+        }
+
+        return { success: true };
     }
 
     // Log download attempt
@@ -495,7 +514,9 @@ class OrderService {
 
     // Close database connection
     close() {
-        this.db.close();
+        if (this.ownsConnection && this.db && typeof this.db.close === 'function') {
+            this.db.close();
+        }
     }
 }
 

@@ -4,13 +4,17 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
-
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'database', 'marketplace.db');
+const sharedDb = require('../database/database');
 
 function getDb() {
-    return new sqlite3.Database(dbPath);
+    return sharedDb;
+}
+
+function closeDb(db) {
+    // Shared adapter is process-wide; per-request close is a no-op.
+    if (db && db !== sharedDb && typeof db.close === 'function') {
+        db.close();
+    }
 }
 
 function dbAll(db, sql, params = []) {
@@ -96,7 +100,7 @@ router.get('/', async (req, res) => {
         console.error('App store browse error:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch apps' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -171,7 +175,7 @@ router.get('/discover', async (req, res) => {
         console.error('App discovery error:', error);
         res.status(500).json({ success: false, error: 'Discovery failed' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -223,7 +227,7 @@ router.get('/:id', async (req, res) => {
         console.error('App detail error:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch app' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -297,7 +301,7 @@ router.post('/', async (req, res) => {
         console.error('App registration error:', error);
         res.status(500).json({ success: false, error: 'Failed to register app' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -335,7 +339,7 @@ router.put('/:id', async (req, res) => {
         console.error('App update error:', error);
         res.status(500).json({ success: false, error: 'Failed to update app' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -378,7 +382,7 @@ router.post('/:id/reviews', async (req, res) => {
         console.error('Review error:', error);
         res.status(500).json({ success: false, error: 'Failed to submit review' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -406,7 +410,7 @@ router.post('/:id/calls', async (req, res) => {
         console.error('Call log error:', error);
         res.status(500).json({ success: false, error: 'Failed to log call' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -433,7 +437,7 @@ router.post('/:id/flag', async (req, res) => {
         console.error('Flag error:', error);
         res.status(500).json({ success: false, error: 'Failed to report incident' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -480,7 +484,7 @@ router.get('/:id/stats', async (req, res) => {
         console.error('Stats error:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch stats' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -536,7 +540,7 @@ router.get('/:id/manifest', async (req, res) => {
         console.error('Manifest error:', error);
         res.status(500).json({ success: false, error: 'Failed to generate manifest' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 
@@ -553,7 +557,7 @@ router.get('/meta/categories', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, error: 'Failed to fetch categories' });
     } finally {
-        db.close();
+        closeDb(db);
     }
 });
 

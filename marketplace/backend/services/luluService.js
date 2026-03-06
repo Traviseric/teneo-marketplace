@@ -1,7 +1,6 @@
 const axios = require('axios');
 const crypto = require('crypto');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const db = require('../database/database');
 
 class LuluService {
     constructor() {
@@ -10,9 +9,8 @@ class LuluService {
         this.apiUrl = process.env.LULU_API_URL || 'https://api.sandbox.lulu.com';
         this.accessToken = null;
         this.tokenExpiry = null;
-        
-        const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/marketplace.db');
-        this.db = new sqlite3.Database(dbPath);
+        this.db = db;
+        this.ownsConnection = false;
     }
 
     // Get or refresh access token
@@ -488,7 +486,9 @@ class LuluService {
 
     // Close database connection
     close() {
-        this.db.close();
+        if (this.ownsConnection && this.db && typeof this.db.close === 'function') {
+            this.db.close();
+        }
     }
 }
 

@@ -19,6 +19,24 @@
 const AuthProvider = require('../AuthProvider');
 const crypto = require('crypto');
 const db = require('../../database/db');
+const dbGet = async (sql, params = []) => {
+  if (typeof db.get === 'function') {
+    return db.get(sql, params);
+  }
+  if (typeof db.prepare === 'function') {
+    return db.prepare(sql).get(...params);
+  }
+  throw new Error('Database adapter does not implement get/prepare');
+};
+const dbRun = async (sql, params = []) => {
+  if (typeof db.run === 'function') {
+    return db.run(sql, params);
+  }
+  if (typeof db.prepare === 'function') {
+    return db.prepare(sql).run(...params);
+  }
+  throw new Error('Database adapter does not implement run/prepare');
+};
 
 // @noble/curves for Schnorr signature verification (already installed)
 const { schnorr } = require('@noble/curves/secp256k1');
@@ -84,14 +102,13 @@ class NostrAuthProvider extends AuthProvider {
    * Get user by ID
    */
   async getUser(userId) {
-    const user = db
-      .prepare(
-        `SELECT id, email, name, avatar_url, credits, account_status, created_at, last_login,
-                metadata
-         FROM users
-         WHERE id = ? AND auth_provider = 'nostr'`
-      )
-      .get(userId);
+    const user = await dbGet(
+      `SELECT id, email, name, avatar_url, credits, account_status, created_at, last_login,
+              metadata
+       FROM users
+       WHERE id = ? AND auth_provider = 'nostr'`,
+      [userId]
+    );
 
     if (!user) throw new Error('User not found');
 
@@ -114,9 +131,10 @@ class NostrAuthProvider extends AuthProvider {
    * Get user by email — not meaningful for Nostr, but required by interface.
    */
   async getUserByEmail(email) {
-    const user = db
-      .prepare(`SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`)
-      .get(email);
+    const user = await dbGet(
+      `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+      [email]
+    );
 
     if (!user) throw new Error('User not found');
     const meta = user.metadata ? JSON.parse(user.metadata) : {};
@@ -138,15 +156,17 @@ class NostrAuthProvider extends AuthProvider {
     // Try nostr_pubkey column first (available after schema migration)
     let user;
     try {
-      user = db
-        .prepare(`SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE nostr_pubkey = ?`)
-        .get(pubkey);
+      user = await dbGet(
+        'SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE nostr_pubkey = ?',
+        [pubkey]
+      );
     } catch (_) {
       // Column might not exist yet — fall back to synthetic email lookup
       const syntheticEmail = `${pubkey}@nostr.local`;
-      user = db
-        .prepare(`SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`)
-        .get(syntheticEmail);
+      user = await dbGet(
+        `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+        [syntheticEmail]
+      );
     }
 
     if (!user) throw new Error('User not found');
@@ -281,23 +301,24 @@ class NostrAuthProvider extends AuthProvider {
     // Look up by nostr_pubkey column (if available) or synthetic email
     let user;
     try {
-      user = db
-        .prepare(`SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE nostr_pubkey = ?`)
-        .get(pubkey);
+      user = await dbGet(
+        'SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE nostr_pubkey = ?',
+        [pubkey]
+      );
     } catch (_) {
       // Column may not exist yet — fall through to email-based lookup
     }
 
     if (!user) {
-      user = db
-        .prepare(`SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE email = ? AND auth_provider = 'nostr'`)
-        .get(syntheticEmail);
+      user = await dbGet(
+        `SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+        [syntheticEmail]
+      );
     }
 
     if (user) {
       // Update last login
-      db.prepare('UPDATE users SET last_login = ?, updated_at = ? WHERE id = ?')
-        .run(now, now, user.id);
+      await dbRun('UPDATE users SET last_login = ?, updated_at = ? WHERE id = ?', [now, now, user.id]);
 
       return {
         id: user.id,
@@ -316,16 +337,17 @@ class NostrAuthProvider extends AuthProvider {
     const displayName = `nostr:${shortPubkey}`;
     const meta = JSON.stringify({ nostr_pubkey: pubkey });
 
-    db.prepare(
+    await dbRun(
       `INSERT INTO users (
         id, email, name, auth_provider, email_verified,
         signup_source, credits, created_at, updated_at, last_login, metadata
-      ) VALUES (?, ?, ?, 'nostr', 1, 'nostr', 0, ?, ?, ?, ?)`
-    ).run(userId, syntheticEmail, displayName, now, now, now, meta);
+      ) VALUES (?, ?, ?, 'nostr', 1, 'nostr', 0, ?, ?, ?, ?)`,
+      [userId, syntheticEmail, displayName, now, now, now, meta]
+    );
 
     // Try to also set nostr_pubkey column if it exists
     try {
-      db.prepare('UPDATE users SET nostr_pubkey = ? WHERE id = ?').run(pubkey, userId);
+      await dbRun('UPDATE users SET nostr_pubkey = ? WHERE id = ?', [pubkey, userId]);
     } catch (_) {
       // Column may not exist yet — pubkey is stored in metadata JSON
     }
@@ -359,22 +381,21 @@ class NostrAuthProvider extends AuthProvider {
    * Log auth audit event
    */
   _logAudit(userId, eventType, success, metadata = {}) {
-    try {
-      db.prepare(
-        `INSERT INTO auth_audit_log (
-          user_id, event_type, auth_provider, success,
-          failure_reason, metadata, created_at
-        ) VALUES (?, ?, 'nostr', ?, ?, ?, datetime('now'))`
-      ).run(
+    dbRun(
+      `INSERT INTO auth_audit_log (
+        user_id, event_type, auth_provider, success,
+        failure_reason, metadata, created_at
+      ) VALUES (?, ?, 'nostr', ?, ?, ?, datetime('now'))`,
+      [
         userId,
         eventType,
         success ? 1 : 0,
         success ? null : metadata.error,
-        JSON.stringify(metadata)
-      );
-    } catch (error) {
+        JSON.stringify(metadata),
+      ]
+    ).catch((error) => {
       console.error('[NostrAuth] Failed to log audit event:', error);
-    }
+    });
   }
 }
 

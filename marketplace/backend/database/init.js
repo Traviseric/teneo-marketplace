@@ -1,158 +1,152 @@
-const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
+const isPostgres = Boolean(process.env.DATABASE_URL || process.env.SUPABASE_DB_URL);
 const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'marketplace.db');
-const schemaPath = path.join(__dirname, 'schema.sql');
-const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
-const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
-const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-tracker.sql');
-const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
-const coursesSchemaPath = path.join(__dirname, 'schema-courses.sql');
-const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
-const emailMarketingSchemaPath = path.join(__dirname, 'schema-email-marketing.sql');
-const appStoreSchemaPath = path.join(__dirname, 'schema-appstore.sql');
 
-// Create database directory if it doesn't exist
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
+function readSchemaIfExists(filePath) {
+    return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
 }
 
-// Initialize database
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database:', err);
+async function initSqlite() {
+    // eslint-disable-next-line global-require
+    const sqlite3 = require('sqlite3').verbose();
+
+    const schemaPath = path.join(__dirname, 'schema.sql');
+    const luluSchemaPath = path.join(__dirname, 'schema-lulu.sql');
+    const aiDiscoverySchemaPath = path.join(__dirname, 'schema-ai-discovery.sql');
+    const censorshipTrackerSchemaPath = path.join(__dirname, 'schema-censorship-tracker.sql');
+    const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
+    const coursesSchemaPath = path.join(__dirname, 'schema-courses.sql');
+    const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
+    const emailMarketingSchemaPath = path.join(__dirname, 'schema-email-marketing.sql');
+    const appStoreSchemaPath = path.join(__dirname, 'schema-appstore.sql');
+
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+    }
+
+    const db = await new Promise((resolve, reject) => {
+        const connection = new sqlite3.Database(dbPath, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Connected to SQLite database');
+                resolve(connection);
+            }
+        });
+    });
+
+    const execAsync = (sql) => new Promise((resolve, reject) => {
+        db.exec(sql, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    const allAsync = (sql) => new Promise((resolve, reject) => {
+        db.all(sql, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+        });
+    });
+
+    const closeAsync = () => new Promise((resolve, reject) => {
+        db.close((err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    const schemaParts = [
+        { name: 'Main', sql: fs.readFileSync(schemaPath, 'utf8') },
+        { name: 'Lulu', sql: readSchemaIfExists(luluSchemaPath) },
+        { name: 'AI Discovery', sql: readSchemaIfExists(aiDiscoverySchemaPath) },
+        { name: 'Censorship Tracker', sql: readSchemaIfExists(censorshipTrackerSchemaPath) },
+        { name: 'NFT', sql: readSchemaIfExists(nftSchemaPath) },
+        { name: 'Courses', sql: readSchemaIfExists(coursesSchemaPath) },
+        { name: 'Funnels', sql: readSchemaIfExists(funnelsSchemaPath) },
+        { name: 'Email Marketing', sql: readSchemaIfExists(emailMarketingSchemaPath) },
+        { name: 'App Store', sql: readSchemaIfExists(appStoreSchemaPath) },
+    ];
+
+    for (const part of schemaParts) {
+        if (!part.sql) continue;
+        await execAsync(part.sql);
+        console.log(`✅ ${part.name} schema created successfully`);
+    }
+
+    const tables = await allAsync("SELECT name FROM sqlite_master WHERE type='table'");
+    console.log('Tables created:', tables.map((t) => t.name).join(', '));
+
+    await closeAsync();
+    console.log('Database initialization complete');
+
+    return { mode: 'sqlite', dbPath };
+}
+
+async function initPostgres() {
+    // eslint-disable-next-line global-require
+    const { Client } = require('pg');
+
+    const databaseUrl = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
+    const migrationPath = path.join(__dirname, 'supabase-migration.sql');
+
+    if (!fs.existsSync(migrationPath)) {
+        throw new Error(`Postgres mode requires ${migrationPath}`);
+    }
+
+    const migrationSql = fs.readFileSync(migrationPath, 'utf8');
+    const sslRequested = process.env.PGSSLMODE === 'require' || process.env.PGSSL === 'true' || /supabase\.co/i.test(databaseUrl || '');
+
+    const client = new Client({
+        connectionString: databaseUrl,
+        ssl: sslRequested ? { rejectUnauthorized: false } : undefined,
+    });
+
+    await client.connect();
+    console.log('Connected to PostgreSQL database');
+
+    try {
+        await client.query(migrationSql);
+        console.log('✅ Supabase/PostgreSQL migration applied successfully');
+
+        const tableResult = await client.query(`
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = 'public'
+            ORDER BY table_name
+        `);
+
+        console.log('Tables found:', tableResult.rows.map((r) => r.table_name).join(', '));
+        console.log('Database initialization complete');
+
+        return { mode: 'postgres', databaseUrl };
+    } finally {
+        await client.end();
+    }
+}
+
+async function initDatabase() {
+    if (isPostgres) {
+        return initPostgres();
+    }
+    return initSqlite();
+}
+
+const initPromise = initDatabase().catch((error) => {
+    console.error('Database initialization failed:', error);
+    if (require.main === module) {
         process.exit(1);
     }
-    console.log('Connected to SQLite database');
+    throw error;
 });
 
-// Read and execute schemas
-const schema = fs.readFileSync(schemaPath, 'utf8');
-const luluSchema = fs.existsSync(luluSchemaPath) ? fs.readFileSync(luluSchemaPath, 'utf8') : '';
-const aiDiscoverySchema = fs.existsSync(aiDiscoverySchemaPath) ? fs.readFileSync(aiDiscoverySchemaPath, 'utf8') : '';
-const censorshipTrackerSchema = fs.existsSync(censorshipTrackerSchemaPath) ? fs.readFileSync(censorshipTrackerSchemaPath, 'utf8') : '';
-const nftSchema = fs.existsSync(nftSchemaPath) ? fs.readFileSync(nftSchemaPath, 'utf8') : '';
-const coursesSchema = fs.existsSync(coursesSchemaPath) ? fs.readFileSync(coursesSchemaPath, 'utf8') : '';
-const funnelsSchema = fs.existsSync(funnelsSchemaPath) ? fs.readFileSync(funnelsSchemaPath, 'utf8') : '';
-const emailMarketingSchema = fs.existsSync(emailMarketingSchemaPath) ? fs.readFileSync(emailMarketingSchemaPath, 'utf8') : '';
-const appStoreSchema = fs.existsSync(appStoreSchemaPath) ? fs.readFileSync(appStoreSchemaPath, 'utf8') : '';
-
-db.serialize(() => {
-    // Execute main schema
-    db.exec(schema, (err) => {
-        if (err) {
-            console.error('Error creating main schema:', err);
-            process.exit(1);
-        }
-        console.log('✅ Main database schema created successfully');
+if (require.main === module) {
+    initPromise.then(() => {
+        process.exit(0);
     });
+}
 
-    // Execute Lulu schema if exists
-    if (luluSchema) {
-        db.exec(luluSchema, (err) => {
-            if (err) {
-                console.error('Error creating Lulu schema:', err);
-            } else {
-                console.log('✅ Lulu schema created successfully');
-            }
-        });
-    }
-
-    // Execute AI Discovery schema if exists
-    if (aiDiscoverySchema) {
-        db.exec(aiDiscoverySchema, (err) => {
-            if (err) {
-                console.error('Error creating AI Discovery schema:', err);
-            } else {
-                console.log('✅ AI Discovery schema created successfully');
-            }
-        });
-    }
-
-    // Execute Censorship Tracker schema if exists
-    if (censorshipTrackerSchema) {
-        db.exec(censorshipTrackerSchema, (err) => {
-            if (err) {
-                console.error('Error creating Censorship Tracker schema:', err);
-            } else {
-                console.log('✅ Censorship Tracker schema created successfully');
-            }
-        });
-    }
-
-    // Execute NFT schema if exists
-    if (nftSchema) {
-        db.exec(nftSchema, (err) => {
-            if (err) {
-                console.error('Error creating NFT schema:', err);
-            } else {
-                console.log('✅ NFT schema created successfully');
-            }
-        });
-    }
-
-    // Execute Courses schema if exists
-    if (coursesSchema) {
-        db.exec(coursesSchema, (err) => {
-            if (err) {
-                console.error('Error creating Courses schema:', err);
-            } else {
-                console.log('✅ Courses schema created successfully');
-            }
-        });
-    }
-
-    // Execute Funnels schema if exists
-    if (funnelsSchema) {
-        db.exec(funnelsSchema, (err) => {
-            if (err) {
-                console.error('Error creating Funnels schema:', err);
-            } else {
-                console.log('✅ Funnels schema created successfully');
-            }
-        });
-    }
-
-    // Execute Email Marketing schema if exists
-    if (emailMarketingSchema) {
-        db.exec(emailMarketingSchema, (err) => {
-            if (err) {
-                console.error('Error creating Email Marketing schema:', err);
-            } else {
-                console.log('✅ Email Marketing schema created successfully');
-            }
-        });
-    }
-
-    // Execute App Store schema if exists
-    if (appStoreSchema) {
-        db.exec(appStoreSchema, (err) => {
-            if (err) {
-                console.error('Error creating App Store schema:', err);
-            } else {
-                console.log('App Store schema created successfully');
-            }
-        });
-    }
-
-    // Verify tables
-    db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
-        if (err) {
-            console.error('Error verifying tables:', err);
-        } else {
-            console.log('Tables created:', tables.map(t => t.name).join(', '));
-        }
-    });
-});
-
-db.close((err) => {
-    if (err) {
-        console.error('Error closing database:', err);
-    } else {
-        console.log('Database initialization complete');
-    }
-});
-
-module.exports = { dbPath };
+module.exports = initPromise;
