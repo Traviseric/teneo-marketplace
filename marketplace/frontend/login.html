@@ -249,7 +249,7 @@
     <main>
         <div class="login-card">
             <h1>Sign In</h1>
-            <p class="subtitle">Enter your email and we'll send you a magic link</p>
+            <p class="subtitle">Sign in with a magic link, Teneo SSO, or your Nostr extension</p>
 
             <div class="alert alert-success hidden" id="alert-success" role="status" aria-live="polite" aria-atomic="true"></div>
             <div class="alert alert-error hidden" id="alert-error" role="alert" aria-live="assertive" aria-atomic="true"></div>
@@ -282,8 +282,9 @@
                 <div class="divider">or</div>
                 <div class="sso-buttons">
                     <button type="button" class="btn btn-accent" id="teneo-sso-btn">
-                        <i class="fas fa-shield-alt"></i>
-                        Sign in with Teneo
+                        <i class="fas fa-shield-alt" id="teneo-icon"></i>
+                        <span>Sign in with Teneo</span>
+                        <span class="spinner" id="teneo-spinner"></span>
                     </button>
                 </div>
             </div>
@@ -381,6 +382,12 @@
 
         async function loginWithTeneo() {
             clearAlerts();
+            const btn = document.getElementById('teneo-sso-btn');
+            const icon = document.getElementById('teneo-icon');
+            const spinner = document.getElementById('teneo-spinner');
+            btn.disabled = true;
+            icon.style.display = 'none';
+            spinner.style.display = 'inline-block';
             try {
                 const resp = await fetch('/api/auth/login', {
                     method: 'POST',
@@ -390,9 +397,14 @@
                 const data = await resp.json();
                 if (data.type === 'redirect') {
                     window.location.href = data.url;
+                } else {
+                    throw new Error(data.message || data.error || 'Teneo SSO failed');
                 }
             } catch (err) {
                 showError('Teneo SSO unavailable. Please use the magic link instead.');
+                btn.disabled = false;
+                icon.style.display = '';
+                spinner.style.display = 'none';
             }
         }
 
