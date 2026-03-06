@@ -15,11 +15,20 @@ const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 const orderService = new OrderService();
 const analyticsService = new AnalyticsService(db);
 
-// Lazy-initialized Stripe client — avoids re-instantiation on every refund request
+// Lazy-initialized Stripe client — reads key from settings.json first, falls back to env.
+// Avoids mutating process.env and survives runtime key updates via admin save-all.
 let _stripe = null;
 let _stripeKey = null;
-function getStripe() {
-    const key = process.env.STRIPE_SECRET_KEY;
+async function getStripe() {
+    let key = process.env.STRIPE_SECRET_KEY;
+    try {
+        const settingsPath = path.join(__dirname, '../../frontend/brands', BRAND, 'settings.json');
+        const data = await fs.readFile(settingsPath, 'utf8');
+        const saved = JSON.parse(data);
+        if (saved.stripeSecretKey && saved.stripeSecretKey !== '••••••••') {
+            key = saved.stripeSecretKey;
+        }
+    } catch (_) { /* settings file may not exist — fall back to env */ }
     if (!_stripe || _stripeKey !== key) {
         _stripe = require('stripe')(key);
         _stripeKey = key;
@@ -212,7 +221,7 @@ router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
         }
         
         // Process refund through Stripe
-        const stripe = getStripe();
+        const stripe = await getStripe();
         
         if (order.stripe_payment_intent_id) {
             const refund = await stripe.refunds.create({
@@ -505,16 +514,10 @@ router.post('/save-all', authenticateAdmin, async (req, res) => {
         const templatesPath = path.join(__dirname, '../../frontend/brands', brand, 'email-templates.json');
         await fs.writeFile(templatesPath, JSON.stringify(emailTemplates, null, 2));
         
-        // Update environment variables if needed
-        if (settings.stripePublishableKey && settings.stripePublishableKey !== '••••••••') {
-            process.env.STRIPE_PUBLISHABLE_KEY = settings.stripePublishableKey;
-        }
-        
-        if (settings.stripeSecretKey && settings.stripeSecretKey !== '••••••••') {
-            process.env.STRIPE_SECRET_KEY = settings.stripeSecretKey;
-        }
-        
-        res.json({ 
+        // NOTE: Stripe keys are persisted in settings.json above.
+        // process.env is NOT mutated — getStripe() reads from settings.json at request time.
+
+        res.json({
             success: true, 
             message: 'Settings saved successfully' 
         });
