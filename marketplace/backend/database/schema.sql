@@ -1,3 +1,20 @@
+-- Store builds table (managed-service commercialization layer)
+CREATE TABLE IF NOT EXISTS store_builds (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  intake_payload TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'intake',
+  store_id TEXT REFERENCES stores(id),
+  tier TEXT,
+  operator_notes TEXT,
+  error_message TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  delivered_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_store_builds_status ON store_builds(status);
+CREATE INDEX IF NOT EXISTS idx_store_builds_created_at ON store_builds(created_at);
+
 -- Orders table
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

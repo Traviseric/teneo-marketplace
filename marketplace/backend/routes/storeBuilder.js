@@ -2,8 +2,10 @@ const router = require('express').Router();
 const { randomUUID } = require('crypto');
 const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
+const storeBuildService = require('../services/storeBuildService');
 const db = require('../database/database');
 const { requireAuth } = require('./auth');
+const { authenticateAdmin } = require('../middleware/auth');
 
 // POST /api/store-builder/generate
 // Body: { "brief": "I sell soy candles online, earthy aesthetic" }
@@ -280,6 +282,75 @@ router.post('/stores/:id/unpublish', requireAuth, async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────
+// Store builds (managed-service commercialization)
+// ──────────────────────────────────────────────────
+
+// POST /api/store-builder/builds
+// Create a new build record. Used by the intake API (task 043).
+// Body: { intake_payload: {...}, tier: 'builder'|'pro'|'white_label' }
+router.post('/builds', async (req, res) => {
+  const { intake_payload, tier } = req.body;
+  if (!intake_payload) {
+    return res.status(400).json({ error: 'intake_payload required' });
+  }
+  try {
+    const buildId = await storeBuildService.createBuild(intake_payload, tier);
+    const build = await storeBuildService.getBuild(buildId);
+    res.status(201).json({ success: true, build_id: buildId, status: 'intake', build });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/store-builder/builds
+// List all builds. Admin only.
+// Query: ?status=intake|planning|building|qa|delivered|failed
+router.get('/builds', authenticateAdmin, async (req, res) => {
+  const { status, limit } = req.query;
+  try {
+    const filters = {};
+    if (status) filters.status = status;
+    if (limit) filters.limit = parseInt(limit, 10);
+    const builds = await storeBuildService.listBuilds(filters);
+    res.json({ success: true, builds });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/store-builder/builds/:id
+// Get a single build's status. Public (no auth) so customers can check their build.
+router.get('/builds/:id', async (req, res) => {
+  try {
+    const build = await storeBuildService.getBuild(req.params.id);
+    if (!build) return res.status(404).json({ error: 'Build not found' });
+    // Expose only safe subset to unauthenticated callers
+    const { id, status, tier, created_at, updated_at, delivered_at } = build;
+    res.json({ success: true, build: { id, status, tier, created_at, updated_at, delivered_at } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/store-builder/builds/:id/status
+// Update build status. Admin only.
+// Body: { status: '...', notes: '...' }
+router.patch('/builds/:id/status', authenticateAdmin, async (req, res) => {
+  const { status, notes } = req.body;
+  if (!status) return res.status(400).json({ error: 'status required' });
+  try {
+    await storeBuildService.updateStatus(req.params.id, status, notes);
+    const build = await storeBuildService.getBuild(req.params.id);
+    res.json({ success: true, build });
+  } catch (err) {
+    if (err.message.includes('Invalid status') || err.message.includes('Build not found')) {
+      return res.status(400).json({ error: err.message });
+    }
     res.status(500).json({ error: err.message });
   }
 });
