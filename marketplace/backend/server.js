@@ -103,12 +103,18 @@ const networkConfig = require('./config/network');
 
 const app = express();
 
+// Per-request CSP nonce — must run before helmet so res.locals.cspNonce is available
+app.use((req, res, next) => {
+    res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
+    next();
+});
+
 // Security headers (CWE-693)
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
+            scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`, "https://js.stripe.com"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
@@ -557,9 +563,37 @@ app.use('/api/*', (req, res) => {
     });
 });
 
+// Helper: serve an HTML file with the per-request CSP nonce injected into
+// all inline <script> blocks (those without a src= attribute). CWE-693.
+const _frontendDir = path.resolve(path.join(__dirname, '..', 'frontend'));
+async function sendNoncedHTML(res, filePath) {
+    try {
+        const html = await fs.readFile(filePath, 'utf8');
+        const nonce = res.locals.cspNonce || '';
+        // Inject nonce only on inline scripts (no src= attribute)
+        const injected = html.replace(
+            /<script(?!\s[^>]*\bsrc\s*=)([^>]*)>/g,
+            (_, attrs) => `<script${attrs} nonce="${nonce}">`
+        );
+        res.type('html').send(injected);
+    } catch (err) {
+        console.error('[CSP] Error reading HTML for nonce injection:', err.message);
+        res.status(500).send('Internal server error');
+    }
+}
+
+// Intercept direct .html URL requests so inline scripts get nonces
+// (covers express.static paths like /store.html, /login.html, etc.)
+app.use((req, res, next) => {
+    if (!req.path.endsWith('.html')) return next();
+    const filePath = path.resolve(path.join(_frontendDir, req.path));
+    if (!filePath.startsWith(_frontendDir + path.sep)) return next();
+    sendNoncedHTML(res, filePath).catch(() => next());
+});
+
 // Serve static files in development
 if (process.env.NODE_ENV !== 'production') {
-    // Serve frontend files
+    // Serve frontend files (non-HTML; HTML is handled by nonce middleware above)
     app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
     // Serve funnel builder module
@@ -570,23 +604,23 @@ if (process.env.NODE_ENV !== 'production') {
 
     // Specific routes for admin and setup
     app.get('/setup', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'setup.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'setup.html'));
     });
 
     app.get('/admin', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'admin.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'admin.html'));
     });
 
     app.get('/published', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'published.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'published.html'));
     });
 
     app.get('/published/profile/:userId', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'publisher-profile.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'publisher-profile.html'));
     });
 
     app.get('/rewards', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'rewards.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'rewards.html'));
     });
 }
 
@@ -594,7 +628,7 @@ if (process.env.NODE_ENV !== 'production') {
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '..', 'frontend')));
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+        sendNoncedHTML(res, path.join(__dirname, '..', 'frontend', 'index.html'));
     });
 }
 
