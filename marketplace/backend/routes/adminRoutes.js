@@ -147,10 +147,7 @@ router.post('/logout', async (req, res) => {
 // Check authentication status
 router.get('/auth-status', (req, res) => {
     const isAuthenticated = req.session && req.session.isAdmin;
-    res.json({ 
-        authenticated: isAuthenticated,
-        sessionId: isAuthenticated ? req.sessionID : null
-    });
+    res.json({ authenticated: isAuthenticated });
 });
 
 // Get dashboard data
