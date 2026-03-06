@@ -7,6 +7,7 @@ const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
 const btcpayService = require('../services/btcpayService');
 const emailService = require('../services/emailService');
+const { lookupBookPrice } = require('../services/checkoutOfferService');
 
 // Rate limiter for crypto payment verification (3 attempts per 15 min per IP)
 const cryptoVerifyLimiter = rateLimit({
@@ -57,10 +58,8 @@ async function getUsdPrice(coinId) {
         priceCache.set(coinId, { usdPrice, fetchedAt: Date.now() });
         return usdPrice;
     } catch (error) {
-        console.warn(`⚠️  CoinGecko price fetch failed for ${coinId}: ${error.message} — using fallback`);
-        // Hardcoded fallbacks (will be slightly wrong but allow checkout to proceed)
-        const fallbacks = { bitcoin: 65000, monero: 150 };
-        return fallbacks[coinId] || 65000;
+        console.warn(`⚠️  CoinGecko price fetch failed for ${coinId}: ${error.message}`);
+        throw new Error('Price oracle temporarily unavailable. Please try again in a moment.');
     }
 }
 
@@ -106,7 +105,7 @@ function getPaymentAddress(method) {
 // Create pending crypto order
 router.post('/create-order', async (req, res) => {
     try {
-        const { bookId, bookTitle, bookAuthor, email, paymentMethod, brandId, amountUsd } = req.body;
+        const { bookId, bookTitle, bookAuthor, email, paymentMethod, brandId, format } = req.body;
 
         if (!bookId || !paymentMethod) {
             return res.status(400).json({ success: false, error: 'Missing required fields: bookId and paymentMethod' });
@@ -115,7 +114,11 @@ router.post('/create-order', async (req, res) => {
             return res.status(400).json({ success: false, error: 'Valid email address required' });
         }
 
-        const usdAmount = parseFloat(amountUsd) || 10; // default $10 if not provided
+        // Server-side price enforcement — never trust client-supplied price
+        const usdAmount = lookupBookPrice(bookId, format || 'ebook', brandId);
+        if (usdAmount == null) {
+            return res.status(400).json({ success: false, error: 'Product not found' });
+        }
         const orderId = generateOrderId();
         const paymentAddress = getPaymentAddress(paymentMethod);
         const cryptoAmount = await getCryptoAmount(paymentMethod, usdAmount);
@@ -199,6 +202,9 @@ router.post('/create-order', async (req, res) => {
 
     } catch (error) {
         console.error('Crypto order creation error:', error);
+        if (error.message && error.message.includes('Price oracle')) {
+            return res.status(503).json({ success: false, error: error.message });
+        }
         res.status(500).json({ success: false, error: 'Failed to create order' });
     }
 });
@@ -247,7 +253,7 @@ router.get('/rates', async (req, res) => {
         });
     } catch (error) {
         console.error('Rates error:', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch rates' });
+        res.status(503).json({ success: false, error: 'Price oracle temporarily unavailable. Please try again in a moment.' });
     }
 });
 
