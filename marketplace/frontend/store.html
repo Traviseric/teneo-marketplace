@@ -270,6 +270,10 @@
             width: 100%;
             margin-top: 1rem;
             transition: background-color 0.2s;
+            display: block;
+            text-align: center;
+            font-size: 1rem;
+            font-family: inherit;
         }
 
         .cta-button:hover {
@@ -387,6 +391,23 @@
         let brandConfig = null;
         let catalogData = null;
 
+        function encodeHTML(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getBookUrl(bookId) {
+            const features = brandConfig?.features || {};
+            if (features.cryptoOnly) {
+                return `/crypto-checkout.html?book=${encodeURIComponent(bookId)}&brand=${encodeURIComponent(BRAND_ID)}`;
+            }
+            return `/book-detail.html?id=${encodeURIComponent(bookId)}&brand=${encodeURIComponent(BRAND_ID)}`;
+        }
+
         const BRAND_EMOJIS = {
             'teneo': '📘',
             'information_asymmetry': '⚠️',
@@ -471,39 +492,41 @@
                 const badges = [];
 
                 if (book.tier) {
-                    badges.push(`<span class="book-badge">Tier ${book.tier}</span>`);
+                    badges.push(`<span class="book-badge">Tier ${encodeHTML(book.tier)}</span>`);
                 }
 
                 if (book.contentWarnings && book.contentWarnings.length > 0) {
-                    badges.push(`<span class="book-badge warning">⚠️ ${book.contentWarnings[0]}</span>`);
+                    badges.push(`<span class="book-badge warning">&#9888;&#65039; ${encodeHTML(book.contentWarnings[0])}</span>`);
                 }
 
                 const cryptoPrice = book.priceBTC
-                    ? `<span class="crypto-price">₿ ${book.priceBTC}</span>`
+                    ? `<span class="crypto-price">&#8383; ${encodeHTML(String(book.priceBTC))}</span>`
                     : book.priceXMR
-                    ? `<span class="crypto-price">Ɱ ${book.priceXMR}</span>`
+                    ? `<span class="crypto-price">&#x20BC; ${encodeHTML(String(book.priceXMR))}</span>`
                     : '';
 
+                const coverSrc = book.coverImage
+                    ? encodeHTML(book.coverImage)
+                    : 'https://via.placeholder.com/400x600/F3F4F6/374151?text=' + encodeURIComponent(book.title);
+
                 return `
-                    <div class="book-card" onclick="viewBook('${book.id}')">
-                        <img src="${book.coverImage || 'https://via.placeholder.com/400x600/F3F4F6/374151?text=' + encodeURIComponent(book.title)}"
-                             alt="${book.title}"
+                    <a href="${getBookUrl(book.id)}" class="book-card">
+                        <img src="${coverSrc}"
+                             alt=""
                              class="book-cover"
                              onerror="this.src='https://via.placeholder.com/400x600/F3F4F6/374151?text=Book+Cover'">
                         <div class="book-info">
                             ${badges.length > 0 ? `<div class="book-badges">${badges.join('')}</div>` : ''}
-                            <h3 class="book-title">${book.title}</h3>
-                            <p class="book-author">${book.author}</p>
-                            <p class="book-description">${book.description}</p>
+                            <h3 class="book-title">${encodeHTML(book.title)}</h3>
+                            <p class="book-author">${encodeHTML(book.author)}</p>
+                            <p class="book-description">${encodeHTML(book.description)}</p>
                             <div class="book-price">
-                                <span class="current-price">$${book.price}</span>
+                                <span class="current-price">$${encodeHTML(String(book.price))}</span>
                                 ${cryptoPrice}
                             </div>
-                            <button class="cta-button">
-                                ${getBuyButtonText()}
-                            </button>
+                            <span class="cta-button">${encodeHTML(getBuyButtonText())}</span>
                         </div>
-                    </div>
+                    </a>
                 `;
             }).join('');
         }
@@ -513,7 +536,7 @@
 
             const features = brandConfig.features || {};
             if (features.cryptoOnly) return 'Purchase with Crypto';
-            return 'Purchase Now';
+            return 'View Details';
         }
 
         function viewBook(bookId) {
