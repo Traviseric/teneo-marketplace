@@ -5,6 +5,8 @@ const axios = require('axios');
 const rateLimit = require('express-rate-limit');
 const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
+const OrderService = require('../services/orderService');
+const orderService = new OrderService();
 const btcpayService = require('../services/btcpayService');
 const emailService = require('../services/emailService');
 const downloadService = require('../services/downloadService');
@@ -370,7 +372,13 @@ router.post('/btcpay/webhook', express.raw({ type: 'application/json' }), async 
             });
             console.log(`✅ BTCPay: order ${order.order_id} fulfilled, download sent to ${order.customer_email}`);
         } catch (fulfillErr) {
-            console.error('BTCPay webhook: fulfillment error:', fulfillErr.message);
+            console.error('BTCPay webhook: fulfillment error', {
+                orderId: order.order_id,
+                customerEmail: order.customer_email,
+                error: fulfillErr.message,
+                stack: fulfillErr.stack
+            });
+            await orderService.failOrder(order.order_id, fulfillErr.message).catch(() => {});
         }
     } catch (err) {
         console.error('BTCPay webhook processing error:', err);

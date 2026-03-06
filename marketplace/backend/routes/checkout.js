@@ -23,6 +23,8 @@ const checkoutLimiter = process.env.NODE_ENV === 'test'
         standardHeaders: true,
         legacyHeaders: false,
     });
+const OrderService = require('../services/orderService');
+const orderService = new OrderService();
 const emailService = require('../services/emailService');
 const downloadService = require('../services/downloadService');
 const { processMixedOrder } = require('./checkoutMixed');
@@ -303,7 +305,17 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         }
 
       } catch (error) {
-        console.error('Error processing payment completion:', error);
+        console.error('Fulfillment error', {
+          eventType: event?.type,
+          sessionId: session?.id,
+          orderId,
+          customerEmail: session?.customer_details?.email,
+          error: error.message,
+          stack: error.stack
+        });
+        if (orderId) {
+          await orderService.failOrder(orderId, error.message).catch(() => {});
+        }
       }
 
       break;
