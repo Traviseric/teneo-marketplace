@@ -29,7 +29,7 @@ This is what makes the project worth using over everything else — not the cryp
 | Component | Technology | Status |
 |-----------|-----------|--------|
 | Runtime | Node.js 18+ / Express.js | Working |
-| Database | **Supabase (Postgres)** | Connected (project: `ncddvxglmnnfagyyupeu`) |
+| Database | SQLite runtime + Supabase (Postgres) target | Supabase project exists (`ncddvxglmnnfagyyupeu`), adapter still pending |
 | Payments | Stripe + ArxMint Lightning | Stripe working, ArxMint provider built |
 | Auth | Magic links + OAuth SSO + Nostr (backend) | Backend done, frontend partial |
 | Email | Nodemailer (SMTP + Resend) | Working |
@@ -45,6 +45,7 @@ This is what makes the project worth using over everything else — not the cryp
 - **API URL:** `https://ncddvxglmnnfagyyupeu.supabase.co`
 - **Schema:** 40+ tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs, webhooks
 - **Migration file:** `marketplace/backend/database/supabase-migration.sql`
+- **Runtime note (March 6, 2026):** backend services still instantiate SQLite directly; Supabase adapter work remains in Phase 0
 - **Note:** App users table is `profiles` (not `users` — Supabase reserves that for `auth.users`)
 
 ### Deployment
@@ -64,7 +65,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 
 ### Working (27+ routes, 30+ services, 17 test suites passing)
 
-- [x] Express.js backend with Supabase Postgres (40 tables, migrated from SQLite)
+- [x] Express.js backend with SQLite runtime and Supabase migration assets prepared
 - [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
 - [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero — manual verification)
 - [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE + Nostr backend)
