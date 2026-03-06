@@ -28,6 +28,7 @@ const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
 const nftService = require('../services/nftService');
 const db = require('../database/database');
+const { enrollUserInCourse } = require('./courseRoutes');
 
 function sanitizeMetadataValue(value, maxLength = 120) {
   if (!value || typeof value !== 'string') return null;
@@ -51,6 +52,7 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
     const brandId = sanitizeBrandId(rawBrandId);
     const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
     const funnelSessionId = sanitizeMetadataValue(req.body.funnelSessionId, 120);
+    const courseSlug = sanitizeMetadataValue(req.body.courseSlug, 120);
 
     if (!bookId || !format || !bookTitle || !bookAuthor || !userEmail) {
       return res.status(400).json({
@@ -119,7 +121,9 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
         couponCode: pricing.couponCode || '',
         couponDiscount: pricing.discountAmount ? String(pricing.discountAmount) : '',
         funnelId: funnelId || '',
-        funnelSessionId: funnelSessionId || ''
+        funnelSessionId: funnelSessionId || '',
+        courseSlug: courseSlug || '',
+        product_type: courseSlug ? 'course' : ''
       }
     });
 
@@ -290,6 +294,20 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
           const bookFilePath = path.join(__dirname, '../books', `${bookId}.pdf`);
           nftService.pinBookToIPFS(bookId, bookFilePath)
             .catch(err => console.error('[IPFS] Pin failed (non-fatal):', err.message));
+        }
+
+        // Enroll buyer in course if this is a course purchase (idempotent via INSERT OR IGNORE)
+        if (session.metadata?.courseSlug || session.metadata?.product_type === 'course') {
+          const slug = session.metadata.courseSlug;
+          const email = userEmail || session.customer_email;
+          if (slug && email) {
+            try {
+              await enrollUserInCourse(slug, email, orderId);
+              console.log(`Course enrollment granted: ${email} → ${slug} (order ${orderId})`);
+            } catch (enrollErr) {
+              console.error('Course enrollment failed (non-fatal):', enrollErr.message);
+            }
+          }
         }
 
       } catch (error) {
