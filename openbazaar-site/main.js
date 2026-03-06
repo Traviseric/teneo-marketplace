@@ -60,29 +60,35 @@ async function loadNetworkStats() {
     if (prodEl) prodEl.textContent = data.products || '120+';
     if (txEl) txEl.textContent = data.transactions || '1.2K';
   } catch {
-    // Fallback to placeholder values
+    // Show N/A when network data is unavailable
     const nodeEl = document.getElementById('nodeCount');
     const prodEl = document.getElementById('productCount');
     const txEl = document.getElementById('txCount');
-    if (nodeEl) nodeEl.textContent = '4';
-    if (prodEl) prodEl.textContent = '120+';
-    if (txEl) txEl.textContent = '1.2K';
+    if (nodeEl) { nodeEl.textContent = 'N/A'; nodeEl.title = 'Network data unavailable'; }
+    if (prodEl) { prodEl.textContent = 'N/A'; prodEl.title = 'Network data unavailable'; }
+    if (txEl) { txEl.textContent = 'N/A'; txEl.title = 'Network data unavailable'; }
   }
 }
 
 loadNetworkStats();
 
-// ─── Copy Button Feedback ───
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.textContent = 'Copied!';
-    btn.style.color = '#10b981';
-    setTimeout(() => {
-      btn.textContent = 'Copy';
-      btn.style.color = '';
-    }, 2000);
+// ─── Copy Install Command ───
+function copyInstall() {
+  const cmd = 'git clone https://github.com/traviseric/openbazaar-ai && npm start';
+  const btn = document.getElementById('copy-install-btn');
+  navigator.clipboard.writeText(cmd).then(() => {
+    if (btn) {
+      btn.textContent = 'Copied!';
+      btn.style.color = '#10b981';
+      btn.setAttribute('aria-label', 'Copied!');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.style.color = '';
+        btn.setAttribute('aria-label', 'Copy install command');
+      }, 2000);
+    }
   });
-});
+}
 
 // ─── Smooth Scroll for Anchor Links ───
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

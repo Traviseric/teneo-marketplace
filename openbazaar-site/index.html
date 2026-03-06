@@ -396,58 +396,58 @@
           <table class="compare-table">
             <thead>
               <tr>
-                <th></th>
-                <th class="compare-highlight">OpenBazaar.ai</th>
-                <th>Upwork</th>
-                <th>Fiverr</th>
-                <th>Gumroad</th>
+                <th scope="col" aria-label="Feature"></th>
+                <th scope="col" class="compare-highlight">OpenBazaar.ai</th>
+                <th scope="col">Upwork</th>
+                <th scope="col">Fiverr</th>
+                <th scope="col">Gumroad</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Platform fee</td>
+                <th scope="row">Platform fee</th>
                 <td class="compare-highlight"><strong>0%</strong></td>
                 <td>10-20%</td>
                 <td>20%</td>
                 <td>10%</td>
               </tr>
               <tr>
-                <td>Products + Services</td>
+                <th scope="row">Products + Services</th>
                 <td class="compare-highlight">✓ Both</td>
                 <td>Services only</td>
                 <td>Services only</td>
                 <td>Products only</td>
               </tr>
               <tr>
-                <td>Crypto payments</td>
+                <th scope="row">Crypto payments</th>
                 <td class="compare-highlight">✓ Lightning + ecash</td>
                 <td>✗</td>
                 <td>✗</td>
                 <td>✗</td>
               </tr>
               <tr>
-                <td>Self-hostable</td>
+                <th scope="row">Self-hostable</th>
                 <td class="compare-highlight">✓</td>
                 <td>✗</td>
                 <td>✗</td>
                 <td>✗</td>
               </tr>
               <tr>
-                <td>Open source</td>
+                <th scope="row">Open source</th>
                 <td class="compare-highlight">✓</td>
                 <td>✗</td>
                 <td>✗</td>
                 <td>✗</td>
               </tr>
               <tr>
-                <td>AI agents</td>
+                <th scope="row">AI agents</th>
                 <td class="compare-highlight">✓</td>
                 <td>✗</td>
                 <td>✗</td>
                 <td>✗</td>
               </tr>
               <tr>
-                <td>Federated network</td>
+                <th scope="row">Federated network</th>
                 <td class="compare-highlight">✓</td>
                 <td>✗</td>
                 <td>✗</td>
@@ -471,15 +471,15 @@
               discovery, shared traffic, independent control. Like email, but for commerce.
             </p>
             <div class="network-stats">
-              <div class="network-stat">
+              <div class="network-stat" aria-live="polite" aria-atomic="true">
                 <span class="network-stat-value" id="nodeCount">—</span>
                 <span class="network-stat-label">Active Nodes</span>
               </div>
-              <div class="network-stat">
+              <div class="network-stat" aria-live="polite" aria-atomic="true">
                 <span class="network-stat-value" id="productCount">—</span>
                 <span class="network-stat-label">Products Listed</span>
               </div>
-              <div class="network-stat">
+              <div class="network-stat" aria-live="polite" aria-atomic="true">
                 <span class="network-stat-value" id="txCount">—</span>
                 <span class="network-stat-label">Transactions</span>
               </div>
@@ -534,8 +534,9 @@
           </div>
           <div class="cta-self-host">
             <code>git clone https://github.com/traviseric/openbazaar-ai && npm start</code>
-            <button class="copy-btn"
-              onclick="navigator.clipboard.writeText('git clone https://github.com/traviseric/openbazaar-ai && npm start')">Copy</button>
+            <button class="copy-btn" id="copy-install-btn"
+              aria-label="Copy install command"
+              onclick="copyInstall()">Copy</button>
           </div>
         </div>
       </div>
