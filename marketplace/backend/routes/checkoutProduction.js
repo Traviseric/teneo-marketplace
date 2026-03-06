@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
@@ -13,6 +14,13 @@ const {
     applyCouponToPrice,
     getNextReadOffer
 } = require('../services/checkoutOfferService');
+
+// Rate limiter: max 10 checkout session requests per IP per hour (matches checkout.js)
+const checkoutLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10,
+    message: { error: 'Too many checkout attempts. Please try again in an hour.' }
+});
 
 function sanitizeMetadataValue(value, maxLength = 120) {
     if (!value || typeof value !== 'string') return null;
@@ -28,7 +36,7 @@ const orderService = new OrderService();
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Create checkout session
-router.post('/create-session', async (req, res) => {
+router.post('/create-session', checkoutLimiter, async (req, res) => {
     try {
         // Do not destructure 'price' from req.body — client-supplied price is untrusted
         const {
