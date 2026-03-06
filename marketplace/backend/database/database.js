@@ -3,6 +3,10 @@ const path = require('path');
 
 const SQLITE_MODE = !process.env.DATABASE_URL && !process.env.SUPABASE_DB_URL;
 
+if (process.env.NODE_ENV !== 'test') {
+    console.log(`[DB] Mode: ${SQLITE_MODE ? 'SQLite (local)' : 'Postgres/Supabase'}`);
+}
+
 function normalizeArgs(params, callback) {
     if (typeof params === 'function') {
         return { params: [], callback: params };
