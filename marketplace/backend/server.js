@@ -301,8 +301,18 @@ app.get('/api/books', async (req, res) => {
         let allBooks = [];
 
         if (brand && brand !== 'all') {
+            // Sanitize brand to prevent path traversal (CWE-22)
+            const brandsBase = path.resolve(brandsPath);
+            const safe = path.basename(brand);
+            if (!safe || safe === '.' || safe === '..') {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
+            const resolved = path.resolve(brandsBase, safe);
+            if (!resolved.startsWith(brandsBase + path.sep) && resolved !== brandsBase) {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
             // Get books from specific brand
-            const catalogPath = path.join(brandsPath, brand, 'catalog.json');
+            const catalogPath = path.join(brandsBase, safe, 'catalog.json');
             try {
                 const catalogContent = await fs.readFile(catalogPath, 'utf8');
                 const catalog = JSON.parse(catalogContent);

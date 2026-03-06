@@ -42,9 +42,19 @@ router.get('/catalog', async (req, res) => {
         } else if (brand === 'all') {
             brandsToLoad = ['default', 'teneo', 'true-earth', 'wealth-wise'];
         } else {
-            brandsToLoad = [brand];
+            // Sanitize brand to prevent path traversal (CWE-22)
+            const brandsBase = path.resolve(brandsDir);
+            const safe = path.basename(brand || '');
+            if (!safe || safe === '.' || safe === '..') {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
+            const resolvedBrand = path.resolve(brandsBase, safe);
+            if (!resolvedBrand.startsWith(brandsBase + path.sep) && resolvedBrand !== brandsBase) {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
+            brandsToLoad = [safe];
         }
-        
+
         for (const brandName of brandsToLoad) {
             try {
                 const catalogPath = path.join(brandsDir, brandName, 'catalog.json');
@@ -149,11 +159,22 @@ router.get('/book/:networkId', async (req, res) => {
             });
         }
         
-        const brand = parts[parts.length - 2];
+        const rawBrand = parts[parts.length - 2];
         const bookId = parts[parts.length - 1];
-        
+
+        // Sanitize brand to prevent path traversal (CWE-22)
+        const brandsBase = path.resolve(__dirname, '../../frontend/brands');
+        const brand = path.basename(rawBrand || '');
+        if (!brand || brand === '.' || brand === '..') {
+            return res.status(400).json({ success: false, error: 'Invalid brand in network ID' });
+        }
+        const resolvedBrand = path.resolve(brandsBase, brand);
+        if (!resolvedBrand.startsWith(brandsBase + path.sep) && resolvedBrand !== brandsBase) {
+            return res.status(400).json({ success: false, error: 'Invalid brand in network ID' });
+        }
+
         // Load the specific brand catalog
-        const catalogPath = path.join(__dirname, '../../frontend/brands', brand, 'catalog.json');
+        const catalogPath = path.join(brandsBase, brand, 'catalog.json');
         const catalogData = await fs.readFile(catalogPath, 'utf8');
         const catalog = JSON.parse(catalogData);
         
@@ -224,7 +245,22 @@ router.get('/search', async (req, res) => {
         
         // Search across all brand catalogs
         const brandsDir = path.join(__dirname, '../../frontend/brands');
-        const brandsToSearch = brand ? [brand] : ['default', 'teneo', 'true-earth', 'wealth-wise'];
+
+        // Sanitize brand to prevent path traversal (CWE-22)
+        let safeBrand = null;
+        if (brand) {
+            const brandsBase = path.resolve(brandsDir);
+            const safe = path.basename(brand);
+            if (!safe || safe === '.' || safe === '..') {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
+            const resolvedBrand = path.resolve(brandsBase, safe);
+            if (!resolvedBrand.startsWith(brandsBase + path.sep) && resolvedBrand !== brandsBase) {
+                return res.status(400).json({ success: false, error: 'Invalid brand' });
+            }
+            safeBrand = safe;
+        }
+        const brandsToSearch = safeBrand ? [safeBrand] : ['default', 'teneo', 'true-earth', 'wealth-wise'];
         
         for (const brandName of brandsToSearch) {
             try {
