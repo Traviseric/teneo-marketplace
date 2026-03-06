@@ -267,7 +267,7 @@ class OrderService {
                 UPDATE orders 
                 SET status = 'failed',
                     payment_status = 'failed',
-                    metadata = json_patch(metadata, '$.failure_reason', ?),
+                    metadata = json_set(COALESCE(metadata, '{}'), '$.failure_reason', ?),
                     updated_at = CURRENT_TIMESTAMP
                 WHERE order_id = ?
             `;
