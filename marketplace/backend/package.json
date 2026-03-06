@@ -39,6 +39,7 @@
     "url": "https://github.com/Traviseric/openbazaar-ai/issues"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@openzeppelin/contracts": "^4.9.6",
     "axios": "^1.11.0",
     "bcrypt": "^5.1.1",

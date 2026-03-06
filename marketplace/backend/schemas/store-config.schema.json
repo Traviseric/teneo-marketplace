@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StoreConfig",
+  "type": "object",
+  "required": ["name", "tagline", "commerce"],
+  "properties": {
+    "name": { "type": "string", "description": "Store display name" },
+    "tagline": { "type": "string" },
+    "palette": {
+      "type": "object",
+      "properties": {
+        "primary": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "accent": { "type": "string" },
+        "bg": { "type": "string" }
+      }
+    },
+    "fonts": {
+      "type": "object",
+      "properties": {
+        "heading": { "type": "string" },
+        "body": { "type": "string" }
+      }
+    },
+    "commerce": {
+      "type": "object",
+      "required": ["fulfillment_type", "payment_provider"],
+      "properties": {
+        "products": { "type": "array", "items": { "$ref": "#/definitions/Product" } },
+        "fulfillment_type": { "type": "string", "enum": ["digital", "pod", "service"] },
+        "payment_provider": { "type": "string", "enum": ["stripe", "arxmint", "both"] },
+        "email_capture": { "type": "boolean" }
+      }
+    },
+    "modules": {
+      "type": "object",
+      "properties": {
+        "funnels": { "type": "boolean" },
+        "courses": { "type": "boolean" },
+        "pod": { "type": "boolean" }
+      }
+    }
+  },
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "required": ["name", "price"],
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["ebook", "course", "service", "physical"] }
+      }
+    }
+  }
+}

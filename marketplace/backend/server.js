@@ -244,6 +244,9 @@ app.use('/api/quizzes', quizRoutes);
 // Agent App Store
 app.use('/api/apps', appStoreRoutes);
 
+// AI Store Builder
+app.use('/api/store-builder', require('./routes/storeBuilder'));
+
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);
 app.use('/api/webhooks', printfulWebhookRoutes);
