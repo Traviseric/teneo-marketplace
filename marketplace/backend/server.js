@@ -133,7 +133,7 @@ app.use(helmet({
             connectSrc: ["'self'", "https://api.stripe.com"]
         }
     },
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: { policy: 'credentialless' }  // Chrome 96+, Firefox 119+; compatible with Stripe.js (credentialless relaxes COEP for unauthenticated cross-origin requests)
 }));
 
 // Import auth middleware
