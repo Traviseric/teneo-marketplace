@@ -9,6 +9,8 @@ const AnalyticsService = require('../services/analyticsService');
 const db = require('../database/database');
 const auditService = require('../services/auditService');
 
+const BRAND = process.env.DEFAULT_BRAND || 'teneo';
+
 // Initialize services
 const orderService = new OrderService();
 const analyticsService = new AnalyticsService(db);
@@ -28,7 +30,7 @@ function getStripe() {
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
-        const brand = 'teneo'; // Default brand
+        const brand = BRAND;
         let dir;
         
         if (file.fieldname === 'cover') {
@@ -250,7 +252,7 @@ router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
 // Get settings
 router.get('/settings', authenticateAdmin, async (req, res) => {
     try {
-        const settingsPath = path.join(__dirname, '../../frontend/brands/teneo/settings.json');
+        const settingsPath = path.join(__dirname, '../../frontend/brands', BRAND, 'settings.json');
         
         // Default settings
         let settings = {
@@ -284,7 +286,7 @@ router.get('/settings', authenticateAdmin, async (req, res) => {
 // Get email templates
 router.get('/email-templates', authenticateAdmin, async (req, res) => {
     try {
-        const templatesPath = path.join(__dirname, '../../frontend/brands/teneo/email-templates.json');
+        const templatesPath = path.join(__dirname, '../../frontend/brands', BRAND, 'email-templates.json');
         
         // Default templates
         let templates = {
@@ -324,7 +326,7 @@ router.post('/books', authenticateAdmin, upload.fields([
 ]), async (req, res) => {
     try {
         const bookData = JSON.parse(req.body.bookData);
-        const brand = 'teneo';
+        const brand = BRAND;
         
         // Generate book ID
         const bookId = bookData.title.toLowerCase()
@@ -380,7 +382,7 @@ router.put('/books/:bookId', authenticateAdmin, upload.fields([
     try {
         const { bookId } = req.params;
         const bookData = JSON.parse(req.body.bookData);
-        const brand = 'teneo';
+        const brand = BRAND;
         
         // Process uploaded files
         if (req.files.cover) {
@@ -428,7 +430,7 @@ router.put('/books/:bookId', authenticateAdmin, upload.fields([
 router.delete('/books/:bookId', authenticateAdmin, async (req, res) => {
     try {
         const { bookId } = req.params;
-        const brand = 'teneo';
+        const brand = BRAND;
         
         // Load catalog
         const catalogPath = path.join(__dirname, '../../frontend/brands', brand, 'catalog.json');
@@ -458,7 +460,7 @@ router.delete('/books/:bookId', authenticateAdmin, async (req, res) => {
 router.post('/books/reorder', authenticateAdmin, async (req, res) => {
     try {
         const { order } = req.body;
-        const brand = 'teneo';
+        const brand = BRAND;
         
         // Load catalog
         const catalogPath = path.join(__dirname, '../../frontend/brands', brand, 'catalog.json');
@@ -493,7 +495,7 @@ router.post('/books/reorder', authenticateAdmin, async (req, res) => {
 router.post('/save-all', authenticateAdmin, async (req, res) => {
     try {
         const { settings, emailTemplates } = req.body;
-        const brand = 'teneo';
+        const brand = BRAND;
         
         // Save settings
         const settingsPath = path.join(__dirname, '../../frontend/brands', brand, 'settings.json');
@@ -551,7 +553,7 @@ async function getTotalOrders() {
 
 async function getActiveBooks() {
     try {
-        const catalogPath = path.join(__dirname, '../../frontend/brands/teneo/catalog.json');
+        const catalogPath = path.join(__dirname, '../../frontend/brands', BRAND, 'catalog.json');
         const data = await fs.readFile(catalogPath, 'utf8');
         const catalog = JSON.parse(data);
         return catalog.books.length;
