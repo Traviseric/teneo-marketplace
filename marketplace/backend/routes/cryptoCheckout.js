@@ -213,7 +213,7 @@ router.post('/create-order', async (req, res) => {
 router.get('/order-status/:orderId', async (req, res) => {
     try {
         const order = await dbGet(
-            'SELECT order_id, customer_email, book_title, price, status, payment_status, created_at FROM orders WHERE order_id = ?',
+            'SELECT order_id, book_title, price, status, payment_status, created_at FROM orders WHERE order_id = ?',
             [req.params.orderId]
         );
         if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
@@ -221,7 +221,6 @@ router.get('/order-status/:orderId', async (req, res) => {
         res.json({
             success: true,
             orderId: order.order_id,
-            email: order.customer_email,
             bookTitle: order.book_title,
             amountUsd: order.price,
             status: order.status,
