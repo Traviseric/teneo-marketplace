@@ -3,7 +3,7 @@ const { randomUUID } = require('crypto');
 const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
 const storeBuildService = require('../services/storeBuildService');
-const EmailService = require('../services/emailService');
+const emailService = require('../services/emailService');
 const { isValidEmail } = require('../utils/validate');
 const db = require('../database/database');
 const { requireAuth } = require('./auth');
@@ -17,8 +17,6 @@ const { authenticateAdmin } = require('../middleware/auth');
  */
 const VALID_TIERS = ['builder', 'pro', 'white_label'];
 const BRIEF_MIN_LENGTH = 50;
-
-const emailService = new EmailService();
 
 // POST /api/store-builder/generate
 // Body: { "brief": "I sell soy candles online, earthy aesthetic" }
