@@ -7,6 +7,7 @@ const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
 const btcpayService = require('../services/btcpayService');
 const emailService = require('../services/emailService');
+const downloadService = require('../services/downloadService');
 const { lookupBookPrice } = require('../services/checkoutOfferService');
 
 // Rate limiter for crypto payment verification (3 attempts per 15 min per IP)
@@ -355,24 +356,19 @@ router.post('/btcpay/webhook', express.raw({ type: 'application/json' }), async 
             [order.order_id]
         );
 
-        // Generate download token
+        // Generate download token directly — no HTTP self-call
         try {
-            const tokenResp = await axios.post(
-                `${process.env.PUBLIC_URL || 'http://localhost:3001'}/api/download/generate-token`,
-                { bookId: order.book_id, orderId: order.order_id, userEmail: order.customer_email }
-            );
-            if (tokenResp.data && tokenResp.data.success) {
-                await emailService.sendDownloadEmail({
-                    userEmail: order.customer_email,
-                    bookTitle: order.book_title,
-                    bookAuthor: order.book_author || 'Unknown Author',
-                    downloadUrl: tokenResp.data.downloadUrl,
-                    orderId: order.order_id,
-                    expiresIn: '24 hours',
-                    maxDownloads: 5,
-                });
-                console.log(`✅ BTCPay: order ${order.order_id} fulfilled, download sent to ${order.customer_email}`);
-            }
+            const { downloadUrl } = await downloadService.generateDownloadToken({ orderId: order.order_id });
+            await emailService.sendDownloadEmail({
+                userEmail: order.customer_email,
+                bookTitle: order.book_title,
+                bookAuthor: order.book_author || 'Unknown Author',
+                downloadUrl,
+                orderId: order.order_id,
+                expiresIn: '24 hours',
+                maxDownloads: 5,
+            });
+            console.log(`✅ BTCPay: order ${order.order_id} fulfilled, download sent to ${order.customer_email}`);
         } catch (fulfillErr) {
             console.error('BTCPay webhook: fulfillment error:', fulfillErr.message);
         }

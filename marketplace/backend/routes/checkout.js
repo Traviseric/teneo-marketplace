@@ -24,7 +24,7 @@ const checkoutLimiter = process.env.NODE_ENV === 'test'
         legacyHeaders: false,
     });
 const emailService = require('../services/emailService');
-const axios = require('axios');
+const downloadService = require('../services/downloadService');
 const { processMixedOrder } = require('./checkoutMixed');
 const nftService = require('../services/nftService');
 const db = require('../database/database');
@@ -265,29 +265,21 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
           paymentMethod: 'Credit Card'
         });
 
-        // Generate download token
-        const tokenResponse = await axios.post(`${process.env.FRONTEND_URL || 'http://localhost:3001'}/api/download/generate-token`, {
-          bookId,
+        // Generate download token directly — no HTTP self-call
+        const { downloadUrl } = await downloadService.generateDownloadToken({ orderId });
+
+        // Send download email
+        await emailService.sendDownloadEmail({
+          userEmail,
+          bookTitle,
+          bookAuthor,
+          downloadUrl,
           orderId,
-          userEmail
+          expiresIn: '24 hours',
+          maxDownloads: 5
         });
 
-        if (tokenResponse.data.success) {
-          // Send download email
-          await emailService.sendDownloadEmail({
-            userEmail,
-            bookTitle,
-            bookAuthor,
-            downloadUrl: tokenResponse.data.downloadUrl,
-            orderId,
-            expiresIn: '24 hours',
-            maxDownloads: 5
-          });
-
-          console.log(`Download link sent to ${userEmail} for order ${orderId}`);
-        } else {
-          console.error('Failed to generate download token:', tokenResponse.data.error);
-        }
+        console.log(`Download link sent to ${userEmail} for order ${orderId}`);
 
         // Pin purchased book to IPFS for censorship-resistant delivery (non-fatal)
         if (process.env.PINATA_JWT && bookId) {
