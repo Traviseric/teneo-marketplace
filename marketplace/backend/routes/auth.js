@@ -195,15 +195,14 @@ router.get('/callback', async (req, res) => {
 
     const user = await authProvider.handleOAuthCallback(code, codeVerifier);
 
+    // Regenerate session ID to prevent session fixation (CWE-384)
+    await new Promise((resolve, reject) => req.session.regenerate(err => err ? reject(err) : resolve()));
+
     // Create session
     req.session.userId = user.id;
     req.session.email = user.email;
     req.session.name = user.name;
     req.session.isAuthenticated = true;
-
-    // Clean up OAuth session data
-    delete req.session.oauthState;
-    delete req.session.codeVerifier;
 
     // Redirect to dashboard or home
     res.redirect('/account-dashboard.html');
@@ -228,6 +227,9 @@ router.get('/verify-magic-link', magicLinkLimiter, async (req, res) => {
 
     const authProvider = getAuthProviderInstance();
     const user = await authProvider.verifyToken(token);
+
+    // Regenerate session ID to prevent session fixation (CWE-384)
+    await new Promise((resolve, reject) => req.session.regenerate(err => err ? reject(err) : resolve()));
 
     // Create session
     req.session.userId = user.id;
@@ -308,6 +310,9 @@ router.post('/nostr/verify', nostrVerifyLimiter, async (req, res) => {
 
         const nostrProvider = getNostrProvider();
         const user = await nostrProvider.verifyNostrToken(eventToken, expectedUrl, 'POST');
+
+        // Regenerate session ID to prevent session fixation (CWE-384)
+        await new Promise((resolve, reject) => req.session.regenerate(err => err ? reject(err) : resolve()));
 
         // Establish session
         req.session.userId = user.id;

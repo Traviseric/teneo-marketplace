@@ -13,6 +13,23 @@ const fs = require('fs').promises;
 const path = require('path');
 const { safeMessage } = require('../utils/validate');
 
+// Middleware: Verify orchestrator shared secret (CWE-306)
+const verifyOrchestratorSecret = (req, res, next) => {
+  const secret = process.env.ORCHESTRATOR_WEBHOOK_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(401).json({ error: 'Webhook authentication not configured' });
+    }
+    console.warn('[Orchestrator Webhook] ORCHESTRATOR_WEBHOOK_SECRET not set — open access in dev mode');
+    return next();
+  }
+  const provided = req.headers['x-orchestrator-secret'] || req.headers['authorization'];
+  if (provided !== `Bearer ${secret}` && provided !== secret) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+};
+
 // Helper: Generate brand ID from name
 function generateBrandId(brandName) {
   return brandName
@@ -36,7 +53,7 @@ async function ensureDir(dirPath) {
  * Triggered when orchestrator creates a new brand
  * Creates complete brand directory structure in marketplace
  */
-router.post('/orchestrator/brand-created', async (req, res) => {
+router.post('/orchestrator/brand-created', verifyOrchestratorSecret, async (req, res) => {
   console.log('📦 Webhook received: brand-created');
 
   try {
@@ -144,7 +161,7 @@ router.post('/orchestrator/brand-created', async (req, res) => {
  * Triggered when orchestrator generates a new book
  * Adds book to brand's catalog and saves files
  */
-router.post('/orchestrator/book-generated', async (req, res) => {
+router.post('/orchestrator/book-generated', verifyOrchestratorSecret, async (req, res) => {
   console.log('📚 Webhook received: book-generated');
 
   try {
@@ -247,7 +264,7 @@ router.post('/orchestrator/book-generated', async (req, res) => {
  * Triggered when orchestrator generates SEO blog post
  * Publishes to brand's blog directory
  */
-router.post('/orchestrator/seo-generated', async (req, res) => {
+router.post('/orchestrator/seo-generated', verifyOrchestratorSecret, async (req, res) => {
   console.log('📝 Webhook received: seo-generated');
 
   try {
