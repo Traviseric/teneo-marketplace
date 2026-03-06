@@ -190,7 +190,11 @@ app.use((req, res, next) => {
         return next();
     }
     // Skip CSRF for GET requests and public API endpoints
-    if (req.method === 'GET' || req.path.startsWith('/api/health') || req.path.startsWith('/api/network/status') || req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront')) {
+    // Storefront and app-store are external APIs: exempt GET (read-only) but require API key for POST/PUT/DELETE (handled in the router)
+    if (req.method === 'GET' ||
+        req.path.startsWith('/api/health') ||
+        req.path.startsWith('/api/network/status') ||
+        ((req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront')) && req.method === 'GET')) {
         return next();
     }
     // Apply CSRF protection to all other routes

@@ -179,6 +179,26 @@ function normalizePodProvider(value) {
 }
 
 // ---------------------------------------------------------------------------
+// API key authentication for state-changing storefront endpoints (CWE-352)
+// External callers (ArxMint, etc.) must include X-Api-Key header for POST requests.
+// Set STOREFRONT_API_KEY in .env to enable enforcement; omit to allow unauthenticated access (dev).
+// ---------------------------------------------------------------------------
+
+const STOREFRONT_API_KEY = process.env.STOREFRONT_API_KEY;
+
+function requireStorefrontApiKey(req, res, next) {
+  if (!STOREFRONT_API_KEY) {
+    // No key configured — open access (dev/legacy mode)
+    return next();
+  }
+  const providedKey = req.headers['x-api-key'];
+  if (providedKey !== STOREFRONT_API_KEY) {
+    return res.status(401).json({ error: 'Invalid API key' });
+  }
+  next();
+}
+
+// ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
 
@@ -268,7 +288,7 @@ router.get('/product/:id', async (req, res) => {
  * Body: { productId, provider: 'arxmint' | 'stripe', customerEmail? }
  * Returns: { checkoutUrl, sessionId }
  */
-router.post('/checkout', async (req, res) => {
+router.post('/checkout', requireStorefrontApiKey, async (req, res) => {
   try {
     const {
       productId,
