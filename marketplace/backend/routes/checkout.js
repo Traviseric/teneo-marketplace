@@ -207,7 +207,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 
   // Handle the event
   switch (event.type) {
-    case 'checkout.session.completed':
+    case 'checkout.session.completed': {
       const session = event.data.object;
       console.log('Payment successful:', session.id);
       
@@ -319,7 +319,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
       }
 
       break;
-    
+    }
+
     default:
       console.log(`Unhandled event type ${event.type}`);
   }
