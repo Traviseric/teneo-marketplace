@@ -59,7 +59,18 @@ const path = require('path');
 const fs = require('fs').promises;
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const csurf = require('csurf');
+const cookieParser = require('cookie-parser');
+const { doubleCsrf } = require('csrf-csrf');
+const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
+    getSecret: () => process.env.SESSION_SECRET,
+    getSessionIdentifier: (req) => (req.session ? req.session.id : 'anonymous'),
+    cookieName: process.env.NODE_ENV === 'production'
+        ? '__Host-psifi.x-csrf-token'
+        : 'psifi.x-csrf-token',
+    cookieOptions: { sameSite: 'strict', secure: process.env.NODE_ENV === 'production' },
+    size: 64,
+    ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
+});
 const crypto = require('crypto');
 const brandRoutes = require('./routes/brandRoutes');
 const checkoutRoutes = process.env.NODE_ENV === 'production'
@@ -149,6 +160,9 @@ app.use(session({
     name: 'teneo.sid' // Custom session name
 }));
 
+// cookie-parser: required by csrf-csrf (must be after session, before CSRF middleware)
+app.use(cookieParser());
+
 // Middleware - Updated CORS for Teneo domains
 app.use(cors({
     origin: [
@@ -169,7 +183,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // CSRF protection for all POST/PUT/DELETE routes except specific endpoints
-const csrfProtection = csurf({ cookie: false });
 const csrfExcludePaths = [
     '/api/checkout/webhook',
     '/api/checkout/mixed',
@@ -202,12 +215,13 @@ app.use((req, res, next) => {
         return next();
     }
     // Apply CSRF protection to all other routes
-    csrfProtection(req, res, next);
+    doubleCsrfProtection(req, res, next);
 });
 
-// Endpoint to get CSRF token
+// Endpoint to get CSRF token (generates token + sets CSRF cookie)
 app.get('/api/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken ? req.csrfToken() : null });
+    const csrfToken = generateCsrfToken(req, res);
+    res.json({ csrfToken });
 });
 app.use('/api/brands', brandRoutes);
 app.use('/api/checkout', checkoutRoutes);
