@@ -142,7 +142,7 @@ router.get('/:token', async (req, res) => {
       'success'
     );
     
-    console.log(`Download: ${order.book_id} by ${order.customer_email} (${order.download_count + 1}/5)`);
+    console.log(`Download: ${order.book_id} order=${order.order_id} (${order.download_count + 1}/5)`);
     
     // If ArxMint enabled, advertise L402 paywall capability alongside token auth
     // Clients that support L402 can use Lightning/ecash instead of purchase tokens
