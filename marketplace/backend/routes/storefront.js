@@ -188,7 +188,13 @@ const STOREFRONT_API_KEY = process.env.STOREFRONT_API_KEY;
 
 function requireStorefrontApiKey(req, res, next) {
   if (!STOREFRONT_API_KEY) {
-    // No key configured — open access (dev/legacy mode)
+    // Fail closed in production — open access is only safe for dev/legacy
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Storefront] STOREFRONT_API_KEY not set — rejecting request in production mode');
+      return res.status(401).json({ error: 'API key required' });
+    }
+    // Dev/legacy mode: allow but warn
+    console.warn('[Storefront] STOREFRONT_API_KEY not set — open access (dev mode only)');
     return next();
   }
   const providedKey = req.headers['x-api-key'];
