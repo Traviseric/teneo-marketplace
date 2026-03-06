@@ -596,6 +596,15 @@ function initializeSqliteDatabase(db) {
         }
     });
 
+    // Agent App Store schema (schema-appstore.sql)
+    const appStoreSqlPath = path.join(__dirname, 'schema-appstore.sql');
+    if (fs.existsSync(appStoreSqlPath)) {
+        const appStoreSql = fs.readFileSync(appStoreSqlPath, 'utf8');
+        db.exec(appStoreSql, (err) => {
+            if (err) console.error('Error creating app store tables:', err);
+        });
+    }
+
     // Funnel persistence tables
     db.exec(`
         CREATE TABLE IF NOT EXISTS funnels (

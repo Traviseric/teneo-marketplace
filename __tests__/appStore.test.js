@@ -1,5 +1,71 @@
 const request = require('supertest');
+const fs = require('fs');
+const path = require('path');
 const app = require('./test-app');
+const db = require('../marketplace/backend/database/database');
+
+// Seed the in-process SQLite DB with app store schema + fixture data.
+// Uses INSERT OR IGNORE so re-runs are idempotent.
+beforeAll(async () => {
+    const schemaPath = path.join(__dirname, '..', 'marketplace', 'backend', 'database', 'schema-appstore.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    await db.exec(schema);
+
+    // te-image-engine — used by GET /api/apps, q=image, discover, manifest tests
+    await db.run(
+        `INSERT OR IGNORE INTO apps
+            (id, publisher_id, name, description, category, capabilities, endpoint_url,
+             auth_method, pricing_model, pricing_config, source_url, verification_tier, trust_score, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+            'te-image-engine', 'travis-eric', 'Image Engine',
+            'AI-powered image generation. Book covers, logos, app icons, game assets, social graphics.',
+            'image', '["image.generate","image.cover.book"]',
+            'https://bookcovergenerator.ai', 'service_key', 'per_call',
+            '{"per_call_sats":300}', 'https://github.com/traviseric/image-engine',
+            'official', 9.0, 'active'
+        ]
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO app_capabilities (app_id, capability, description) VALUES (?, ?, ?)`,
+        ['te-image-engine', 'image.generate', 'Generate images from text prompts']
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO app_capabilities (app_id, capability, description) VALUES (?, ?, ?)`,
+        ['te-image-engine', 'image.cover.book', 'Generate book covers with title/author text']
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO app_endpoints
+            (app_id, name, method, path, capability, cost_sats, input_schema, output_schema)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+            'te-image-engine', 'generate', 'POST', '/api/ai-invoke/generate',
+            'image.generate', 300,
+            '{"prompt":"string","style":"string","dimensions":"string"}',
+            '{"url":"string","format":"string"}'
+        ]
+    );
+
+    // te-ai-trust — used by category=security filter test (trust_score 9.5 >= 9)
+    await db.run(
+        `INSERT OR IGNORE INTO apps
+            (id, publisher_id, name, description, category, capabilities, endpoint_url,
+             auth_method, pricing_model, pricing_config, source_url, verification_tier, trust_score, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+            'te-ai-trust', 'travis-eric', 'AI Trust Gateway',
+            'Complete AI trust layer. Content quality scoring, PII/PHI detection, model routing.',
+            'security', '["content.quality_score","content.pii_scan"]',
+            'https://ai-trust-gateway.vercel.app', 'service_key', 'per_call',
+            '{"per_call_sats":200}', 'https://github.com/traviseric/ai-trust-stack',
+            'official', 9.5, 'active'
+        ]
+    );
+    await db.run(
+        `INSERT OR IGNORE INTO app_capabilities (app_id, capability, description) VALUES (?, ?, ?)`,
+        ['te-ai-trust', 'content.quality_score', 'Multi-dimensional content quality scoring']
+    );
+});
 
 describe('Agent App Store API', () => {
     describe('GET /api/apps', () => {
