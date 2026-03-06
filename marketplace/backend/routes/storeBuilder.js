@@ -3,9 +3,22 @@ const { randomUUID } = require('crypto');
 const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
 const storeBuildService = require('../services/storeBuildService');
+const EmailService = require('../services/emailService');
+const { isValidEmail } = require('../utils/validate');
 const db = require('../database/database');
 const { requireAuth } = require('./auth');
 const { authenticateAdmin } = require('../middleware/auth');
+
+/*
+ * Managed-store intake schema
+ * required: business_brief (>=50 chars), contact_email, tier
+ * optional: contact_name, website_url, brand_examples, payment_ref, notes
+ * tiers: builder | pro | white_label
+ */
+const VALID_TIERS = ['builder', 'pro', 'white_label'];
+const BRIEF_MIN_LENGTH = 50;
+
+const emailService = new EmailService();
 
 // POST /api/store-builder/generate
 // Body: { "brief": "I sell soy candles online, earthy aesthetic" }
@@ -281,6 +294,90 @@ router.post('/stores/:id/unpublish', requireAuth, async (req, res) => {
     );
 
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────
+// Managed intake (paid build requests)
+// ──────────────────────────────────────────────────
+
+// POST /api/store-builder/intake
+// Production-facing paid entry point for managed store builds.
+// Validates the intake payload, creates a store_builds record, and sends
+// an acknowledgment email to the submitter.
+router.post('/intake', async (req, res) => {
+  const {
+    business_brief,
+    contact_email,
+    tier,
+    contact_name,
+    website_url,
+    brand_examples,
+    payment_ref,
+    notes,
+  } = req.body;
+
+  // Validate required fields
+  const errors = {};
+  if (!business_brief || typeof business_brief !== 'string') {
+    errors.business_brief = 'Required';
+  } else if (business_brief.trim().length < BRIEF_MIN_LENGTH) {
+    errors.business_brief = `Must be at least ${BRIEF_MIN_LENGTH} characters`;
+  }
+  if (!contact_email) {
+    errors.contact_email = 'Required';
+  } else if (!isValidEmail(contact_email)) {
+    errors.contact_email = 'Must be a valid email address';
+  }
+  if (!tier) {
+    errors.tier = 'Required';
+  } else if (!VALID_TIERS.includes(tier)) {
+    errors.tier = `Must be one of: ${VALID_TIERS.join(', ')}`;
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ error: 'Validation failed', fields: errors });
+  }
+
+  const intakePayload = {
+    business_brief: business_brief.trim(),
+    contact_email,
+    tier,
+    ...(contact_name && { contact_name }),
+    ...(website_url && { website_url }),
+    ...(brand_examples && { brand_examples }),
+    ...(payment_ref && { payment_ref }),
+    ...(notes && { notes }),
+  };
+
+  try {
+    const buildId = await storeBuildService.createBuild(intakePayload, tier);
+
+    // Fire-and-forget acknowledgment email — non-fatal
+    emailService.sendEmail({
+      to: contact_email,
+      subject: 'Your AI store build request received',
+      html: `<p>Hi${contact_name ? ' ' + contact_name : ''},</p>
+<p>We've received your AI store build request. Here are your details:</p>
+<ul>
+  <li><strong>Build ID:</strong> ${buildId}</li>
+  <li><strong>Tier:</strong> ${tier}</li>
+  <li><strong>Estimated delivery:</strong> 48 hours</li>
+</ul>
+<p>We'll be in touch with updates. Keep your Build ID for reference.</p>`,
+      text: `Your AI store build request was received.\nBuild ID: ${buildId}\nTier: ${tier}\nEstimated delivery: 48h`,
+    }).catch(err => {
+      console.warn('[Intake] Acknowledgment email failed:', err.message);
+    });
+
+    res.status(201).json({
+      success: true,
+      build_id: buildId,
+      status: 'intake',
+      estimated_delivery: '48h',
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
