@@ -320,7 +320,12 @@ function createSqliteAdapter() {
     // eslint-disable-next-line global-require
     const sqlite3 = require('sqlite3').verbose();
 
-    const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'marketplace.db');
+    // In production containers (Render, Vercel) the app directory is read-only.
+    // Fall back to /tmp which is always writable, unless DATABASE_PATH is explicitly set.
+    const defaultDbPath = process.env.NODE_ENV === 'production'
+        ? '/tmp/marketplace.db'
+        : path.join(__dirname, 'marketplace.db');
+    const dbPath = process.env.DATABASE_PATH || defaultDbPath;
     ensureDirExists(dbPath);
 
     const rawDb = new sqlite3.Database(dbPath, (err) => {

@@ -1,5 +1,11 @@
 // Seed the Agent App Store with the TE Code ecosystem launch catalog
 // Run: node marketplace/backend/scripts/seed-appstore.js
+// NOTE: SQLite-only dev/admin script. Do NOT run against production (DATABASE_URL set).
+
+if (process.env.DATABASE_URL || process.env.SUPABASE_DB_URL) {
+    console.error('ERROR: seed-appstore.js is a SQLite-only script. Use a Supabase migration instead.');
+    process.exit(1);
+}
 
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');

@@ -14,6 +14,8 @@
 const AuthProvider = require('../AuthProvider');
 const crypto = require('crypto');
 const db = require('../../database/db');
+// Supabase uses 'profiles' instead of 'users' — resolve at module load time.
+const USERS = db.isPostgres ? 'profiles' : 'users';
 const emailService = require('../../services/emailService');
 
 const dbGet = async (sql, params = []) => {
@@ -54,7 +56,7 @@ class LocalAuthProvider extends AuthProvider {
       email = email.toLowerCase().trim();
 
       // Check if user already exists
-      const existing = await dbGet('SELECT id FROM users WHERE email = ?', [email]);
+      const existing = await dbGet(`SELECT id FROM ${USERS} WHERE email = ?`, [email]);
 
       if (existing) {
         throw new Error('User with this email already exists');
@@ -65,7 +67,7 @@ class LocalAuthProvider extends AuthProvider {
       const now = new Date().toISOString();
 
       await dbRun(
-        `INSERT INTO users (
+        `INSERT INTO ${USERS} (
           id, email, name, auth_provider, email_verified,
           signup_source, created_at, updated_at
         ) VALUES (?, ?, ?, 'local', 0, 'web', ?, ?)`,
@@ -109,7 +111,7 @@ class LocalAuthProvider extends AuthProvider {
 
       // Check if user exists
       const user = await dbGet(
-        'SELECT id, name, account_status FROM users WHERE email = ? AND auth_provider = ?',
+        `SELECT id, name, account_status FROM ${USERS} WHERE email = ? AND auth_provider = ?`,
         [email, 'local']
       );
 
@@ -133,7 +135,7 @@ class LocalAuthProvider extends AuthProvider {
       await emailService.sendMagicLink(email, user.name, token);
 
       // Update last login attempt
-      await dbRun('UPDATE users SET updated_at = ? WHERE id = ?', [new Date().toISOString(), user.id]);
+      await dbRun(`UPDATE ${USERS} SET updated_at = ? WHERE id = ?`, [new Date().toISOString(), user.id]);
 
       // Log audit event
       this._logAudit(user.id, 'login_attempt', true, { email });
@@ -161,7 +163,7 @@ class LocalAuthProvider extends AuthProvider {
       const link = await dbGet(
         `SELECT ml.*, u.*
          FROM magic_links ml
-         JOIN users u ON ml.user_id = u.id
+         JOIN ${USERS} u ON ml.user_id = u.id
          WHERE ml.token = ?
            AND ml.used = 0
            AND ml.expires_at > datetime('now')
@@ -177,7 +179,7 @@ class LocalAuthProvider extends AuthProvider {
       await dbRun('UPDATE magic_links SET used = 1, used_at = datetime("now") WHERE token = ?', [token]);
 
       // Update last login time
-      await dbRun('UPDATE users SET last_login = ? WHERE id = ?', [new Date().toISOString(), link.user_id]);
+      await dbRun(`UPDATE ${USERS} SET last_login = ? WHERE id = ?`, [new Date().toISOString(), link.user_id]);
 
       // Log successful login
       this._logAudit(link.user_id, 'login', true, {
@@ -211,7 +213,7 @@ class LocalAuthProvider extends AuthProvider {
     const user = await dbGet(
       `SELECT id, email, name, avatar_url, bio, credits,
               email_verified, account_status, created_at, last_login
-       FROM users
+       FROM ${USERS}
        WHERE id = ? AND auth_provider = 'local'`,
       [userId]
     );
@@ -243,7 +245,7 @@ class LocalAuthProvider extends AuthProvider {
     const user = await dbGet(
       `SELECT id, email, name, avatar_url, bio, credits,
               email_verified, account_status, created_at, last_login
-       FROM users
+       FROM ${USERS}
        WHERE email = ? AND auth_provider = 'local'`,
       [email]
     );

@@ -1,3 +1,12 @@
+// DEPRECATED: This file is not imported by any production code.
+// All production routes/services use marketplace/backend/database/database.js (shared adapter).
+// This file will be removed in a future cleanup.
+// Do NOT use this in new code.
+if (process.env.DATABASE_URL || process.env.SUPABASE_DB_URL) {
+    console.error('ERROR: database-service.js is a SQLite-only legacy file. Use database/database.js instead.');
+    process.exit(1);
+}
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');

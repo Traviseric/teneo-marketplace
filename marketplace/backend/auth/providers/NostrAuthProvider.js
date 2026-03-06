@@ -19,6 +19,8 @@
 const AuthProvider = require('../AuthProvider');
 const crypto = require('crypto');
 const db = require('../../database/db');
+// Supabase uses 'profiles' instead of 'users' — resolve at module load time.
+const USERS = db.isPostgres ? 'profiles' : 'users';
 const dbGet = async (sql, params = []) => {
   if (typeof db.get === 'function') {
     return db.get(sql, params);
@@ -105,7 +107,7 @@ class NostrAuthProvider extends AuthProvider {
     const user = await dbGet(
       `SELECT id, email, name, avatar_url, credits, account_status, created_at, last_login,
               metadata
-       FROM users
+       FROM ${USERS}
        WHERE id = ? AND auth_provider = 'nostr'`,
       [userId]
     );
@@ -132,7 +134,7 @@ class NostrAuthProvider extends AuthProvider {
    */
   async getUserByEmail(email) {
     const user = await dbGet(
-      `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+      `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM ${USERS} WHERE email = ? AND auth_provider = 'nostr'`,
       [email]
     );
 
@@ -157,14 +159,14 @@ class NostrAuthProvider extends AuthProvider {
     let user;
     try {
       user = await dbGet(
-        'SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE nostr_pubkey = ?',
+        `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM ${USERS} WHERE nostr_pubkey = ?`,
         [pubkey]
       );
     } catch (_) {
       // Column might not exist yet — fall back to synthetic email lookup
       const syntheticEmail = `${pubkey}@nostr.local`;
       user = await dbGet(
-        `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+        `SELECT id, email, name, avatar_url, credits, account_status, metadata FROM ${USERS} WHERE email = ? AND auth_provider = 'nostr'`,
         [syntheticEmail]
       );
     }
@@ -302,7 +304,7 @@ class NostrAuthProvider extends AuthProvider {
     let user;
     try {
       user = await dbGet(
-        'SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE nostr_pubkey = ?',
+        `SELECT id, email, name, avatar_url, credits, account_status FROM ${USERS} WHERE nostr_pubkey = ?`,
         [pubkey]
       );
     } catch (_) {
@@ -311,14 +313,14 @@ class NostrAuthProvider extends AuthProvider {
 
     if (!user) {
       user = await dbGet(
-        `SELECT id, email, name, avatar_url, credits, account_status FROM users WHERE email = ? AND auth_provider = 'nostr'`,
+        `SELECT id, email, name, avatar_url, credits, account_status FROM ${USERS} WHERE email = ? AND auth_provider = 'nostr'`,
         [syntheticEmail]
       );
     }
 
     if (user) {
       // Update last login
-      await dbRun('UPDATE users SET last_login = ?, updated_at = ? WHERE id = ?', [now, now, user.id]);
+      await dbRun(`UPDATE ${USERS} SET last_login = ?, updated_at = ? WHERE id = ?`, [now, now, user.id]);
 
       return {
         id: user.id,
@@ -338,7 +340,7 @@ class NostrAuthProvider extends AuthProvider {
     const meta = JSON.stringify({ nostr_pubkey: pubkey });
 
     await dbRun(
-      `INSERT INTO users (
+      `INSERT INTO ${USERS} (
         id, email, name, auth_provider, email_verified,
         signup_source, credits, created_at, updated_at, last_login, metadata
       ) VALUES (?, ?, ?, 'nostr', 1, 'nostr', 0, ?, ?, ?, ?)`,
@@ -347,7 +349,7 @@ class NostrAuthProvider extends AuthProvider {
 
     // Try to also set nostr_pubkey column if it exists
     try {
-      await dbRun('UPDATE users SET nostr_pubkey = ? WHERE id = ?', [pubkey, userId]);
+      await dbRun(`UPDATE ${USERS} SET nostr_pubkey = ? WHERE id = ?`, [pubkey, userId]);
     } catch (_) {
       // Column may not exist yet — pubkey is stored in metadata JSON
     }
@@ -369,9 +371,9 @@ class NostrAuthProvider extends AuthProvider {
    * (SQLite doesn't support ADD COLUMN IF NOT EXISTS; failure = column exists).
    */
   _ensureNostrPubkeyColumn() {
-    db.run('ALTER TABLE users ADD COLUMN nostr_pubkey TEXT', function () {
+    db.run(`ALTER TABLE ${USERS} ADD COLUMN nostr_pubkey TEXT`, function () {
       // Ignore error — column already exists or table not yet created
-      db.run('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nostr_pubkey ON users(nostr_pubkey)', function () {
+      db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nostr_pubkey ON ${USERS}(nostr_pubkey)`, function () {
         // Ignore — index may already exist
       });
     });

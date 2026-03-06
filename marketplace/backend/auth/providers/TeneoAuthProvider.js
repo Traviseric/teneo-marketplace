@@ -24,6 +24,8 @@
 const AuthProvider = require('../AuthProvider');
 const crypto = require('crypto');
 const db = require('../../database/db');
+// Supabase uses 'profiles' instead of 'users' — resolve at module load time.
+const USERS = db.isPostgres ? 'profiles' : 'users';
 const dbGet = async (sql, params = []) => {
   if (typeof db.get === 'function') {
     return db.get(sql, params);
@@ -202,7 +204,7 @@ class TeneoAuthProvider extends AuthProvider {
       const { user } = await response.json();
 
       // Get or create local user record
-      let localUser = await dbGet('SELECT * FROM users WHERE teneo_user_id = ?', [user.id]);
+      let localUser = await dbGet(`SELECT * FROM ${USERS} WHERE teneo_user_id = ?`, [user.id]);
 
       if (!localUser) {
         // Create local user record on first token verification
@@ -229,7 +231,7 @@ class TeneoAuthProvider extends AuthProvider {
   async getUser(userId) {
     const user = await dbGet(
       `SELECT u.*, ot.access_token
-       FROM users u
+       FROM ${USERS} u
        LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
        WHERE u.id = ? AND u.auth_provider = 'teneo-auth'`,
       [userId]
@@ -278,7 +280,7 @@ class TeneoAuthProvider extends AuthProvider {
 
     const user = await dbGet(
       `SELECT u.*, ot.access_token
-       FROM users u
+       FROM ${USERS} u
        LEFT JOIN oauth_tokens ot ON u.id = ot.user_id AND ot.provider = 'teneo-auth'
        WHERE u.email = ? AND u.auth_provider = 'teneo-auth'`,
       [email]
@@ -376,12 +378,12 @@ class TeneoAuthProvider extends AuthProvider {
     const now = new Date().toISOString();
 
     // Check if user exists
-    let localUser = await dbGet('SELECT id FROM users WHERE teneo_user_id = ?', [teneoUser.id]);
+    let localUser = await dbGet(`SELECT id FROM ${USERS} WHERE teneo_user_id = ?`, [teneoUser.id]);
 
     if (localUser) {
       // Update existing user
       await dbRun(
-        `UPDATE users SET
+        `UPDATE ${USERS} SET
           email = ?, name = ?, avatar_url = ?,
           credits = ?, email_verified = ?,
           last_login = ?, updated_at = ?
@@ -402,7 +404,7 @@ class TeneoAuthProvider extends AuthProvider {
       const localUserId = crypto.randomUUID();
 
       await dbRun(
-        `INSERT INTO users (
+        `INSERT INTO ${USERS} (
           id, email, name, avatar_url, auth_provider, teneo_user_id,
           credits, email_verified, signup_source, created_at, updated_at, last_login
         ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?, ?)`,
@@ -453,7 +455,7 @@ class TeneoAuthProvider extends AuthProvider {
     const now = new Date().toISOString();
 
     await dbRun(
-      `INSERT INTO users (
+      `INSERT INTO ${USERS} (
         id, email, name, avatar_url, auth_provider, teneo_user_id,
         credits, email_verified, signup_source, created_at, updated_at
       ) VALUES (?, ?, ?, ?, 'teneo-auth', ?, ?, ?, 'oauth', ?, ?)`,

@@ -1,7 +1,13 @@
+// NOTE: SQLite-only dev/admin script. Do NOT run against production (DATABASE_URL set).
+if (process.env.DATABASE_URL || process.env.SUPABASE_DB_URL) {
+    console.error('ERROR: seed-dogfooding.js is a SQLite-only script. Use a Supabase migration instead.');
+    process.exit(1);
+}
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const dbPath = path.join(__dirname, '../database/marketplace.db');
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../database/marketplace.db');
 const db = new sqlite3.Database(dbPath);
 
 console.log('Seeding Dogfooding openbazaar.ai merch items to the database...');

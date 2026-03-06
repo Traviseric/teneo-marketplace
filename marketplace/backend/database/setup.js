@@ -1,3 +1,10 @@
+// Legacy SQLite-only setup script. Not used by the production server.
+// Do NOT run against production (DATABASE_URL set) — use init.js instead.
+if (process.env.DATABASE_URL || process.env.SUPABASE_DB_URL) {
+    console.error('ERROR: setup.js is a SQLite-only script. Run `node database/init.js` for Postgres/Supabase.');
+    process.exit(1);
+}
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
