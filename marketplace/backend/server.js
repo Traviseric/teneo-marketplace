@@ -82,7 +82,7 @@ const manualEnhancementRoutes = require('./routes/manualEnhancement');
 const webhookRoutes = require('./routes/webhooks');
 const aiDiscoveryRoutes = require('./routes/aiDiscovery');
 const censorshipTrackerRoutes = require('./routes/censorshipTracker');
-const nftRoutes = require('./routes/nft');
+// const nftRoutes = require('./routes/nft'); // NOT IMPLEMENTED — removed from roadmap ("No proven demand")
 const authRoutes = require('./routes/auth');
 const couponsRoutes = require('./routes/couponsRoutes');
 const emailTrackingRoutes = require('./routes/emailTracking');
@@ -228,7 +228,7 @@ app.use('/api/manual-enhancement', manualEnhancementRoutes);
 app.use('/webhooks', webhookRoutes);
 app.use('/api/discovery', aiDiscoveryRoutes);
 app.use('/api/censorship', censorshipTrackerRoutes);
-app.use('/api/nft', nftRoutes);
+// app.use('/api/nft', nftRoutes); // NOT IMPLEMENTED — removed from roadmap
 
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);

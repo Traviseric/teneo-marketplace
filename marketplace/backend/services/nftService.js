@@ -1,4 +1,15 @@
 /**
+ * NFT Proof of Ownership — NOT IMPLEMENTED
+ *
+ * ROADMAP DECISION: Removed from roadmap ("No proven demand").
+ * This module is a stub. Contract ABIs are not present in this repo.
+ * This service silently falls back to disabled mode when ABIs are missing.
+ *
+ * Do not rely on this service for feature gating.
+ * Candidates for future removal: nft.js, nftService.js
+ */
+
+/**
  * NFT Service
  *
  * Handles all blockchain interactions for Proof of Read NFTs:

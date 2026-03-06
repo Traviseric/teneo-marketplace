@@ -1,4 +1,15 @@
 /**
+ * NFT Proof of Ownership — NOT IMPLEMENTED
+ *
+ * ROADMAP DECISION: Removed from roadmap ("No proven demand").
+ * This module is a stub. Contract ABIs are not present in this repo.
+ * nftService.js silently falls back to disabled mode when ABIs are missing.
+ *
+ * Do not mount this route in production or rely on it for feature gating.
+ * Candidates for future removal: nft.js, nftService.js
+ */
+
+/**
  * NFT Routes
  *
  * API endpoints for Proof of Read NFTs:
