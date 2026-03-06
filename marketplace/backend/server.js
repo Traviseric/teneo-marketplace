@@ -453,6 +453,21 @@ app.get('/api/brands/:brandId/catalog', async (req, res) => {
     }
 });
 
+// SSRF guard: reject private/loopback IPs and non-http(s) schemes (CWE-918)
+function isAllowedPeerEndpoint(endpoint) {
+    try {
+        const url = new URL(endpoint);
+        if (!['http:', 'https:'].includes(url.protocol)) return false;
+        const h = url.hostname;
+        if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.)/.test(h)) return false;
+        if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return false;
+        if (h === 'metadata.google.internal') return false;
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 // Helper: fan out search to configured federation peers (3s timeout per peer)
 async function searchPeers(query) {
     if (!networkConfig.networkEnabled || !networkConfig.networkPeers.length) {
@@ -460,7 +475,12 @@ async function searchPeers(query) {
     }
 
     const nodeId = process.env.STORE_ID || 'openbazaar-main';
-    const peerRequests = networkConfig.networkPeers.map(peer =>
+    const allowedPeers = networkConfig.networkPeers.filter(peer => {
+        if (isAllowedPeerEndpoint(peer.endpoint)) return true;
+        console.warn(`[Federation] Skipping peer ${peer.id} — endpoint blocked by SSRF guard: ${peer.endpoint}`);
+        return false;
+    });
+    const peerRequests = allowedPeers.map(peer =>
         axios.get(`${peer.endpoint}/api/search`, {
             params: { q: query },
             timeout: 3000,
