@@ -14,7 +14,9 @@
     "init:db": "node database/init.js",
     "init:ai": "node scripts/init-ai-discovery.js",
     "generate:password": "node scripts/generate-password-hash.js",
-    "test:adapter": "node scripts/test-adapter-parity.js"
+    "test:adapter": "node scripts/test-adapter-parity.js",
+    "test:stripe-flow": "node scripts/test-stripe-flow.js",
+    "test:pod-flow": "node scripts/test-pod-flow.js"
   },
   "keywords": [
     "bookstore",
