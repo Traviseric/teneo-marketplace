@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { randomUUID } = require('crypto');
-const { buildStoreFromBrief } = require('../services/aiStoreBuilderService');
+const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
 const db = require('../database/database');
 const { requireAuth } = require('./auth');
@@ -156,6 +156,129 @@ router.get('/stores/:id/products', requireAuth, async (req, res) => {
       [store.id]
     );
     res.json({ success: true, products });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────
+// Natural language editing
+// ──────────────────────────────────────────────────
+
+// PATCH /api/store-builder/stores/:id/edit
+// Apply a natural-language instruction to update store config + HTML.
+// Body: { instruction: "change hero text to '...'" }
+// Returns: { success: true, config, html, patch }
+router.patch('/stores/:id/edit', requireAuth, async (req, res) => {
+  const { instruction } = req.body;
+  if (!instruction) return res.status(400).json({ error: 'instruction required' });
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(503).json({ error: 'AI editing requires ANTHROPIC_API_KEY to be configured.' });
+  }
+
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT * FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    let existingConfig;
+    try {
+      existingConfig = typeof store.config === 'string' ? JSON.parse(store.config) : store.config;
+    } catch (_) {
+      return res.status(500).json({ error: 'Store config is corrupted' });
+    }
+
+    const patch = await parseEditIntent(instruction, existingConfig);
+    const updatedConfig = deepMerge(existingConfig, patch);
+    const html = renderStorePage(updatedConfig);
+
+    await db.run(
+      'UPDATE stores SET config = ?, html = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [JSON.stringify(updatedConfig), html, req.params.id]
+    );
+
+    res.json({ success: true, config: updatedConfig, html, patch });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────
+// Preview, publish, unpublish
+// ──────────────────────────────────────────────────
+
+// GET /api/store-builder/stores/:id/preview
+// Returns rendered HTML for authenticated store owner (draft access).
+router.get('/stores/:id/preview', requireAuth, async (req, res) => {
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT * FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    let html = store.html;
+    if (!html) {
+      const config = typeof store.config === 'string' ? JSON.parse(store.config) : store.config;
+      html = renderStorePage(config);
+    }
+
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/store-builder/stores/:id/publish
+// Set status = 'published', returns public URL.
+router.post('/stores/:id/publish', requireAuth, async (req, res) => {
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT * FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    const slug = store.slug || '';
+    if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+      return res.status(400).json({ error: 'Store has an invalid or missing slug' });
+    }
+
+    await db.run(
+      'UPDATE stores SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      ['published', req.params.id]
+    );
+
+    res.json({ success: true, url: `/store/${slug}`, slug });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/store-builder/stores/:id/unpublish
+// Revert status to 'draft'.
+router.post('/stores/:id/unpublish', requireAuth, async (req, res) => {
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT id FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    await db.run(
+      'UPDATE stores SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      ['draft', req.params.id]
+    );
+
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

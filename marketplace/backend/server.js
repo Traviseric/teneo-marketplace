@@ -247,6 +247,26 @@ app.use('/api/apps', appStoreRoutes);
 // AI Store Builder
 app.use('/api/store-builder', require('./routes/storeBuilder'));
 
+// Public store pages — GET /store/:slug serves published store HTML (no auth required)
+app.get('/store/:slug', async (req, res) => {
+  try {
+    const db = require('./database/database');
+    const slug = req.params.slug;
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      return res.status(404).send('<h1>Store not found</h1>');
+    }
+    const store = await db.get(
+      "SELECT html, config FROM stores WHERE slug = ? AND status = 'published'",
+      [slug]
+    );
+    if (!store) return res.status(404).send('<h1>Store not found</h1>');
+    res.set('Content-Type', 'text/html');
+    res.send(store.html);
+  } catch (err) {
+    res.status(500).send('<h1>Internal Server Error</h1>');
+  }
+});
+
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);
 app.use('/api/webhooks', printfulWebhookRoutes);

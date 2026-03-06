@@ -46,4 +46,64 @@ Be creative with palette and content. Make the store feel professional and on-br
   return JSON.parse(jsonMatch[0]);
 }
 
-module.exports = { buildStoreFromBrief };
+/**
+ * Deep-merge a patch object into a target object.
+ * - Primitive fields: patch overwrites target
+ * - Arrays: patch replaces target array entirely
+ * - Plain objects: merge recursively
+ */
+function deepMerge(target, patch) {
+  const result = Object.assign({}, target);
+  for (const key of Object.keys(patch)) {
+    const pval = patch[key];
+    const tval = target[key];
+    if (Array.isArray(pval)) {
+      result[key] = pval;
+    } else if (pval && typeof pval === 'object' && !Array.isArray(pval) && tval && typeof tval === 'object' && !Array.isArray(tval)) {
+      result[key] = deepMerge(tval, pval);
+    } else {
+      result[key] = pval;
+    }
+  }
+  return result;
+}
+
+/**
+ * Parse a natural-language edit instruction against an existing store config.
+ * Returns a partial patch object (only changed fields).
+ *
+ * @param {string} instruction - e.g. "change hero text to 'Handmade with love'"
+ * @param {object} existingConfig - current StoreConfig JSON
+ * @returns {object} partial config patch
+ */
+async function parseEditIntent(instruction, existingConfig) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY is not set. AI editing requires the API key.');
+  }
+
+  const Anthropic = require('@anthropic-ai/sdk');
+  const client = new Anthropic();
+
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1024,
+    messages: [{
+      role: 'user',
+      content: `You are editing a store configuration JSON. Return ONLY the fields that need to change as a JSON object — do NOT return the full config.
+
+CURRENT CONFIG:
+${JSON.stringify(existingConfig, null, 2)}
+
+EDIT INSTRUCTION: "${instruction}"
+
+Return ONLY valid JSON containing the changed fields (partial patch). No markdown, no explanation.`
+    }]
+  });
+
+  const text = message.content[0].text;
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('No JSON patch found in AI response');
+  return JSON.parse(jsonMatch[0]);
+}
+
+module.exports = { buildStoreFromBrief, parseEditIntent, deepMerge };
