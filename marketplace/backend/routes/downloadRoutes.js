@@ -2,19 +2,15 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
-const crypto = require('crypto');
 const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
 const arxmintService = require('../services/arxmintService');
 
-// In-memory token storage (use Redis in production)
 const OrderService = require('../services/orderService');
+const db = require('../database/database');
 
 // Initialize order service
 const orderService = new OrderService();
-
-// In-memory download attempts tracking (use Redis in production)
-const downloadAttempts = new Map();
 
 // Configure multer for PDF uploads
 const storage = multer.diskStorage({
@@ -85,12 +81,15 @@ router.get('/:token', async (req, res) => {
       });
     }
     
-    // Track download attempts for abuse prevention
-    const clientId = req.ip + req.headers['user-agent'];
-    const attempts = downloadAttempts.get(clientId) || [];
-    const recentAttempts = attempts.filter(time => Date.now() - time < 60000); // Last minute
-    
-    if (recentAttempts.length >= 10) {
+    // DB-backed rate limit: max 10 download attempts per IP per minute (CWE-770)
+    // Queries download_logs which persists across restarts — no longer reset by crashes/deploys
+    const clientIp = req.ip || 'unknown';
+    const { count: recentCount } = await db.get(
+      `SELECT COUNT(*) as count FROM download_logs WHERE ip_address = ? AND created_at > datetime('now', '-1 minute')`,
+      [clientIp]
+    );
+
+    if (recentCount >= 10) {
       await orderService.logDownload(
         order.order_id,
         token,
@@ -99,16 +98,12 @@ router.get('/:token', async (req, res) => {
         'failed',
         'Too many attempts'
       );
-      
+
       return res.status(429).json({
         success: false,
         error: 'Too many download attempts. Please wait a minute.'
       });
     }
-    
-    // Update attempts
-    recentAttempts.push(Date.now());
-    downloadAttempts.set(clientId, recentAttempts);
     
     // Check if file exists
     const pdfPath = path.join(__dirname, '../books', `${order.book_id}.pdf`);
