@@ -462,6 +462,11 @@
         });
 
         async function createOrder(paymentMethod, email) {
+            // Clear any previous order error on retry
+            const orderErrorEl = document.getElementById('orderError');
+            orderErrorEl.style.display = 'none';
+            document.getElementById('orderErrorText').textContent = '';
+
             try {
                 // For MVP, create a simple order ID
                 const orderId = 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
@@ -502,7 +507,7 @@
             } catch (error) {
                 // Show inline error instead of alert()
                 const errorEl = document.getElementById('orderError');
-                document.getElementById('orderErrorText').textContent = error.message;
+                document.getElementById('orderErrorText').textContent = 'Unable to create order. Please try again or contact support.';
                 errorEl.style.display = 'block';
                 errorEl.scrollIntoView({ behavior: 'smooth' });
             }
