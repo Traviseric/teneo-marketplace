@@ -73,9 +73,7 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
 });
 const crypto = require('crypto');
 const brandRoutes = require('./routes/brandRoutes');
-const checkoutRoutes = process.env.NODE_ENV === 'production'
-  ? require('./routes/checkoutProduction')
-  : require('./routes/checkout');
+const checkoutRoutes = require('./routes/checkout');
 const { router: checkoutMixedRoutes } = require('./routes/checkoutMixed');
 const cryptoCheckoutRoutes = require('./routes/cryptoCheckout');
 const catalogRoutes = require('./routes/catalogRoutes');
