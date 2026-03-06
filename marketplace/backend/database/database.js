@@ -116,6 +116,50 @@ function initializeDatabase() {
         }
     });
 
+    // Printful migration: add POD tracking columns (idempotent)
+    const ensurePrintfulOrderIndex = () => {
+        db.run(`CREATE INDEX IF NOT EXISTS idx_orders_printful_order_id ON orders(printful_order_id)`, (err) => {
+            if (err) {
+                console.error('Error creating idx_orders_printful_order_id:', err);
+            }
+        });
+    };
+
+    db.run(`ALTER TABLE orders ADD COLUMN printful_order_id TEXT`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding printful_order_id column:', err);
+        }
+        ensurePrintfulOrderIndex();
+    });
+    db.run(`ALTER TABLE orders ADD COLUMN tracking_number TEXT`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding tracking_number column:', err);
+        }
+    });
+    db.run(`ALTER TABLE orders ADD COLUMN tracking_url TEXT`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding tracking_url column:', err);
+        }
+    });
+    db.run(`
+        CREATE TABLE IF NOT EXISTS printful_webhook_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id TEXT UNIQUE,
+            event_type TEXT NOT NULL,
+            printful_order_id TEXT,
+            external_order_id TEXT,
+            payload TEXT NOT NULL,
+            processed BOOLEAN DEFAULT 0,
+            error_message TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            processed_at DATETIME
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating printful_webhook_events table:', err);
+        }
+    });
+
     // Funnel persistence tables
     db.exec(`
         CREATE TABLE IF NOT EXISTS funnels (

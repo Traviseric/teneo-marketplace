@@ -86,6 +86,7 @@ const authRoutes = require('./routes/auth');
 const couponsRoutes = require('./routes/couponsRoutes');
 const emailTrackingRoutes = require('./routes/emailTracking');
 const storefrontRoutes = require('./routes/storefront');
+const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -168,6 +169,7 @@ const csrfExcludePaths = [
     '/api/lulu/webhook',
     '/api/crypto/btcpay/webhook', // BTCPay payment webhook
     '/api/storefront/fulfill',     // ArxMint fulfillment webhook
+    '/api/webhooks/printful',      // Printful shipment/order webhooks
     '/webhooks' // Orchestrator webhooks
 ]; // Webhook endpoints need to be excluded
 
@@ -228,6 +230,7 @@ app.use('/api/apps', appStoreRoutes);
 
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);
+app.use('/api/webhooks', printfulWebhookRoutes);
 
 // Public certificate verification (separate mount so it doesn't need /api/courses prefix)
 const { getCertificate } = require('./services/certificateService');

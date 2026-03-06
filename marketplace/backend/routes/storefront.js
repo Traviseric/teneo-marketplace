@@ -24,6 +24,7 @@ const crypto = require('crypto');
 const arxmintProvider = require('../services/arxmintProvider');
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
+const fulfillmentService = require('../services/fulfillmentService');
 
 const orderService = new OrderService();
 
@@ -36,6 +37,10 @@ const orderService = new OrderService();
  * Maps the existing brand/catalog.json format to the schema ArxMint expects.
  */
 function bookToProduct(book, brandId) {
+  const inferredPodVariant = book.podVariantId || book.printfulVariantId || null;
+  const inferredFulfillment = book.fulfillment || (inferredPodVariant ? 'pod' : 'digital');
+  const inferredProvider = book.podProvider || (inferredPodVariant ? 'printful' : null);
+
   return {
     id: `${brandId}:${book.id}`,
     title: book.title,
@@ -46,10 +51,11 @@ function bookToProduct(book, brandId) {
     images: book.coverImage ? [book.coverImage] : [],
     category: book.category || 'Books',
     variants: buildVariants(book),
-    fulfillment: 'digital',
+    fulfillment: inferredFulfillment,
     digitalAssetUrl: book.digitalFile || null,
-    podProvider: null,
-    podProductId: null,
+    podProvider: inferredProvider,
+    podProductId: book.podProductId || null,
+    podVariantId: inferredPodVariant,
     stock: null, // unlimited for digital
     active: true,
     metadata: {
@@ -117,6 +123,38 @@ async function loadAllProducts() {
  */
 function extractCategories(products) {
   return [...new Set(products.map(p => p.category))].sort();
+}
+
+function generateOrderId() {
+  return `ORD-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
+}
+
+function parseJsonObject(value) {
+  if (!value) return {};
+  if (typeof value === 'object') return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+}
+
+function normalizeShippingAddress(shippingAddress, customerName, customerEmail) {
+  if (!shippingAddress || typeof shippingAddress !== 'object') return null;
+  if (!shippingAddress.address1 || !shippingAddress.city || !shippingAddress.country_code || !shippingAddress.zip) {
+    return null;
+  }
+
+  return {
+    name: shippingAddress.name || customerName || 'Customer',
+    address1: shippingAddress.address1,
+    address2: shippingAddress.address2 || '',
+    city: shippingAddress.city,
+    state_code: shippingAddress.state_code || shippingAddress.state || '',
+    country_code: shippingAddress.country_code,
+    zip: shippingAddress.zip,
+    email: shippingAddress.email || customerEmail || '',
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -211,7 +249,14 @@ router.get('/product/:id', async (req, res) => {
  */
 router.post('/checkout', async (req, res) => {
   try {
-    const { productId, provider, customerEmail } = req.body;
+    const {
+      productId,
+      provider,
+      customerEmail,
+      customerName,
+      shippingAddress,
+      quantity = 1,
+    } = req.body || {};
 
     if (!productId) {
       return res.status(400).json({ error: 'productId required' });
@@ -222,6 +267,13 @@ router.post('/checkout', async (req, res) => {
     const product = products.find(p => p.id === productId);
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const normalizedShipping = normalizeShippingAddress(shippingAddress, customerName, customerEmail);
+    if ((product.fulfillment === 'physical' || product.fulfillment === 'pod') && !normalizedShipping) {
+      return res.status(400).json({
+        error: 'shippingAddress with address1/city/country_code/zip is required for physical/POD products',
+      });
     }
 
     const publicUrl = process.env.SITE_URL || process.env.PUBLIC_URL || 'http://localhost:3001';
@@ -244,7 +296,35 @@ router.post('/checkout', async (req, res) => {
         customerEmail,
       });
 
-      return res.json(result);
+      // Persist a pending internal order now so webhook-driven fulfillment has context.
+      const orderId = generateOrderId();
+      const fallbackEmail = customerEmail || `no-email+${orderId}@local.invalid`;
+      await orderService.createOrder({
+        orderId,
+        stripeSessionId: result.sessionId,
+        customerEmail: fallbackEmail,
+        customerName: customerName || null,
+        bookId: product.id,
+        bookTitle: product.title,
+        bookAuthor: product.metadata?.author || 'Unknown',
+        format: product.fulfillment || 'digital',
+        price: Number(product.price || 0) / 100,
+        currency: product.currency || 'USD',
+        metadata: {
+          source: 'storefront',
+          paymentProvider: 'arxmint',
+          productId: product.id,
+          quantity: Number(quantity) || 1,
+          shippingAddress: normalizedShipping,
+          podProvider: product.podProvider || null,
+          podVariantId: product.podVariantId || null,
+        },
+      });
+
+      return res.json({
+        ...result,
+        orderId,
+      });
     }
 
     // Default: return info for Stripe checkout (existing flow handles this)
@@ -290,62 +370,191 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
       body = req.body;
     }
 
-    const { sessionId, productId, paymentProvider, amountSats, paidAt, customerEmail } = body;
+    const {
+      sessionId,
+      orderId: providedOrderId,
+      productId: providedProductId,
+      paymentProvider,
+      amountSats,
+      paidAt,
+      customerEmail,
+      customerName,
+      shippingAddress,
+      quantity = 1,
+    } = body || {};
 
-    if (!productId || !paymentProvider) {
-      return res.status(400).json({ error: 'productId and paymentProvider required' });
+    if (!paymentProvider) {
+      return res.status(400).json({ error: 'paymentProvider required' });
     }
 
-    console.log(`[Fulfill] Payment confirmed: provider=${paymentProvider} product=${productId} amount=${amountSats} sats`);
+    console.log(`[Fulfill] Payment confirmed: provider=${paymentProvider} product=${providedProductId || 'n/a'} amount=${amountSats || 'n/a'} sats`);
+
+    // Rehydrate internal order context when available
+    let existingOrder = null;
+    if (providedOrderId) {
+      existingOrder = await orderService.getOrder(providedOrderId);
+    } else if (sessionId) {
+      existingOrder = await orderService.getOrderBySessionId(sessionId);
+    }
+
+    const existingMeta = parseJsonObject(existingOrder?.metadata);
+    const effectiveOrderId = existingOrder?.order_id || providedOrderId || generateOrderId();
+    const effectiveProductId = providedProductId || existingOrder?.book_id;
+    const effectiveCustomerEmail = customerEmail || existingOrder?.customer_email || `no-email+${effectiveOrderId}@local.invalid`;
+    const effectiveCustomerName = customerName || existingOrder?.customer_name || '';
+    const effectiveShipping = normalizeShippingAddress(
+      shippingAddress || existingMeta.shippingAddress,
+      effectiveCustomerName,
+      effectiveCustomerEmail
+    );
+
+    if (!effectiveProductId) {
+      return res.status(400).json({ error: 'productId required (or resolvable from orderId/sessionId)' });
+    }
 
     // Look up product for fulfillment details
     const products = await loadAllProducts();
-    const product = products.find(p => p.id === productId);
+    const product = products.find(p => p.id === effectiveProductId);
 
     if (!product) {
-      console.error(`[Fulfill] Product not found: ${productId}`);
+      console.error(`[Fulfill] Product not found: ${effectiveProductId}`);
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Generate order ID
-    const orderId = 'ORD-' + Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+    // Ensure internal order exists
+    if (!existingOrder) {
+      await orderService.createOrder({
+        orderId: effectiveOrderId,
+        stripeSessionId: sessionId || null,
+        customerEmail: effectiveCustomerEmail,
+        customerName: effectiveCustomerName || null,
+        bookId: product.id,
+        bookTitle: product.title,
+        bookAuthor: product.metadata?.author || 'Unknown',
+        format: product.fulfillment || 'digital',
+        price: Number(product.price || 0) / 100,
+        currency: product.currency || 'USD',
+        metadata: {
+          source: 'storefront',
+          paymentProvider,
+          quantity: Number(quantity) || 1,
+          shippingAddress: effectiveShipping,
+          podProvider: product.podProvider || null,
+          podVariantId: product.podVariantId || null,
+        },
+      });
+      existingOrder = await orderService.getOrder(effectiveOrderId);
+    }
+
+    const paymentMeta = {
+      ...existingMeta,
+      paymentProvider,
+      amountSats: amountSats || null,
+      paidAt: paidAt || new Date().toISOString(),
+      shippingAddress: effectiveShipping || existingMeta.shippingAddress || null,
+      podProvider: product.podProvider || existingMeta.podProvider || null,
+      podVariantId: product.podVariantId || existingMeta.podVariantId || null,
+    };
 
     // Fulfill based on product type
     if (product.fulfillment === 'digital' && product.digitalAssetUrl) {
-      // Generate download token
-      const downloadToken = crypto.randomBytes(32).toString('hex');
+      const completed = await orderService.completeOrder(effectiveOrderId, sessionId || `ext_${Date.now()}`);
+      const publicUrl = process.env.SITE_URL || process.env.PUBLIC_URL || 'http://localhost:3001';
+      const downloadUrl = `${publicUrl}/api/download/${completed.downloadToken}`;
 
-      console.log(`[Fulfill] Digital delivery: order=${orderId} product=${product.title}`);
+      console.log(`[Fulfill] Digital delivery: order=${effectiveOrderId} product=${product.title}`);
 
       // Send download email if we have customer email
-      if (customerEmail) {
+      if (effectiveCustomerEmail && !effectiveCustomerEmail.endsWith('@local.invalid')) {
         try {
-          await emailService.sendOrderConfirmation(customerEmail, {
-            orderId,
+          await emailService.sendDownloadEmail({
+            userEmail: effectiveCustomerEmail,
             bookTitle: product.title,
-            downloadToken,
+            bookAuthor: product.metadata?.author || 'Unknown',
+            downloadUrl,
+            orderId: effectiveOrderId,
           });
         } catch (emailErr) {
           console.error('[Fulfill] Email send failed:', emailErr.message);
         }
       }
 
+      await orderService.updateOrderStatus(effectiveOrderId, {
+        status: 'completed',
+        payment_status: 'paid',
+        fulfillment_status: 'fulfilled',
+        metadata: JSON.stringify(paymentMeta),
+      });
+
       return res.json({
         success: true,
-        orderId,
+        orderId: effectiveOrderId,
         fulfillment: 'digital',
-        downloadToken,
+        downloadToken: completed.downloadToken,
         message: 'Order fulfilled — download link sent',
       });
     }
 
     if (product.fulfillment === 'physical' || product.fulfillment === 'pod') {
-      // For physical / POD: log the order for manual fulfillment or Printful trigger
-      console.log(`[Fulfill] Physical/POD order: ${orderId} — requires shipping address`);
+      if (!effectiveShipping) {
+        return res.status(400).json({ error: 'shippingAddress is required for physical/POD fulfillment' });
+      }
+
+      await orderService.updateOrderStatus(effectiveOrderId, {
+        status: 'completed',
+        payment_status: 'paid',
+        fulfillment_status: 'processing',
+        order_type: product.fulfillment === 'pod' ? 'physical' : product.fulfillment,
+        contains_physical: 1,
+        shipping_address: JSON.stringify(effectiveShipping),
+        metadata: JSON.stringify(paymentMeta),
+      });
+
+      if (product.fulfillment === 'pod') {
+        const providerName = product.podProvider || 'printful';
+        const variantId = product.podVariantId || paymentMeta.podVariantId;
+        if (!variantId) {
+          return res.status(422).json({ error: 'podVariantId is required for POD fulfillment' });
+        }
+
+        const fulfillmentResult = await fulfillmentService.createOrder(providerName, {
+          orderId: effectiveOrderId,
+          variantId,
+          quantity: Number(quantity) || 1,
+          shippingAddress: effectiveShipping,
+          confirm: true,
+        });
+
+        await orderService.updateOrderStatus(effectiveOrderId, {
+          fulfillment_status: 'pod_submitted',
+          printful_order_id: String(fulfillmentResult.orderId),
+          metadata: JSON.stringify({
+            ...paymentMeta,
+            podSubmittedAt: new Date().toISOString(),
+            podProvider: providerName,
+            podOrderId: fulfillmentResult.orderId,
+          }),
+        });
+
+        return res.json({
+          success: true,
+          orderId: effectiveOrderId,
+          fulfillment: 'pod',
+          provider: providerName,
+          providerOrderId: fulfillmentResult.orderId,
+          status: fulfillmentResult.status,
+          message: 'POD order submitted to fulfillment provider',
+        });
+      }
+
+      // Non-POD physical fulfillment: keep pending for manual flow
+      await orderService.updateOrderStatus(effectiveOrderId, {
+        fulfillment_status: 'physical_pending',
+      });
 
       return res.json({
         success: true,
-        orderId,
+        orderId: effectiveOrderId,
         fulfillment: product.fulfillment,
         message: 'Order recorded — physical fulfillment pending',
         requiresShipping: true,
@@ -353,9 +562,16 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
     }
 
     // Fallback
+    await orderService.updateOrderStatus(effectiveOrderId, {
+      status: 'completed',
+      payment_status: 'paid',
+      fulfillment_status: 'pending',
+      metadata: JSON.stringify(paymentMeta),
+    });
+
     return res.json({
       success: true,
-      orderId,
+      orderId: effectiveOrderId,
       fulfillment: product.fulfillment || 'unknown',
       message: 'Order recorded',
     });

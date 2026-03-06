@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS orders (
     refund_status TEXT,
     refund_amount DECIMAL(10,2),
     refund_reason TEXT,
+    printful_order_id TEXT,
+    tracking_number TEXT,
+    tracking_url TEXT,
     metadata TEXT,
     abandonment_email_sent_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -34,6 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_orders_email ON orders(customer_email);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
+CREATE INDEX IF NOT EXISTS idx_orders_printful_order_id ON orders(printful_order_id);
 
 -- Download logs table
 CREATE TABLE IF NOT EXISTS download_logs (
@@ -60,6 +64,23 @@ CREATE TABLE IF NOT EXISTS payment_events (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     processed_at DATETIME
 );
+
+-- Printful webhook events (for idempotency + audit trail)
+CREATE TABLE IF NOT EXISTS printful_webhook_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id TEXT UNIQUE,
+    event_type TEXT NOT NULL,
+    printful_order_id TEXT,
+    external_order_id TEXT,
+    payload TEXT NOT NULL,
+    processed BOOLEAN DEFAULT 0,
+    error_message TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    processed_at DATETIME
+);
+CREATE INDEX IF NOT EXISTS idx_printful_webhooks_event_id ON printful_webhook_events(event_id);
+CREATE INDEX IF NOT EXISTS idx_printful_webhooks_order_id ON printful_webhook_events(printful_order_id);
+CREATE INDEX IF NOT EXISTS idx_printful_webhooks_external_id ON printful_webhook_events(external_order_id);
 
 -- Refunds table
 CREATE TABLE IF NOT EXISTS refunds (

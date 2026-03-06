@@ -8,10 +8,14 @@ const ALLOWED_UPDATE_KEYS = new Set([
     'status',
     'payment_status',
     'fulfillment_status',
+    'order_type',
     'download_token',
     'download_count',
     'download_expiry',
     'metadata',
+    'shipping_address',
+    'shipping_method',
+    'contains_physical',
     'stripe_session_id',
     'stripe_payment_intent_id',
     'refund_id',
@@ -19,7 +23,9 @@ const ALLOWED_UPDATE_KEYS = new Set([
     'refund_amount',
     'refund_reason',
     'lulu_print_job_id',
+    'printful_order_id',
     'tracking_number',
+    'tracking_url',
     'estimated_delivery',
     'shipping_cost',
 ]);
@@ -158,6 +164,21 @@ class OrderService {
             const sql = 'SELECT * FROM orders WHERE stripe_session_id = ?';
             
             this.db.get(sql, [sessionId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+    }
+
+    // Get order by Printful order ID
+    async getOrderByPrintfulOrderId(printfulOrderId) {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM orders WHERE printful_order_id = ?';
+
+            this.db.get(sql, [printfulOrderId], (err, row) => {
                 if (err) {
                     reject(err);
                 } else {
