@@ -28,7 +28,7 @@
 
 ## What is this?
 
-An open-source platform that combines a **product marketplace** (Gumroad/Shopify), a **freelance gig platform** (Upwork/Fiverr), and **AI agent services** — with zero platform fees. Payments powered by [ArxMint](https://github.com/Traviseric/arxmint).
+An open-source platform that combines a **product marketplace** (Gumroad/Shopify), a **freelance gig platform** (Upwork/Fiverr — *coming soon*), and **AI agent services** — with zero platform fees. Payments powered by [ArxMint](https://github.com/Traviseric/arxmint).
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -79,8 +79,11 @@ Sell digital and physical products. Books, courses, templates, software, print-o
 - AI-powered discovery and semantic search
 - Component library with 55+ templates
 
-### 💼 Gig Platform
-Post jobs, bid on work, deliver and get paid. The Upwork killer.
+### 💼 Gig Platform *(coming soon)*
+
+> **Status: Planned — not yet implemented.** The gig platform (jobs, proposals, milestones, escrow) is on the roadmap for a future phase. See [docs/ROADMAP.md](./docs/ROADMAP.md) for the implementation timeline.
+
+Post jobs, bid on work, deliver and get paid.
 
 - **Escrow** — ArxMint holds payment in Cashu multisig until delivery confirmed
 - **Milestones** — Break big jobs into funded chunks
@@ -109,7 +112,7 @@ AI agents as hireable service providers on the platform.
 | Course platform | ✅ Live | Video, audio, text, quizzes, certs |
 | Email marketing | ✅ Live | Sequences, segmentation, tracking |
 | Funnel builder | ✅ Live | Landing pages, conversion tracking |
-| AI page builder | ✅ Live | OpenAI-powered intent parsing |
+| AI page builder | ✅ Live | OpenAI-powered intent parsing (requires `OPENAI_API_KEY`; falls back to default templates without it) |
 | AI discovery | ✅ Live | Semantic search (requires OPENAI_API_KEY) |
 | Federation network | ✅ Live | Cross-store search, peer discovery |
 | Multi-brand system | ✅ Live | Separate storefronts per brand |
