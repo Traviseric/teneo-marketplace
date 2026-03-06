@@ -22,9 +22,10 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../books'));
   },
   filename: (req, file, cb) => {
-    // Use bookId from request body as filename
-    const bookId = req.body.bookId || 'unknown';
-    cb(null, `${bookId}.pdf`);
+    // Use bookId from request body as filename — sanitize to prevent path traversal
+    const rawId = req.body.bookId || 'unknown';
+    const safeId = path.basename(rawId).replace(/[^a-zA-Z0-9_-]/g, '_');
+    cb(null, `${safeId}.pdf`);
   }
 });
 
@@ -151,7 +152,8 @@ router.get('/:token', async (req, res) => {
 
     // Set headers for file download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${order.book_title}.pdf"`);
+    const safeTitle = (order.book_title || 'download').replace(/["\\;\r\n]/g, '_');
+    res.setHeader('Content-Disposition', `attachment; filename="${safeTitle}.pdf"`);
     res.setHeader('X-Download-Count', order.download_count + 1);
     res.setHeader('X-Downloads-Remaining', 5 - (order.download_count + 1));
     
@@ -256,7 +258,8 @@ router.get('/list', authenticateAdmin, async (req, res) => {
 router.delete('/:bookId', authenticateAdmin, async (req, res) => {
   try {
     const { bookId } = req.params;
-    const filePath = path.join(__dirname, '../books', `${bookId}.pdf`);
+    const safeBookId = path.basename(bookId).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filePath = path.join(__dirname, '../books', `${safeBookId}.pdf`);
     
     try {
       await fs.access(filePath);
