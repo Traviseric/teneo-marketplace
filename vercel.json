@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "name": "openbazaar-ai",
+  "builds": [
+    {
+      "src": "marketplace/backend/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "openbazaar-site/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "marketplace/frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "marketplace/backend/server.js"
+    },
+    {
+      "src": "/store/(.*)",
+      "dest": "marketplace/frontend/$1"
+    },
+    {
+      "src": "/store/?$",
+      "dest": "marketplace/frontend/index.html"
+    },
+    {
+      "src": "/brands/(.*)",
+      "dest": "marketplace/frontend/brands/$1"
+    },
+    {
+      "src": "/(style\\.css|main\\.js)",
+      "dest": "openbazaar-site/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "openbazaar-site/assets/$1"
+    },
+    {
+      "src": "/favicon\\.png",
+      "dest": "openbazaar-site/assets/favicon.png"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "openbazaar-site/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "marketplace/backend/server.js": {
+      "maxDuration": 30
+    }
+  }
+}

@@ -470,10 +470,10 @@
             <div class="header-content">
                 <a href="/" class="logo" id="brand-logo">OpenBazaar AI</a>
                 <nav aria-label="Site navigation">
-                    <a href="/brands.html">Browse Networks</a>
-                    <a href="/network.html">Network Search</a>
-                    <a href="/revolution.html">Revolution</a>
-                    <a href="/cart-custom.html">Cart</a>
+                    <a href="brands.html">Browse Networks</a>
+                    <a href="network.html">Network Search</a>
+                    <a href="revolution.html">Revolution</a>
+                    <a href="cart-custom.html">Cart</a>
                     <span id="nav-auth-placeholder"></span>
                 </nav>
             </div>
@@ -487,8 +487,8 @@
             <p class="tagline" id="brand-tagline">Discover books from independent publishers across a federated marketplace</p>
             <p class="hero-description" id="brand-description">Built on open-source infrastructure. No gatekeepers. No censorship.</p>
             <div class="hero-cta">
-                <a href="/brands.html" class="btn-primary">Explore Networks</a>
-                <a href="/network.html" class="btn-secondary">Search Catalog</a>
+                <a href="brands.html" class="btn-primary">Explore Networks</a>
+                <a href="network.html" class="btn-secondary">Search Catalog</a>
             </div>
         </div>
     </section>
@@ -563,15 +563,15 @@
                 <div class="footer-section">
                     <h4>Marketplace</h4>
                     <ul>
-                        <li><a href="/brands.html">Browse Networks</a></li>
-                        <li><a href="/network.html">Search Books</a></li>
-                        <li><a href="/published">Published Books</a></li>
+                        <li><a href="brands.html">Browse Networks</a></li>
+                        <li><a href="network.html">Search Books</a></li>
+                        <li><a href="published">Published Books</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Network</h4>
                     <ul>
-                        <li><a href="/network.html">Join Network</a></li>
+                        <li><a href="network.html">Join Network</a></li>
                         <li><a href="https://github.com/Traviseric/openbazaar-ai">Open Source</a></li>
                         <li><a href="/api/network/status">Network Status</a></li>
                     </ul>
@@ -579,8 +579,8 @@
                 <div class="footer-section">
                     <h4>Resources</h4>
                     <ul>
-                        <li><a href="/docs">Documentation</a></li>
-                        <li><a href="/admin">Admin Panel</a></li>
+                        <li><a href="docs">Documentation</a></li>
+                        <li><a href="admin">Admin Panel</a></li>
                         <li><a href="https://github.com/Traviseric/openbazaar-ai/issues">Support</a></li>
                     </ul>
                 </div>
@@ -646,7 +646,7 @@
             const featured = books.slice(0, 6);
 
             grid.innerHTML = featured.map(book => `
-                <a href="/book-detail.html?id=${book.id}" class="book-card">
+                <a href="book-detail.html?id=${book.id}" class="book-card">
                     <img src="${book.coverImage || 'https://via.placeholder.com/400x600/F3F4F6/374151?text=' + encodeURIComponent(book.title)}"
                          alt="Cover image for ${book.title} by ${book.author || 'Unknown Author'}"
                          class="book-cover"
@@ -683,7 +683,7 @@
                 if (resp.ok) {
                     const user = await resp.json();
                     placeholder.innerHTML =
-                        '<a href="/account-dashboard.html" style="color:inherit;text-decoration:none;">My Account</a>' +
+                        '<a href="account-dashboard.html" style="color:inherit;text-decoration:none;">My Account</a>' +
                         ' | <a href="#" id="nav-logout-link" style="color:inherit;text-decoration:none;">Sign out</a>';
                     document.getElementById('nav-logout-link').addEventListener('click', async function(e) {
                         e.preventDefault();
@@ -691,10 +691,10 @@
                         window.location.reload();
                     });
                 } else {
-                    placeholder.innerHTML = '<a href="/login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
+                    placeholder.innerHTML = '<a href="login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
                 }
             } catch (_) {
-                placeholder.innerHTML = '<a href="/login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
+                placeholder.innerHTML = '<a href="login.html" style="color:inherit;text-decoration:none;">Sign In</a>';
             }
         })();
     </script>
