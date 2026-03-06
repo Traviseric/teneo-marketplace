@@ -43,7 +43,7 @@ Enhancement suggestions are tracked as GitHub issues. Include:
 ## Development Setup
 
 ```bash
-# Clone your fork
+# Clone your fork (replace `your-username` with your GitHub handle)
 git clone https://github.com/your-username/openbazaar-ai
 cd openbazaar-ai
 

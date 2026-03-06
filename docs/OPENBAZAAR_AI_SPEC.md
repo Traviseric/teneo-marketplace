@@ -1,7 +1,7 @@
 # OpenBazaar.ai — Site Spec
 
 **Domain:** OpenBazaar.ai
-**Repo:** openbazaar-ai (rename to `openbazaar-ai` when ready)
+**Repo:** https://github.com/Traviseric/openbazaar-ai
 **Tagline:** The open marketplace for creators, freelancers, and agents.
 
 ---
@@ -303,11 +303,11 @@ CREATE TABLE escrow (
 
 ## Implementation Phases
 
-### Phase 1 — Rebrand + Landing (1-2 sessions)
-- [ ] Create OpenBazaar.ai landing page
-- [ ] Update all "openbazaar-ai" references
+### Phase 1 — Landing + Launch (1-2 sessions)
+- [ ] Refine OpenBazaar.ai landing page
+- [ ] Audit docs/examples for canonical repo/domain references
 - [ ] Deploy landing page to Vercel
-- [ ] Set up DNS for OpenBazaar.ai
+- [ ] Verify DNS + production routing for OpenBazaar.ai
 
 ### Phase 2 — Gig Platform Core (3-5 sessions)
 - [ ] Add gig/job/proposal/contract DB schema

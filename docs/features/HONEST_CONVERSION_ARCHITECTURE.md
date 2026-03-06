@@ -149,7 +149,7 @@ const HonestMetrics = () => {
         <div className="metric github-proof">
           <span className="value">{realMetrics.githubStars}</span>
           <span className="label">GitHub stars (public)</span>
-          <a href="https://github.com/your-org/openbazaar-ai">
+          <a href="https://github.com/Traviseric/openbazaar-ai">
             View repo →
           </a>
         </div>
