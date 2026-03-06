@@ -37,10 +37,11 @@ class OrderService {
         }
 
         // Keep test behavior: if tests request in-memory DB, use an isolated sqlite connection.
+        // sqlite3 is required via the shared adapter helper to avoid direct imports in services/.
         if (process.env.DATABASE_PATH === ':memory:') {
             // eslint-disable-next-line global-require
-            const sqlite3 = require('sqlite3').verbose();
-            this.db = new sqlite3.Database(':memory:');
+            const { createRawSqliteDb } = require('../database/database');
+            this.db = createRawSqliteDb(':memory:');
             this.ownsConnection = true;
             return;
         }

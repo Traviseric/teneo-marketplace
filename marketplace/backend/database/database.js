@@ -626,4 +626,16 @@ function initializeSqliteDatabase(db) {
 
 const db = SQLITE_MODE ? createSqliteAdapter() : createPostgresAdapter();
 
+/**
+ * Creates a bare sqlite3.Database instance at the given path.
+ * Used by services that need an isolated in-memory DB (e.g. tests).
+ * Centralises the sqlite3 require so services/ never import it directly.
+ */
+function createRawSqliteDb(dbPath) {
+    // eslint-disable-next-line global-require
+    const sqlite3 = require('sqlite3').verbose();
+    return new sqlite3.Database(dbPath);
+}
+
 module.exports = db;
+module.exports.createRawSqliteDb = createRawSqliteDb;
