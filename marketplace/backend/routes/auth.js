@@ -210,7 +210,7 @@ router.get('/callback', async (req, res) => {
   } catch (error) {
     console.error('[Auth] OAuth callback error:', error);
 
-    res.redirect('/login?error=auth_failed&message=' + encodeURIComponent(error.message));
+    res.redirect('/login?error=auth_failed');
   }
 });
 
