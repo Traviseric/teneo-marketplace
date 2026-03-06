@@ -124,28 +124,43 @@ class LuluService {
                 externalId 
             } = orderData;
 
-            // Build line items with printable_id or URLs
+            if (!Array.isArray(lineItems) || lineItems.length === 0) {
+                return {
+                    success: false,
+                    error: 'At least one line item is required'
+                };
+            }
+
+            // Build line items with printable_id or URLs. Prefer explicit item fields,
+            // then fall back to book_formats lookup for backward compatibility.
             const printLineItems = await Promise.all(lineItems.map(async item => {
-                const format = await this.getBookFormat(item.bookId, item.formatType);
-                
-                if (format.printable_id) {
-                    // Use existing printable for faster processing
+                let format = null;
+                if (item.bookId && item.formatType) {
+                    format = await this.getBookFormat(item.bookId, item.formatType);
+                }
+
+                const printableId = item.printableId || item.printable_id || format?.printable_id || null;
+                if (printableId && printableId !== '0') {
                     return {
-                        printable_id: format.printable_id,
-                        quantity: item.quantity || 1
-                    };
-                } else {
-                    // First time setup with URLs
-                    return {
-                        external_id: `${item.bookId}_${Date.now()}`,
-                        printable_type: 'CONTENT_PERFECTBOUND_INTERIOR',
-                        title: item.title,
-                        cover: format.cover_url,
-                        interior: format.interior_url,
-                        pod_package_id: format.pod_package_id,
+                        printable_id: printableId,
                         quantity: item.quantity || 1
                     };
                 }
+
+                const podPackageId = item.podPackageId || item.pod_package_id || format?.pod_package_id || null;
+                const coverUrl = item.coverUrl || item.cover_url || format?.cover_url || null;
+                const interiorUrl = item.interiorUrl || item.interior_url || format?.interior_url || null;
+
+                // First time setup with file URLs.
+                return {
+                    external_id: item.externalId || `${item.bookId || 'book'}_${Date.now()}`,
+                    printable_type: 'CONTENT_PERFECTBOUND_INTERIOR',
+                    title: item.title || (item.bookId ? `Book ${item.bookId}` : 'Book'),
+                    cover: coverUrl || '',
+                    interior: interiorUrl || '',
+                    pod_package_id: podPackageId || '',
+                    quantity: item.quantity || 1
+                };
             }));
 
             const printJobRequest = {
@@ -174,15 +189,22 @@ class LuluService {
 
             const printJob = response.data;
 
-            // Store printable_ids for future use
-            if (printJob.line_items) {
-                for (const item of printJob.line_items) {
-                    if (item.printable_id && !format.printable_id) {
-                        await this.updatePrintableId(
-                            item.external_id.split('_')[0], // bookId
-                            item.printable_id
-                        );
+            // Store printable_ids for future use when the source line item
+            // was looked up by bookId/formatType and did not already have printable_id.
+            if (Array.isArray(printJob.line_items)) {
+                for (let index = 0; index < printJob.line_items.length; index++) {
+                    const responseItem = printJob.line_items[index];
+                    const sourceItem = lineItems[index] || {};
+                    const hadPrintableId = Boolean(sourceItem.printableId || sourceItem.printable_id);
+
+                    if (!responseItem?.printable_id || hadPrintableId) {
+                        continue;
                     }
+                    if (!sourceItem.bookId) {
+                        continue;
+                    }
+
+                    await this.updatePrintableId(sourceItem.bookId, responseItem.printable_id);
                 }
             }
 

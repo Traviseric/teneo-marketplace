@@ -75,7 +75,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - [x] Course platform (CRUD, enrollment, quizzes, certificates, progress tracking)
 - [x] Funnel builder module (4 templates, save/load/deploy)
 - [x] AI discovery engine (semantic search via OpenAI + keyword fallback)
-- [x] Print-on-demand (Lulu integration + Printful provider integration scaffold)
+- [x] Print-on-demand (Lulu + Printful provider integration wired into storefront fulfillment)
 - [x] Publisher features (Amazon book tracking, leaderboards, badges, digests)
 - [x] Component library (12/50 — heroes, CTAs, base system)
 - [x] Network/federation registry and cross-node search (RSA-signed)
@@ -94,6 +94,7 @@ Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaa
 - [ ] Course checkout flow (components exist, not integrated into marketplace checkout)
 - [ ] Email service production config (code done, needs SMTP credentials on Vercel)
 - [ ] Printful production wiring (set `PRINTFUL_*` env vars, register webhook, validate first live POD order)
+- [ ] Lulu production wiring (set `LULU_*` env vars, verify webhook signature config, validate first live print order)
 - [ ] Unified design system across 33 HTML pages (each has different styling)
 - [ ] Federation revenue sharing (schema exists, not wired to checkout flow)
 

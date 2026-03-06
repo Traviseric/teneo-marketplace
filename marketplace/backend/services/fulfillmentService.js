@@ -1,11 +1,13 @@
 'use strict';
 
 const printfulProvider = require('./printfulFulfillmentProvider');
+const luluProvider = require('./luluFulfillmentProvider');
 
 class FulfillmentService {
   constructor() {
     this.providers = new Map();
     this.register(printfulProvider);
+    this.register(luluProvider);
   }
 
   register(provider) {
@@ -30,4 +32,3 @@ class FulfillmentService {
 }
 
 module.exports = new FulfillmentService();
-

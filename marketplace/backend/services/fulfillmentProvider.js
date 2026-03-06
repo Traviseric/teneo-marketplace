@@ -5,7 +5,7 @@
  *
  * Implementations:
  *   - PrintfulFulfillmentProvider
- *   - LuluFulfillmentProvider (future)
+ *   - LuluFulfillmentProvider
  *   - ShipStationProvider (future)
  */
 class FulfillmentProvider {
@@ -68,4 +68,3 @@ class FulfillmentProvider {
 }
 
 module.exports = FulfillmentProvider;
-

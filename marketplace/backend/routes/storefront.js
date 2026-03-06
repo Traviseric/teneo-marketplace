@@ -37,9 +37,19 @@ const orderService = new OrderService();
  * Maps the existing brand/catalog.json format to the schema ArxMint expects.
  */
 function bookToProduct(book, brandId) {
-  const inferredPodVariant = book.podVariantId || book.printfulVariantId || null;
-  const inferredFulfillment = book.fulfillment || (inferredPodVariant ? 'pod' : 'digital');
-  const inferredProvider = book.podProvider || (inferredPodVariant ? 'printful' : null);
+  const inferredPrintfulVariant = book.podVariantId || book.printfulVariantId || null;
+  const inferredLuluPackage = book.podPackageId || book.pod_package_id || book.luluPodPackageId || null;
+  const inferredLuluPrintable = book.luluPrintableId || book.printableId || book.printable_id || null;
+  const inferredProvider = (() => {
+    if (book.podProvider) return String(book.podProvider).toLowerCase();
+    if (inferredPrintfulVariant) return 'printful';
+    if (inferredLuluPackage || inferredLuluPrintable) return 'lulu';
+    return null;
+  })();
+  const inferredPodVariant = inferredProvider === 'lulu'
+    ? inferredLuluPackage
+    : inferredPrintfulVariant;
+  const inferredFulfillment = book.fulfillment || (inferredProvider ? 'pod' : 'digital');
 
   return {
     id: `${brandId}:${book.id}`,
@@ -56,6 +66,11 @@ function bookToProduct(book, brandId) {
     podProvider: inferredProvider,
     podProductId: book.podProductId || null,
     podVariantId: inferredPodVariant,
+    podPackageId: inferredLuluPackage,
+    luluPrintableId: inferredLuluPrintable,
+    luluCoverUrl: book.luluCoverUrl || book.coverUrl || book.cover_url || null,
+    luluInteriorUrl: book.luluInteriorUrl || book.interiorUrl || book.interior_url || null,
+    luluShippingLevel: book.luluShippingLevel || book.shippingMethod || null,
     stock: null, // unlimited for digital
     active: true,
     metadata: {
@@ -64,6 +79,7 @@ function bookToProduct(book, brandId) {
       rating: book.rating,
       badge: book.badge,
       format: book.format,
+      sourceBookId: book.id,
       brandId,
     },
   };
@@ -155,6 +171,11 @@ function normalizeShippingAddress(shippingAddress, customerName, customerEmail) 
     zip: shippingAddress.zip,
     email: shippingAddress.email || customerEmail || '',
   };
+}
+
+function normalizePodProvider(value) {
+  if (!value) return null;
+  return String(value).trim().toLowerCase();
 }
 
 // ---------------------------------------------------------------------------
@@ -255,6 +276,7 @@ router.post('/checkout', async (req, res) => {
       customerEmail,
       customerName,
       shippingAddress,
+      shippingMethod,
       quantity = 1,
     } = req.body || {};
 
@@ -316,8 +338,14 @@ router.post('/checkout', async (req, res) => {
           productId: product.id,
           quantity: Number(quantity) || 1,
           shippingAddress: normalizedShipping,
-          podProvider: product.podProvider || null,
+          shippingMethod: shippingMethod || null,
+          podProvider: normalizePodProvider(product.podProvider),
           podVariantId: product.podVariantId || null,
+          podPackageId: product.podPackageId || null,
+          luluPrintableId: product.luluPrintableId || null,
+          luluCoverUrl: product.luluCoverUrl || null,
+          luluInteriorUrl: product.luluInteriorUrl || null,
+          luluShippingLevel: product.luluShippingLevel || null,
         },
       });
 
@@ -380,6 +408,7 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
       customerEmail,
       customerName,
       shippingAddress,
+      shippingMethod,
       quantity = 1,
     } = body || {};
 
@@ -439,8 +468,14 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
           paymentProvider,
           quantity: Number(quantity) || 1,
           shippingAddress: effectiveShipping,
-          podProvider: product.podProvider || null,
+          shippingMethod: shippingMethod || existingMeta.shippingMethod || null,
+          podProvider: normalizePodProvider(product.podProvider) || normalizePodProvider(existingMeta.podProvider),
           podVariantId: product.podVariantId || null,
+          podPackageId: product.podPackageId || null,
+          luluPrintableId: product.luluPrintableId || null,
+          luluCoverUrl: product.luluCoverUrl || null,
+          luluInteriorUrl: product.luluInteriorUrl || null,
+          luluShippingLevel: product.luluShippingLevel || null,
         },
       });
       existingOrder = await orderService.getOrder(effectiveOrderId);
@@ -452,8 +487,14 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
       amountSats: amountSats || null,
       paidAt: paidAt || new Date().toISOString(),
       shippingAddress: effectiveShipping || existingMeta.shippingAddress || null,
-      podProvider: product.podProvider || existingMeta.podProvider || null,
+      shippingMethod: shippingMethod || existingMeta.shippingMethod || null,
+      podProvider: normalizePodProvider(product.podProvider) || normalizePodProvider(existingMeta.podProvider),
       podVariantId: product.podVariantId || existingMeta.podVariantId || null,
+      podPackageId: product.podPackageId || existingMeta.podPackageId || null,
+      luluPrintableId: product.luluPrintableId || existingMeta.luluPrintableId || null,
+      luluCoverUrl: product.luluCoverUrl || existingMeta.luluCoverUrl || null,
+      luluInteriorUrl: product.luluInteriorUrl || existingMeta.luluInteriorUrl || null,
+      luluShippingLevel: product.luluShippingLevel || existingMeta.luluShippingLevel || null,
     };
 
     // Fulfill based on product type
@@ -507,34 +548,75 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
         order_type: product.fulfillment === 'pod' ? 'physical' : product.fulfillment,
         contains_physical: 1,
         shipping_address: JSON.stringify(effectiveShipping),
+        shipping_method: paymentMeta.shippingMethod || paymentMeta.luluShippingLevel || null,
         metadata: JSON.stringify(paymentMeta),
       });
 
       if (product.fulfillment === 'pod') {
-        const providerName = product.podProvider || 'printful';
-        const variantId = product.podVariantId || paymentMeta.podVariantId;
-        if (!variantId) {
-          return res.status(422).json({ error: 'podVariantId is required for POD fulfillment' });
-        }
-
-        const fulfillmentResult = await fulfillmentService.createOrder(providerName, {
+        const providerName = normalizePodProvider(product.podProvider || paymentMeta.podProvider) || 'printful';
+        const providerParams = {
           orderId: effectiveOrderId,
-          variantId,
           quantity: Number(quantity) || 1,
           shippingAddress: effectiveShipping,
           confirm: true,
-        });
+        };
 
-        await orderService.updateOrderStatus(effectiveOrderId, {
+        if (providerName === 'printful') {
+          const variantId = product.podVariantId || paymentMeta.podVariantId;
+          if (!variantId) {
+            return res.status(422).json({ error: 'podVariantId is required for Printful POD fulfillment' });
+          }
+          providerParams.variantId = variantId;
+        } else if (providerName === 'lulu') {
+          const podPackageId = product.podPackageId || paymentMeta.podPackageId || product.podVariantId || paymentMeta.podVariantId;
+          const luluPrintableId = product.luluPrintableId || paymentMeta.luluPrintableId || null;
+          if (!podPackageId && !luluPrintableId) {
+            return res.status(422).json({ error: 'podPackageId or luluPrintableId is required for Lulu POD fulfillment' });
+          }
+
+          const sourceBookId = product.metadata?.sourceBookId || (product.id.includes(':') ? product.id.split(':')[1] : product.id);
+          const sourceFormat = Array.isArray(product.metadata?.format)
+            ? product.metadata.format[0]
+            : (product.metadata?.format || 'print_trade');
+
+          providerParams.shippingMethod = String(paymentMeta.shippingMethod || paymentMeta.luluShippingLevel || 'MAIL').toUpperCase();
+          providerParams.lineItems = [
+            {
+              bookId: sourceBookId,
+              formatType: sourceFormat,
+              title: product.title,
+              quantity: Number(quantity) || 1,
+              podPackageId,
+              printableId: luluPrintableId || undefined,
+              coverUrl: product.luluCoverUrl || paymentMeta.luluCoverUrl || undefined,
+              interiorUrl: product.luluInteriorUrl || paymentMeta.luluInteriorUrl || undefined,
+              pageCount: Number(product.metadata?.pages) || undefined,
+            },
+          ];
+        } else {
+          return res.status(422).json({ error: `Unsupported POD provider: ${providerName}` });
+        }
+
+        const fulfillmentResult = await fulfillmentService.createOrder(providerName, providerParams);
+
+        const fulfillmentUpdates = {
           fulfillment_status: 'pod_submitted',
-          printful_order_id: String(fulfillmentResult.orderId),
           metadata: JSON.stringify({
             ...paymentMeta,
             podSubmittedAt: new Date().toISOString(),
             podProvider: providerName,
             podOrderId: fulfillmentResult.orderId,
+            podPrintJobId: fulfillmentResult.printJobId || null,
           }),
-        });
+        };
+        if (providerName === 'printful' && fulfillmentResult.orderId) {
+          fulfillmentUpdates.printful_order_id = String(fulfillmentResult.orderId);
+        }
+        if (providerName === 'lulu' && (fulfillmentResult.printJobId || fulfillmentResult.orderId)) {
+          fulfillmentUpdates.lulu_print_job_id = String(fulfillmentResult.printJobId || fulfillmentResult.orderId);
+        }
+
+        await orderService.updateOrderStatus(effectiveOrderId, fulfillmentUpdates);
 
         return res.json({
           success: true,
@@ -542,6 +624,7 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
           fulfillment: 'pod',
           provider: providerName,
           providerOrderId: fulfillmentResult.orderId,
+          printJobId: fulfillmentResult.printJobId || null,
           status: fulfillmentResult.status,
           message: 'POD order submitted to fulfillment provider',
         });

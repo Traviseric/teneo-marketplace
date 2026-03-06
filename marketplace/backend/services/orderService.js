@@ -188,6 +188,21 @@ class OrderService {
         });
     }
 
+    // Get order by Lulu print job ID
+    async getOrderByLuluPrintJobId(luluPrintJobId) {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM orders WHERE lulu_print_job_id = ?';
+
+            this.db.get(sql, [luluPrintJobId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+    }
+
     // Mark order as completed
     async completeOrder(orderId, paymentIntentId) {
         const downloadToken = crypto.randomBytes(32).toString('hex');

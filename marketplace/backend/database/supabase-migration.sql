@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS orders (
     refund_status TEXT,
     refund_amount DECIMAL(10,2),
     refund_reason TEXT,
+    lulu_print_job_id TEXT,
     printful_order_id TEXT,
     tracking_number TEXT,
     tracking_url TEXT,
@@ -153,6 +154,7 @@ CREATE INDEX IF NOT EXISTS idx_orders_email ON orders(customer_email);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
+CREATE INDEX IF NOT EXISTS idx_orders_lulu_print_job_id ON orders(lulu_print_job_id);
 CREATE INDEX IF NOT EXISTS idx_orders_printful_order_id ON orders(printful_order_id);
 
 CREATE TABLE IF NOT EXISTS download_logs (

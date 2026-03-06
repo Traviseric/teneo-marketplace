@@ -79,9 +79,11 @@ async function handlePrintJobStatusChange(event) {
     await luluService.updatePrintJobStatus(print_job_id, status.name);
 
     // Get order details
-    const order = await orderService.getOrder(external_id);
+    const order = external_id
+        ? await orderService.getOrder(external_id)
+        : await orderService.getOrderByLuluPrintJobId(print_job_id);
     if (!order) {
-        console.error(`Order not found for external_id: ${external_id}`);
+        console.error(`Order not found for print_job_id: ${print_job_id} external_id: ${external_id}`);
         return;
     }
 
@@ -126,9 +128,11 @@ async function handlePrintJobShipped(event) {
     });
 
     // Get order details
-    const order = await orderService.getOrder(external_id);
+    const order = external_id
+        ? await orderService.getOrder(external_id)
+        : await orderService.getOrderByLuluPrintJobId(print_job_id);
     if (!order) {
-        console.error(`Order not found for external_id: ${external_id}`);
+        console.error(`Order not found for print_job_id: ${print_job_id} external_id: ${external_id}`);
         return;
     }
 
@@ -136,7 +140,8 @@ async function handlePrintJobShipped(event) {
     await sendShippingConfirmationEmail(order, tracking_urls?.[0], tracking_id);
 
     // Update order status
-    await orderService.updateOrderStatus(external_id, {
+    await orderService.updateOrderStatus(order.order_id, {
+        lulu_print_job_id: print_job_id,
         fulfillment_status: 'shipped',
         metadata: JSON.stringify({
             trackingUrl: tracking_urls?.[0],
@@ -156,9 +161,11 @@ async function handlePrintJobCanceled(event) {
     await luluService.updatePrintJobStatus(print_job_id, 'CANCELED');
 
     // Get order details
-    const order = await orderService.getOrder(external_id);
+    const order = external_id
+        ? await orderService.getOrder(external_id)
+        : await orderService.getOrderByLuluPrintJobId(print_job_id);
     if (!order) {
-        console.error(`Order not found for external_id: ${external_id}`);
+        console.error(`Order not found for print_job_id: ${print_job_id} external_id: ${external_id}`);
         return;
     }
 
@@ -166,7 +173,8 @@ async function handlePrintJobCanceled(event) {
     await sendCancellationEmail(order, reason);
 
     // Update order status
-    await orderService.updateOrderStatus(external_id, {
+    await orderService.updateOrderStatus(order.order_id, {
+        lulu_print_job_id: print_job_id,
         fulfillment_status: 'print_canceled',
         metadata: JSON.stringify({
             cancelReason: reason,
@@ -185,9 +193,11 @@ async function handlePrintJobFailed(event) {
     await luluService.updatePrintJobStatus(print_job_id, 'FAILED');
 
     // Get order details
-    const order = await orderService.getOrder(external_id);
+    const order = external_id
+        ? await orderService.getOrder(external_id)
+        : await orderService.getOrderByLuluPrintJobId(print_job_id);
     if (!order) {
-        console.error(`Order not found for external_id: ${external_id}`);
+        console.error(`Order not found for print_job_id: ${print_job_id} external_id: ${external_id}`);
         return;
     }
 
@@ -195,7 +205,8 @@ async function handlePrintJobFailed(event) {
     await sendPrintFailureEmail(order, error_message);
 
     // Update order status
-    await orderService.updateOrderStatus(external_id, {
+    await orderService.updateOrderStatus(order.order_id, {
+        lulu_print_job_id: print_job_id,
         fulfillment_status: 'print_failed',
         metadata: JSON.stringify({
             failureReason: error_message,

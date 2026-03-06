@@ -125,6 +125,20 @@ function initializeDatabase() {
         });
     };
 
+    const ensureLuluOrderIndex = () => {
+        db.run(`CREATE INDEX IF NOT EXISTS idx_orders_lulu_print_job_id ON orders(lulu_print_job_id)`, (err) => {
+            if (err) {
+                console.error('Error creating idx_orders_lulu_print_job_id:', err);
+            }
+        });
+    };
+
+    db.run(`ALTER TABLE orders ADD COLUMN lulu_print_job_id TEXT`, (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding lulu_print_job_id column:', err);
+        }
+        ensureLuluOrderIndex();
+    });
     db.run(`ALTER TABLE orders ADD COLUMN printful_order_id TEXT`, (err) => {
         if (err && !err.message.includes('duplicate column name')) {
             console.error('Error adding printful_order_id column:', err);
