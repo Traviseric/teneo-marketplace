@@ -67,10 +67,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "marketplace/backend/server.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
