@@ -1,4 +1,4 @@
-# ⚡ Quick Start Guide - Teneo Marketplace
+# ⚡ Quick Start Guide - OpenBazaar AI
 
 **Get from zero to running marketplace in under 30 minutes**
 
@@ -11,8 +11,8 @@
 
 ```bash
 # Clone
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 
 # Install
 npm install
@@ -49,8 +49,8 @@ ssh root@your-server-ip
 curl -fsSL https://get.docker.com | sh
 
 # Clone repo
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 
 # Configure
 cp marketplace/backend/.env.example marketplace/backend/.env
@@ -173,7 +173,7 @@ BTC_ADDRESS=bc1q...
 ### Method 2: Direct File Upload
 ```bash
 # On your server
-cd /opt/teneo-marketplace/marketplace/frontend/brands/teneo/pdfs/
+cd /opt/openbazaar-ai/marketplace/frontend/brands/teneo/pdfs/
 cp /path/to/your/book.pdf ./your-book.pdf
 
 # Update catalog
@@ -313,8 +313,8 @@ docker-compose up -d --build
 ## 🆘 Get Help
 
 - **Documentation**: [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)
-- **Issues**: [GitHub Issues](https://github.com/Traviseric/teneo-marketplace/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Traviseric/teneo-marketplace/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Traviseric/openbazaar-ai/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Traviseric/openbazaar-ai/discussions)
 
 ---
 

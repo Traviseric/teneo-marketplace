@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brand Builder Wizard - Teneo Marketplace</title>
+    <title>Brand Builder Wizard - OpenBazaar AI</title>
     <style>
         :root {
             --primary: #3B82F6;
@@ -915,13 +915,13 @@
 
         function deployToVercel() {
             // Generate Vercel deployment URL
-            const deployUrl = `https://vercel.com/new/clone?repository-url=https://github.com/Traviseric/teneo-marketplace&env=STRIPE_SECRET_KEY,STRIPE_PUBLISHABLE_KEY&envDescription=API%20keys%20for%20payments&envLink=https://stripe.com/docs/keys&project-name=${wizardData.brandName.toLowerCase().replace(/\s/g, '-')}-marketplace`;
+            const deployUrl = `https://vercel.com/new/clone?repository-url=https://github.com/Traviseric/openbazaar-ai&env=STRIPE_SECRET_KEY,STRIPE_PUBLISHABLE_KEY&envDescription=API%20keys%20for%20payments&envLink=https://stripe.com/docs/keys&project-name=${wizardData.brandName.toLowerCase().replace(/\s/g, '-')}-marketplace`;
             window.open(deployUrl, '_blank');
         }
 
         function deployToRender() {
             // Generate Render deployment URL
-            const deployUrl = `https://render.com/deploy?repo=https://github.com/Traviseric/teneo-marketplace`;
+            const deployUrl = `https://render.com/deploy?repo=https://github.com/Traviseric/openbazaar-ai`;
             window.open(deployUrl, '_blank');
         }
 

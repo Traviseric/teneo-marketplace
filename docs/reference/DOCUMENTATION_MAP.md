@@ -275,7 +275,7 @@ Before committing to public repo:
 → No. See `course-module/PUBLIC_CONTENT_GUIDELINES.md`
 
 **Q: What's safe to open source?**
-→ See `docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md` section "What Stays in TENEO-MARKETPLACE"
+→ See `docs/core/PUBLIC_PRIVATE_SEPARATION_ARCHITECTURE.md` section "What Stays in OPENBAZAAR-AI"
 
 **Q: How do I integrate with teneo-production?**
 → See `claude-files/PRIVATE_INTEGRATION_NOTES.md` (private)
@@ -297,7 +297,7 @@ Before committing to public repo:
 
 ## 📞 **Still Confused?**
 
-**Open an issue**: https://github.com/Traviseric/teneo-marketplace/issues
+**Open an issue**: https://github.com/Traviseric/openbazaar-ai/issues
 
 Reference this doc and ask specific questions about:
 - What can/can't be committed

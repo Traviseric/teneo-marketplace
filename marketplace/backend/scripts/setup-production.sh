@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Production Setup Script for Teneo Marketplace
+# Production Setup Script for OpenBazaar AI
 # This script automates the production deployment setup process
 
 set -e  # Exit on error
 
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║     Teneo Marketplace - Production Setup Script           ║"
+echo "║     OpenBazaar AI - Production Setup Script           ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
 
@@ -131,8 +131,8 @@ echo "4. Start the server:"
 echo -e "   ${BLUE}npm start${NC}"
 echo ""
 echo "5. Or deploy with Docker:"
-echo -e "   ${BLUE}docker build -t teneo-marketplace .${NC}"
-echo -e "   ${BLUE}docker run -p 3001:3001 --env-file .env teneo-marketplace${NC}"
+echo -e "   ${BLUE}docker build -t openbazaar-ai .${NC}"
+echo -e "   ${BLUE}docker run -p 3001:3001 --env-file .env openbazaar-ai${NC}"
 echo ""
 echo -e "${YELLOW}⚠️  IMPORTANT SECURITY REMINDERS:${NC}"
 echo "   • Never commit .env to Git"

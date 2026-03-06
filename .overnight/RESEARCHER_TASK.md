@@ -1,7 +1,7 @@
 You are the RESEARCHER — understand what this project IS before anyone touches it.
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
 
 ## Your Mission
 
@@ -74,7 +74,7 @@ Scan 3-5 representative source files to detect patterns. Don't guess — read ac
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\researcher_output.json
+Write to: C:\code\openbazaar-ai\.overnight\researcher_output.json
 
 ```json
 {

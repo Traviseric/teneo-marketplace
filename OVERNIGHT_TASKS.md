@@ -1,4 +1,4 @@
-# Teneo Marketplace — Overnight Tasks
+# OpenBazaar AI — Overnight Tasks
 
 This file tracks the autonomous overnight session roadmap. The task synthesizer reads this file; use markdown checkboxes so tasks can be parsed.
 

@@ -80,7 +80,7 @@ fs.writeFileSync(path.join(outputDir, '_manifest.txt'), manifest.join('\n'));
 // Write README
 const readme = `# Claude Project Files
 
-This folder contains all important files from the Teneo Marketplace project in a flat structure.
+This folder contains all important files from the OpenBazaar AI project in a flat structure.
 
 Total Files: ${fileCount}
 Total Size: ${(totalSize / 1024 / 1024).toFixed(2)} MB

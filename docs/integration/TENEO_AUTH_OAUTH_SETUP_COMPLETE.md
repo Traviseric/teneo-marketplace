@@ -7,7 +7,7 @@
 
 ## 🎉 OAuth Client Registration Complete
 
-The TENEO Marketplace has been successfully registered as an OAuth 2.0 client in the TENEO Auth system.
+The OpenBazaar AI has been successfully registered as an OAuth 2.0 client in the TENEO Auth system.
 
 ---
 
@@ -16,7 +16,7 @@ The TENEO Marketplace has been successfully registered as an OAuth 2.0 client in
 ### Production Credentials
 
 ```bash
-CLIENT_ID: teneo-marketplace
+CLIENT_ID: openbazaar-ai
 CLIENT_SECRET: [REDACTED]
 ```
 
@@ -34,7 +34,7 @@ AUTH_PROVIDER=teneo-auth
 
 # TENEO Auth OAuth 2.0 Configuration
 TENEO_AUTH_URL=https://auth.teneo.io
-TENEO_CLIENT_ID=teneo-marketplace
+TENEO_CLIENT_ID=openbazaar-ai
 TENEO_CLIENT_SECRET=[REDACTED]
 TENEO_CALLBACK_URL=https://marketplace.teneo.io/api/auth/callback
 ```
@@ -47,7 +47,7 @@ AUTH_PROVIDER=teneo-auth
 
 # TENEO Auth OAuth 2.0 Configuration (Local Testing)
 TENEO_AUTH_URL=http://localhost:3000  # or your local teneo-auth URL
-TENEO_CLIENT_ID=teneo-marketplace
+TENEO_CLIENT_ID=openbazaar-ai
 TENEO_CLIENT_SECRET=[REDACTED]
 TENEO_CALLBACK_URL=http://localhost:3001/api/auth/callback
 ```
@@ -166,7 +166,7 @@ curl http://localhost:3001/api/auth/me \
 
 2. Marketplace redirects to TENEO Auth:
    GET https://auth.teneo.io/oauth/authorize?
-       client_id=teneo-marketplace
+       client_id=openbazaar-ai
        &response_type=code
        &redirect_uri=https://marketplace.teneo.io/api/auth/callback
        &scope=read+profile+credits+email
@@ -188,7 +188,7 @@ curl http://localhost:3001/api/auth/me \
      "grant_type": "authorization_code",
      "code": "authorization-code",
      "redirect_uri": "https://marketplace.teneo.io/api/auth/callback",
-     "client_id": "teneo-marketplace",
+     "client_id": "openbazaar-ai",
      "client_secret": "[REDACTED]",
      "code_verifier": "original-code-verifier"
    }
@@ -233,8 +233,8 @@ CREATE TABLE oauth_clients (
 
 ```sql
 {
-    "client_id": "teneo-marketplace",
-    "name": "TENEO Marketplace",
+    "client_id": "openbazaar-ai",
+    "name": "OpenBazaar AI",
     "redirect_uris": [
         "https://marketplace.teneo.io/api/auth/callback",
         "http://localhost:3001/api/auth/callback"
@@ -258,7 +258,7 @@ CREATE TABLE oauth_clients (
 
 2. Start marketplace locally:
    ```bash
-   cd teneo-marketplace
+   cd openbazaar-ai
    npm run dev  # runs on http://localhost:3001
    ```
 
@@ -328,7 +328,7 @@ CREATE TABLE oauth_clients (
 ## 🐛 Troubleshooting
 
 ### Error: "Invalid client_id"
-**Solution:** Verify `TENEO_CLIENT_ID=teneo-marketplace` in `.env`
+**Solution:** Verify `TENEO_CLIENT_ID=openbazaar-ai` in `.env`
 
 ### Error: "Invalid client_secret"
 **Solution:** Verify `TENEO_CLIENT_SECRET` matches the one registered (check for typos)

@@ -193,7 +193,7 @@ ClickFunnels: Would require manual rebuilding, days of work
 
 ### 🆓 FREE (Open Source):
 
-**Teneo Marketplace Core:**
+**OpenBazaar AI Core:**
 - Complete codebase
 - Component library (50+ components)
 - Email marketing system

@@ -718,7 +718,7 @@ class FunnelBuilder {
     const bookTitle = this.variables['BOOK_TITLE'] || 'Your Funnel';
     return `# ${bookTitle} - Book Funnel
 
-Generated with Teneo Marketplace Funnel Builder
+Generated with OpenBazaar AI Funnel Builder
 Date: ${new Date().toLocaleDateString()}
 
 ## Files Included:
@@ -743,11 +743,11 @@ ${this.variables['CUSTOM_CSS'] ? '- styles.css - Custom styling\n' : ''}
 
 ## Need Help?
 
-Visit: https://teneo-marketplace.com/support
+Visit: https://openbazaar-ai.com/support
 
 ---
 
-Built with ❤️ using Teneo Marketplace Funnel Builder
+Built with ❤️ using OpenBazaar AI Funnel Builder
 `;
   }
 

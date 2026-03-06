@@ -2,7 +2,7 @@
   "version": "1.0",
   "updated": "2024-01-15T12:00:00Z",
   "network": {
-    "name": "Teneo Book Network",
+    "name": "OpenBazaar Book Network",
     "description": "A decentralized network of independent bookstores",
     "protocol": "TBN/1.0",
     "features": [
@@ -14,16 +14,16 @@
   },
   "stores": [
     {
-      "id": "teneo-main",
-      "name": "Teneo Books",
+      "id": "openbazaar-main",
+      "name": "OpenBazaar Books",
       "tagline": "Knowledge Beyond Boundaries™",
       "url": "http://localhost:3001",
       "api": "http://localhost:3001/api",
       "specialties": ["AI", "consciousness", "paradigm-shifts", "revolutionary-knowledge"],
       "verified": true,
       "joined": "2024-01-01",
-      "owner": "Teneo AI",
-      "contact": "network@teneo.ai",
+      "owner": "OpenBazaar AI",
+      "contact": "network@openbazaar.ai",
       "features": ["digital-delivery", "multi-brand", "ai-powered"],
       "status": "active"
     },

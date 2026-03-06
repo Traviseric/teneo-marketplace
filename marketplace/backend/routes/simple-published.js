@@ -68,7 +68,7 @@ router.get('/dashboard', async (req, res) => {
                 empty_state: enhancedBooks.length === 0 ? {
                     show: true,
                     title: "🚀 Building the Future of AI Publishing",
-                    message: "The Teneo marketplace is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they'll showcase here.",
+                    message: "The OpenBazaar AI is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they'll showcase here.",
                     call_to_action: "Be the first to share your Teneo success story!",
                     authentic: true
                 } : null

@@ -1,15 +1,15 @@
 #!/bin/bash
-# backup.sh - Automated backup script for Teneo Marketplace
+# backup.sh - Automated backup script for OpenBazaar AI
 # Creates timestamped backups of database, environment, and critical files
 # Usage: ./backup.sh [backup-directory]
 
 set -e  # Exit on error
 
-BACKUP_DIR=${1:-"/var/backups/teneo-marketplace"}
+BACKUP_DIR=${1:-"/var/backups/openbazaar-ai"}
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_NAME="teneo-marketplace-${TIMESTAMP}"
+BACKUP_NAME="openbazaar-ai-${TIMESTAMP}"
 BACKUP_PATH="${BACKUP_DIR}/${BACKUP_NAME}"
 
 # Color codes
@@ -19,7 +19,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}📦 Starting Teneo Marketplace Backup${NC}"
+echo -e "${BLUE}📦 Starting OpenBazaar AI Backup${NC}"
 echo "Timestamp: ${TIMESTAMP}"
 echo "Backup directory: ${BACKUP_PATH}"
 echo ""
@@ -76,7 +76,7 @@ fi
 # Create manifest
 echo -e "${YELLOW}📝 Creating backup manifest...${NC}"
 cat > "${BACKUP_PATH}/MANIFEST.txt" << EOF
-Teneo Marketplace Backup
+OpenBazaar AI Backup
 ========================
 
 Timestamp: ${TIMESTAMP}
@@ -110,8 +110,8 @@ echo -e "${GREEN}✓ Backup compressed (${COMPRESSED_SIZE})${NC}"
 
 # Cleanup old backups (keep last 7 days)
 echo -e "${YELLOW}🧹 Cleaning up old backups...${NC}"
-find "${BACKUP_DIR}" -name "teneo-marketplace-*.tar.gz" -mtime +7 -delete
-REMAINING=$(ls -1 "${BACKUP_DIR}"/teneo-marketplace-*.tar.gz 2>/dev/null | wc -l)
+find "${BACKUP_DIR}" -name "openbazaar-ai-*.tar.gz" -mtime +7 -delete
+REMAINING=$(ls -1 "${BACKUP_DIR}"/openbazaar-ai-*.tar.gz 2>/dev/null | wc -l)
 echo -e "${GREEN}✓ ${REMAINING} backups retained${NC}"
 
 # Summary
@@ -126,7 +126,7 @@ echo "Backups retained: ${REMAINING}"
 echo ""
 echo -e "${YELLOW}📋 Restore instructions:${NC}"
 echo "  1. Extract: tar -xzf ${BACKUP_NAME}.tar.gz"
-echo "  2. Stop application: pm2 stop teneo-marketplace"
+echo "  2. Stop application: pm2 stop openbazaar-ai"
 echo "  3. Copy files to project directory"
-echo "  4. Start application: pm2 start teneo-marketplace"
+echo "  4. Start application: pm2 start openbazaar-ai"
 echo ""

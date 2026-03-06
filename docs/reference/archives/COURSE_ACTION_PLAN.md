@@ -16,7 +16,7 @@ Launch High-Bandwidth Human-AI Framework course at **traviseric.com/framework** 
 
 ## ✅ What's Already Done
 
-### **teneo-marketplace (Component Library)**
+### **openbazaar-ai (Component Library)**
 - [x] `course-nav.html` - Sidebar navigation
 - [x] `paywall-gate.html` - Upgrade prompt
 - [x] `progress-bar.html` - Progress tracker
@@ -134,7 +134,7 @@ stripe trigger checkout.session.completed
 
 **File:** `components/course/ModuleCard.tsx`
 
-**Port from:** `teneo-marketplace/courses/module-card.html`
+**Port from:** `openbazaar-ai/courses/module-card.html`
 
 **Template:**
 ```tsx

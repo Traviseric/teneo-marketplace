@@ -159,7 +159,7 @@ All components are:
 
 **Estimated time:** 2-3 days to port all 5 components
 
-### **teneo-marketplace (Express):**
+### **openbazaar-ai (Express):**
 1. Use components as-is (already vanilla HTML)
 2. Connect to SQLite API
 3. Apply teneo brand CSS
@@ -181,7 +181,7 @@ All components are:
 }
 ```
 
-**teneo-marketplace:**
+**openbazaar-ai:**
 ```css
 :root {
   --brand-primary: #1e3f54;      /* Navy */
@@ -266,7 +266,7 @@ CREATE TABLE course_certificates (
 );
 ```
 
-### **SQLite (teneo-marketplace):**
+### **SQLite (openbazaar-ai):**
 Same schema, just use SQLite syntax instead.
 
 ---
@@ -279,7 +279,7 @@ Same schema, just use SQLite syntax instead.
 - ✅ Professional course platform
 - ✅ No Teachable fees ($1,428/year saved)
 
-### **For teneo-marketplace:**
+### **For openbazaar-ai:**
 - ✅ Add book courses ($97-297 each)
 - ✅ Open source course platform
 - ✅ White-label licensing ($297/year)
@@ -306,7 +306,7 @@ Same schema, just use SQLite syntax instead.
 ## Bottom Line
 
 **You now have a complete course platform infrastructure that:**
-- Works across multiple projects (traviseric.com + teneo-marketplace)
+- Works across multiple projects (traviseric.com + openbazaar-ai)
 - Can be white-labeled for clients ($297/year licensing)
 - Saves $1,428/year in Teachable fees
 - Enables $55k+/month course revenue

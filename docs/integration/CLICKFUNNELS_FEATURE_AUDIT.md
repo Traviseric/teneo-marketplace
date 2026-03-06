@@ -211,7 +211,7 @@ Winner: Variant B (+50% better)
 - [ ] Commission tracking
 - [ ] Payout dashboard
 
-**For Teneo Marketplace:**
+**For OpenBazaar AI:**
 - Publishers ARE the affiliates (territory owners)
 - Each publisher gets a territory (e.g., `/texas`)
 - Sales in their territory = their revenue

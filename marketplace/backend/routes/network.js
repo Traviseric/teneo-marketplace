@@ -1,4 +1,4 @@
-// Network API Routes for Teneo Marketplace Federation
+// Network API Routes for OpenBazaar AI Federation
 // Enables stores to join and participate in the decentralized network
 
 const express = require('express');
@@ -8,8 +8,8 @@ const path = require('path');
 
 // Store metadata
 const STORE_INFO = {
-    id: 'teneo-main',
-    name: 'Teneo Books',
+    id: 'openbazaar-main',
+    name: 'OpenBazaar Books',
     tagline: 'Knowledge Beyond Boundaries™',
     url: process.env.STORE_URL || 'http://localhost:3001',
     api: process.env.API_URL || 'http://localhost:3001/api',
@@ -17,8 +17,8 @@ const STORE_INFO = {
     networkVersion: '1.0',
     verified: true,
     joined: '2024-01-01',
-    owner: 'Teneo AI',
-    contact: 'network@teneo.ai'
+    owner: 'OpenBazaar AI',
+    contact: 'network@openbazaar.ai'
 };
 
 // GET /api/catalog - Expose store's catalog to the network
@@ -34,7 +34,7 @@ router.get('/catalog', async (req, res) => {
         if (storeId) {
             // Map storeId to brand
             const storeIdToBrand = {
-                'teneo-main': 'teneo',
+                'openbazaar-main': 'teneo',
                 'true-earth': 'true-earth',
                 'wealth-wise': 'wealth-wise'
             };
@@ -53,10 +53,10 @@ router.get('/catalog', async (req, res) => {
                 
                 // Determine store info based on brand
                 const brandToStore = {
-                    'teneo': { id: 'teneo-main', name: 'Teneo Books', url: 'http://localhost:3001/?brand=teneo' },
+                    'teneo': { id: 'openbazaar-main', name: 'OpenBazaar Books', url: 'http://localhost:3001/?brand=teneo' },
                     'true-earth': { id: 'true-earth', name: 'True Earth Publications', url: 'http://localhost:3001/?brand=true-earth' },
                     'wealth-wise': { id: 'wealth-wise', name: 'WealthWise', url: 'http://localhost:3001/?brand=wealth-wise' },
-                    'default': { id: 'teneo-main', name: 'Teneo Books', url: 'http://localhost:3001' }
+                    'default': { id: 'openbazaar-main', name: 'OpenBazaar Books', url: 'http://localhost:3001' }
                 };
                 
                 const storeInfo = brandToStore[brandName] || brandToStore['default'];

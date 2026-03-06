@@ -1,6 +1,6 @@
 # Open Source Project Assessment
 
-**Project**: teneo-marketplace
+**Project**: openbazaar-ai
 **Date**: 2025-11-22
 **Assessment Type**: Honest evaluation for open source readiness
 
@@ -174,7 +174,7 @@ mv COPY_TO_TENEO_PRODUCTION.md docs/archive/
 **Recommendation**: Create `CONTRIBUTING.md`:
 
 ```markdown
-# Contributing to Teneo Marketplace
+# Contributing to OpenBazaar AI
 
 ## Quick Start
 1. Clone repo
@@ -302,7 +302,7 @@ Try it out: https://demo.teneomarketplace.com
 
 ## 📊 **COMPARISON TO OTHER OPEN SOURCE PROJECTS**
 
-| Aspect | Teneo Marketplace | Typical OSS Project | Verdict |
+| Aspect | OpenBazaar AI | Typical OSS Project | Verdict |
 |--------|------------------|---------------------|---------|
 | **Documentation** | 50+ docs | 1 README | ⭐⭐⭐⭐⭐ |
 | **Feature Completeness** | All-in-one platform | Single feature | ⭐⭐⭐⭐⭐ |
@@ -407,7 +407,7 @@ Genuinely unique:
 ### **1. Position As** "The Anti-Fragile Creator Platform"
 
 **Messaging**:
-> "While Shopify, Stripe, and Podia can deplatform you, Teneo Marketplace automatically switches to censorship-resistant mode. Your business never goes down."
+> "While Shopify, Stripe, and Podia can deplatform you, OpenBazaar AI automatically switches to censorship-resistant mode. Your business never goes down."
 
 ### **2. Target Audience**
 

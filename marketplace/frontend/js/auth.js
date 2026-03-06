@@ -1,5 +1,5 @@
 /**
- * Teneo Marketplace — Frontend Auth Module
+ * OpenBazaar AI — Frontend Auth Module
  *
  * Handles NIP-07 Nostr authentication (window.nostr extension).
  * Used by login.html and any page that needs auth detection.

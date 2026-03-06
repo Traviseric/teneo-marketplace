@@ -23,7 +23,7 @@
 
 ## Vision
 
-Transform the Teneo Marketplace from a manual book publishing platform into an **AI-orchestrated publishing network factory** where:
+Transform the OpenBazaar AI from a manual book publishing platform into an **AI-orchestrated publishing network factory** where:
 
 - **Humans focus on**: Creative direction, brand strategy, quality control, and design aesthetics
 - **AI handles**: Research, content generation, asset creation, deployment, and optimization
@@ -1297,7 +1297,7 @@ Financial sovereignty knowledge accessible to everyone
 
 ## Conclusion
 
-This roadmap transforms Teneo Marketplace from a **manual publishing platform** into an **AI-orchestrated brand factory**.
+This roadmap transforms OpenBazaar AI from a **manual publishing platform** into an **AI-orchestrated brand factory**.
 
 **Key Principles:**
 1. **Humans decide, AI executes** - Strategic decisions stay human, tactical work is automated

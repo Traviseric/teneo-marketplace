@@ -151,7 +151,7 @@ sqlite3 teneo-production.db < course-module/backend/database/schema-courses.sql
 
 ## 🔄 Syncing Updates
 
-If course module gets updated in teneo-marketplace:
+If course module gets updated in openbazaar-ai:
 
 **Option 1: Re-run Copy Script**
 ```bash
@@ -161,13 +161,13 @@ If course module gets updated in teneo-marketplace:
 
 **Option 2: Manual Sync**
 ```bash
-rsync -av teneo-marketplace/course-module/ teneo-production/course-module/
+rsync -av openbazaar-ai/course-module/ teneo-production/course-module/
 ```
 
 **Option 3: Git Submodule (Advanced)**
 ```bash
 cd teneo-production
-git submodule add ../teneo-marketplace/course-module course-module
+git submodule add ../openbazaar-ai/course-module course-module
 git submodule update --remote
 ```
 

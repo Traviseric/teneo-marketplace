@@ -29,7 +29,7 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
-        service: 'teneo-marketplace-api'
+        service: 'openbazaar-ai-api'
     });
 });
 
@@ -37,5 +37,6 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth',    require('../marketplace/backend/routes/auth'));
 app.use('/api/brands',  require('../marketplace/backend/routes/brandRoutes'));
 app.use('/api/coupons', require('../marketplace/backend/routes/couponsRoutes'));
+app.use('/api/apps',    require('../marketplace/backend/routes/appStore'));
 
 module.exports = app;

@@ -1,6 +1,6 @@
-# Teneo Marketplace — Roadmap
+# OpenBazaar AI — Roadmap
 
-**Updated:** 2026-02-28
+**Updated:** 2026-03-05
 **Informed by:** Gemini Deep Research outputs 1-9 (product-market fit, monetization, feature gaps, crypto payments UX, positioning/GTM, federated network design, dispute resolution, regulatory compliance, Bitcoin creator ecosystem)
 **Supersedes:** `IMPLEMENTATION_PLAN.md` (scope), `REVOLUTIONARY_FEATURES_ROADMAP.md` (priorities), `IMPLEMENTATION_MAP.md` (phases)
 
@@ -10,7 +10,7 @@
 
 **The open source creator platform with crypto payments.** Replace ClickFunnels, Gumroad, Teachable, Kajabi, and Podia with $0 platform fees, Bitcoin/Lightning/ecash payments via [ArxMint](https://github.com/Traviseric/arxmint), Nostr identity, and self-hosted sovereignty.
 
-Part of a circular creator economy: ArxMint (payment rails) + Teneo Marketplace (storefront) + Nostr (identity) = creators sell, buyers pay with ecash, money circulates.
+Part of a circular creator economy: ArxMint (payment rails) + OpenBazaar AI (storefront) + Nostr (identity) = creators sell, buyers pay with ecash, money circulates.
 
 ---
 
@@ -103,40 +103,54 @@ Each new store automatically joins the discovery network. The onboarding funnel:
 
 ---
 
-## What's Built (Current State — Feb 2026)
+## What's Built (Current State -- March 2026)
 
-### Working
-- [x] Express.js backend with SQLite
-- [x] Stripe payment integration (checkout, webhooks, orders)
-- [x] Crypto checkout endpoints (Bitcoin/Lightning)
-- [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE)
+**Detailed status:** See [MARKETPLACE_STATUS_AND_TODO.md](./reference/MARKETPLACE_STATUS_AND_TODO.md)
+
+### Working (26 routes, 27+ services, 17 test suites passing)
+- [x] Express.js backend with SQLite (10 schema files)
+- [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
+- [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero -- manual verification)
+- [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE + Nostr backend)
 - [x] Email service (SMTP + Resend, order confirmations, magic links)
-- [x] Admin dashboard (book management, orders, audit logging)
-- [x] Multi-brand catalog and theming
-- [x] Course platform (progress tracking, player)
-- [x] Email marketing with automation sequences
-- [x] Funnel builder module (4 templates)
-- [x] Component library (heroes, CTAs, base system)
-- [x] Network/federation registry and cross-node search
-- [x] Secure download system with token validation
-- [x] Setup wizard
-- [x] Rate limiting, CSRF protection, session management
+- [x] Email marketing (sequences, segmentation, engagement tracking, cart recovery emails)
+- [x] Admin dashboard (orders, analytics, refunds, audit logging)
+- [x] Multi-brand catalog and theming (9 brands configured)
+- [x] Course platform (CRUD, enrollment, quizzes, certificates, progress tracking)
+- [x] Funnel builder module (4 templates, save/load/deploy)
+- [x] AI discovery engine (semantic search via OpenAI + keyword fallback)
+- [x] Print-on-demand (full Lulu API integration)
+- [x] Publisher features (Amazon book tracking, leaderboards, badges, digests)
+- [x] Component library (12/50 -- heroes, CTAs, base system)
+- [x] Network/federation registry and cross-node search (RSA-signed)
+- [x] Secure download system with token validation and rate limiting
+- [x] Censorship tracking with alerts
+- [x] Rate limiting, CSRF protection, Helmet headers, session management
+- [x] Storefront API for external consumers (`/api/storefront/catalog`, `/api/storefront/fulfill`)
+- [x] Payment provider interface + ArxMint provider (redirect to arxmint.com/pay)
+- [x] ArxMint fulfillment webhook handler (payment confirmed → digital delivery or POD)
 
 ### Partially Complete
-- [ ] Frontend auth UI (backend done, no login/register pages)
-- [ ] Course checkout flow (components exist, not integrated into marketplace)
-- [ ] Email service production config (code done, needs SMTP credentials)
+- [ ] Frontend auth UI (backend done, no login/register pages -- ~6 hours)
+- [ ] Course checkout flow (components exist, not integrated into marketplace checkout)
+- [ ] Email service production config (code done, needs SMTP credentials -- ~1 hour)
+- [ ] Federation revenue sharing (schema exists, not wired to checkout flow)
+- [ ] Agent app store (registry routes exist, no L402 payments)
 
 ### Not Built (But on Roadmap)
+- [ ] Gig platform (jobs, proposals, contracts, escrow -- 0% built, documented in OPENBAZAAR_AI_SPEC.md)
 - [ ] Checkout conversion stack (coupons, bumps, upsells, cart recovery)
 - [ ] Content protection (PDF stamping, watermarks, license keys)
 - [ ] Affiliate program
 - [ ] Tax calculation/workflow
-- [ ] ArxMint payment integration (Lightning/ecash checkout)
-- [ ] Nostr auth (NIP-07)
+- [ ] ArxMint L402/Cashu deep integration (provider redirect works, L402 paywalls and ecash acceptance still stubbed)
+- [ ] Nostr auth frontend (backend provider exists)
 - [ ] Federated discovery via Nostr (NIP-99)
 - [ ] Managed hosting infrastructure
 - [ ] Migration tooling (import from Gumroad/Teachable)
+- [ ] Health monitoring / automatic failover (documented, not coded)
+- [ ] L402 paywalls
+- [ ] Dispute resolution (Cashu P2PK escrow)
 
 ---
 
@@ -702,4 +716,4 @@ All 9 Gemini Deep Research prompts are complete. Key findings have been integrat
 | 8 | Regulatory & Compliance | Done | Money transmitter classification; Path B for pilot; compliance-safe design |
 | 9 | Bitcoin Creator Ecosystem | Done | ~$65K/mo market; manufacture liquidity; payments social; BTCPay as substrate |
 
-Prompts and detailed tracking in: `C:\code\te-btc\internal\docs\teneo-marketplace\research\GEMINI RESEARCH.md`
+Prompts and detailed tracking in: `C:\code\te-btc\internal\docs\openbazaar-ai\research\GEMINI RESEARCH.md`

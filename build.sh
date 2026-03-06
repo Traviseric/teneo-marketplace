@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build script for Render deployment
 
-echo "🚀 Starting Teneo Marketplace build..."
+echo "🚀 Starting OpenBazaar AI build..."
 
 # Navigate to backend directory
 cd marketplace/backend

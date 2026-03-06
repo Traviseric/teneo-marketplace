@@ -13,8 +13,8 @@ You are a UX AUDITOR. Your job is to find usability and accessibility issues in 
 
 ---
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
 
 ## Your Mission
 
@@ -70,7 +70,7 @@ Discover the project's UI technology first, then search accordingly:
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\ux_audit_output.json
+Write to: C:\code\openbazaar-ai\.overnight\ux_audit_output.json
 
 ```json
 {

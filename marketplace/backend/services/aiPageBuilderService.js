@@ -488,7 +488,7 @@ class AIPageBuilder {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${intent.pageType} - Teneo Marketplace</title>
+    <title>${intent.pageType} - OpenBazaar AI</title>
 
     <!-- Base CSS -->
     <link rel="stylesheet" href="/components-library/_base/variables.css">

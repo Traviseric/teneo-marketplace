@@ -1,10 +1,10 @@
 # 🛒 Test Purchase Guide
 
-This guide walks you through making a test purchase on the Teneo Marketplace to verify the complete checkout flow.
+This guide walks you through making a test purchase on the OpenBazaar AI to verify the complete checkout flow.
 
 ## 📋 Prerequisites
 
-- Deployed frontend URL: `https://teneo-marketplace.vercel.app`
+- Deployed frontend URL: `https://openbazaar-ai.vercel.app`
 - Stripe test mode enabled (default for development)
 - A working email address for order confirmation
 
@@ -29,7 +29,7 @@ Use these test card numbers for different scenarios:
 ## 🚀 Step-by-Step Purchase Process
 
 ### Step 1: Browse the Marketplace
-1. Navigate to `https://teneo-marketplace.vercel.app`
+1. Navigate to `https://openbazaar-ai.vercel.app`
 2. Verify the page loads correctly
 3. Check that books are displayed with:
    - Cover images
@@ -202,4 +202,4 @@ Your marketplace is ready when:
 
 ---
 
-🎉 **Congratulations!** If all tests pass, your Teneo Marketplace is ready for real customers!
+🎉 **Congratulations!** If all tests pass, your OpenBazaar AI is ready for real customers!

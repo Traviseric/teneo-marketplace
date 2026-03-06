@@ -29,7 +29,7 @@ Professional styling matching Podia:
 - Active/completed/locked lesson states
 - Hover effects and transitions
 - Mobile responsive (< 768px)
-- Matching Teneo Marketplace branding (#7C3AED purple, #f7c948 gold)
+- Matching OpenBazaar AI branding (#7C3AED purple, #f7c948 gold)
 
 ### **4. course-player.js**
 Complete functionality:
@@ -144,7 +144,7 @@ COURSE_PLAYER_IMPLEMENTATION_SUMMARY.md ← This file
 
 1. **Open in browser:**
    ```
-   file:///D:/Travis Eric/TE Code/teneo-marketplace/marketplace/frontend/course-player.html
+   file:///D:/Travis Eric/TE Code/openbazaar-ai/marketplace/frontend/course-player.html
    ```
 
 2. **It will load with mock data:**
@@ -167,7 +167,7 @@ COURSE_PLAYER_IMPLEMENTATION_SUMMARY.md ← This file
 
 1. **Open admin builder:**
    ```
-   file:///D:/Travis Eric/TE Code/teneo-marketplace/marketplace/frontend/admin-course-builder.html
+   file:///D:/Travis Eric/TE Code/openbazaar-ai/marketplace/frontend/admin-course-builder.html
    ```
 
 2. **Fill in course details:**

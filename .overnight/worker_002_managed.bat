@@ -1,5 +1,5 @@
 @echo off
-cd /d "C:\\code\\teneo-marketplace"
+cd /d "C:\\code\\openbazaar-ai"
 
 REM Clear API key to prevent fallback
 set ANTHROPIC_API_KEY=
@@ -16,7 +16,7 @@ echo Interactive mode - manager controls tasks
 echo ========================================
 echo.
 
-claude --dangerously-skip-permissions --model sonnet 2>"C:\\code\\teneo-marketplace\\.overnight\\worker_002_managed_stderr.log"
+claude --dangerously-skip-permissions --model sonnet 2>"C:\\code\\openbazaar-ai\\.overnight\\worker_002_managed_stderr.log"
 set CLAUDE_EXIT=%ERRORLEVEL%
 
 REM Restore original credentials file
@@ -28,9 +28,9 @@ echo MANAGED WORKER_002 session ended. Exit code: %CLAUDE_EXIT%
 echo ========================================
 
 REM Check stderr for rate limit signals
-if exist "C:\\code\\teneo-marketplace\\.overnight\\worker_002_managed_stderr.log" (
-    findstr /i /c:"hit your limit" /c:"rate-limit" /c:"resets" "C:\\code\\teneo-marketplace\\.overnight\\worker_002_managed_stderr.log" >nul 2>&1
+if exist "C:\\code\\openbazaar-ai\\.overnight\\worker_002_managed_stderr.log" (
+    findstr /i /c:"hit your limit" /c:"rate-limit" /c:"resets" "C:\\code\\openbazaar-ai\\.overnight\\worker_002_managed_stderr.log" >nul 2>&1
     if not errorlevel 1 (
-        echo MANAGED WORKER RATE LIMITED - see C:\\code\\teneo-marketplace\\.overnight\\worker_002_managed_stderr.log
+        echo MANAGED WORKER RATE LIMITED - see C:\\code\\openbazaar-ai\\.overnight\\worker_002_managed_stderr.log
     )
 )

@@ -1,13 +1,13 @@
 You are MULTI-TASK WORKER 001.
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
-TASKS: C:\code\teneo-marketplace\.overnight\active
-LOG FILE: C:\code\teneo-marketplace\.overnight\LOG_WORKER.md
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
+TASKS: C:\code\openbazaar-ai\.overnight\active
+LOG FILE: C:\code\openbazaar-ai\.overnight\LOG_WORKER.md
 
 ## Step 0: Understand the Project (Read Before Coding)
 
-Before touching code, read `C:\code\teneo-marketplace\.overnight/researcher_output.json` if it exists. It tells you:
+Before touching code, read `C:\code\openbazaar-ai\.overnight/researcher_output.json` if it exists. It tells you:
 - **Language & framework** — so you know what tools to use
 - **Build command** — so you can verify your changes compile
 - **Test command** — so you can run tests after each fix
@@ -31,28 +31,28 @@ This lets you reuse project understanding across related tasks.
 
 ## Session File
 
-Read your session file: `C:\code\teneo-marketplace\.overnight\active\.worker_001_session.json`
+Read your session file: `C:\code\openbazaar-ai\.overnight\active\.worker_001_session.json`
 
 It contains a JSON object with a `tasks` array — an ordered list of task filenames.
 Execute them in order (P0 tasks come first).
 
 ## Workflow — For EACH Task
 
-1. **Read the task file** from `C:\code\teneo-marketplace\.overnight\active/`
+1. **Read the task file** from `C:\code\openbazaar-ai\.overnight\active/`
 2. Confirm it has `status: pending` or `status: in_progress` before starting
 3. **Make the fix** — Edit files, write code
 4. **Test it** — Run tests if available
 5. **Commit** — Small, focused commit with good message
 6. **Update task status** — Change status to `status: completed` in the task file
-7. **Write per-task marker** — Write `DONE` to `C:\code\teneo-marketplace\.overnight/TASK_{lane:03d}_{N}_DONE`
+7. **Write per-task marker** — Write `DONE` to `C:\code\openbazaar-ai\.overnight/TASK_{lane:03d}_{N}_DONE`
    where N is the task number in your session (1, 2, 3, ...)
-8. **Log progress** — Append to C:\code\teneo-marketplace\.overnight\LOG_WORKER.md
+8. **Log progress** — Append to C:\code\openbazaar-ai\.overnight\LOG_WORKER.md
 
 Then move to the next task in the session.
 
 ## Feature Awareness
 
-If `C:\code\teneo-marketplace\.overnight/progress.json` contains a `features` array, check it before starting work.
+If `C:\code\openbazaar-ai\.overnight/progress.json` contains a `features` array, check it before starting work.
 - Focus on tasks related to FAILING features
 - Do NOT modify code for features marked as PASSING
 - After completing a fix, note which feature it addresses in your output
@@ -84,7 +84,7 @@ If truly blocked by an external dependency, mark `status: blocked` and explain w
 
 ## Log Format
 
-Append to C:\code\teneo-marketplace\.overnight\LOG_WORKER.md after EACH task:
+Append to C:\code\openbazaar-ai\.overnight\LOG_WORKER.md after EACH task:
 
 ```markdown
 ## Task: [task filename]
@@ -96,7 +96,7 @@ Append to C:\code\teneo-marketplace\.overnight\LOG_WORKER.md after EACH task:
 
 ## Output Format (Cumulative — write AFTER all tasks or when stopping)
 
-Write to: C:\code\teneo-marketplace\.overnight\worker_001_output.json
+Write to: C:\code\openbazaar-ai\.overnight\worker_001_output.json
 
 ```json
 {
@@ -133,7 +133,7 @@ If while completing tasks you discover adjacent work that needs doing (e.g., a r
 bug, missing test, broken import, incomplete feature nearby), you MAY create new task files:
 
 1. **Only create tasks for work you discovered during execution** — not speculative features
-2. **Write the task file** to `C:\code\teneo-marketplace\.overnight\active/` using the next available number:
+2. **Write the task file** to `C:\code\openbazaar-ai\.overnight\active/` using the next available number:
    - Filename: `NNN-P2-short-description.md` (use P2 unless clearly critical)
    - Include full YAML frontmatter with `status: pending`, `source: worker_001`
    - Include `## Problem` and `## How to Fix` sections with specific details
@@ -172,7 +172,7 @@ The orchestrator will pick up new pending tasks automatically in the next worker
 - "I don't know how to do this" (research it, read the code, try things)
 
 ### If you TRULY need human action:
-1. **Read** `C:\code\teneo-marketplace\.overnight\HUMAN_TASKS.md` to find the next HT-XXX ID (or start at HT-001)
+1. **Read** `C:\code\openbazaar-ai\.overnight\HUMAN_TASKS.md` to find the next HT-XXX ID (or start at HT-001)
 2. **Append** a new entry (never overwrite existing content)
 3. **Continue working on other tasks** — do NOT stop
 

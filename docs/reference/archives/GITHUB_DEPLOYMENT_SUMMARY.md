@@ -1,7 +1,7 @@
 # GitHub Deployment Summary
 
 **Deployed:** November 17, 2025
-**Repository:** https://github.com/Traviseric/teneo-marketplace
+**Repository:** https://github.com/Traviseric/openbazaar-ai
 **Status:** ✅ **LIVE AND EPIC**
 
 ---
@@ -173,8 +173,8 @@ When someone clones this repo and opens it in Claude Code:
 
 **When they run:**
 ```bash
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 ```
 
 **Claude Code will tell them:**
@@ -295,7 +295,7 @@ When someone explores the repo, point them to:
 
 ## 🎯 Summary
 
-**Repository:** https://github.com/Traviseric/teneo-marketplace
+**Repository:** https://github.com/Traviseric/openbazaar-ai
 
 **What got deployed:**
 - ✅ Complete authentication system (1,200 lines)

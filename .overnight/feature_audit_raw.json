@@ -2,17 +2,17 @@
   "success": true,
   "next": "ENHANCER",
   "context": {
-    "project_slug": "teneo-marketplace",
-    "project_path": "C:\\code\\teneo-marketplace",
-    "relay_dir": "C:\\code\\teneo-marketplace\\.pras",
+    "project_slug": "openbazaar-ai",
+    "project_path": "C:\\code\\openbazaar-ai",
+    "relay_dir": "C:\\code\\openbazaar-ai\\.pras",
     "run_id": "run_20260228_004313",
     "source_box": "AI_FEATURES",
     "mode": "deep",
     "features": [
       {
         "id": "pkg-description",
-        "name": "Teneo Marketplace - Decentralized Book Network",
-        "description": "Teneo Marketplace - Decentralized Book Network",
+        "name": "OpenBazaar AI - Decentralized Book Network",
+        "description": "OpenBazaar AI - Decentralized Book Network",
         "source": "package-json",
         "source_location": "package.json:description",
         "confidence": 0.6,
@@ -7464,11 +7464,11 @@
         "id": "ai-features-unverified-pkg-description",
         "type": "feature-unverified",
         "severity": "warning",
-        "message": "Feature could not be verified: Teneo Marketplace - Decentralized Book Network",
+        "message": "Feature could not be verified: OpenBazaar AI - Decentralized Book Network",
         "file": "",
         "line": 0,
         "source": "AI_FEATURES",
-        "problem": "Verification did not produce a result for 'Teneo Marketplace - Decentralized Book Network'",
+        "problem": "Verification did not produce a result for 'OpenBazaar AI - Decentralized Book Network'",
         "whyItMatters": "Implementation status unknown"
       },
       {

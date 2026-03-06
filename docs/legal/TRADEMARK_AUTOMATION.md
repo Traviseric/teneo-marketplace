@@ -7,7 +7,10 @@ This repository includes a legal-ops workflow to prepare trademark filing packet
 - Stores trademark pipeline data in `legal/trademarks.registry.json`.
 - Generates a dated filing packet for each mark:
   - `teas-intake.json`
+  - `teas-copy-paste.md`
+  - `dropoff-checklist.md`
   - `packet-summary.json`
+  - `unresolved-fields.json`
   - `goods-services.md`
   - `submission-checklist.md`
   - `specimen-checklist.md`
@@ -65,8 +68,8 @@ Seeded mark id: `openbazaar-ai-wordmark`
 
 Before filing in TEAS:
 
-1. Fill owner address fields currently marked `TODO`.
-2. Replace `TODO` attorney contact fields (or remove if self-filing).
+1. Fill unresolved fields listed in `unresolved-fields.json`.
+2. Open USPTO TEAS and use `teas-copy-paste.md` while filing.
 3. Confirm goods/services wording with USPTO ID Manual and counsel.
 4. Run a knockout search to reduce refusal/conflict risk.
 5. Submit in TEAS and write the serial number back to `legal/trademarks.registry.json`.

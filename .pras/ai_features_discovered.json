@@ -2,8 +2,8 @@
   "features": [
     {
       "id": "pkg-description",
-      "name": "Teneo Marketplace - Decentralized Book Network",
-      "description": "Teneo Marketplace - Decentralized Book Network",
+      "name": "OpenBazaar AI - Decentralized Book Network",
+      "description": "OpenBazaar AI - Decentralized Book Network",
       "source": "package-json",
       "source_location": "package.json:description",
       "confidence": 0.6,

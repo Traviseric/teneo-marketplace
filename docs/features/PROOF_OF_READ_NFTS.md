@@ -958,7 +958,7 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Questions?** Open an issue on [GitHub](https://github.com/Traviseric/teneo-marketplace/issues)
+**Questions?** Open an issue on [GitHub](https://github.com/Traviseric/openbazaar-ai/issues)
 
 **Version**: 1.0.0
 **Last Updated**: January 2025

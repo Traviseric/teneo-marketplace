@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Discovery - Teneo Book Network</title>
+    <title>Network Discovery - OpenBazaar Book Network</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -415,7 +415,7 @@
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">Teneo Network</h1>
+            <h1 class="logo">OpenBazaar Network</h1>
             <nav class="nav">
                 <a href="/" class="nav-link">Local Store</a>
                 <a href="/network.html" class="nav-link active">Network Search</a>
@@ -428,7 +428,7 @@
         <!-- Network Hero -->
         <section class="network-hero">
             <div class="container">
-                <h1>Teneo Book Network</h1>
+                <h1>OpenBazaar Book Network</h1>
                 <p>Search across all decentralized bookstores in the uncensorable network</p>
             </div>
         </section>
@@ -567,7 +567,7 @@
             <!-- Join Network Section -->
             <section id="join" class="search-section" style="margin-top: 3rem;">
                 <h2>Join the Network</h2>
-                <p>Connect your bookstore to the decentralized Teneo Network and reach readers worldwide.</p>
+                <p>Connect your bookstore to the decentralized OpenBazaar Network and reach readers worldwide.</p>
                 <button onclick="showJoinForm()" class="network-search-btn" style="margin-top: 1rem;">
                     <i class="fas fa-plus-circle"></i>
                     Register Your Store
@@ -580,7 +580,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-info">
-                    <p>&copy; 2024 Teneo Network. Building the uncensorable book marketplace.</p>
+                    <p>&copy; 2024 OpenBazaar Network. Building the uncensorable book marketplace.</p>
                 </div>
             </div>
         </div>
@@ -670,7 +670,7 @@
                             ${isFeatured ? '<span class="store-badge" style="background: #7C3AED;">Featured</span>' : ''}
                         </div>
                     </div>
-                    <p>${store.tagline || 'A member of the Teneo Book Network'}</p>
+                    <p>${store.tagline || 'A member of the OpenBazaar Book Network'}</p>
                     <div class="store-specialties">
                         ${(store.specialties || []).map(spec => 
                             `<span class="specialty-tag">${spec}</span>`
@@ -796,7 +796,7 @@
 
         function showJoinForm() {
             // In production, this would show a registration form
-            alert('Network registration coming soon! For now, contact network@teneo.ai to join.');
+            alert('Network registration coming soon! For now, contact network@openbazaar.ai to join.');
         }
 
         // Demo search function

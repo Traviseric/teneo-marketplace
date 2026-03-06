@@ -239,7 +239,7 @@ RESULT: User has live, working book funnel in 60 minutes
 ## 📁 File Structure
 
 ```
-teneo-marketplace/
+openbazaar-ai/
 ├── course-module/                    # Course Builder (Already Built ✅)
 │   ├── frontend/
 │   │   ├── course-player.html
@@ -1020,10 +1020,10 @@ RESULT: Progress preserved, no frustration
 **Step 1: Database Setup**
 ```bash
 # Run funnel schema migration
-sqlite3 marketplace/backend/database/teneo-marketplace.db < funnel-module/backend/database/schema-funnels.sql
+sqlite3 marketplace/backend/database/openbazaar-ai.db < funnel-module/backend/database/schema-funnels.sql
 
 # Verify tables created
-sqlite3 marketplace/backend/database/teneo-marketplace.db ".tables"
+sqlite3 marketplace/backend/database/openbazaar-ai.db ".tables"
 # Should see: funnel_drafts, deployed_funnels, funnel_analytics
 ```
 
@@ -1097,12 +1097,12 @@ git commit -m "Add funnel builder + course integration"
 git push origin main
 
 # If using VPS
-scp -r funnel-module/ user@server:/path/to/teneo-marketplace/
-ssh user@server "cd /path/to/teneo-marketplace && npm restart"
+scp -r funnel-module/ user@server:/path/to/openbazaar-ai/
+ssh user@server "cd /path/to/openbazaar-ai && npm restart"
 
 # If using Docker
-docker build -t teneo-marketplace .
-docker run -p 3001:3001 teneo-marketplace
+docker build -t openbazaar-ai .
+docker run -p 3001:3001 openbazaar-ai
 ```
 
 ---
@@ -1243,7 +1243,7 @@ curl https://yoursite.com/funnel-builder
 curl https://yoursite.com/courses/book-funnel-blueprint
 
 # Check database
-sqlite3 marketplace/backend/database/teneo-marketplace.db "SELECT COUNT(*) FROM deployed_funnels;"
+sqlite3 marketplace/backend/database/openbazaar-ai.db "SELECT COUNT(*) FROM deployed_funnels;"
 
 # If all looks good, you're DONE! 🎉
 ```

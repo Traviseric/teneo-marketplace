@@ -1,667 +1,134 @@
-# teneo-marketplace: Implementation Plan
+# openbazaar-ai: Implementation Plan
 
-> **Note:** Strategic roadmap, phased priorities, and architecture decisions are now in **[docs/ROADMAP.md](../ROADMAP.md)**, informed by Gemini Deep Research outputs 1-6. This file retains the technical implementation scope.
+**Last Updated:** 2026-03-05
+
+> **Strategic roadmap:** See **[docs/ROADMAP.md](../ROADMAP.md)** for research-informed priorities, architecture decisions, and phased build plan.
+> **Current status:** See **[MARKETPLACE_STATUS_AND_TODO.md](./MARKETPLACE_STATUS_AND_TODO.md)** for what's built vs what's not.
 
 ## Mission Statement
 
 **The open source creator platform with crypto payments.** Replace ClickFunnels, Gumroad, Teachable, Kajabi, and Podia with:
 - $0 platform fees (open source, self-hosted)
-- $0 transaction fees via Bitcoin/Lightning/ecash payments (ArxMint)
-- Nostr identity (NIP-07/NIP-98) — no platform owns your account
-- Can't be deplatformed — self-hosted with decentralized payments
+- Bitcoin/Lightning/ecash payments via ArxMint
+- Nostr identity (NIP-07/NIP-98)
 - Dual-mode: Stripe for fiat, ArxMint for crypto
 
-**Part of a circular creator economy:** ArxMint (payment rails) + Teneo Marketplace (storefront) + Nostr (identity). Creators sell, buyers pay with ecash from community mints, money circulates.
+**Part of a circular creator economy:** ArxMint (payment rails) + OpenBazaar AI (storefront) + Nostr (identity).
 
-**Philosophy**: Build the switching baseline first (checkout conversion, content protection, affiliates), then layer crypto differentiators on a solid foundation. Build what's unique, integrate what exists.
+**Philosophy**: Build the switching baseline first (checkout conversion, content protection, affiliates), then layer crypto differentiators on a solid foundation.
 
 ---
 
 ## Project Scope
 
-### ✅ What We Build
+### What We Build
 
-**1. Creator Storefront**
-- Digital products (books, downloads, templates, software)
-- Cart, checkout, order management
-- Coupons, order bumps, post-purchase upsells, cart abandonment recovery
-- Content protection (PDF stamping, watermarks, license keys, versioning)
-- Reviews and ratings
+1. **Creator Storefront** -- Digital products, cart, checkout, coupons, bumps, upsells, content protection
+2. **Course Platform** -- Video/content player, quizzes, certificates, progress tracking
+3. **Email Marketing** -- List management, segmentation, automation sequences, tracking
+4. **Funnel Builder** -- Landing pages, conversion tracking, templates
+5. **Affiliate System** -- Tracking links, commission calculation, automated payouts
+6. **Payment Processing** -- Stripe (fiat) + ArxMint (Lightning/ecash), BIP21 QR, three-mode checkout
+7. **Dispute Resolution** -- Signed receipts, Cashu P2PK escrow, BTCPay refunds
+8. **Authentication** -- Magic links, Teneo Auth SSO, Nostr NIP-07
+9. **Federation Network** -- NIP-99 listings, cross-store discovery, referral revenue sharing
+10. **Gig Platform** -- Jobs, proposals, escrow, milestones, reputation (planned)
+11. **Agent Services** -- L402 micropayments, capability registry (planned)
 
-**2. Course Platform**
-- Video/content player with progress tracking
-- Quiz engine and certificate generation
-- Drip content and cohort delivery
-- Discussion forums (Nostr-aligned federated community)
-- Markdown lesson support
+### What We Don't Build
 
-**3. Email Marketing**
-- Built-in list management and segmentation
-- Automation sequences (welcome, cart abandonment, post-purchase)
-- Open/click tracking
-- SMTP + Resend adapters
-
-**4. Funnel Builder**
-- Landing pages and sales funnels
-- Conversion tracking
-- Templates (Gated, Bundle, Magnet, Direct, VSL)
-
-**5. Affiliate System**
-- Self-serve affiliate signup
-- Tracking links, commission calculation
-- Automated payouts (Stripe + Lightning)
-- Anti-fraud controls
-
-**6. Payment Processing**
-- Stripe (fiat — cards, BNPL)
-- ArxMint (crypto — Lightning invoices, ecash tokens via Cashu/Fedimint)
-- BIP21 unified QR (on-chain + Lightning in one code)
-- Payment-method-agnostic order state machine
-- Three-mode checkout: instant-final (LN/ecash), escrowed (Cashu P2PK), card (Stripe)
-- Zap-to-unlock for micro-content <$5 (NIP-57)
-- Creator payout routing policy (destination × conversion × settlement timing)
-- Tax data model: capture USD fair market value per crypto payment from day one
-- Tax calculation workflow (not MoR — creators are sellers)
-
-**6a. Dispute Resolution & Refunds**
-- Stripe refunds (standard API)
-- Lightning refunds via BTCPay Pull Payments + LNURL-withdraw
-- Ecash refund as store-credit bearer tokens (Cashu)
-- Split settlement: 80-90% instant, 10-20% escrowed with locktime
-- Cashu 2-of-3 P2PK multisig escrow (NUT-10/NUT-11)
-- Signed purchase receipts (Nostr events)
-- Receipt-referenced reviews with NIP-13 PoW spam resistance
-- EU 14-day digital content withdrawal consent capture
-
-**6b. Regulatory Compliance (Parallel Track)**
-- Path B (licensed partner) for Longmont ecash pilot
-- Compliance-safe design: no privacy/anonymity marketing
-- Mint operations separated from marketplace operations
-- Balance and velocity caps in pilot phase
-- Federation as incorporated entity
-
-**7. Authentication**
-- Local magic links (zero dependencies)
-- Teneo Auth SSO (OAuth 2.0 + PKCE)
-- Nostr (NIP-07 browser extension signing)
-
-**8. Plugin System**
-- Plugin manifest spec and hook points
-- Plugin manager (load/execute/sandbox)
-- Premium theme marketplace
-
-**9. Federation Network**
-- NIP-99 product listings (kind 30402)
-- Centralized discovery index (→ multiple competing indexes later)
-- Two-rate cross-store referral system (15-20% new customer / 0-5% repeat)
-- Lightning-based instant affiliate settlement
-- Circular economy metrics tracking
-
-### ❌ What We Don't Build
-
-**Merchant of Record** → Creators are sellers; we provide tax workflow tools
-**Video Hosting CDN** → Use Vimeo/YouTube/S3/Cloudflare R2
-**CRM System** → Use HubSpot/Salesforce APIs (or build later)
-**Native Mobile App** → PWA first; native app is Phase 5
-**Full Marketplace Ranking** → Directory-level discovery first; ranking after supply exists
+- **Merchant of Record** -- Creators are sellers; we provide tax workflow tools
+- **Video Hosting CDN** -- Use Vimeo/YouTube/S3/Cloudflare R2
+- **Native Mobile App** -- PWA first; native later
 
 ---
 
-## Architecture Overview
+## What's Built (March 2026)
 
-```
-teneo-marketplace/
-├── course-module/              # Course platform (self-contained)
-│   ├── frontend/
-│   │   ├── course-player.html
-│   │   ├── css/
-│   │   └── js/
-│   └── courses/
-│       └── book-funnel-blueprint/
-│
-├── funnel-module/             # Funnel builder (self-contained)
-│   ├── frontend/
-│   │   ├── funnel-builder.html
-│   │   ├── css/
-│   │   └── js/
-│   └── backend/routes/
-│       └── funnels.js
-│
-├── marketplace/               # Core marketplace
-│   ├── frontend/
-│   │   ├── index.html
-│   │   ├── brands/            # Multi-brand support
-│   │   └── published.html      # Publisher dashboard
-│   └── backend/
-│       ├── server.js
-│       ├── routes/
-│       ├── services/
-│       ├── database/
-│       └── plugins/           # Plugin system (NEW)
-│           ├── plugin-manager.js
-│           └── registry.json
-│
-├── integrations/              # External service adapters (NEW)
-│   ├── email/
-│   │   ├── convertkit.js
-│   │   ├── mailchimp.js
-│   │   └── adapter.interface.js
-│   ├── payment/
-│   │   ├── stripe.js
-│   │   ├── paypal.js
-│   │   └── adapter.interface.js
-│   └── storage/
-│       ├── s3.js
-│       ├── cloudflare-r2.js
-│       └── adapter.interface.js
-│
-├── network-module/            # Federation (BUILT)
-│   ├── frontend/
-│   │   └── network-explorer.html
-│   └── backend/
-│       ├── routes/network.js
-│       ├── federation.js
-│       └── discovery.js
-│
-└── discovery-layer/           # Discovery Network (NEW — parallel track)
-    ├── services/
-    │   ├── semantic-search.js       # Claude/OpenAI embedding search
-    │   ├── knowledge-graph.js       # Citation network engine
-    │   ├── reading-paths.js         # AI learning journey generation
-    │   └── ranking.js               # Transformation-based ranking (Phase 4+)
-    ├── database/
-    │   └── schema-ai-discovery.sql  # Embeddings, citations, paths (BUILT)
-    └── routes/
-        └── aiDiscovery.js           # Discovery API endpoints (BUILT)
-```
+| System | Status | Routes/Services |
+|--------|--------|-----------------|
+| Express backend | Production-ready | 26 routes, 27+ services |
+| Stripe payments | Working | checkout, checkoutProduction, checkoutMixed |
+| Crypto checkout | Working (manual) | cryptoCheckout |
+| Auth system | Backend complete | 3 providers, no frontend UI |
+| Course platform | Working | courseRoutes, quiz, certificates |
+| Email marketing | Working | sequences, segmentation, tracking |
+| Funnel builder | Working | 4 templates |
+| Print-on-demand | Working | Lulu API integration |
+| AI discovery | Working | Semantic search + keyword fallback |
+| Federation | Working | Peer discovery, cross-store search |
+| Admin dashboard | Working | Orders, analytics, refunds |
+| Publisher features | Working | Amazon tracking, leaderboards, badges |
+| Component library | 24% | 12/50 components |
+| Tests | 100% passing | 17 suites, 158 tests |
+
+## What's Not Built
+
+| Feature | Phase | Priority | Time Estimate |
+|---------|-------|----------|---------------|
+| Frontend auth UI | 0 (MVP) | CRITICAL | 6 hours |
+| Checkout conversion (coupons, bumps, upsells) | 1 | CRITICAL | 16-20 hours |
+| Content protection (PDF stamping, watermarks) | 1 | CRITICAL | 10-14 hours |
+| Affiliate program | 2 | HIGH | 12-16 hours |
+| Tax workflow | 2 | HIGH | 12-16 hours |
+| Migration tooling (Gumroad/Teachable import) | 2 | HIGH | 12 hours |
+| Managed hosting infrastructure | 2 | HIGH | 12 hours |
+| ArxMint payment integration | 3 | HIGH | 24-30 hours |
+| Nostr auth frontend | 3 | MEDIUM | 8-12 hours |
+| L402 paywalls | 3 | MEDIUM | 8-12 hours |
+| Dispute resolution (receipts, escrow) | 3 | HIGH | 16-20 hours |
+| Health monitoring / failover | Deferred | MEDIUM | 12-16 hours |
+| Gig platform | 2 | HIGH | 40+ hours |
+| Agent services | 4 | MEDIUM | 20+ hours |
+| NIP-99 federation | 4 | MEDIUM | 8 hours |
 
 ---
 
-## Implementation Roadmap
+## Build Phases
 
-### Phase 1: Foundation Complete ✅ (Current State)
+### Phase 0: MVP Launch (6-8 hours)
+- Create login/register UI
+- Wire frontend to auth endpoints
+- Configure email service
+- Test full purchase flow
+- Ship existing federation
 
-**Status**: 75% Complete
+### Phase 1: Checkout Conversion (26-34 hours)
+- Coupons & discount codes
+- Order bumps
+- Post-purchase upsells
+- Cart abandonment recovery
+- Content protection (PDF stamping, watermarks, license keys)
+- Discovery v1 (categories, trending, recommendations)
 
-**Completed**:
-- ✅ Course platform structure
-- ✅ Funnel builder (4 templates)
-- ✅ Backend API (funnels, courses)
-- ✅ Export functionality (HTML, ZIP, Deploy)
-- ✅ AI prompt library (30+ prompts)
-- ✅ Server running (port 3001)
+### Phase 2: Revenue & Distribution (40-48 hours)
+- Affiliate program
+- Tax workflow
+- Gig platform (jobs, proposals, escrow)
+- Migration tooling
+- Managed hosting (first revenue stream, $29-149/mo)
+- Discovery v2 (semantic search, knowledge graph)
 
-**Remaining**:
-- 🔲 Course player UI polish
-- 🔲 Integration adapters
-- 🔲 Plugin system
-- 🔲 Documentation
+### Phase 3: Crypto Differentiators (52-70 hours)
+- ArxMint payments (BIP21, three-mode checkout, payout routing)
+- Nostr auth (NIP-07 + NIP-98)
+- L402 paywalls
+- Dispute resolution (receipts, Cashu P2PK escrow)
+- Regulatory compliance (Path B partnership)
 
-**Timeline**: 1 week to complete
+### Phase 4: Network Scale (40-52 hours)
+- NIP-99 product listings
+- Agent services (L402 micropayments)
+- Cross-store referral system
+- Circular economy metrics
+- Discovery v3 (Nostr-native)
 
----
-
-### Phase 2: Integration Layer (Week 2-3)
-
-**Goal**: Connect to external services via adapters
-
-#### Task 2.1: Email Service Adapters
-**Files to create**:
-```
-integrations/email/
-├── adapter.interface.js       # Base interface
-├── convertkit.js             # ConvertKit adapter
-├── mailchimp.js              # Mailchimp adapter
-└── README.md                 # Integration guide
-```
-
-**Interface specification**:
-```javascript
-// adapter.interface.js
-class EmailAdapter {
-  async addSubscriber(listId, email, fields) {}
-  async removeSubscriber(listId, email) {}
-  async sendEmail(to, subject, body) {}
-  async createAutomation(config) {}
-  async getStats(listId) {}
-}
-```
-
-**Timeline**: 3 days
-
-#### Task 2.2: Payment Processor Adapters
-**Files to create**:
-```
-integrations/payment/
-├── adapter.interface.js
-├── stripe.js
-├── paypal.js
-└── README.md
-```
-
-**Interface specification**:
-```javascript
-// adapter.interface.js
-class PaymentAdapter {
-  async createCheckoutSession(items, options) {}
-  async processRefund(transactionId) {}
-  async getTransaction(transactionId) {}
-  async listTransactions(filters) {}
-}
-```
-
-**Timeline**: 3 days
-
-#### Task 2.3: Storage Adapters
-**Files to create**:
-```
-integrations/storage/
-├── adapter.interface.js
-├── local.js                  # Local filesystem
-├── s3.js                     # AWS S3
-├── cloudflare-r2.js          # Cloudflare R2
-└── README.md
-```
-
-**Timeline**: 2 days
-
-#### Task 2.4: Analytics Integration
-**Files to create**:
-```
-integrations/analytics/
-├── ga4.js                    # Google Analytics 4
-├── plausible.js              # Plausible Analytics
-└── README.md
-```
-
-**Timeline**: 1 day
-
-**Phase 2 Total**: 9 days (2 weeks with buffer)
+### Phase 5: Scale & Polish (ongoing)
+- Premium themes marketplace
+- Memberships & subscriptions
+- PWA for mobile
+- Integrations (webhooks, API, Zapier)
 
 ---
 
-### Phase 3: Plugin System (Week 4-5)
-
-**Goal**: Enable extensibility for Teneo and community plugins
-
-#### Task 3.1: Plugin Manager
-**Files to create**:
-```
-marketplace/backend/plugins/
-├── plugin-manager.js         # Core plugin system
-├── registry.json             # Installed plugins
-├── hooks.js                  # Hook system
-└── validator.js              # Plugin validation
-```
-
-**Features**:
-- Load plugins from manifest
-- Register hook points
-- Execute plugin actions
-- Permission system
-- Sandboxing
-
-**Timeline**: 4 days
-
-#### Task 3.2: Plugin API Routes
-**Files to create**:
-```
-marketplace/backend/routes/plugins.js
-```
-
-**Endpoints**:
-- `GET /api/plugins/list` - List installed plugins
-- `GET /api/plugins/hooks/:component` - Get hooks for component
-- `POST /api/plugins/execute` - Execute plugin action
-- `POST /api/plugins/install` - Install new plugin
-- `DELETE /api/plugins/:id` - Uninstall plugin
-
-**Timeline**: 2 days
-
-#### Task 3.3: Frontend Hook Points
-**Files to modify**:
-```
-funnel-module/frontend/funnel-builder.html
-course-module/frontend/course-player.html
-```
-
-**Add hook points**:
-```html
-<div data-hook="above-preview" class="plugin-hooks"></div>
-<div data-hook="field-actions" class="plugin-hooks"></div>
-<div data-hook="lesson-actions" class="plugin-hooks"></div>
-```
-
-**Timeline**: 2 days
-
-#### Task 3.4: Plugin Documentation
-**Files to create**:
-```
-PLUGIN_DEVELOPMENT.md
-PLUGIN_SPEC.md
-examples/hello-world-plugin/
-```
-
-**Timeline**: 2 days
-
-**Phase 3 Total**: 10 days (2 weeks)
-
----
-
-### Phase 4: Federation Network + Discovery (Week 6-8)
-
-**Goal**: Enable distributed marketplace network with intelligent discovery
-
-**Note:** Federation infrastructure is already 70-80% built. This phase focuses on wiring up existing code, adding the discovery intelligence layer, and transitioning to NIP-99.
-
-#### Task 4.1: Node Registry
-**Files to create**:
-```
-network-module/backend/
-├── registry.js               # Node registration
-├── heartbeat.js              # Node health monitoring
-└── discovery.js              # Node discovery protocol
-```
-
-**Features**:
-- Register marketplace node
-- Publish node metadata
-- Health check system
-- Node directory
-
-**Timeline**: 4 days
-
-#### Task 4.2: Cross-Node Search
-**Files to create**:
-```
-network-module/backend/
-├── search.js                 # Federated search
-└── aggregator.js             # Result aggregation
-```
-
-**Features**:
-- Query multiple nodes
-- Aggregate results
-- Ranking/filtering
-- Cache layer
-
-**Timeline**: 4 days
-
-#### Task 4.3: Revenue Sharing
-**Files to create**:
-```
-network-module/backend/
-├── affiliate.js              # Affiliate tracking
-├── revenue-share.js          # Revenue distribution
-└── reporting.js              # Network analytics
-```
-
-**Features**:
-- Track cross-node sales
-- Calculate revenue splits
-- Automated payouts
-- Reporting dashboard
-
-**Timeline**: 5 days
-
-#### Task 4.4: Network Frontend
-**Files to create**:
-```
-network-module/frontend/
-├── network-explorer.html     # Browse network nodes
-├── node-dashboard.html       # Node operator dashboard
-└── js/network.js
-```
-
-**Timeline**: 3 days
-
-#### Task 4.5: Discovery Intelligence Layer
-**Files to create/update**:
-```
-discovery-layer/services/
-├── semantic-search.js       # Wire up aiDiscoveryService.js to product catalog
-├── knowledge-graph.js       # Build citation network from product metadata
-└── reading-paths.js         # Generate cross-store learning journeys
-```
-
-**Features**:
-- Semantic search activated (embed all products via Claude/OpenAI API)
-- Knowledge graph: citation relationships between products across stores
-- AI reading paths: curated learning journeys spanning multiple stores
-- "You might also like" cross-store recommendations
-- Search analytics for store owners
-
-**Timeline**: 5 days
-
-**Phase 4 Total**: 21 days (4 weeks with buffer)
-
----
-
-### Phase 5: Polish & Documentation (Week 9-10)
-
-**Goal**: Production-ready release
-
-#### Task 5.1: UI/UX Polish
-- Consistent styling across modules
-- Mobile responsiveness
-- Loading states
-- Error handling
-- Accessibility
-
-**Timeline**: 4 days
-
-#### Task 5.2: Documentation
-**Files to create**:
-```
-docs/
-├── GETTING_STARTED.md
-├── USER_GUIDE.md
-├── ADMIN_GUIDE.md
-├── API_REFERENCE.md
-├── INTEGRATION_GUIDE.md
-├── PLUGIN_DEVELOPMENT.md
-├── FEDERATION_GUIDE.md
-└── TROUBLESHOOTING.md
-```
-
-**Timeline**: 4 days
-
-#### Task 5.3: Testing
-- Integration tests
-- E2E tests (Playwright/Cypress)
-- Performance testing
-- Security audit
-
-**Timeline**: 3 days
-
-#### Task 5.4: Deployment Guide
-- Docker setup
-- VPS deployment guide
-- Vercel/Netlify instructions
-- Environment configuration
-
-**Timeline**: 2 days
-
-**Phase 5 Total**: 13 days (2 weeks)
-
----
-
-## Complete Timeline
-
-| Phase | Duration | Cumulative | Status |
-|-------|----------|------------|--------|
-| Phase 1: Foundation | 1 week | Week 1 | ✅ 75% Complete |
-| Phase 2: Integrations | 2 weeks | Week 3 | 📋 Planned |
-| Phase 3: Plugins | 2 weeks | Week 5 | 📋 Planned |
-| Phase 4: Federation + Discovery | 4 weeks | Week 9 | 📋 Planned (federation 70% built) |
-| Phase 5: Polish | 2 weeks | Week 10 | 📋 Planned |
-
-**Total**: 11 weeks to production-ready MVP (federation head start reduces effective time)
-
----
-
-## Success Metrics
-
-### Technical Metrics
-- ✅ Server starts without errors
-- ✅ All modules load independently
-- ✅ API responds < 200ms
-- 🎯 100% test coverage (critical paths)
-- 🎯 Lighthouse score > 90
-
-### User Metrics
-- 🎯 Course completion rate > 70%
-- 🎯 Funnel deployment rate > 50%
-- 🎯 Time to first funnel < 4 hours
-- 🎯 Plugin adoption rate > 20%
-
-### Network & Discovery Metrics
-- 🎯 100+ nodes deployed (6 months)
-- 🎯 10+ community plugins
-- 🎯 1,000+ cross-node transactions/month
-- 🎯 10,000+ products indexed in discovery network
-- 🎯 500+ semantic searches/month
-- 🎯 50+ AI-generated reading paths
-
----
-
-## Risk Management
-
-### Technical Risks
-
-**Risk**: Plugin system security vulnerabilities
-**Mitigation**:
-- Sandboxed execution
-- Permission system
-- Code review process
-- Security audit
-
-**Risk**: Federation network complexity
-**Mitigation**:
-- Start with centralized registry
-- Gradual decentralization
-- Simple protocol first
-- Iterate based on usage
-
-**Risk**: Integration adapter maintenance
-**Mitigation**:
-- Abstract interface pattern
-- Community contributions
-- Version pinning
-- Deprecation policy
-
-### Business Risks
-
-**Risk**: Low adoption (marketplace)
-**Mitigation**:
-- Focus on specific niche (book marketing)
-- Provide immediate value (course + templates)
-- Strong documentation
-- Community building
-
-**Risk**: Competition from established platforms
-**Mitigation**:
-- Open-source advantage (free, extensible)
-- Federation network (unique feature)
-- Teneo plugin (10x productivity)
-- Own your data messaging
-
----
-
-## Resource Requirements
-
-### Development
-- **1 Lead Developer** (full-time, 10 weeks)
-- **1 Frontend Developer** (part-time, 4 weeks)
-- **1 DevOps** (part-time, 2 weeks)
-
-### Infrastructure
-- **Development**: Local/free tier services
-- **Staging**: $50-100/month (VPS + CDN)
-- **Production**: $100-500/month (scales with usage)
-
-### Tools & Services
-- GitHub (free)
-- Vercel/Netlify (free tier)
-- Database (SQLite - free, or Postgres - $25/month)
-- CDN (Cloudflare - free)
-- Analytics (Plausible - free self-hosted)
-
-**Total Monthly Cost**: $50-600/month depending on scale
-
----
-
-## Launch Strategy
-
-### Soft Launch (Week 11)
-- Deploy to teneo-marketplace.com
-- Invite 20-30 beta testers
-- Gather feedback
-- Fix critical bugs
-- Iterate quickly
-
-### Public Launch (Week 13)
-- Open-source release on GitHub
-- Product Hunt launch
-- Blog post / documentation site
-- Community Discord/forum
-- First 100 users
-
-### Growth Phase (Months 4-6)
-- Launch Teneo Plugin (teneo-production)
-- Community plugin program
-- Federation network goes live
-- 500+ nodes deployed
-
----
-
-## Next Steps (This Week)
-
-### Day 1-2: Complete Phase 1
-- [ ] Polish course player UI
-- [ ] Test all existing features
-- [ ] Fix any bugs
-- [ ] Update documentation
-
-### Day 3-4: Start Phase 2 (Integrations)
-- [ ] Create integration adapter interfaces
-- [ ] Implement ConvertKit adapter
-- [ ] Implement Stripe adapter
-- [ ] Write integration tests
-
-### Day 5: Planning
-- [ ] Review progress
-- [ ] Adjust timeline if needed
-- [ ] Plan Phase 3 details
-- [ ] Prepare development environment
-
----
-
-## Long-Term Vision (6-12 Months)
-
-### Month 6
-- 500+ marketplace nodes deployed
-- 50+ Teneo plugin users ($4,850 MRR)
-- 20+ community plugins
-- Active developer community
-
-### Month 12
-- 2,000+ marketplace nodes
-- 200+ Teneo plugin users ($19,400 MRR)
-- 100+ community plugins
-- Federation network thriving
-- $30K+ MRR total ecosystem
-
----
-
-## Conclusion
-
-**What we're building**: The open source creator platform with a discovery network — every store that joins makes the network stronger
-**How we're building it**: Lean, modular, integration-first
-**Why it matters**: Own your data, own your revenue, join the network
-
-**Timeline**: 10 weeks to MVP
-**Cost**: Minimal (mostly time)
-**Upside**: Massive (if we execute well)
-
-**Let's build it.** 🚀
+Full strategic analysis: [ROADMAP.md](../ROADMAP.md)

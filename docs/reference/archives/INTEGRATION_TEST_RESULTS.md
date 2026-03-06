@@ -61,7 +61,7 @@ python test_brand_generation.py
 
 **Command:**
 ```bash
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 ```
 
@@ -233,7 +233,7 @@ http://localhost:3001/store.html?brand=quantum_youth_publishing
 
 ### File Paths
 - ✅ Orchestrator output: `D:\Travis Eric\TE Code\orchestrator\marketplace_coordination\BRAND_CONFIG.json`
-- ✅ Marketplace input: `D:\Travis Eric\TE Code\teneo-marketplace\marketplace\frontend\brands\{brand_id}\`
+- ✅ Marketplace input: `D:\Travis Eric\TE Code\openbazaar-ai\marketplace\frontend\brands\{brand_id}\`
 - ✅ Relative paths work correctly
 - ✅ Cross-project file access successful
 
@@ -270,7 +270,7 @@ Test multiple brands:
 ```bash
 cd "D:\Travis Eric\TE Code\orchestrator"
 python test_brand_generation.py  # Generates new brand
-cd ../teneo-marketplace
+cd ../openbazaar-ai
 node scripts/import-orchestrator-brand.js  # Imports it
 ```
 

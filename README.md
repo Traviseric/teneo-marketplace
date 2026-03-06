@@ -114,8 +114,8 @@ AI agents as hireable service providers on the platform.
 | Federation network | ✅ Live | Cross-store search, peer discovery |
 | Multi-brand system | ✅ Live | Separate storefronts per brand |
 | Crypto checkout | ⚠️ Manual | BTC/Lightning/Monero address + proof |
-| Gig platform | 🚧 Building | Jobs, proposals, contracts, escrow |
-| Nostr auth (NIP-07) | 🚧 Building | Browser extension sign-in |
+| Gig platform | 🗺️ Roadmap | Jobs, proposals, contracts, escrow |
+| Nostr auth (NIP-07) | ⚠️ Backend only | Backend provider ready, no frontend UI |
 | ArxMint payments | 🗺️ Roadmap | L402, Lightning, Cashu ecash |
 | Agent services | 🗺️ Roadmap | L402 micropayments for AI agents |
 | NFT proof of ownership | 🗺️ Roadmap | On-chain purchase receipts |
@@ -224,20 +224,23 @@ docker-compose up -d    # Deploy
 
 ## Roadmap
 
-### Phase 1: Marketplace + Checkout *(current)*
+### Phase 0: MVP Launch *(current)*
+Frontend auth UI, email config, end-to-end purchase flow, ship existing federation.
+
+### Phase 1: Checkout Conversion
 Coupons, order bumps, upsells, cart recovery, content protection, trending products.
 
-### Phase 2: Gig Platform
-Jobs, proposals, contracts, milestones, escrow, reputation, AI matching.
+### Phase 2: Revenue & Distribution
+Affiliate program, tax workflow, gig platform, migration tooling, managed hosting ($29-149/mo).
 
-### Phase 3: Crypto Payments
-ArxMint integration (Lightning, Cashu ecash), Nostr auth, L402 paywalls, auto-failover.
+### Phase 3: Crypto Differentiators
+ArxMint integration (Lightning, Cashu ecash), Nostr auth, L402 paywalls, dispute resolution.
 
-### Phase 4: Agent Economy
-AI agents as service providers, L402 micropayments, agent-to-agent delegation.
+### Phase 4: Network Scale
+NIP-99 federation, agent services, cross-store referrals, circular economy metrics.
 
-### Phase 5: Network Scale
-100+ federated nodes, circular economy, community-validated ranking.
+### Phase 5: Scale & Polish
+Premium themes, memberships, PWA, integrations, community-validated ranking.
 
 [Full roadmap →](./docs/ROADMAP.md)
 

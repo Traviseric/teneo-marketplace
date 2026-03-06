@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-The AI Discovery Engine makes the Teneo Marketplace **better than Amazon at book discovery** by using semantic search, controversy boosting, and suppression tracking.
+The AI Discovery Engine makes the OpenBazaar AI **better than Amazon at book discovery** by using semantic search, controversy boosting, and suppression tracking.
 
 ### Key Features
 

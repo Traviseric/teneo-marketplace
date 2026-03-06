@@ -1,6 +1,6 @@
 # API Specification
 
-**teneo-marketplace Public API Documentation**
+**openbazaar-ai Public API Documentation**
 
 ---
 
@@ -700,11 +700,11 @@ const course = await client.courses.get('course-abc123');
 
 **Python:**
 ```bash
-pip install teneo-marketplace
+pip install openbazaar-ai
 ```
 
 ```python
-from teneo_marketplace import TeneoMarketplace
+from openbazaar_ai import TeneoMarketplace
 
 client = TeneoMarketplace(
     api_key='your_admin_key',
@@ -734,7 +734,7 @@ When we release v2, v1 will remain available for 12 months.
 
 **Documentation**: https://docs.teneoai.com
 **Community**: https://community.teneoai.com
-**Issues**: https://github.com/Traviseric/teneo-marketplace/issues
+**Issues**: https://github.com/Traviseric/openbazaar-ai/issues
 
 ---
 

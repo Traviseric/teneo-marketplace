@@ -1,497 +1,96 @@
-# TENEO MARKETPLACE - IMPLEMENTATION MAP
+# Implementation Map
 
-**Last Updated:** 2024-11-15 (component status) | 2026-02-28 (roadmap pointer)
-**Status:** Component library foundation complete, scaling to production
+**Last Updated:** 2026-03-05
+**Status:** See [ROADMAP.md](../ROADMAP.md) for strategic priorities and [MARKETPLACE_STATUS_AND_TODO.md](../reference/MARKETPLACE_STATUS_AND_TODO.md) for detailed build status.
 
-> **Strategic roadmap:** See **[docs/ROADMAP.md](../ROADMAP.md)** for research-informed build priorities.
-> The "Strategic Roadmap" section below is from Nov 2024 and has been superseded.
-
----
-
-## 📍 WHERE WE ARE
-
-### ✅ **COMPLETED SYSTEMS**
-
-#### 1. **Marketplace Backend** (marketplace/backend/)
-- ✅ Express.js server with security middleware
-- ✅ SQLite database with schemas
-- ✅ Stripe payment integration (production + development routes)
-- ✅ Crypto payment system (Bitcoin/Lightning/Monero)
-- ✅ Admin dashboard & authentication
-- ✅ Multi-brand catalog system
-- ✅ Secure PDF download with token validation
-- ✅ Lulu print-on-demand integration
-- ✅ Email service (order confirmations, downloads)
-- ✅ Audit logging system
-- ✅ Health monitoring for failover
-
-**Status:** 🟢 Production-ready
-
-#### 2. **Marketplace Frontend** (marketplace/frontend/)
-- ✅ Multi-brand templating system
-- ✅ Brand configuration system (config.json, catalog.json)
-- ✅ Shopping cart functionality
-- ✅ Network federation client
-- ✅ Crypto checkout flow
-- ✅ Store pages (store.html, network.html, brands.html)
-- ✅ Revolution page (territory claiming, publisher funnel)
-- ✅ Component library system (components.html)
-
-**Status:** 🟢 Production-ready, 🟡 Components being modularized
-
-#### 3. **Component Library System** (marketplace/frontend/components-library/) ⭐ **NEW**
-- ✅ Base CSS system (_base/variables.css, reset.css)
-- ✅ Brand theming system (brand-themes/)
-- ✅ Component manifest registry (COMPONENT_MANIFEST.json)
-- ✅ Complete documentation (README.md, COMPONENTS_INDEX.md)
-- ✅ Demo system (DEMO-brand-swap.html)
-- ✅ Auto-generator script (generate-components.js)
-- ✅ **12/50+ components built** (24% complete)
-
-**Status:** 🟡 In progress - core MVP components done
-
-#### 4. **Brand System**
-- ✅ 9 brands configured:
-  - teneo
-  - information_asymmetry
-  - quantum_youth_publishing
-  - true-earth
-  - wealth-wise
-  - default
-  - my-test-brand
-  - test_automation_brand
-- ✅ Brand-specific catalogs
-- ✅ Brand-specific themes
-- ✅ Master templates for new brands
-
-**Status:** 🟢 Production-ready
-
-#### 5. **Documentation**
-- ✅ Complete architecture docs (DUAL_MODE_ARCHITECTURE.md)
-- ✅ Deployment guide (DEPLOYMENT.md)
-- ✅ Censorship resistance strategy (CENSORSHIP_RESISTANT_MVP.md)
-- ✅ Public vs private strategy (PUBLIC_VS_PRIVATE_STRATEGY.md)
-- ✅ Information asymmetry implementation guide
-- ✅ MVP launch guide (MVP_48_HOUR_LAUNCH.md)
-- ✅ Component library docs
-
-**Status:** 🟢 Complete
+> This file was the primary implementation tracker through Nov 2024. It is now a reference document.
+> The authoritative sources are **ROADMAP.md** (strategy) and **MARKETPLACE_STATUS_AND_TODO.md** (status).
 
 ---
 
-## 🎯 WHERE WE'RE GOING
+## Current State (March 2026)
 
-### **IMMEDIATE NEXT STEPS** (This Session)
+### Production-Ready Systems
 
-#### Phase 1: Complete Component Library (In Progress)
-- 🔄 Generate remaining 38 components:
-  - Forms (5 components)
-  - Pricing (4 components)
-  - Social Proof (6 components)
-  - Interactive (7 components)
-  - Conversion (5 components)
-  - Content (6 components)
-  - Navigation (5 components)
-- Target: 50/50 components (100% complete)
-- Timeline: This session
+| System | Location | Status |
+|--------|----------|--------|
+| Express.js backend | `marketplace/backend/server.js` | 26 route files, 27+ services |
+| SQLite database | `marketplace/backend/database/` | 10 schema files |
+| Stripe payments | `routes/checkout.js`, `checkoutProduction.js`, `checkoutMixed.js` | Full checkout + refunds |
+| Crypto checkout | `routes/cryptoCheckout.js` | BTC/Lightning/Monero (manual verification) |
+| Auth system | `marketplace/backend/auth/` | 3 providers: magic link, OAuth SSO, Nostr (backend) |
+| Admin dashboard | `routes/adminRoutes.js` | Orders, analytics, refunds, audit logging |
+| Multi-brand catalog | `routes/brandRoutes.js`, `frontend/brands/` | 9 brands configured |
+| Course platform | `routes/courseRoutes.js`, `routes/quiz.js` | CRUD, enrollment, quizzes, certificates |
+| Email marketing | `services/emailMarketingService.js` | Sequences, segmentation, tracking |
+| Funnel builder | `funnel-module/` | 4 templates, save/load/deploy |
+| Print-on-demand | `routes/luluAdmin.js`, `services/luluService.js` | Full Lulu API integration |
+| AI discovery | `routes/aiDiscovery.js`, `services/aiDiscoveryService.js` | Semantic search + keyword fallback |
+| Federation network | `routes/networkRoutes.js`, `services/network-service.js` | Peer discovery, cross-store search |
+| Publisher features | `routes/publishedBooks.js`, `routes/publisherProfiles.js` | Amazon tracking, leaderboards, badges |
+| Download system | `routes/downloadRoutes.js` | Token validation, rate limiting |
+| Component library | `marketplace/frontend/components-library/` | Heroes (5/5), CTAs (1/6), base system |
 
-#### Phase 2: Component Integration
-- Build complete funnel templates using components
-- Create book sales page template
-- Create sovereignty revolution template
-- Create VSL funnel template
-- Create brand builder template
+### Not Built
 
-#### Phase 3: Brand Setup & Testing
-- Set up YOUR first real brand from teneo-production
-- Add real book with real content
-- Test payment flow end-to-end
-- Launch first sales page
+| Feature | Roadmap Phase | Notes |
+|---------|---------------|-------|
+| Gig platform | Phase 2 | 0% -- no routes, no schema |
+| Agent services | Phase 4 | App store scaffold only |
+| ArxMint payments | Phase 3 | Service stubbed, needs ArxMint SDK |
+| Health monitoring / failover | Deferred | Documented in DUAL_MODE_ARCHITECTURE.md |
+| Checkout conversion stack | Phase 1 | Coupons, bumps, upsells, cart recovery |
+| Content protection | Phase 1 | PDF stamping, watermarks, license keys |
+| Affiliate program | Phase 2 | Non-negotiable for creator switching |
+| Tax workflow | Phase 2 | Calculation + invoicing, not MoR |
+| Nostr auth frontend | Phase 3 | Backend provider exists, no UI |
+| NIP-99 federation | Phase 4 | Currently JSON registry |
 
----
+### Component Library Status
 
-## 📊 CURRENT PROGRESS BREAKDOWN
+12 of ~50 planned components built (24%):
+- Heroes: 5/5
+- CTAs: 1/6
+- Product: 1/5
+- Base system: 3/3 (variables, reset, docs)
+- Brand themes: 2/4
+- Infrastructure: 3/3 (manifest, index, generator)
 
-### **Component Library Status**
-
-#### ✅ **COMPLETE (12/50 = 24%)**
-
-**Heroes (5/5) - 100% ✅**
-1. ✅ hero-vsl.html - Video Sales Letter hero
-2. ✅ hero-revolutionary.html - Dark, dramatic hero
-3. ✅ hero-brand-builder.html - Brand builder hero
-4. ✅ hero-book-focused.html - Book sales page hero
-5. ✅ hero-dream-outcome.html - AI ebook hero
-
-**CTAs (1/6) - 17%**
-1. ✅ cta-button-primary.html - Primary CTA button
-
-**Product (1/5) - 20%**
-1. ✅ territory-card.html - Territory card with expandable list
-
-**Base System (3/3) - 100% ✅**
-1. ✅ _base/variables.css - Global CSS variables
-2. ✅ _base/reset.css - CSS reset
-3. ✅ README.md - Complete documentation
-
-**Brand Themes (2/4) - 50%**
-1. ✅ teneo-brand.css
-2. ✅ information-asymmetry-brand.css
-
-**Infrastructure (3/3) - 100% ✅**
-1. ✅ COMPONENT_MANIFEST.json - Component registry
-2. ✅ COMPONENTS_INDEX.md - Status tracker
-3. ✅ generate-components.js - Auto-generator
+Remaining categories (forms, pricing, social proof, interactive, conversion, content, navigation) not started.
 
 ---
 
-#### 🔄 **IN PROGRESS (38/50 = 76%)**
-
-**CTAs (5 remaining)**
-- [ ] cta-button-secondary.html
-- [ ] cta-button-urgent.html
-- [ ] cta-section-full.html
-- [ ] cta-sticky-bar.html
-- [ ] cta-four-path.html
-
-**Forms (5 remaining)**
-- [ ] form-email-capture.html
-- [ ] form-multi-step-wizard.html
-- [ ] form-brand-builder.html
-- [ ] form-application.html
-- [ ] form-qualification.html
-
-**Pricing (4 remaining)**
-- [ ] pricing-table-three-tier.html
-- [ ] pricing-table-four-tier.html
-- [ ] value-stack-comparison.html
-- [ ] price-box-single.html
-
-**Product (4 remaining)**
-- [ ] book-card.html
-- [ ] book-grid-filterable.html
-- [ ] territory-grid.html
-- [ ] armory-section.html
-
-**Social Proof (6 remaining)**
-- [ ] testimonial-card.html
-- [ ] testimonial-grid.html
-- [ ] victories-section.html
-- [ ] trust-badges.html
-- [ ] stats-display.html
-- [ ] social-sharing.html
-
-**Interactive (7 remaining)**
-- [ ] modal-exit-intent.html
-- [ ] modal-oto.html
-- [ ] countdown-timer.html
-- [ ] progress-bar.html
-- [ ] faq-accordion.html
-- [ ] expandable-list.html
-- [ ] video-player.html
-
-**Conversion (5 remaining)**
-- [ ] objection-destruction.html
-- [ ] guarantee-box.html
-- [ ] urgency-banner.html
-- [ ] scarcity-indicator.html
-- [ ] manifesto-section.html
-
-**Content (6 remaining)**
-- [ ] benefits-grid.html
-- [ ] features-three-column.html
-- [ ] features-five-column.html
-- [ ] checklist-section.html
-- [ ] transformation-journey.html
-- [ ] outcome-anchors.html
-
-**Navigation (5 remaining)**
-- [ ] header-sticky.html
-- [ ] header-minimal.html
-- [ ] footer-full.html
-- [ ] footer-minimal.html
-- [ ] mobile-nav-drawer.html
-
-**Brand Themes (2 remaining)**
-- [ ] wealth-wise-brand.css
-- [ ] true-earth-brand.css
-
----
-
-## 🏗️ ARCHITECTURE OVERVIEW
-
-### **Repository Structure**
+## Architecture
 
 ```
-teneo-marketplace/
-├── marketplace/
-│   ├── backend/                          ✅ Complete
-│   │   ├── server.js                    # Express server
-│   │   ├── routes/                      # API routes
-│   │   ├── services/                    # Business logic
-│   │   ├── database/                    # SQLite + schemas
-│   │   └── scripts/                     # Admin utilities
-│   │
-│   └── frontend/                         🟡 In progress
-│       ├── brands/                      ✅ Complete
-│       │   ├── teneo/
-│       │   ├── information_asymmetry/
-│       │   ├── wealth-wise/
-│       │   ├── true-earth/
-│       │   └── master-templates/        ✅ Complete
-│       │
-│       ├── components-library/          🔄 24% complete ⭐ CURRENT FOCUS
-│       │   ├── _base/                   ✅ Complete
-│       │   ├── heroes/                  ✅ Complete (5/5)
-│       │   ├── ctas/                    🔄 17% (1/6)
-│       │   ├── forms/                   ❌ Not started (0/5)
-│       │   ├── pricing/                 ❌ Not started (0/4)
-│       │   ├── product/                 🔄 20% (1/5)
-│       │   ├── social-proof/            ❌ Not started (0/6)
-│       │   ├── interactive/             ❌ Not started (0/7)
-│       │   ├── conversion/              ❌ Not started (0/5)
-│       │   ├── content/                 ❌ Not started (0/6)
-│       │   ├── navigation/              ❌ Not started (0/5)
-│       │   ├── brand-themes/            🔄 50% (2/4)
-│       │   ├── templates/               ❌ Not started
-│       │   ├── COMPONENT_MANIFEST.json  ✅ Complete
-│       │   ├── README.md                ✅ Complete
-│       │   ├── COMPONENTS_INDEX.md      ✅ Complete
-│       │   └── generate-components.js   ✅ Complete
-│       │
-│       ├── js/                          ✅ Complete
-│       ├── css/                         ✅ Complete
-│       └── *.html                       ✅ Complete (existing pages)
-│
-├── docs/                                ✅ Complete
-├── teneo-express/                       🔒 Private (separate SaaS)
-└── claude-files/                        🔒 Private (business docs)
+openbazaar-ai/
+  marketplace/
+    backend/
+      server.js              # Express entry point (port 3001)
+      routes/                # 26 route files
+      services/              # 27+ service files
+      database/              # SQLite + 10 schema files
+      auth/                  # 3 pluggable auth providers
+      middleware/             # Auth, rate limiting, Teneo auth
+    frontend/
+      index.html             # Main marketplace view
+      brands/                # 9 brand configs
+      components-library/    # Reusable HTML/CSS components
+      js/                    # Client-side modules
+  course-module/             # Course player + content
+  funnel-module/             # Funnel builder + templates
+  openbazaar-site/           # Landing page (Vercel deploy)
+  __tests__/                 # 17 test suites
+  docs/                      # 75+ documentation files
 ```
 
 ---
 
-## 🎯 STRATEGIC ROADMAP
+## Testing
 
-### **Phase 1: Component Library Completion** 🔄 **CURRENT**
-**Goal:** 50/50 components ready for production
-**Timeline:** This session
-**Deliverables:**
-- ✅ All 5 heroes (complete)
-- 🔄 All 6 CTAs
-- 🔄 All 5 forms
-- 🔄 All 4 pricing tables
-- 🔄 All 6 social proof components
-- 🔄 All 7 interactive elements
-- 🔄 All 5 conversion components
-- 🔄 All 6 content blocks
-- 🔄 All 5 navigation components
-- 🔄 4 brand themes
+17 test suites, 158 tests, 100% pass rate. Coverage includes: health checks, auth flows, checkout price validation, crypto checkout, Stripe webhook idempotency, course enrollment, quizzes, downloads, coupons, Lulu POD, order service, email sequences, brands, app store, webhooks, input validation.
 
-**Status:** 24% → 100% (this session)
-
----
-
-### **Phase 2: Template Assembly**
-**Goal:** Pre-built complete landing page templates
-**Timeline:** After Phase 1
-**Deliverables:**
-- Book sales page template (9 components)
-- Sovereignty revolution template (11 components)
-- VSL funnel template (7 components)
-- Brand builder template (8 components)
-
----
-
-### **Phase 3: Real Brand Launch**
-**Goal:** Your first brand with real Teneo book live
-**Timeline:** After Phase 2
-**Steps:**
-1. Choose brand name/positioning
-2. Pull book from teneo-production
-3. Generate book cover
-4. Configure brand theme
-5. Assemble sales page from components
-6. Configure Stripe
-7. Test purchase flow
-8. Launch
-
----
-
-### **Phase 4: Automation Integration**
-**Goal:** Connect to Teneo AI book generation
-**Timeline:** Post-launch
-**Features:**
-- Auto-generate book sales pages from Teneo output
-- Dynamic component assembly
-- Batch brand creation
-- 100 books → 100 sales pages automation
-
----
-
-### **Phase 5: Federation & Scale**
-**Goal:** Multi-node marketplace network
-**Timeline:** Post-validation
-**Features:**
-- Node deployment system
-- Cross-node search
-- Revenue sharing
-- Territory claiming
-- Publisher onboarding
-
----
-
-## 💡 KEY INSIGHTS FROM BUILD
-
-### **What's Working Well:**
-
-1. **Modular Architecture**
-   - Components are truly self-contained
-   - CSS variables enable instant brand swapping
-   - Copy-paste workflow is validated
-
-2. **Brand System**
-   - config.json approach is flexible
-   - Theme separation works perfectly
-   - Easy to add new brands
-
-3. **Documentation**
-   - Complete coverage of architecture
-   - Clear deployment paths
-   - Federation strategy documented
-
-### **What's Being Solved:**
-
-1. **Component Scaling**
-   - 🔄 Building remaining 38 components in batches
-   - 🔄 Template assembly system needed
-   - 🔄 Drag-drop builder (future)
-
-2. **Content Integration**
-   - 🔄 Need to connect teneo-production books
-   - 🔄 Variable replacement automation
-   - 🔄 Batch page generation
-
----
-
-## 🚀 PRODUCTION READINESS
-
-### **Ready for Production:**
-- ✅ Backend API (payments, downloads, admin)
-- ✅ Database & schemas
-- ✅ Brand system
-- ✅ Existing store pages
-- ✅ Network federation
-- ✅ Documentation
-
-### **In Progress:**
-- 🔄 Component library (24% → 100% this session)
-- 🔄 Landing page templates
-- 🔄 First real brand setup
-
-### **Future Enhancements:**
-- ⏳ Visual page builder
-- ⏳ AI auto-generation integration
-- ⏳ Multi-node deployment
-- ⏳ A/B testing framework
-- ⏳ Analytics dashboard
-
----
-
-## 📈 SUCCESS METRICS
-
-### **Phase 1 Success:**
-- ✅ 50/50 components complete
-- ✅ 4 complete funnel templates
-- ✅ All components documented
-- ✅ Brand swapping validated
-
-### **Phase 2 Success:**
-- 🎯 First book sales page live
-- 🎯 Payment flow tested end-to-end
-- 🎯 First real sale processed
-- 🎯 Download system validated
-
-### **Phase 3 Success:**
-- 🎯 10 books with sales pages
-- 🎯 $1K revenue validated
-- 🎯 Second brand launched
-- 🎯 Federation node deployed
-
----
-
-## 🔥 IMMEDIATE ACTION PLAN
-
-**Next 60 minutes:**
-
-1. **Batch 1: Forms (5 components)** - Critical for lead capture
-2. **Batch 2: Pricing (4 components)** - Critical for checkout
-3. **Batch 3: CTAs (5 components)** - Critical for conversion
-4. **Batch 4: Social Proof (6 components)** - Critical for trust
-5. **Batch 5: Interactive (7 components)** - Modals, timers, FAQs
-6. **Batch 6: Content (6 components)** - Benefits, features, checklists
-7. **Batch 7: Conversion (5 components)** - Objections, guarantees
-8. **Batch 8: Navigation (5 components)** - Headers, footers
-
-**After completion:**
-- Assemble first complete book sales page template
-- Set up first real brand from teneo-production
-- Test end-to-end flow
-
----
-
-## 📝 NOTES & CONTEXT
-
-### **Design Decisions:**
-
-1. **Why CSS Variables?**
-   - Instant brand theme swapping
-   - No JavaScript needed for styling
-   - Easy for non-technical users
-
-2. **Why Self-Contained Components?**
-   - Copy-paste simplicity
-   - No build step required
-   - Works in any environment
-
-3. **Why {{VARIABLE}} Syntax?**
-   - Simple find/replace
-   - Template processor optional
-   - Human-readable
-
-### **Technical Stack:**
-- **Backend:** Node.js + Express.js
-- **Database:** SQLite
-- **Payments:** Stripe + Crypto (BTC/Lightning/XMR)
-- **Frontend:** Vanilla JS + CSS (no framework lock-in)
-- **Components:** Self-contained HTML+CSS+JS
-- **Theming:** CSS Custom Properties
-- **Deployment:** VPS/PaaS ready
-
-### **Integration Points:**
-- **Teneo Production:** Source of AI-generated books
-- **OrchestratorOS:** Brand automation system
-- **Network Registry:** Federation node discovery
-- **Payment Gateways:** Stripe, BTCPay Server
-- **Email Service:** SMTP for notifications
-- **Print Service:** Lulu.com API
-
----
-
-## 🎓 LESSONS LEARNED
-
-1. **Modularity Wins** - Self-contained components are infinitely scalable
-2. **Documentation Critical** - CLAUDE.md saved hours of context re-explanation
-3. **CSS Variables = Magic** - Instant theme swapping with zero JavaScript
-4. **Start Small, Scale Smart** - Core 12 components prove the system works
-5. **Real Use Case First** - Building for YOUR books validates everything
-
----
-
-**STATUS: 🟢 ON TRACK**
-
-- Foundation: Complete ✅
-- Core Components: 24% → Target: 100% this session
-- First Brand Launch: Ready after component completion
-- Production Deployment: 1-2 days after validation
-
-**LET'S BUILD THE REMAINING 38 COMPONENTS! 🚀**
+```bash
+npm test          # Run all tests
+npm run test:watch  # Watch mode
+```

@@ -15,9 +15,9 @@ Your job is to read state, decide what happens next, and write your decision to 
 
 ---
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight
 STAGE: unknown (0%)
 SCORE VALIDATION: completion_pct (0%) is SELF-REPORTED and has NEVER been validated. Run `reality_check` workflow before trusting this number.
 
@@ -120,7 +120,7 @@ There is no separate EVALUATOR or ROUTER - YOU do all of that.
 
 ### 0. TASK INDEX (read BEFORE anything else)
 
-**C:\code\teneo-marketplace/TASK_INDEX.json** — Universal task registry. Any tool (PRAS, overnight,
+**C:\code\openbazaar-ai/TASK_INDEX.json** — Universal task registry. Any tool (PRAS, overnight,
 human, external) can register findings/tasks here.
 
 Read this file first (if it exists). It tells you:
@@ -155,7 +155,7 @@ strategy + stepsToFix) which produces better task descriptions.
 
 ### 1. PROGRESS STATE (read FIRST - tells you where you are)
 
-**C:\code\teneo-marketplace\.overnight/progress.json** - Single source of truth for pipeline state:
+**C:\code\openbazaar-ai\.overnight/progress.json** - Single source of truth for pipeline state:
 
 ```json
 {
@@ -205,36 +205,36 @@ This is how you know what works and what doesn't. READ IT.
 
 ### 2. Audit Outputs (if audits have run)
 
-**C:\code\teneo-marketplace\.overnight/*_output.json** - Results from completed audits:
+**C:\code\openbazaar-ai\.overnight/*_output.json** - Results from completed audits:
 - `monetization_audit_output.json` - Revenue blockers
 - `security_audit_output.json` - Security issues
 - `ux_audit_output.json` - UX problems
 - `code_quality_audit_output.json` - Code quality issues
 
-### 3. Reports (if any): C:\code\teneo-marketplace\.overnight\reports/*.json
+### 3. Reports (if any): C:\code\openbazaar-ai\.overnight\reports/*.json
    - Synthesized findings, review results
    - Issue counts by severity
 
-### 4. Tasks (if any): C:\code\teneo-marketplace\.overnight\active/*.md
+### 4. Tasks (if any): C:\code\openbazaar-ai\.overnight\active/*.md
    - Pending tasks for workers
    - Completed vs remaining
 
-### 5. Worker Logs (if any): C:\code\teneo-marketplace\.overnight\LOG_*.md
+### 5. Worker Logs (if any): C:\code\openbazaar-ai\.overnight\LOG_*.md
    - What workers accomplished
    - Any blockers or failures
 
 ### 6. Session Memory (CRITICAL for intelligence)
 
-**C:\code\teneo-marketplace\.overnight/HANDOFF.md** — Previous session's summary: what was accomplished, what remains,
+**C:\code\openbazaar-ai\.overnight/HANDOFF.md** — Previous session's summary: what was accomplished, what remains,
 what approaches worked/failed, recommendations for this session. **Read this first if it exists.**
 
-**C:\code\teneo-marketplace\.overnight/decision_log.jsonl** — Every CONDUCTOR routing decision this session with outcomes.
+**C:\code\openbazaar-ai\.overnight/decision_log.jsonl** — Every CONDUCTOR routing decision this session with outcomes.
 Shows what you already tried and whether it was productive. **Don't repeat unproductive routes.**
 
-**C:\code\teneo-marketplace\.overnight/lessons.json** — Accumulated lessons: rejected false-positive findings, fake worker
+**C:\code\openbazaar-ai\.overnight/lessons.json** — Accumulated lessons: rejected false-positive findings, fake worker
 verdicts, unproductive box routes. **Avoid known false positives and known failure patterns.**
 
-### 7. Project Task Declarations (if any): C:\code\teneo-marketplace/OVERNIGHT_TASKS.md
+### 7. Project Task Declarations (if any): C:\code\openbazaar-ai/OVERNIGHT_TASKS.md
    - Project's own priority list (checkbox format)
    - TASK_SYNTHESIZER will read and merge these with audit findings
    - You don't need to act on these directly — just know they exist
@@ -249,7 +249,7 @@ verdicts, unproductive box routes. **Avoid known false positives and known failu
 
 The situation briefing above gives your best 2-4 options. **If those options are sufficient, skip this section.**
 
-For unusual situations or first-time decisions, read `C:\code\teneo-marketplace\.overnight/flow_reference.md` for the full
+For unusual situations or first-time decisions, read `C:\code\openbazaar-ai\.overnight/flow_reference.md` for the full
 list of all boxes, audit types, and workflows available. That file has stage-specific recommendations.
 
 **Quick reference — Core pipeline:**
@@ -354,7 +354,7 @@ may have already completed all tasks. Always verify the ACTUAL status of task fi
 
 ```
 BEFORE deciding to route to WORKER:
-  1. Read EVERY .md file in C:\code\teneo-marketplace\.overnight\active/
+  1. Read EVERY .md file in C:\code\openbazaar-ai\.overnight\active/
   2. Check the `status:` field in each file's YAML frontmatter
   3. Count ONLY files with `status: pending`
 
@@ -374,7 +374,7 @@ when all 14 tasks already have `status: completed`. This wastes a full worker cy
 
 ### Post-Worker Task Triage (CRITICAL)
 
-After WORKER returns, **count task statuses** in C:\code\teneo-marketplace\.overnight\active/*.md before deciding:
+After WORKER returns, **count task statuses** in C:\code\openbazaar-ai\.overnight\active/*.md before deciding:
 
 ```
 Read every .md file in active/ and count:
@@ -503,7 +503,7 @@ If stuck for 3+ rounds:
 
 ## Human Task Queue
 
-Read `C:\code\teneo-marketplace\.overnight\HUMAN_TASKS.md` if it exists. This file contains tasks that require
+Read `C:\code\openbazaar-ai\.overnight\HUMAN_TASKS.md` if it exists. This file contains tasks that require
 human action (credentials, accounts, DNS, payments, etc.).
 
 ### Check for completed items:
@@ -541,7 +541,7 @@ This prevents switching away from a project with broken/faked work.
 
 ## Output Format
 
-Write your decision to: C:\code\teneo-marketplace\.overnight\conductor_output.json
+Write your decision to: C:\code\openbazaar-ai\.overnight\conductor_output.json
 
 ```json
 {
@@ -549,9 +549,9 @@ Write your decision to: C:\code\teneo-marketplace\.overnight\conductor_output.js
   "next_box": "FLOW_NAME" or null,
   "next_workflow": "workflow_name" or null,
   "context": {
-    "project_slug": "teneo-marketplace",
-    "project_path": "C:\code\teneo-marketplace",
-    "relay_dir": "C:\code\teneo-marketplace\.overnight",
+    "project_slug": "openbazaar-ai",
+    "project_path": "C:\code\openbazaar-ai",
+    "relay_dir": "C:\code\openbazaar-ai\.overnight",
     "phase": "discover|audit|fix|synthesize|execute|evaluate|done",
     "decision_reason": "Why you chose this (must state priority tier: core_flow|deployment|features|polish)",
     "what_you_read": ["files you examined"],

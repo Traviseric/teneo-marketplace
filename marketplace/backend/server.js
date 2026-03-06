@@ -85,6 +85,7 @@ const nftRoutes = require('./routes/nft');
 const authRoutes = require('./routes/auth');
 const couponsRoutes = require('./routes/couponsRoutes');
 const emailTrackingRoutes = require('./routes/emailTracking');
+const storefrontRoutes = require('./routes/storefront');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -92,6 +93,7 @@ const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
 // Course platform routes
 const courseRoutes = require('./routes/courseRoutes');
 const quizRoutes = require('./routes/quiz');
+const appStoreRoutes = require('./routes/appStore');
 
 const { safeMessage } = require('./utils/validate');
 const axios = require('axios');
@@ -143,9 +145,12 @@ app.use(session({
 app.use(cors({
     origin: [
         'https://teneo.io',
-        'https://www.teneo.io', 
+        'https://www.teneo.io',
         'https://staging.teneo.io',
+        'https://arxmint.com',        // ArxMint bazaar integration
+        'https://www.arxmint.com',
         'http://localhost:3333',  // Teneo development
+        'http://localhost:3000',  // ArxMint local dev
         process.env.FRONTEND_URL || 'http://localhost:3000'  // Keep backward compatibility
     ],
     credentials: true, // Allow cookies
@@ -162,6 +167,7 @@ const csrfExcludePaths = [
     '/api/checkout/mixed',
     '/api/lulu/webhook',
     '/api/crypto/btcpay/webhook', // BTCPay payment webhook
+    '/api/storefront/fulfill',     // ArxMint fulfillment webhook
     '/webhooks' // Orchestrator webhooks
 ]; // Webhook endpoints need to be excluded
 
@@ -175,7 +181,7 @@ app.use((req, res, next) => {
         return next();
     }
     // Skip CSRF for GET requests and public API endpoints
-    if (req.method === 'GET' || req.path.startsWith('/api/health') || req.path.startsWith('/api/network/status')) {
+    if (req.method === 'GET' || req.path.startsWith('/api/health') || req.path.startsWith('/api/network/status') || req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront')) {
         return next();
     }
     // Apply CSRF protection to all other routes
@@ -217,24 +223,11 @@ app.use('/api/funnels', funnelRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/quizzes', quizRoutes);
 
-// Public certificate verification (separate mount so it doesn't need /api/courses prefix)
-const { getCertificate } = require('./services/certificateService');
-app.get('/api/verify/certificate/:certId', async (req, res) => {
-    try {
-        const cert = await getCertificate(req.params.certId);
-        if (!cert) return res.status(404).json({ success: false, error: 'Certificate not found' });
-        res.json({
-            success: true,
-            valid: true,
-            course: cert.course_title,
-            issued_at: cert.issued_at
-            // user_email intentionally omitted from public response
-        });
-    } catch (error) {
-        console.error('Verify certificate error:', error);
-        res.status(500).json({ success: false, error: 'Failed to verify certificate' });
-    }
-});
+// Agent App Store
+app.use('/api/apps', appStoreRoutes);
+
+// Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
+app.use('/api/storefront', storefrontRoutes);
 
 // Public certificate verification (separate mount so it doesn't need /api/courses prefix)
 const { getCertificate } = require('./services/certificateService');
@@ -260,7 +253,7 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
-        service: 'teneo-marketplace-api'
+        service: 'openbazaar-ai-api'
     });
 });
 
@@ -455,7 +448,7 @@ async function searchPeers(query) {
         return [];
     }
 
-    const nodeId = process.env.STORE_ID || 'teneo-main';
+    const nodeId = process.env.STORE_ID || 'openbazaar-main';
     const peerRequests = networkConfig.networkPeers.map(peer =>
         axios.get(`${peer.endpoint}/api/search`, {
             params: { q: query },
@@ -489,14 +482,14 @@ app.get('/api/network/search', async (req, res) => {
         ]);
 
         const allResults = [...localResults, ...peerResults];
-        const nodeId = process.env.STORE_ID || 'teneo-main';
+        const nodeId = process.env.STORE_ID || 'openbazaar-main';
 
         res.json({
             success: true,
             query: q,
             results: allResults,
             stores: [
-                { id: nodeId, name: 'Teneo Marketplace', resultCount: localResults.length },
+                { id: nodeId, name: 'OpenBazaar AI', resultCount: localResults.length },
                 ...networkConfig.networkPeers
                     .filter(p => peerResults.some(r => r.source_node_id === p.id))
                     .map(p => ({
@@ -620,7 +613,7 @@ if (require.main === module) {
     app.listen(PORT, async () => {
         await initDatabase();
         cronService.start();
-        console.log(`✅ Teneo Marketplace API running on port ${PORT}`);
+        console.log(`✅ OpenBazaar AI API running on port ${PORT}`);
         console.log(`🌍 API available at http://localhost:${PORT}/api`);
         console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`📈 Published books dashboard: http://localhost:${PORT}/published`);

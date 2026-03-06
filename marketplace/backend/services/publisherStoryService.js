@@ -277,7 +277,7 @@ class PublisherStoryService {
         }
     }
 
-    // Get comparison data for Amazon vs Teneo Marketplace
+    // Get comparison data for Amazon vs OpenBazaar AI
     getMarketplaceComparison() {
         return {
             amazon: {

@@ -1,4 +1,4 @@
-# 🚀 Teneo Marketplace Setup Summary
+# 🚀 OpenBazaar AI Setup Summary
 
 ## ✅ What We've Accomplished
 

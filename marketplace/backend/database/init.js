@@ -11,6 +11,7 @@ const nftSchemaPath = path.join(__dirname, 'schema-nft.sql');
 const coursesSchemaPath = path.join(__dirname, 'schema-courses.sql');
 const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
 const emailMarketingSchemaPath = path.join(__dirname, 'schema-email-marketing.sql');
+const appStoreSchemaPath = path.join(__dirname, 'schema-appstore.sql');
 
 // Create database directory if it doesn't exist
 const dbDir = path.dirname(dbPath);
@@ -36,6 +37,7 @@ const nftSchema = fs.existsSync(nftSchemaPath) ? fs.readFileSync(nftSchemaPath, 
 const coursesSchema = fs.existsSync(coursesSchemaPath) ? fs.readFileSync(coursesSchemaPath, 'utf8') : '';
 const funnelsSchema = fs.existsSync(funnelsSchemaPath) ? fs.readFileSync(funnelsSchemaPath, 'utf8') : '';
 const emailMarketingSchema = fs.existsSync(emailMarketingSchemaPath) ? fs.readFileSync(emailMarketingSchemaPath, 'utf8') : '';
+const appStoreSchema = fs.existsSync(appStoreSchemaPath) ? fs.readFileSync(appStoreSchemaPath, 'utf8') : '';
 
 db.serialize(() => {
     // Execute main schema
@@ -120,6 +122,17 @@ db.serialize(() => {
                 console.error('Error creating Email Marketing schema:', err);
             } else {
                 console.log('✅ Email Marketing schema created successfully');
+            }
+        });
+    }
+
+    // Execute App Store schema if exists
+    if (appStoreSchema) {
+        db.exec(appStoreSchema, (err) => {
+            if (err) {
+                console.error('Error creating App Store schema:', err);
+            } else {
+                console.log('App Store schema created successfully');
             }
         });
     }

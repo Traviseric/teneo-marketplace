@@ -32,7 +32,7 @@ This is the FINAL possible automated action before declaring all deployment auto
 ### Step 1: Check .env for Render credentials
 
 ```bash
-grep -i RENDER /code/teneo-marketplace/.env 2>/dev/null || echo "NO RENDER KEYS FOUND"
+grep -i RENDER /code/openbazaar-ai/.env 2>/dev/null || echo "NO RENDER KEYS FOUND"
 ```
 
 Look for any of:
@@ -56,7 +56,7 @@ Record the API response in task notes. If successful (HTTP 201), mark task compl
 
 ### Step 2b: If Render credentials are NOT found in .env
 
-Update `C:/code/teneo-marketplace/.overnight/HUMAN_TASKS.md` — find the HT-005 entry and update its **Automation status** line to:
+Update `C:/code/openbazaar-ai/.overnight/HUMAN_TASKS.md` — find the HT-005 entry and update its **Automation status** line to:
 
 ```
 **Automation status:** NOT AUTOMATABLE — Docker Desktop not installed (confirmed task 070); No RENDER_API_KEY or RENDER_SERVICE_ID in .env (checked task 071); both Docker and Render deployment paths require human action.

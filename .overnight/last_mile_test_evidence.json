@@ -2,16 +2,16 @@
   "url": "http://localhost:3003",
   "collected_at": "2026-02-28T12:23:40Z",
   "collection_method": "HTTP verification by worker_002",
-  "project": "teneo-marketplace",
+  "project": "openbazaar-ai",
   "total_scenarios": 10,
-  "note": "Previous evidence collected against wrong URL (https://opensource.org/licenses/MIT). This evidence reflects actual testing of the teneo-marketplace app at http://localhost:3003.",
+  "note": "Previous evidence collected against wrong URL (https://opensource.org/licenses/MIT). This evidence reflects actual testing of the openbazaar-ai app at http://localhost:3003.",
   "scenarios": [
     {
       "scenario_name": "api_health",
       "priority": "high",
       "page_url": "http://localhost:3003/api/health",
       "page_title": "API Health Endpoint",
-      "page_text_snippet": "{\"status\":\"healthy\",\"timestamp\":\"2026-02-28T12:23:21.136Z\",\"service\":\"teneo-marketplace-api\"}",
+      "page_text_snippet": "{\"status\":\"healthy\",\"timestamp\":\"2026-02-28T12:23:21.136Z\",\"service\":\"openbazaar-ai-api\"}",
       "console_errors": [],
       "network_failures": [],
       "elements_found": {
@@ -24,7 +24,7 @@
           "step": "GET http://localhost:3003/api/health",
           "action": "http_request",
           "success": true,
-          "detail": "HTTP 200; JSON: {status: healthy, service: teneo-marketplace-api}"
+          "detail": "HTTP 200; JSON: {status: healthy, service: openbazaar-ai-api}"
         }
       ],
       "error": null
@@ -33,8 +33,8 @@
       "scenario_name": "page_loads",
       "priority": "critical",
       "page_url": "http://localhost:3003/",
-      "page_title": "Teneo Marketplace",
-      "page_text_snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Teneo Marketplace</title>",
+      "page_title": "OpenBazaar AI",
+      "page_text_snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>OpenBazaar AI</title>",
       "console_errors": [],
       "network_failures": [],
       "elements_found": {
@@ -52,7 +52,7 @@
           "step": "GET http://localhost:3003/",
           "action": "http_request",
           "success": true,
-          "detail": "HTTP 200; page_title: Teneo Marketplace; contains nav, header, footer"
+          "detail": "HTTP 200; page_title: OpenBazaar AI; contains nav, header, footer"
         }
       ],
       "error": null
@@ -61,7 +61,7 @@
       "scenario_name": "auth_flow",
       "priority": "critical",
       "page_url": "http://localhost:3003/login.html",
-      "page_title": "Teneo Marketplace - Login",
+      "page_title": "OpenBazaar AI - Login",
       "page_text_snippet": "<nav id=\"nav-auth\" aria-label=\"Site navigation\"></nav><form id=\"magic-link-form\" novalidate><div class=\"form-group\"><input ...<button type=\"submit\" class=\"btn btn-primary\" id=\"magic-link-btn\">",
       "console_errors": [],
       "network_failures": [],
@@ -114,7 +114,7 @@
       "scenario_name": "navigation_works",
       "priority": "high",
       "page_url": "http://localhost:3003/",
-      "page_title": "Teneo Marketplace",
+      "page_title": "OpenBazaar AI",
       "page_text_snippet": "<a href=\"/brands.html\">Browse Networks</a><a href=\"/network.html\">Network Search</a><a href=\"/cart.html\">Cart</a>",
       "console_errors": [],
       "network_failures": [],
@@ -140,7 +140,7 @@
       "scenario_name": "forms_work",
       "priority": "high",
       "page_url": "http://localhost:3003/login.html",
-      "page_title": "Teneo Marketplace - Login",
+      "page_title": "OpenBazaar AI - Login",
       "page_text_snippet": "<form id=\"magic-link-form\" novalidate>",
       "console_errors": [],
       "network_failures": [],

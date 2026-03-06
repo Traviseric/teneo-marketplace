@@ -1,6 +1,6 @@
-# Contributing to Teneo Marketplace
+# Contributing to OpenBazaar AI
 
-First off, thank you for considering contributing to Teneo Marketplace! It's people like you that make the uncensorable book network a reality.
+First off, thank you for considering contributing to OpenBazaar AI! It's people like you that make the uncensorable book network a reality.
 
 ## Code of Conduct
 
@@ -44,11 +44,11 @@ Enhancement suggestions are tracked as GitHub issues. Include:
 
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/teneo-marketplace
-cd teneo-marketplace
+git clone https://github.com/your-username/openbazaar-ai
+cd openbazaar-ai
 
 # Add upstream remote
-git remote add upstream https://github.com/Traviseric/teneo-marketplace
+git remote add upstream https://github.com/Traviseric/openbazaar-ai
 
 # Install dependencies
 npm install
@@ -63,7 +63,7 @@ npm start
 ## Project Structure
 
 ```
-teneo-marketplace/
+openbazaar-ai/
 ├── marketplace/
 │   ├── frontend/          # Client-side code
 │   │   ├── brands/       # Brand configurations

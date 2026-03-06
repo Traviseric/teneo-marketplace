@@ -2,7 +2,7 @@
 
 **Updated:** November 17, 2025
 
-The TENEO Marketplace supports two authentication methods:
+The OpenBazaar AI supports two authentication methods:
 1. **Local Auth** (SQLite + Magic Links) - Default for self-hosted deployments
 2. **TENEO Auth SSO** (OAuth 2.0) - For TENEO Cloud deployment
 
@@ -105,7 +105,7 @@ Contact TENEO team or register at `https://auth.teneo.io/oauth/register`:
 - **Scopes:** `read`, `profile`, `credits`, `email`
 
 You'll receive:
-- `CLIENT_ID` (e.g., `teneo-marketplace`)
+- `CLIENT_ID` (e.g., `openbazaar-ai`)
 - `CLIENT_SECRET` (secure random string)
 
 #### Step 2: Configure Environment
@@ -115,7 +115,7 @@ Add to `.env`:
 AUTH_PROVIDER=teneo-auth
 
 TENEO_AUTH_URL=https://auth.teneo.io
-TENEO_CLIENT_ID=teneo-marketplace
+TENEO_CLIENT_ID=openbazaar-ai
 TENEO_CLIENT_SECRET=your-client-secret-here
 TENEO_CALLBACK_URL=https://your-marketplace.com/api/auth/callback
 TENEO_SERVICE_KEY=your-service-key-here
@@ -414,7 +414,7 @@ CREATE TABLE oauth_tokens (
 - OAuth Client Setup: `/TENEO_AUTH_OAUTH_CLIENT_SETUP.md`
 
 **Need Help?**
-- GitHub Issues: https://github.com/Traviseric/teneo-marketplace/issues
+- GitHub Issues: https://github.com/Traviseric/openbazaar-ai/issues
 - Discord: https://discord.gg/teneebooks
 - Email: support@teneo.ai
 
@@ -431,7 +431,7 @@ AUTH_PROVIDER=local
 **For TENEO Cloud:**
 ```bash
 AUTH_PROVIDER=teneo-auth
-TENEO_CLIENT_ID=teneo-marketplace
+TENEO_CLIENT_ID=openbazaar-ai
 TENEO_CLIENT_SECRET=<from-oauth-registration>
 TENEO_CALLBACK_URL=https://your-marketplace.com/api/auth/callback
 ```

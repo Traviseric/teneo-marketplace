@@ -22,7 +22,7 @@ Pipeline stuck at iteration 48/50 — LAST_MILE_TEST is giving NO_GO because it 
 - **Last successful action:** Round 27 — WORKER completed last 3 tasks (tasks 046, 048, final UX batch)
 - **Review audit:** 100% verification score, all worker claims confirmed in code
 - **Test suite:** 71 tests across 9 suites — all passing
-- **LAST_MILE_TEST:** NO_GO — but this is a **confirmed false positive**. The automation navigated to `https://opensource.org/licenses/MIT` (the Open Source Initiative's MIT License text page) instead of the teneo-marketplace app. Auth/cart/API tests all fail because there is no marketplace at that URL. The root cause is HT-001 (`.env` not configured → server never started → automation fell back to a wrong URL).
+- **LAST_MILE_TEST:** NO_GO — but this is a **confirmed false positive**. The automation navigated to `https://opensource.org/licenses/MIT` (the Open Source Initiative's MIT License text page) instead of the openbazaar-ai app. Auth/cart/API tests all fail because there is no marketplace at that URL. The root cause is HT-001 (`.env` not configured → server never started → automation fell back to a wrong URL).
 
 ## Specific Question
 

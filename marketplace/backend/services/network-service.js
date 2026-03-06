@@ -1,4 +1,4 @@
-// Network Service for Teneo Marketplace
+// Network Service for OpenBazaar AI
 // Handles cross-store queries, registry management, and federation
 
 const fs = require('fs').promises;
@@ -32,8 +32,8 @@ class NetworkService {
             this.registry = {
                 version: '1.0',
                 stores: [{
-                    id: 'teneo-main',
-                    name: 'Teneo Books',
+                    id: 'openbazaar-main',
+                    name: 'OpenBazaar Books',
                     url: 'http://localhost:3001',
                     api: 'http://localhost:3001/api',
                     status: 'active'
@@ -46,7 +46,7 @@ class NetworkService {
     getActiveStores() {
         if (!this.registry) return [];
         return this.registry.stores.filter(store => 
-            store.status === 'active' && store.id !== 'teneo-main'
+            store.status === 'active' && store.id !== 'openbazaar-main'
         );
     }
 
@@ -114,8 +114,8 @@ class NetworkService {
                 params,
                 timeout: 5000,
                 headers: {
-                    'User-Agent': 'Teneo-Network-Client/1.0',
-                    'X-Network-Store': 'teneo-main'
+                    'User-Agent': 'OpenBazaar-Network-Client/1.0',
+                    'X-Network-Store': 'openbazaar-main'
                 }
             });
 
@@ -226,7 +226,7 @@ class NetworkService {
         try {
             const startTime = Date.now();
             const response = await axios.post(`${store.api}/network/ping`, {
-                fromStore: 'teneo-main',
+                fromStore: 'openbazaar-main',
                 timestamp: new Date().toISOString()
             }, {
                 timeout: 3000

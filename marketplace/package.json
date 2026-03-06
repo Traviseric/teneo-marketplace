@@ -1,5 +1,5 @@
 {
-  "name": "teneo-marketplace",
+  "name": "openbazaar-ai",
   "version": "0.1.0",
   "description": "Open source book marketplace",
   "main": "backend/server.js",

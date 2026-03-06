@@ -169,7 +169,7 @@ class MarketplacePreview {
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" required>
-                                I commit to helping build the Teneo Marketplace community
+                                I commit to helping build the OpenBazaar AI community
                             </label>
                         </div>
                         <button type="submit" class="cta-btn primary">Claim Founding Publisher Status</button>
@@ -186,7 +186,7 @@ class MarketplacePreview {
             title: '📋 Join the Marketplace Waitlist',
             content: `
                 <div class="waitlist-form">
-                    <p>Be among the first to know when the Teneo Marketplace launches!</p>
+                    <p>Be among the first to know when the OpenBazaar AI launches!</p>
                     
                     <form id="waitlistForm">
                         <div class="form-group">

@@ -504,7 +504,7 @@ tail -f logs/funnel-builder.log
 
 ---
 
-**Built with ❤️ as part of the Teneo Marketplace platform**
+**Built with ❤️ as part of the OpenBazaar AI platform**
 
 **Status:** Day 1 Morning Complete ✅
 **Next:** Day 1 Afternoon - AI Prompt Integration

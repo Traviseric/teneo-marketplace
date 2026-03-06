@@ -94,3 +94,82 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 });
+
+// ─── Dogfooding Store Checkout Logic (Lulu/Printful Headless) ───
+function handleDogfoodCheckout(itemConfig) {
+  const btn = document.getElementById(itemConfig.btnId);
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = 'Processing...';
+
+    const userEmail = prompt('Enter your email to receive order updates:');
+    if (!userEmail) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/checkout-mixed/create-mixed-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail,
+          items: [
+            {
+              id: itemConfig.id,
+              title: itemConfig.title,
+              author: 'OpenBazaar.ai',
+              format: itemConfig.format,
+              price: itemConfig.price,
+              quantity: 1
+            }
+          ]
+        })
+      });
+
+      const data = await res.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert(data.error || 'Failed to initiate checkout.');
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error connecting to payment gateway.');
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  });
+}
+
+// Attach checkout events
+handleDogfoodCheckout({
+  btnId: 'buyHandbookBtn',
+  id: 'network-state-handbook',
+  title: 'The Network State Handbook',
+  format: 'print_trade',
+  price: 24.00
+});
+
+// For demonstration, hooking tee and mug to same endpoint, assuming backend formats map
+handleDogfoodCheckout({
+  btnId: 'buyTeeBtn',
+  id: 'builders-heavy-tee',
+  title: '"Builders Only" Heavyweight Tee',
+  format: 'print_apparel', // hypothetical Printful mapped format
+  price: 35.00
+});
+
+handleDogfoodCheckout({
+  btnId: 'buyMugBtn',
+  id: 'protocol-mug',
+  title: 'The Protocol Mug',
+  format: 'print_merch',
+  price: 18.00
+});

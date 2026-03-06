@@ -12,7 +12,7 @@
 
 ## 📊 Feature Comparison Matrix
 
-| Feature Category | Podia | Teneo Marketplace | Status | Priority |
+| Feature Category | Podia | OpenBazaar AI | Status | Priority |
 |-----------------|-------|-------------------|--------|----------|
 | **Website Builder** | ✅ | ✅ | **COMPLETE** | ⭐⭐⭐ |
 | Online Store | ✅ | ✅ | **COMPLETE** | ⭐⭐⭐ |
@@ -40,7 +40,7 @@
 
 ### **Phase 1: Core Parity (4-6 weeks)**
 
-Bring Teneo Marketplace to feature parity with Podia's essential tools.
+Bring OpenBazaar AI to feature parity with Podia's essential tools.
 
 #### 1.1 Email Marketing Expansion ⭐⭐⭐
 
@@ -554,7 +554,7 @@ marketplace/frontend/
 - Automatic failover
 
 **Use Case:**
-> Publisher gets deplatformed from Amazon + Shopify → Switches to Teneo Marketplace → Stays online with crypto payments + offshore hosting
+> Publisher gets deplatformed from Amazon + Shopify → Switches to OpenBazaar AI → Stays online with crypto payments + offshore hosting
 
 #### 2. **Federated Network** ✅
 - Open source

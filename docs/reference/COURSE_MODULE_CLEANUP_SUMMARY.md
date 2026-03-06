@@ -231,7 +231,7 @@ const brandedCourse = applyTeneoBranding(genericCourse);
 ```
 
 ### **Workflow:**
-1. Create course content generically in `teneo-marketplace`
+1. Create course content generically in `openbazaar-ai`
 2. Copy to `teneo-production`
 3. Apply branding script
 4. Publish branded version to Teneo platform

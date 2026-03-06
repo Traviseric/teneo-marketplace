@@ -30,10 +30,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Traviseric/teneo-marketplace.git"
+    "url": "https://github.com/Traviseric/openbazaar-ai.git"
   },
   "bugs": {
-    "url": "https://github.com/Traviseric/teneo-marketplace/issues"
+    "url": "https://github.com/Traviseric/openbazaar-ai/issues"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.6",

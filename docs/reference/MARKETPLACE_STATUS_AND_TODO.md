@@ -1,7 +1,7 @@
-# TENEO Marketplace - Status & TODO
+# OpenBazaar AI - Status & TODO
 
-**Updated:** February 28, 2026
-**Status:** 🟡 **Core functional, Auth complete, Frontend integration needed**
+**Updated:** March 5, 2026
+**Status:** Core functional, auth backend complete, frontend auth UI needed for MVP
 
 > **Strategic roadmap:** See **[docs/ROADMAP.md](../ROADMAP.md)** for research-informed priorities.
 > Priorities in this file updated to match Gemini Deep Research findings (Feb 2026).
@@ -34,7 +34,7 @@
 - ✅ Order management
 - ✅ Download token generation
 
-**Authentication:** ✅ **JUST COMPLETED**
+**Authentication:** ✅ **Complete (backend)**
 - ✅ Auth abstraction layer (`auth/AuthProvider.js`)
 - ✅ Local auth provider (SQLite + magic links)
 - ✅ TENEO Auth provider (OAuth 2.0 SSO)
@@ -177,7 +177,7 @@
 **Status:** Components built, not integrated into marketplace
 
 **What exists:**
-- ✅ 5 course components (teneo-marketplace side)
+- ✅ 5 course components (openbazaar-ai side)
 - ✅ 6 Teachable-parity components (traviseric.com side)
 - ❌ Not integrated into marketplace catalog
 - ❌ No course checkout flow
@@ -471,7 +471,7 @@
 
 ### **15. Amazon KDP Import & Network Onboarding Bridge** ❌ **[NEW — COLD-START]**
 
-**Status:** Not implemented. This is the bridge between teneo-production (teneo.io) and teneo-marketplace that solves the discovery network's cold-start problem.
+**Status:** Not implemented. This is the bridge between teneo-production (teneo.io) and openbazaar-ai that solves the discovery network's cold-start problem.
 
 **The funnel:** teneo.io customers generate books → publish to Amazon → make money → one-click deploy own storefront → join discovery network.
 
@@ -741,8 +741,4 @@ Everything else (recommendations, reviews, courses, etc.) can be added post-laun
 - Courses
 - Health monitoring
 
-**Verdict:** You're 8 hours away from a launchable marketplace! 🎉
-
----
-
-**Want me to build the frontend auth integration now?** That's the critical blocker for MVP.
+**Bottom line:** ~8 hours of work to a launchable marketplace. The critical blocker is frontend auth UI + email config.

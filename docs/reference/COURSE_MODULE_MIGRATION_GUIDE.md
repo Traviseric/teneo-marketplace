@@ -58,7 +58,7 @@ course-module/                    ← Copy this entire folder
 ### **Step 1: Copy Course Module**
 
 ```bash
-# From teneo-marketplace root
+# From openbazaar-ai root
 cp -r course-module /path/to/teneo-production/
 
 # Or create the module first:
@@ -229,7 +229,7 @@ async function sendCourseWelcomeEmail(enrollment) {
 
 ## 🗂️ Database Schema Compatibility
 
-### **Current (teneo-marketplace):**
+### **Current (openbazaar-ai):**
 Uses SQLite with simple schema
 
 ### **For teneo-production:**
@@ -350,7 +350,7 @@ curl -X POST http://localhost:3001/api/admin/courses/1/upload \
 ### **Option 1: Git Submodule**
 ```bash
 # In teneo-production
-git submodule add ../teneo-marketplace/course-module course-module
+git submodule add ../openbazaar-ai/course-module course-module
 
 # Update when course module changes
 git submodule update --remote course-module
@@ -358,7 +358,7 @@ git submodule update --remote course-module
 
 ### **Option 2: npm Package**
 ```bash
-# In teneo-marketplace
+# In openbazaar-ai
 cd course-module
 npm init
 npm publish
@@ -370,7 +370,7 @@ npm install @teneo/course-module
 ### **Option 3: Manual Sync**
 ```bash
 # Copy latest version
-rsync -av ../teneo-marketplace/course-module/ ./course-module/
+rsync -av ../openbazaar-ai/course-module/ ./course-module/
 ```
 
 ---

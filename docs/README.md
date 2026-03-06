@@ -1,12 +1,12 @@
-# 📚 Teneo Marketplace Documentation
+# 📚 OpenBazaar AI Documentation
 
-**Complete documentation for deploying, configuring, and extending the Teneo Marketplace.**
+**Complete documentation for deploying, configuring, and extending the OpenBazaar AI.**
 
 ---
 
 ## 🚀 Quick Navigation
 
-### New to Teneo Marketplace?
+### New to OpenBazaar AI?
 1. **[Quick Start Guide](quick-start/MVP_48_HOUR_LAUNCH.md)** - Deploy your first node in 48 hours
 2. **[Core Architecture](core/DUAL_MODE_ARCHITECTURE.md)** - Understand the dual-mode system
 3. **[Quick Deploy](quick-start/QUICK_DEPLOY.md)** - Fastest deployment path

@@ -2,7 +2,7 @@
 
 ## The Clean Separation
 
-### teneo-marketplace (Generic, Portable)
+### openbazaar-ai (Generic, Portable)
 **What it is**: The marketplace of the future - reusable components for ANY book marketing platform
 
 **What it contains**:
@@ -35,7 +35,7 @@
 
 ---
 
-## What We've Built in teneo-marketplace (CORRECT)
+## What We've Built in openbazaar-ai (CORRECT)
 
 ### 1. Course Module ✅
 **Location**: `course-module/`
@@ -202,7 +202,7 @@ class TeneoFunnelGenerator {
 
 ## The Clean Marketing Story
 
-### teneo-marketplace Positioning
+### openbazaar-ai Positioning
 
 **Headline**: "The Open-Source Book Marketing Platform"
 
@@ -246,7 +246,7 @@ class TeneoFunnelGenerator {
 
 ---
 
-## Action Items: Clean Up teneo-marketplace
+## Action Items: Clean Up openbazaar-ai
 
 ### Files to Keep (Generic)
 - ✅ `course-module/` (entire directory)
@@ -273,7 +273,7 @@ class TeneoFunnelGenerator {
 
 ## The Future Vision
 
-### Phase 1: Launch teneo-marketplace (Q1 2025)
+### Phase 1: Launch openbazaar-ai (Q1 2025)
 **What we release**:
 - Open-source course platform
 - Generic funnel builder
@@ -311,7 +311,7 @@ class TeneoFunnelGenerator {
 
 ## Summary: The Clean Strategy
 
-### teneo-marketplace
+### openbazaar-ai
 - **What**: Generic, open-source book marketing platform
 - **How**: Manual funnel building with proven templates
 - **Why**: Establish market presence, help everyone

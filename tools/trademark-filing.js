@@ -89,6 +89,7 @@ function addMonths(dateString, months) {
     if (!isDateLiteral(dateString)) {
         return null;
     }
+
     const [y, m, d] = dateString.split("-").map(Number);
     const date = new Date(y, m - 1, d);
     date.setMonth(date.getMonth() + months);
@@ -98,12 +99,14 @@ function addMonths(dateString, months) {
 function pick(obj, pointer, fallback = null) {
     const parts = pointer.split(".");
     let cursor = obj;
+
     for (const part of parts) {
         if (cursor == null || typeof cursor !== "object" || !(part in cursor)) {
             return fallback;
         }
         cursor = cursor[part];
     }
+
     return cursor == null ? fallback : cursor;
 }
 
@@ -111,11 +114,25 @@ function valueIsMissing(value) {
     if (value == null) {
         return true;
     }
+
     if (typeof value === "string") {
         const trimmed = value.trim();
         return trimmed === "" || /^todo$/i.test(trimmed) || /^tbd$/i.test(trimmed);
     }
+
     return false;
+}
+
+function printableValue(value) {
+    if (valueIsMissing(value)) {
+        return "__MISSING__";
+    }
+
+    if (typeof value === "string") {
+        return value.trim();
+    }
+
+    return String(value);
 }
 
 function requiredFieldPointers(mark) {
@@ -147,7 +164,7 @@ function requiredFieldPointers(mark) {
         required.push("filing.classes");
     }
 
-    const basis = pick(mark, "filing.basis", "").toLowerCase();
+    const basis = String(pick(mark, "filing.basis", "")).toLowerCase();
     if (basis === "1(a)") {
         required.push("filing.first_use_anywhere");
         required.push("filing.first_use_in_commerce");
@@ -159,17 +176,21 @@ function requiredFieldPointers(mark) {
 function validateMark(mark) {
     const missing = [];
     const required = requiredFieldPointers(mark);
+
     required.forEach((pointer) => {
-        const value = pick(mark, pointer, null);
-        if (valueIsMissing(value)) {
+        if (valueIsMissing(pick(mark, pointer, null))) {
             missing.push(pointer);
         }
     });
+
     return missing;
 }
 
 function sanitizeName(value) {
-    return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return String(value)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 }
 
 function buildTeasIntake(mark, dateStamp) {
@@ -195,6 +216,7 @@ function buildTeasIntake(mark, dateStamp) {
 function buildGoodsServices(mark) {
     const classes = pick(mark, "filing.classes", []);
     const rows = classes.map((entry) => `## Class ${entry.class_number}\n${entry.goods_services}`);
+
     return `# Goods and Services Draft
 
 Mark: ${mark.mark_text}
@@ -212,7 +234,7 @@ ${rows.join("\n\n")}
 }
 
 function buildSubmissionChecklist(mark, missingFields) {
-    const basis = pick(mark, "filing.basis", "1(b)");
+    const basis = String(pick(mark, "filing.basis", "1(b)")).toLowerCase();
     const items = [
         "[ ] Confirm owner legal entity and address are final.",
         "[ ] Confirm correspondence email used for all USPTO notices.",
@@ -223,7 +245,7 @@ function buildSubmissionChecklist(mark, missingFields) {
         "[ ] Submit in TEAS and store serial number in registry."
     ];
 
-    if (basis.toLowerCase() === "1(a)") {
+    if (basis === "1(a)") {
         items.push("[ ] Add verified dates of first use anywhere and in commerce.");
         items.push("[ ] Attach specimen showing mark in real commercial use.");
     } else {
@@ -255,7 +277,7 @@ ${unresolved}
 }
 
 function buildSpecimenChecklist(mark) {
-    const basis = pick(mark, "filing.basis", "1(b)").toLowerCase();
+    const basis = String(pick(mark, "filing.basis", "1(b)")).toLowerCase();
     const evidencePaths = pick(mark, "evidence.specimen_paths", []);
     const evidenceLines = Array.isArray(evidencePaths) && evidencePaths.length > 0
         ? evidencePaths.map((entry) => `- ${entry}`).join("\n")
@@ -296,7 +318,7 @@ ${evidenceLines}
 }
 
 function buildDeadlineCalendar(mark) {
-    const basis = pick(mark, "filing.basis", "1(b)").toLowerCase();
+    const basis = String(pick(mark, "filing.basis", "1(b)")).toLowerCase();
     const stage = pick(mark, "status.pipeline_stage", "draft");
     const targetFilingDate = pick(mark, "status.target_filing_date", null);
     const noaDate = pick(mark, "status.notice_of_allowance_date", null);
@@ -304,7 +326,7 @@ function buildDeadlineCalendar(mark) {
     const officeActionDate = pick(mark, "status.office_action_issued_date", null);
 
     const lines = [];
-    lines.push(`# Trademark Deadline Calendar`);
+    lines.push("# Trademark Deadline Calendar");
     lines.push("");
     lines.push(`Mark: ${mark.mark_text}`);
     lines.push(`Pipeline Stage: ${stage}`);
@@ -318,11 +340,9 @@ function buildDeadlineCalendar(mark) {
     }
 
     if (isDateLiteral(officeActionDate)) {
-        const primaryDue = addMonths(officeActionDate, 3);
-        const extendedDue = addMonths(officeActionDate, 6);
         lines.push(`- Office Action issued: ${officeActionDate}`);
-        lines.push(`- Office Action response due (standard): ${primaryDue}`);
-        lines.push(`- Office Action response due (with extension fee): ${extendedDue}`);
+        lines.push(`- Office Action response due (standard): ${addMonths(officeActionDate, 3)}`);
+        lines.push(`- Office Action response due (with extension fee): ${addMonths(officeActionDate, 6)}`);
     } else {
         lines.push("- Office Action date: Not recorded");
     }
@@ -331,11 +351,8 @@ function buildDeadlineCalendar(mark) {
         if (isDateLiteral(noaDate)) {
             lines.push(`- Notice of Allowance date: ${noaDate}`);
             for (let i = 1; i <= 6; i += 1) {
-                const due = addMonths(noaDate, i * 6);
-                const label = i === 1
-                    ? "Statement of Use due"
-                    : `Extension ${i - 1} period end`;
-                lines.push(`- ${label}: ${due}`);
+                const label = i === 1 ? "Statement of Use due" : `Extension ${i - 1} period end`;
+                lines.push(`- ${label}: ${addMonths(noaDate, i * 6)}`);
             }
         } else {
             lines.push("- Notice of Allowance date: Not recorded");
@@ -345,16 +362,14 @@ function buildDeadlineCalendar(mark) {
         lines.push("- Basis is 1(a); Statement of Use is not required.");
     }
 
+    lines.push("");
+    lines.push("## Maintenance Windows");
     if (isDateLiteral(registrationDate)) {
-        lines.push("");
-        lines.push("## Maintenance Windows");
         lines.push(`- Registration date: ${registrationDate}`);
         lines.push(`- Section 8/15 window opens: ${addMonths(registrationDate, 60)}`);
         lines.push(`- Section 8/15 window closes: ${addMonths(registrationDate, 72)}`);
         lines.push(`- First Section 9 renewal due: ${addMonths(registrationDate, 120)}`);
     } else {
-        lines.push("");
-        lines.push("## Maintenance Windows");
         lines.push("- Registration date not set yet.");
     }
 
@@ -402,6 +417,129 @@ ${domainLines}
 `;
 }
 
+function buildTeasCopyPaste(mark, missingFields) {
+    const basis = String(pick(mark, "filing.basis", "")).toLowerCase();
+    const classes = pick(mark, "filing.classes", []);
+    const classBlocks = Array.isArray(classes)
+        ? classes.map((entry, index) => [
+            `### Class ${index + 1}`,
+            `Class Number: ${printableValue(entry.class_number)}`,
+            "Goods/Services:",
+            `${printableValue(entry.goods_services)}`
+        ].join("\n")).join("\n\n")
+        : "No classes configured.";
+
+    const missingList = missingFields.length === 0
+        ? "- None."
+        : missingFields.map((field) => `- ${field}`).join("\n");
+
+    const firstUseAnywhere = basis === "1(a)"
+        ? printableValue(pick(mark, "filing.first_use_anywhere", null))
+        : "N/A for 1(b) initial filing";
+    const firstUseInCommerce = basis === "1(a)"
+        ? printableValue(pick(mark, "filing.first_use_in_commerce", null))
+        : "N/A for 1(b) initial filing";
+
+    const attorneyName = valueIsMissing(pick(mark, "contacts.attorney_name", null))
+        ? "N/A (self-filed if no attorney)"
+        : printableValue(pick(mark, "contacts.attorney_name", null));
+    const attorneyEmail = valueIsMissing(pick(mark, "contacts.attorney_email", null))
+        ? "N/A (self-filed if no attorney)"
+        : printableValue(pick(mark, "contacts.attorney_email", null));
+
+    return `# TEAS Copy/Paste Sheet
+
+Mark ID: ${mark.id}
+Mark Text: ${mark.mark_text}
+Generated: ${new Date().toISOString()}
+
+Use this sheet to copy values directly into TEAS. Human review is still required.
+
+## Mark
+Mark Type: ${printableValue(mark.mark_type)}
+Literal Element: ${printableValue(mark.mark_text)}
+
+## Owner
+Owner Legal Name: ${printableValue(pick(mark, "owner.legal_name", null))}
+Owner Entity Type: ${printableValue(pick(mark, "owner.entity_type", null))}
+Owner Formation State/Country: ${printableValue(pick(mark, "owner.state_or_country", null))}
+Owner Address 1: ${printableValue(pick(mark, "owner.address_1", null))}
+Owner City: ${printableValue(pick(mark, "owner.city", null))}
+Owner State/Region: ${printableValue(pick(mark, "owner.state", null))}
+Owner Postal Code: ${printableValue(pick(mark, "owner.postal_code", null))}
+Owner Email: ${printableValue(pick(mark, "owner.email", null))}
+
+## Filing
+Jurisdiction: ${printableValue(mark.jurisdiction || "US")}
+Application Type: ${printableValue(pick(mark, "filing.application_type", null))}
+Filing Basis: ${printableValue(pick(mark, "filing.basis", null))}
+Intent to Use Verified: ${printableValue(pick(mark, "filing.intent_to_use_verified", null))}
+First Use Anywhere: ${firstUseAnywhere}
+First Use in Commerce: ${firstUseInCommerce}
+
+## Goods/Services
+${classBlocks}
+
+## Correspondence
+Correspondence Email: ${printableValue(pick(mark, "contacts.correspondence_email", null))}
+Attorney Name: ${attorneyName}
+Attorney Email: ${attorneyEmail}
+
+## USPTO Links
+- TEAS landing page: https://www.uspto.gov/trademarks/apply
+- Trademark Search: https://tmsearch.uspto.gov/
+- ID Manual: https://idm-tmng.uspto.gov/id-master-list-public.html
+- Application status (after filing): https://tsdr.uspto.gov/
+
+## Unresolved Fields
+${missingList}
+`;
+}
+
+function buildDropoffChecklist(mark, missingFields, packetPath) {
+    const missingList = missingFields.length === 0
+        ? "- None."
+        : missingFields.map((field) => `- [ ] ${field}`).join("\n");
+
+    const cleanPath = packetPath.replace(/\\/g, "/");
+
+    return `# Drop-off Checklist
+
+Mark: ${mark.mark_text}
+Packet Path: ${cleanPath}
+Target Filing Date: ${printableValue(pick(mark, "status.target_filing_date", null))}
+
+## Finalize Before TEAS Submission
+- [ ] Fill unresolved required fields in \`legal/trademarks.registry.json\`.
+- [ ] Re-run packet generation for this mark.
+- [ ] Confirm goods/services text with current business scope.
+- [ ] Confirm owner information exactly matches legal entity records.
+- [ ] Run knockout search for similar marks in same classes.
+- [ ] Submit in TEAS and record serial number immediately.
+
+## Unresolved Required Fields
+${missingList}
+
+## Filing Handoff Steps
+1. Open: https://www.uspto.gov/trademarks/apply
+2. Use \`teas-copy-paste.md\` to fill the form.
+3. Use \`goods-services.md\` for class descriptions.
+4. Save receipt + serial number in \`legal/trademarks.registry.json\`.
+5. Re-run generator to refresh \`deadline-calendar.md\`.
+`;
+}
+
+function buildUnresolvedFields(mark, missingFields) {
+    return {
+        mark_id: mark.id,
+        mark_text: mark.mark_text,
+        unresolved_required_fields: missingFields.map((field) => ({
+            field,
+            current_value: pick(mark, field, null)
+        }))
+    };
+}
+
 function buildPacketSummary(mark, missing, outputPath, dateStamp) {
     return {
         mark_id: mark.id,
@@ -432,6 +570,7 @@ async function loadRegistry(filePath) {
 
 function selectMarks(registry, markId) {
     const marks = Array.isArray(registry.marks) ? registry.marks : [];
+
     if (markId) {
         const match = marks.find((entry) => entry.id === markId);
         if (!match) {
@@ -444,21 +583,21 @@ function selectMarks(registry, markId) {
         const stage = pick(entry, "status.pipeline_stage", "");
         return stage === "draft_ready" || stage === "ready_for_filing";
     });
+
     return ready.length > 0 ? ready : marks;
 }
 
 function buildReport(mark, missing) {
-    const target = pick(mark, "status.target_filing_date", "Not set");
-    const stage = pick(mark, "status.pipeline_stage", "draft");
     const classes = pick(mark, "filing.classes", []);
     const classList = Array.isArray(classes)
         ? classes.map((entry) => entry.class_number).join(", ")
         : "none";
+
     return {
         id: mark.id,
         mark: mark.mark_text,
-        stage,
-        target_filing_date: target,
+        stage: pick(mark, "status.pipeline_stage", "draft"),
+        target_filing_date: pick(mark, "status.target_filing_date", "Not set"),
         classes: classList,
         missing_required_fields: missing.length
     };
@@ -529,16 +668,20 @@ async function main() {
 
             await writeJson(path.join(packetPath, "teas-intake.json"), intake);
             await writeJson(path.join(packetPath, "packet-summary.json"), summary);
+            await writeJson(path.join(packetPath, "unresolved-fields.json"), buildUnresolvedFields(mark, missing));
             await writeText(path.join(packetPath, "goods-services.md"), buildGoodsServices(mark));
             await writeText(path.join(packetPath, "submission-checklist.md"), buildSubmissionChecklist(mark, missing));
             await writeText(path.join(packetPath, "specimen-checklist.md"), buildSpecimenChecklist(mark));
             await writeText(path.join(packetPath, "deadline-calendar.md"), buildDeadlineCalendar(mark));
             await writeText(path.join(packetPath, "enforcement-playbook.md"), buildEnforcementPlaybook(mark));
+            await writeText(path.join(packetPath, "teas-copy-paste.md"), buildTeasCopyPaste(mark, missing));
+            await writeText(path.join(packetPath, "dropoff-checklist.md"), buildDropoffChecklist(mark, missing, packetPath));
         }
 
         const missingMsg = missing.length === 0
             ? color("0 missing fields", "green")
             : color(`${missing.length} missing fields`, "yellow");
+
         process.stdout.write(`${color("Prepared", "cyan")} ${mark.id} -> ${packetPath} (${missingMsg})\n`);
     }
 

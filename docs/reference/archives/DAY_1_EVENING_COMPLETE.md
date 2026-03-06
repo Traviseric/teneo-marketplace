@@ -86,7 +86,7 @@ irs-secrets-exposed.zip
 ```
 # IRS Secrets Exposed - Book Funnel
 
-Generated with Teneo Marketplace Funnel Builder
+Generated with OpenBazaar AI Funnel Builder
 Date: 11/20/2024
 
 ## Files Included:
@@ -105,7 +105,7 @@ Date: 11/20/2024
 - Connect to your payment processor
 - Add tracking codes (Google Analytics, Facebook Pixel)
 
-Built with ❤️ using Teneo Marketplace Funnel Builder
+Built with ❤️ using OpenBazaar AI Funnel Builder
 ```
 
 #### 3. Copy to Clipboard ✅

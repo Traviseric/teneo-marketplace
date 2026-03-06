@@ -393,7 +393,7 @@ python generate_brand_simple.py
 # AI generates complete brand strategy (2 minutes)
 
 # 2. Import to marketplace
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 # Brand deployed to marketplace (5 seconds)
 

@@ -1,7 +1,7 @@
 # OrchestratorOS Integration Guide
 ## Connecting AI Brand Generation to Marketplace Deployment
 
-This guide shows how to use the **OrchestratorOS** AI agents to automate brand creation in the Teneo Marketplace.
+This guide shows how to use the **OrchestratorOS** AI agents to automate brand creation in the OpenBazaar AI.
 
 ---
 
@@ -26,7 +26,7 @@ This guide shows how to use the **OrchestratorOS** AI agents to automate brand c
              ↓ import-orchestrator-brand.js
              │
 ┌────────────┴─────────────────────────┐
-│    TENEO MARKETPLACE                 │
+│    OPENBAZAAR AI                 │
 │    (Book Store Platform)             │
 ├──────────────────────────────────────┤
 │ • Receives AI-generated configs      │
@@ -42,7 +42,7 @@ This guide shows how to use the **OrchestratorOS** AI agents to automate brand c
 ## Prerequisites
 
 1. **Orchestrator installed** at `D:\Travis Eric\TE Code\orchestrator`
-2. **Marketplace installed** at `D:\Travis Eric\TE Code\teneo-marketplace`
+2. **Marketplace installed** at `D:\Travis Eric\TE Code\openbazaar-ai`
 3. **Python 3.8+** for orchestrator
 4. **Node.js 16+** for marketplace
 
@@ -140,7 +140,7 @@ For now, let's accept it and continue.
 Navigate to the marketplace and run the import script:
 
 ```bash
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 
 # Import the orchestrator-generated brand
 node scripts/import-orchestrator-brand.js
@@ -242,7 +242,7 @@ This will:
 Then import to marketplace:
 
 ```bash
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 
 # Import AI-generated books
 node scripts/import-orchestrator-books.js quantum_youth_publishing
@@ -295,7 +295,7 @@ code marketplace_coordination/BRAND_CONFIG.json
 
 3. **Import the customized version:**
 ```bash
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 ```
 
@@ -322,7 +322,7 @@ cd "D:\Travis Eric\TE Code\orchestrator"
 python src/orchestrator/marketplace/agents/brand_strategist_agent.py
 
 # Import it
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 
 # Save the config to a custom location for later reference
@@ -334,7 +334,7 @@ cd "D:\Travis Eric\TE Code\orchestrator"
 python src/orchestrator/marketplace/agents/brand_strategist_agent.py
 
 # Import second brand
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 ```
 
@@ -384,7 +384,7 @@ def deploy_to_marketplace(brand_config_path: str) -> str:
 
     Returns brand ID of created brand.
     """
-    marketplace_dir = os.path.join(os.path.dirname(__file__), '../../../teneo-marketplace')
+    marketplace_dir = os.path.join(os.path.dirname(__file__), '../../../openbazaar-ai')
 
     result = subprocess.run(
         ['node', 'scripts/import-orchestrator-brand.js', '--config', brand_config_path],
@@ -493,7 +493,7 @@ This is expected! The Book Creation Agent hasn't been built yet. For now:
    python src/orchestrator/marketplace/agents/brand_strategist_agent.py
 
    # Terminal 2: Import to marketplace
-   cd "D:\Travis Eric\TE Code\teneo-marketplace"
+   cd "D:\Travis Eric\TE Code\openbazaar-ai"
    node scripts/import-orchestrator-brand.js
    npm start
    ```
@@ -510,7 +510,7 @@ This is expected! The Book Creation Agent hasn't been built yet. For now:
 
 For complete architecture documentation, see:
 - **Orchestrator Architecture:** `D:\Travis Eric\TE Code\orchestrator\docs\development\MARKETPLACE_AUTOMATION_ARCHITECTURE.md`
-- **Automation Roadmap:** `D:\Travis Eric\TE Code\teneo-marketplace\docs\BRAND_AUTOMATION_ROADMAP.md`
+- **Automation Roadmap:** `D:\Travis Eric\TE Code\openbazaar-ai\docs\BRAND_AUTOMATION_ROADMAP.md`
 - **Implementation Guide:** `D:\Travis Eric\TE Code\orchestrator\MARKETPLACE_AUTOMATION_IMPLEMENTATION.md`
 
 ---

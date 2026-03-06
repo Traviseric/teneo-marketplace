@@ -1,6 +1,6 @@
 You are requesting HUMAN assistance.
 
-PROJECT: teneo-marketplace
+PROJECT: openbazaar-ai
 REASON: STUCK
 
 ## Context
@@ -9,7 +9,7 @@ REASON: STUCK
 
 ## Your Task
 
-1. Write a clear STUCK_REPORT.md in C:\code\teneo-marketplace\.overnight
+1. Write a clear STUCK_REPORT.md in C:\code\openbazaar-ai\.overnight
 2. Explain what you've tried
 3. Explain why you're stuck
 4. Ask a specific question
@@ -44,7 +44,7 @@ C) [Something else - please specify]
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\human_contact_output.json
+Write to: C:\code\openbazaar-ai\.overnight\human_contact_output.json
 
 ```json
 {

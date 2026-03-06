@@ -10,9 +10,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "register-node": "node marketplace/backend/scripts/register-node.js",
+    "seed:appstore": "node marketplace/backend/scripts/seed-appstore.js",
+    "db:init": "node marketplace/backend/database/init.js",
     "trademark:report": "node tools/trademark-filing.js --report",
     "trademark:prepare": "node tools/trademark-filing.js",
-    "trademark:prepare:openbazaar": "node tools/trademark-filing.js --mark openbazaar-ai-wordmark"
+    "trademark:prepare:openbazaar": "node tools/trademark-filing.js --mark openbazaar-ai-wordmark",
+    "trademark:dropoff:openbazaar": "node tools/trademark-filing.js --mark openbazaar-ai-wordmark"
   },
   "jest": {
     "testEnvironment": "node",

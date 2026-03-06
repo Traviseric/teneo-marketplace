@@ -1,6 +1,6 @@
 # Public Repository Guidelines
 
-**What belongs in teneo-marketplace (public open source repo)**
+**What belongs in openbazaar-ai (public open source repo)**
 
 ---
 
@@ -187,7 +187,7 @@ Before committing documentation, ask:
 ## 📁 File Organization
 
 ```
-teneo-marketplace/ (PUBLIC)
+openbazaar-ai/ (PUBLIC)
 ├── docs/
 │   ├── api/                    # ✅ API documentation
 │   ├── guides/                 # ✅ User guides

@@ -25,7 +25,7 @@ cd "D:\Travis Eric\TE Code\orchestrator"
 python generate_brand_simple.py
 
 # Step 2: Import to marketplace (ALREADY WORKS!)
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 
 # Step 3: View live brand
@@ -992,7 +992,7 @@ cd "D:\Travis Eric\TE Code\orchestrator"
 python generate_brand_simple.py
 
 # 2. Import to marketplace
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node scripts/import-orchestrator-brand.js
 
 # 3. Verify brand exists

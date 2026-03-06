@@ -2,7 +2,7 @@
   "version": "1.0",
   "updated": "2024-01-15T12:00:00Z",
   "network": {
-    "name": "Teneo Book Network",
+    "name": "OpenBazaar Book Network",
     "description": "A decentralized network of independent bookstores",
     "protocol": "TBN/1.0",
     "features": [
@@ -14,8 +14,8 @@
   },
   "stores": [
     {
-      "id": "teneo-main",
-      "name": "Teneo Books",
+      "id": "openbazaar-main",
+      "name": "OpenBazaar Books",
       "tagline": "Knowledge Beyond Boundaries™",
       "url": "http://localhost:3001/?brand=teneo",
       "api": "http://localhost:3001/api",
@@ -24,8 +24,8 @@
       "verified": true,
       "featured": true,
       "joined": "2024-01-01",
-      "owner": "Teneo AI",
-      "contact": "network@teneo.ai",
+      "owner": "OpenBazaar AI",
+      "contact": "network@openbazaar.ai",
       "features": ["digital-delivery", "ai-powered", "pattern-recognition"],
       "status": "active",
       "color": "#7C3AED"
@@ -75,20 +75,20 @@
   "connections": [
     {
       "from": "true-earth",
-      "to": "teneo-main",
+      "to": "openbazaar-main",
       "type": "consciousness",
       "strength": 0.8,
       "description": "Truth seekers exploring consciousness revelations"
     },
     {
       "from": "wealth-wise",
-      "to": "teneo-main",
+      "to": "openbazaar-main",
       "type": "patterns",
       "strength": 0.7,
       "description": "Pattern recognition in markets and reality"
     },
     {
-      "from": "teneo-main",
+      "from": "openbazaar-main",
       "to": "true-earth",
       "type": "hidden-knowledge",
       "strength": 0.9,

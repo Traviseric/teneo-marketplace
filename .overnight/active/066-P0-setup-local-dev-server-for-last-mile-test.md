@@ -12,7 +12,7 @@ created_at: "2026-02-28T05:10:00Z"
 
 LAST_MILE_TEST has been returning NO_GO because the test automation navigated to
 `https://opensource.org/licenses/MIT` (the Open Source Initiative's MIT License page)
-instead of the actual teneo-marketplace app. This happens because no local server is
+instead of the actual openbazaar-ai app. This happens because no local server is
 running — no `.env` file exists, so `npm start` was never run.
 
 All 65 code tasks are complete and verified. The NO_GO is a pure environment issue,
@@ -28,12 +28,12 @@ run against the real app and produce a meaningful GO or PARTIAL verdict.
 
 ### 1. Check if `.env` already exists
 ```bash
-ls -la C:/code/teneo-marketplace/.env 2>/dev/null && echo "EXISTS" || echo "MISSING"
+ls -la C:/code/openbazaar-ai/.env 2>/dev/null && echo "EXISTS" || echo "MISSING"
 ```
 
 ### 2. If `.env` is missing, create it from the example
 ```bash
-cp C:/code/teneo-marketplace/marketplace/backend/.env.example C:/code/teneo-marketplace/.env
+cp C:/code/openbazaar-ai/marketplace/backend/.env.example C:/code/openbazaar-ai/.env
 ```
 
 ### 3. Set a random SESSION_SECRET (required for the server to start)
@@ -54,13 +54,13 @@ DATABASE_PATH=./marketplace.db
 
 ### 5. Initialize the database (if marketplace.db doesn't exist)
 ```bash
-cd C:/code/teneo-marketplace && node marketplace/backend/database/init.js
+cd C:/code/openbazaar-ai && node marketplace/backend/database/init.js
 ```
 
 ### 6. Verify the server starts
 Try starting the server and check it responds on port 3001:
 ```bash
-cd C:/code/teneo-marketplace && timeout 10 node marketplace/backend/server.js &
+cd C:/code/openbazaar-ai && timeout 10 node marketplace/backend/server.js &
 sleep 3
 curl -s http://localhost:3001/api/health || echo "Server not responding"
 ```

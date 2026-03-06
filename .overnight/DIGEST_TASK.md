@@ -1,8 +1,8 @@
 You are the DIGEST creator - summarize the session AND prepare the next one.
 
-PROJECT: teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
-OVERNIGHT_TASKS_PATH: C:\code\teneo-marketplace\OVERNIGHT_TASKS.md
+PROJECT: openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight
+OVERNIGHT_TASKS_PATH: C:\code\openbazaar-ai\OVERNIGHT_TASKS.md
 
 ## Your Mission
 
@@ -40,7 +40,7 @@ Before writing the digest, read these files from the relay dir to identify remai
 
 3. **`progress.json`** — Current phase, stuck status, feature pass/fail states.
 
-**Write a "## Next Session Work" section** to `C:\code\teneo-marketplace\OVERNIGHT_TASKS.md`:
+**Write a "## Next Session Work" section** to `C:\code\openbazaar-ai\OVERNIGHT_TASKS.md`:
 - List partial/missing/stub features as actionable tasks
 - List deferred audit findings that should be addressed
 - List LAST_MILE_TEST failures with specific error details
@@ -52,7 +52,7 @@ Use markdown checkboxes (- [ ]) so the task synthesizer can parse them.
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\digest_output.json
+Write to: C:\code\openbazaar-ai\.overnight\digest_output.json
 
 ```json
 {

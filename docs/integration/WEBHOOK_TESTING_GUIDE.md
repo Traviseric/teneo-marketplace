@@ -213,7 +213,7 @@ node test-purchase-flow.js monitor ORDER_ID
 sqlite3 marketplace/backend/database/orders.db "SELECT * FROM orders;"
 
 # View server logs
-pm2 logs teneo-marketplace
+pm2 logs openbazaar-ai
 
 # Test specific webhook
 stripe trigger checkout.session.completed

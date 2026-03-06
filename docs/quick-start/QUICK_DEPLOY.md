@@ -1,6 +1,6 @@
 # Quick Deployment Guide
 
-**Get your Teneo Marketplace running in production in under 30 minutes.**
+**Get your OpenBazaar AI running in production in under 30 minutes.**
 
 ---
 
@@ -17,7 +17,7 @@
 For a fresh VPS, run this single command:
 
 ```bash
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Traviseric/teneo-marketplace/main/scripts/deploy-vps.sh)"
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Traviseric/openbazaar-ai/main/scripts/deploy-vps.sh)"
 ```
 
 This automated script will:
@@ -51,8 +51,8 @@ sudo apt install -y nginx certbot python3-certbot-nginx git ufw fail2ban
 
 ```bash
 cd /var/www
-sudo git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+sudo git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 ```
 
 ### Step 3: Install Dependencies
@@ -103,7 +103,7 @@ sudo npm install -g pm2
 cat > ecosystem.config.js << 'EOF'
 module.exports = {
   apps: [{
-    name: 'teneo-marketplace',
+    name: 'openbazaar-ai',
     script: './marketplace/backend/server.js',
     instances: 1,
     autorestart: true,
@@ -127,7 +127,7 @@ pm2 startup
 
 ```bash
 # Create Nginx configuration
-sudo nano /etc/nginx/sites-available/teneo-marketplace
+sudo nano /etc/nginx/sites-available/openbazaar-ai
 
 # Paste this configuration (replace YOUR_DOMAIN):
 server {
@@ -151,13 +151,13 @@ server {
 
     # Static files
     location / {
-        root /var/www/teneo-marketplace/marketplace/frontend;
+        root /var/www/openbazaar-ai/marketplace/frontend;
         try_files $uri $uri/ /index.html;
     }
 }
 
 # Enable site
-sudo ln -s /etc/nginx/sites-available/teneo-marketplace /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/openbazaar-ai /etc/nginx/sites-enabled/
 sudo rm /etc/nginx/sites-enabled/default
 
 # Test and reload
@@ -196,7 +196,7 @@ STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_LIVE_KEY
 FRONTEND_URL=https://YOUR_DOMAIN
 
 # Restart application
-pm2 restart teneo-marketplace
+pm2 restart openbazaar-ai
 ```
 
 ### Setup Automated Backups
@@ -209,7 +209,7 @@ chmod +x scripts/backup.sh
 sudo ./scripts/backup.sh
 
 # Add to crontab (daily at 2 AM)
-(crontab -l 2>/dev/null; echo "0 2 * * * /var/www/teneo-marketplace/scripts/backup.sh") | crontab -
+(crontab -l 2>/dev/null; echo "0 2 * * * /var/www/openbazaar-ai/scripts/backup.sh") | crontab -
 ```
 
 ### Configure Email (Optional)
@@ -224,7 +224,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 
 # Restart
-pm2 restart teneo-marketplace
+pm2 restart openbazaar-ai
 ```
 
 ---
@@ -235,10 +235,10 @@ pm2 restart teneo-marketplace
 
 ```bash
 # View logs
-pm2 logs teneo-marketplace
+pm2 logs openbazaar-ai
 
 # Restart application
-pm2 restart teneo-marketplace
+pm2 restart openbazaar-ai
 
 # Monitor performance
 pm2 monit
@@ -284,7 +284,7 @@ git pull origin main
 npm install --production
 
 # Restart
-pm2 restart teneo-marketplace
+pm2 restart openbazaar-ai
 ```
 
 ---
@@ -314,15 +314,15 @@ heroku config:set SESSION_SECRET=$(openssl rand -hex 64)
 
 ```bash
 # Build image
-docker build -t teneo-marketplace .
+docker build -t openbazaar-ai .
 
 # Run container
 docker run -d \
   -p 3001:3001 \
   -v $(pwd)/marketplace/backend/.env:/app/marketplace/backend/.env \
   -v $(pwd)/marketplace/backend/database:/app/marketplace/backend/database \
-  --name teneo-marketplace \
-  teneo-marketplace
+  --name openbazaar-ai \
+  openbazaar-ai
 ```
 
 ---
@@ -333,7 +333,7 @@ docker run -d \
 
 ```bash
 # Check PM2 logs
-pm2 logs teneo-marketplace --lines 50
+pm2 logs openbazaar-ai --lines 50
 
 # Check if port is in use
 netstat -tuln | grep 3001
@@ -373,7 +373,7 @@ pm2 status
 sudo nginx -t
 
 # Restart both
-pm2 restart teneo-marketplace
+pm2 restart openbazaar-ai
 sudo systemctl restart nginx
 ```
 
@@ -405,8 +405,8 @@ pm2 set pm2-logrotate:retain 30
 ## 🆘 Support
 
 - **Documentation**: [Full Docs](./docs/)
-- **Issues**: [GitHub Issues](https://github.com/Traviseric/teneo-marketplace/issues)
-- **Email**: network@teneo.ai
+- **Issues**: [GitHub Issues](https://github.com/Traviseric/openbazaar-ai/issues)
+- **Email**: network@openbazaar.ai
 
 ---
 

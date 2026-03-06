@@ -1,6 +1,6 @@
-# Contributing to Teneo Marketplace
+# Contributing to OpenBazaar AI
 
-**Thank you for considering contributing to Teneo Marketplace!** 🎉
+**Thank you for considering contributing to OpenBazaar AI!** 🎉
 
 We're building the first censorship-resistant, federated marketplace for creators. Your contributions help protect freedom of speech and creator sovereignty.
 
@@ -12,8 +12,8 @@ We're building the first censorship-resistant, federated marketplace for creator
 
 ```bash
 # Fork the repo on GitHub, then:
-git clone https://github.com/YOUR_USERNAME/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/YOUR_USERNAME/openbazaar-ai.git
+cd openbazaar-ai
 ```
 
 ### **2. Install Dependencies**
@@ -275,7 +275,7 @@ Many users requested ETH support (#45, #67, #89)
 **Key Directories**:
 
 ```
-teneo-marketplace/
+openbazaar-ai/
 ├── marketplace/
 │   ├── backend/
 │   │   ├── routes/          # API endpoints
@@ -495,4 +495,4 @@ Open an issue with the `question` label, and we'll help you get started!
 ---
 
 **Last Updated**: 2025-11-22
-**Maintained by**: Teneo Marketplace Community
+**Maintained by**: OpenBazaar AI Community

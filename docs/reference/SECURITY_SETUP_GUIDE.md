@@ -1,4 +1,4 @@
-# TENEO Marketplace Security Setup Guide
+# OpenBazaar AI Security Setup Guide
 
 **For:** Self-hosted marketplace deployers
 **Updated:** November 17, 2025
@@ -799,7 +799,7 @@ Before going live, verify ALL of these:
 - **OWASP Top 10**: https://owasp.org/www-project-top-ten/
 
 ### **Support:**
-- GitHub Issues: https://github.com/Traviseric/teneo-marketplace/issues
+- GitHub Issues: https://github.com/Traviseric/openbazaar-ai/issues
 - Security Email: security@teneo.ai
 
 ---

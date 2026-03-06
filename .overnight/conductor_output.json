@@ -3,9 +3,9 @@
   "next_box": "REVIEW_AUDIT",
   "next_workflow": null,
   "context": {
-    "project_slug": "teneo-marketplace",
-    "project_path": "C:\\code\\teneo-marketplace",
-    "relay_dir": "C:\\code\\teneo-marketplace\\.overnight",
+    "project_slug": "openbazaar-ai",
+    "project_path": "C:\\code\\openbazaar-ai",
+    "relay_dir": "C:\\code\\openbazaar-ai\\.overnight",
     "phase": "evaluate",
     "decision_reason": "Priority tier 3 (missing critical features): WORKER (round 8) completed task 105-P2-add-quiz-schema-and-routes. Existing REVIEW_AUDIT (round 5) only verified tasks 103+104 — task 105 has NOT been reviewed yet. Standard pipeline after WORKER with all tasks completed = REVIEW_AUDIT. After review passes, need to run FEATURE_AUDIT, CODE_QUALITY_AUDIT, SECURITY_AUDIT, and UX_AUDIT (all absent from relay dir) before SWITCH_PROJECT gate can pass.",
     "what_you_read": [

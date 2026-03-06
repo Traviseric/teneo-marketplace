@@ -1,4 +1,4 @@
-# 📚 Teneo Marketplace Backend API Documentation
+# 📚 OpenBazaar AI Backend API Documentation
 
 **Status**: ✅ **COMPLETE** - Ready for Frontend Integration  
 **Server URL**: `http://localhost:3001/api`  
@@ -344,5 +344,5 @@ The teneo-production Claude can now:
 
 ---
 
-*Backend implementation completed by: Teneo-Marketplace Claude*  
+*Backend implementation completed by: OpenBazaar-AI Claude*  
 *Ready for frontend integration by: Teneo-Production Claude*

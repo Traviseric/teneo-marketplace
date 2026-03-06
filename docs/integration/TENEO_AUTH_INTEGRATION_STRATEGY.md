@@ -1,13 +1,13 @@
 # TENEO Auth Integration Strategy
 
 **Session:** November 17, 2025
-**Goal:** Integrate teneo-auth SSO platform with teneo-marketplace for unified authentication
+**Goal:** Integrate teneo-auth SSO platform with openbazaar-ai for unified authentication
 
 ---
 
 ## 🎯 Executive Summary
 
-**Challenge:** teneo-marketplace needs authentication to be complete. We have teneo-auth (enterprise SSO platform) available.
+**Challenge:** openbazaar-ai needs authentication to be complete. We have teneo-auth (enterprise SSO platform) available.
 
 **Question:** Since marketplace is open source, how do we integrate authentication?
 
@@ -63,7 +63,7 @@ module.exports = {
 **Architecture:**
 ```
 ┌─────────────────────────────────────────────────┐
-│         TENEO Marketplace (Open Source)         │
+│         OpenBazaar AI (Open Source)         │
 │                                                 │
 │  ┌─────────────────────────────────────────┐   │
 │  │    Auth Abstraction Layer (Public)      │   │

@@ -33,7 +33,7 @@ router.get('/public', (req, res) => {
 router.get('/frontend', (req, res) => {
     res.json({
         stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
-        marketplaceName: process.env.MARKETPLACE_NAME || 'Teneo Marketplace',
+        marketplaceName: process.env.MARKETPLACE_NAME || 'OpenBazaar AI',
         teneoAuthEnabled: process.env.AUTH_PROVIDER === 'teneo' || process.env.TENEO_AUTH_ENABLED === 'true'
     });
 });

@@ -59,7 +59,7 @@ app.get('/api/published/dashboard', (req, res) => {
             empty_state: {
                 show: realBooks.length === 0,
                 title: "🚀 Building the Future of AI Publishing",
-                message: "The Teneo marketplace is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they'll showcase here.",
+                message: "The OpenBazaar AI is ready for real AI-generated books. When authors publish their Teneo creations on Amazon, they'll showcase here.",
                 call_to_action: "Be the first to share your Teneo success story!",
                 authentic: true
             }

@@ -1,6 +1,6 @@
 -- ================================================
 -- IN-HOUSE EMAIL MARKETING & AUTOMATION SYSTEM
--- Complete database schema for Teneo Marketplace
+-- Complete database schema for OpenBazaar AI
 -- ================================================
 
 -- Subscribers (email list)
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS email_templates (
     body_html TEXT NOT NULL,
     body_text TEXT, -- plain text fallback
     preview_text TEXT, -- email preview/snippet
-    from_name TEXT DEFAULT 'Teneo Marketplace',
+    from_name TEXT DEFAULT 'OpenBazaar AI',
     from_email TEXT DEFAULT 'noreply@teneo.io',
     reply_to TEXT,
     category TEXT, -- transactional, marketing, sequence
@@ -397,7 +397,7 @@ INSERT OR IGNORE INTO email_templates (name, subject, body_html, body_text, cate
 </body></html>',
   'You left {{BOOK_TITLE}} in your cart. Complete your order: {{CHECKOUT_URL}}',
   'sequence',
-  'Teneo Marketplace',
+  'OpenBazaar AI',
   'noreply@teneo.io'
 );
 

@@ -1,8 +1,8 @@
 # AI_FEATURES — Feature Implementation Verification
 
 ## Project
-Path: C:\code\teneo-marketplace
-Slug: teneo-marketplace
+Path: C:\code\openbazaar-ai
+Slug: openbazaar-ai
 
 ## Discovered Features
 The following features were extracted from this project's documentation:
@@ -11,8 +11,8 @@ The following features were extracted from this project's documentation:
 [
   {
     "id": "pkg-description",
-    "name": "Teneo Marketplace - Decentralized Book Network",
-    "description": "Teneo Marketplace - Decentralized Book Network",
+    "name": "OpenBazaar AI - Decentralized Book Network",
+    "description": "OpenBazaar AI - Decentralized Book Network",
     "source": "package-json",
     "source_location": "package.json:description",
     "confidence": 0.6,
@@ -7511,4 +7511,4 @@ Write ONLY valid JSON to the output file.
 }
 ```
 
-Write output to: C:\code\teneo-marketplace\.pras\ai_features_verify_output.json
+Write output to: C:\code\openbazaar-ai\.pras\ai_features_verify_output.json

@@ -20,6 +20,9 @@ Open-source marketplace for creators, freelancers, and AI agents. Three pillars:
 | Funnel Module | funnel-module/ | funnel, landing, template |
 | Setup Wizard | setup-wizard/index.html | wizard, configure, setup |
 | Payments | routes/checkout.js, routes/cryptoCheckout.js | stripe, bitcoin, lightning, monero |
+| Storefront API | routes/storefront.js | catalog, product, fulfill, checkout, ArxMint |
+| Payment Providers | services/paymentProvider.js, services/arxmintProvider.js | PaymentProvider, ArxMint, createCheckout, webhook |
+| Bazaar Strategy | te-btc/internal/arxmint-internal/BAZAAR_STRATEGY.md | bazaar, flywheel, merch, flagship |
 | Federation | routes/network.js, network-registry.json | node, peer, discovery, revenue share |
 | Gig Platform | docs/OPENBAZAAR_AI_SPEC.md | gigs, jobs, proposals, contracts, escrow |
 | Docker | docker-compose.yml, Dockerfile | container, nginx, redis |
@@ -27,7 +30,7 @@ Open-source marketplace for creators, freelancers, and AI agents. Three pillars:
 | Component Library | marketplace/frontend/components-library/, COMPONENT_MANIFEST.json | component, template, {{VARIABLE}}, hero, CTA |
 | AI Builder Strategy | docs/development/AI_BUILDER_STRATEGY.md | natural language, page builder, Claude Code |
 | AI Discovery | marketplace/backend/routes/discovery.js, docs/features/AI_DISCOVERY_ENGINE.md | semantic search, embeddings, knowledge graph |
-| ArxMint Payments | See C:\code\arxmint — L402, Cashu, Fedimint, spend router | L402, ecash, NUT-24, Lightning, micropayments |
+| ArxMint Integration | services/arxmintProvider.js, services/arxmintService.js | L402, ecash, Lightning, PaymentProvider, bazaar |
 | Docs | docs/ (75+ files by category) | architecture, deployment, features |
 
 ## Stack
@@ -66,7 +69,9 @@ node test-purchase-flow.js                         # Test purchase flow
 
 ## Current Focus
 
-See OVERNIGHT_TASKS.md for active roadmap. See docs/OPENBAZAAR_AI_SPEC.md for the full site spec including gig platform and agent services.
+First integration: ArxMint Bazaar (arxmint.com/bazaar) — a live merch store built with OpenBazaar.ai, payments via ArxMint Lightning. See te-btc/internal/arxmint-internal/BAZAAR_STRATEGY.md for the full plan. Storefront API (`/api/storefront/catalog`, `/api/storefront/fulfill`) is built and ready for ArxMint to consume.
+
+See docs/ROADMAP.md for strategic priorities. See docs/OPENBAZAAR_AI_SPEC.md for the full site spec including gig platform and agent services.
 
 ## TE Code Ecosystem Capabilities
 

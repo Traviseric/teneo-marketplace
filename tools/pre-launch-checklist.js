@@ -395,7 +395,7 @@ class PreLaunchChecker {
             }
         }
         
-        console.log(colorize('\n📚 Documentation: https://github.com/TravisEric/teneo-marketplace', 'blue'));
+        console.log(colorize('\n📚 Documentation: https://github.com/TravisEric/openbazaar-ai', 'blue'));
         console.log(colorize('💬 Support: https://discord.gg/teneebooks\n', 'blue'));
         
         process.exit(passed === total ? 0 : 1);

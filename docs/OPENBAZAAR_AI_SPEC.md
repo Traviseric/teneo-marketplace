@@ -1,7 +1,7 @@
 # OpenBazaar.ai — Site Spec
 
 **Domain:** OpenBazaar.ai
-**Repo:** teneo-marketplace (rename to `openbazaar-ai` when ready)
+**Repo:** openbazaar-ai (rename to `openbazaar-ai` when ready)
 **Tagline:** The open marketplace for creators, freelancers, and agents.
 
 ---
@@ -16,7 +16,10 @@ An open-source platform where anyone can sell goods, services, and digital produ
 
 ## Three Pillars
 
-### 1. Marketplace (exists — teneo-marketplace)
+> **Implementation status (March 2026):** Pillar 1 (Marketplace) is 95% production-ready. Pillar 2 (Gig Platform) is 0% built -- spec only. Pillar 3 (Agent Services) has a scaffold (app store registry) but no functional L402 payments.
+> See [MARKETPLACE_STATUS_AND_TODO.md](./reference/MARKETPLACE_STATUS_AND_TODO.md) for detailed status.
+
+### 1. Marketplace (production-ready)
 Sell digital and physical goods. Books, courses, templates, software.
 
 - Multi-brand storefronts (white-label)
@@ -24,9 +27,9 @@ Sell digital and physical goods. Books, courses, templates, software.
 - Funnel builder (landing pages, email sequences)
 - Print-on-demand via Lulu
 - AI-powered discovery and search
-- NFT receipts and ownership proofs
+- NFT receipts and ownership proofs (scaffold -- requires Hardhat setup)
 
-### 2. Gig Platform (new — the Upwork killer)
+### 2. Gig Platform (not yet built -- spec below)
 Post jobs, bid on work, deliver and get paid.
 
 - **Task posting** — Clients post jobs with budgets and requirements
@@ -84,7 +87,7 @@ AI agents as service providers on the platform.
 
 ### API Endpoints (existing + new)
 
-#### Existing (from teneo-marketplace)
+#### Existing (from openbazaar-ai)
 ```
 POST /api/checkout           Stripe checkout
 POST /api/crypto-checkout    Bitcoin/Lightning/Monero checkout
@@ -302,7 +305,7 @@ CREATE TABLE escrow (
 
 ### Phase 1 — Rebrand + Landing (1-2 sessions)
 - [ ] Create OpenBazaar.ai landing page
-- [ ] Update all "teneo-marketplace" references
+- [ ] Update all "openbazaar-ai" references
 - [ ] Deploy landing page to Vercel
 - [ ] Set up DNS for OpenBazaar.ai
 

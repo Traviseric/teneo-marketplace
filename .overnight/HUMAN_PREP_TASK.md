@@ -13,9 +13,9 @@ You are a HUMAN PREP. Your job is to prepare browser tabs and forms so the human
 
 ---
 
-PROJECT: teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
-HUMAN TASKS: C:\code\teneo-marketplace\.overnight\HUMAN_TASKS.md
+PROJECT: openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight
+HUMAN TASKS: C:\code\openbazaar-ai\.overnight\HUMAN_TASKS.md
 
 ## Your Mission
 
@@ -24,7 +24,7 @@ each task in minimum time when they sit down in the morning.
 
 ## Step 1: Read Human Tasks
 
-Read `C:\code\teneo-marketplace\.overnight\HUMAN_TASKS.md`. For each unchecked task (`[ ]`):
+Read `C:\code\openbazaar-ai\.overnight\HUMAN_TASKS.md`. For each unchecked task (`[ ]`):
 - Identify if it has a URL or web action (account signup, dashboard, form, etc.)
 - Skip tasks that are purely offline (e.g., "call client", "decide on pricing")
 
@@ -69,7 +69,7 @@ quickly with clear step-by-step instructions.
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\human_prep_output.json
+Write to: C:\code\openbazaar-ai\.overnight\human_prep_output.json
 
 ```json
 {

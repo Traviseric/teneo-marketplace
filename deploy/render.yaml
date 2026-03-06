@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: teneo-marketplace
+    name: openbazaar-ai
     runtime: node
     plan: starter
     buildCommand: |
@@ -15,14 +15,14 @@ services:
       - key: PORT
         fromService:
           type: web
-          name: teneo-marketplace
+          name: openbazaar-ai
           property: port
       - key: DATABASE_PATH
         value: /opt/render/project/src/marketplace/backend/database/marketplace.db
       - key: SITE_URL
         fromService:
           type: web
-          name: teneo-marketplace
+          name: openbazaar-ai
           property: host
       # Add these in Render dashboard:
       # - key: STRIPE_SECRET_KEY
@@ -39,11 +39,11 @@ services:
       sizeGB: 1
     healthCheckPath: /api/health
     domains:
-      - teneo-marketplace.onrender.com
+      - openbazaar-ai.onrender.com
     
   # Static file service for PDFs and assets
   - type: static
-    name: teneo-marketplace-static
+    name: openbazaar-ai-static
     staticPublishPath: marketplace/frontend
     buildCommand: echo "No build needed for static files"
     routes:

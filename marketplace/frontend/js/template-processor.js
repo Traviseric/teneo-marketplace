@@ -1,4 +1,4 @@
-// Template Processing System for Teneo Marketplace
+// Template Processing System for OpenBazaar AI
 // Integrates master templates with brand-specific variables
 
 class TemplateProcessor {

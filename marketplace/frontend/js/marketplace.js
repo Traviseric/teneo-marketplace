@@ -1,4 +1,4 @@
-// Teneo Marketplace Core JavaScript
+// OpenBazaar AI Core JavaScript
 // Handles brand configuration, catalog loading, cart operations, and more
 
 const Marketplace = (function() {

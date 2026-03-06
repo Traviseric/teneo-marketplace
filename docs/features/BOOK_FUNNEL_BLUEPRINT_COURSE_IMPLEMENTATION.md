@@ -195,7 +195,7 @@ GET /api/courses/get-progress?userId=123&courseId=book-funnel-blueprint
 
 **Directory Structure**:
 ```
-teneo-marketplace/
+openbazaar-ai/
 ├── course-module/
 │   ├── frontend/           # Course UI
 │   └── courses/            # Course content
@@ -210,7 +210,7 @@ teneo-marketplace/
 
 **Step 1: Copy Modules**
 ```bash
-# From teneo-marketplace
+# From openbazaar-ai
 cp -r course-module/ ../teneo-production/
 cp -r funnel-module/ ../teneo-production/
 ```
@@ -394,7 +394,7 @@ https://teneo.io/funnel-builder
 ## File Structure Reference
 
 ```
-teneo-marketplace/
+openbazaar-ai/
 │
 ├── course-module/
 │   ├── frontend/
@@ -447,7 +447,7 @@ We've built the **foundation** for a revolutionary course that:
 ✅ Teaches by doing (not passive watching)
 ✅ Produces tangible results (deployed funnel)
 ✅ Integrates with existing tools (funnel builder)
-✅ Is fully portable (teneo-marketplace → teneo-production)
+✅ Is fully portable (openbazaar-ai → teneo-production)
 ✅ Can drive Teneo sales (free perk or upsell)
 
 **What's Left**: Content creation (videos, lesson markdown, templates)

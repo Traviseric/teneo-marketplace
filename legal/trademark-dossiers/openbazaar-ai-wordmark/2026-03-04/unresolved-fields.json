@@ -1,0 +1,22 @@
+{
+  "mark_id": "openbazaar-ai-wordmark",
+  "mark_text": "OPENBAZAAR.AI",
+  "unresolved_required_fields": [
+    {
+      "field": "owner.address_1",
+      "current_value": "TODO"
+    },
+    {
+      "field": "owner.city",
+      "current_value": "TODO"
+    },
+    {
+      "field": "owner.state",
+      "current_value": "TODO"
+    },
+    {
+      "field": "owner.postal_code",
+      "current_value": "TODO"
+    }
+  ]
+}

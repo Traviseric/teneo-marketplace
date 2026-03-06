@@ -1,4 +1,4 @@
-// Network configuration for Teneo Marketplace
+// Network configuration for OpenBazaar AI
 // Handles decentralized network settings and federation
 
 const crypto = require('crypto');

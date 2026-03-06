@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teneo Marketplace</title>
+    <title>OpenBazaar AI</title>
     <style>
         * {
             margin: 0;
@@ -468,7 +468,7 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="/" class="logo" id="brand-logo">Teneo Marketplace</a>
+                <a href="/" class="logo" id="brand-logo">OpenBazaar AI</a>
                 <nav aria-label="Site navigation">
                     <a href="/brands.html">Browse Networks</a>
                     <a href="/network.html">Network Search</a>
@@ -533,7 +533,7 @@
     <section class="featured-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Why Use Teneo Marketplace</h2>
+                <h2 class="section-title">Why Use OpenBazaar AI</h2>
                 <p class="section-subtitle">A new model for digital book distribution</p>
             </div>
             <div class="featured-grid">
@@ -572,7 +572,7 @@
                     <h4>Network</h4>
                     <ul>
                         <li><a href="/network.html">Join Network</a></li>
-                        <li><a href="https://github.com/Traviseric/teneo-marketplace">Open Source</a></li>
+                        <li><a href="https://github.com/Traviseric/openbazaar-ai">Open Source</a></li>
                         <li><a href="/api/network/status">Network Status</a></li>
                     </ul>
                 </div>
@@ -581,12 +581,12 @@
                     <ul>
                         <li><a href="/docs">Documentation</a></li>
                         <li><a href="/admin">Admin Panel</a></li>
-                        <li><a href="https://github.com/Traviseric/teneo-marketplace/issues">Support</a></li>
+                        <li><a href="https://github.com/Traviseric/openbazaar-ai/issues">Support</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Teneo Marketplace. Part of the censorship-resistant book network.</p>
+                <p>&copy; 2024 OpenBazaar AI. Part of the censorship-resistant book network.</p>
             </div>
         </div>
     </footer>
@@ -599,7 +599,7 @@
                 const response = await fetch(`/brands/${BRAND_ID}/config.json`);
                 const config = await response.json();
 
-                document.getElementById('brand-logo').textContent = config.name || config.brandName || 'Teneo Marketplace';
+                document.getElementById('brand-logo').textContent = config.name || config.brandName || 'OpenBazaar AI';
                 document.title = `${config.name || 'Teneo'} Marketplace`;
 
                 return config;

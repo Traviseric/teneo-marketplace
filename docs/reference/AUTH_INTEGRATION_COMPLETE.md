@@ -7,7 +7,7 @@
 
 ## 🎉 What Was Built
 
-The teneo-marketplace now has a **complete, production-ready authentication system** with two deployment modes:
+The openbazaar-ai now has a **complete, production-ready authentication system** with two deployment modes:
 
 ### **1. Local Auth (Default - Self-Hosted)**
 - ✅ SQLite + magic links
@@ -44,7 +44,7 @@ marketplace/backend/
 
 ### **Documentation**
 ```
-teneo-marketplace/
+openbazaar-ai/
 ├── TENEO_AUTH_INTEGRATION_STRATEGY.md    # Complete strategy doc
 ├── AUTH_SETUP.md                          # Setup guide for both modes
 ├── TENEO_AUTH_OAUTH_CLIENT_SETUP.md      # OAuth registration guide
@@ -97,7 +97,7 @@ teneo-marketplace/
    ```bash
    AUTH_PROVIDER=teneo-auth
    TENEO_AUTH_URL=https://auth.teneo.io
-   TENEO_CLIENT_ID=teneo-marketplace
+   TENEO_CLIENT_ID=openbazaar-ai
    TENEO_CLIENT_SECRET=<from-step-1>
    TENEO_CALLBACK_URL=https://marketplace.teneo.io/api/auth/callback
    ```
@@ -299,7 +299,7 @@ async function login(email) {
 
 ## 🏆 Result
 
-The teneo-marketplace now has:
+The openbazaar-ai now has:
 
 ✅ **Production-ready authentication**
 ✅ **Two deployment modes** (local + cloud)

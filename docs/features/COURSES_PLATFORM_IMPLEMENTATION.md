@@ -1,6 +1,6 @@
 # 📚 Course Platform - Complete Implementation Guide
 
-**Transform Teneo Marketplace into a full course hosting platform matching Podia's capabilities**
+**Transform OpenBazaar AI into a full course hosting platform matching Podia's capabilities**
 
 ---
 

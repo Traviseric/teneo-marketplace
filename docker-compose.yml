@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   # Main application service
-  teneo-marketplace:
+  openbazaar-ai:
     build: .
-    container_name: teneo-marketplace-app
+    container_name: openbazaar-ai-app
     ports:
       - "3001:3001"
     environment:
@@ -28,7 +28,7 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     networks:
-      - teneo-network
+      - openbazaar-network
     depends_on:
       - redis
     healthcheck:
@@ -41,14 +41,14 @@ services:
   # Redis for caching and sessions (optional but recommended)
   redis:
     image: redis:7-alpine
-    container_name: teneo-redis
+    container_name: openbazaar-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
     networks:
-      - teneo-network
+      - openbazaar-network
     command: redis-server --appendonly yes
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -59,21 +59,21 @@ services:
   # PostgreSQL database (for future use)
   postgres:
     image: postgres:15-alpine
-    container_name: teneo-postgres
+    container_name: openbazaar-postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-teneo_marketplace}
-      - POSTGRES_USER=${POSTGRES_USER:-teneo}
+      - POSTGRES_DB=${POSTGRES_DB:-openbazaar_ai}
+      - POSTGRES_USER=${POSTGRES_USER:-openbazaar}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme123}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     restart: unless-stopped
     networks:
-      - teneo-network
+      - openbazaar-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-teneo}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openbazaar}"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -81,7 +81,7 @@ services:
   # Nginx reverse proxy (for production)
   nginx:
     image: nginx:alpine
-    container_name: teneo-nginx
+    container_name: openbazaar-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -91,9 +91,9 @@ services:
       - ./logs/nginx:/var/log/nginx
     restart: unless-stopped
     networks:
-      - teneo-network
+      - openbazaar-network
     depends_on:
-      - teneo-marketplace
+      - openbazaar-ai
     profiles:
       - production
 
@@ -106,5 +106,5 @@ volumes:
 
 # Custom network for container communication
 networks:
-  teneo-network:
+  openbazaar-network:
     driver: bridge

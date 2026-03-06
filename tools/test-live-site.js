@@ -10,8 +10,8 @@ const colors = {
   reset: '\x1b[0m'
 };
 
-const FRONTEND_URL = 'https://teneo-marketplace.vercel.app';
-const BACKEND_URL = 'https://teneo-marketplace-api.onrender.com';
+const FRONTEND_URL = 'https://openbazaar-ai.vercel.app';
+const BACKEND_URL = 'https://openbazaar-ai-api.onrender.com';
 
 function log(success, message) {
   const icon = success ? `${colors.green}✅` : `${colors.red}❌`;
@@ -35,7 +35,7 @@ function makeRequest(url, options = {}) {
 }
 
 async function runTests() {
-  console.log(`\n${colors.yellow}🔍 Testing Teneo Marketplace Live Deployment${colors.reset}\n`);
+  console.log(`\n${colors.yellow}🔍 Testing OpenBazaar AI Live Deployment${colors.reset}\n`);
   console.log(`Frontend: ${FRONTEND_URL}`);
   console.log(`Backend: ${BACKEND_URL}\n`);
   

@@ -1,13 +1,13 @@
 # TENEO Auth - OAuth Client Setup for Marketplace
 
 **For:** TENEO Auth repository (`teneo-auth`)
-**Goal:** Register teneo-marketplace as an OAuth 2.0 client for SSO integration
+**Goal:** Register openbazaar-ai as an OAuth 2.0 client for SSO integration
 
 ---
 
 ## 📋 Task for TENEO Auth Repository
 
-The teneo-marketplace needs to be registered as an OAuth 2.0 client in TENEO Auth to enable SSO login.
+The openbazaar-ai needs to be registered as an OAuth 2.0 client in TENEO Auth to enable SSO login.
 
 ### **What Needs to be Done:**
 
@@ -21,9 +21,9 @@ Create a script or database migration to register the marketplace as a first-par
 
 ```json
 {
-  "client_id": "teneo-marketplace",
+  "client_id": "openbazaar-ai",
   "client_secret": "<generate-secure-secret>",
-  "name": "TENEO Marketplace",
+  "name": "OpenBazaar AI",
   "description": "AI-generated book marketplace with dual-mode payments",
   "is_first_party": true,
   "is_active": true,
@@ -66,7 +66,7 @@ const supabase = createClient(
 );
 
 async function registerMarketplaceClient() {
-  console.log('Registering TENEO Marketplace as OAuth client...');
+  console.log('Registering OpenBazaar AI as OAuth client...');
 
   // Generate secure client secret
   const clientSecret = crypto.randomBytes(32).toString('hex');
@@ -76,9 +76,9 @@ async function registerMarketplaceClient() {
   const { data, error } = await supabase
     .from('oauth_clients')
     .insert({
-      client_id: 'teneo-marketplace',
+      client_id: 'openbazaar-ai',
       client_secret: hashedSecret,
-      name: 'TENEO Marketplace',
+      name: 'OpenBazaar AI',
       description: 'AI-generated book marketplace with dual-mode payments',
       is_first_party: true,
       is_active: true,
@@ -107,11 +107,11 @@ async function registerMarketplaceClient() {
   console.log('✅ Marketplace registered successfully!');
   console.log('\n📋 Client Credentials (SAVE THESE):');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(`CLIENT_ID: teneo-marketplace`);
+  console.log(`CLIENT_ID: openbazaar-ai`);
   console.log(`CLIENT_SECRET: ${clientSecret}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('\n⚠️  Add these to marketplace .env:');
-  console.log(`TENEO_CLIENT_ID=teneo-marketplace`);
+  console.log(`TENEO_CLIENT_ID=openbazaar-ai`);
   console.log(`TENEO_CLIENT_SECRET=${clientSecret}`);
   console.log('TENEO_AUTH_URL=https://auth.teneo.io');
   console.log('TENEO_CALLBACK_URL=https://marketplace.teneo.io/api/auth/callback');
@@ -153,7 +153,7 @@ This will:
 
 ## 🎯 Expected Outcome
 
-After running this script, the teneo-marketplace will be able to:
+After running this script, the openbazaar-ai will be able to:
 
 1. **Redirect users to TENEO Auth** for login/registration
 2. **Exchange OAuth authorization codes** for access tokens
@@ -224,7 +224,7 @@ For marketplace repository (after OAuth client is registered):
 - [ ] Add credentials to `.env`:
   ```bash
   AUTH_PROVIDER=teneo-auth
-  TENEO_CLIENT_ID=teneo-marketplace
+  TENEO_CLIENT_ID=openbazaar-ai
   TENEO_CLIENT_SECRET=<from-script-output>
   TENEO_AUTH_URL=https://auth.teneo.io
   TENEO_CALLBACK_URL=https://marketplace.teneo.io/api/auth/callback
@@ -239,14 +239,14 @@ For marketplace repository (after OAuth client is registered):
 
 **Prompt for teneo-auth Claude Code:**
 
-> I need to register the teneo-marketplace as an OAuth 2.0 client so it can use TENEO Auth SSO.
+> I need to register the openbazaar-ai as an OAuth 2.0 client so it can use TENEO Auth SSO.
 >
 > Please create a script at `scripts/register-marketplace-oauth-client.ts` that:
 > 1. Generates a secure client secret
 > 2. Hashes it with bcrypt
 > 3. Inserts an OAuth client with:
->    - client_id: "teneo-marketplace"
->    - name: "TENEO Marketplace"
+>    - client_id: "openbazaar-ai"
+>    - name: "OpenBazaar AI"
 >    - is_first_party: true
 >    - redirect_uris: ["https://marketplace.teneo.io/api/auth/callback", "http://localhost:3001/api/auth/callback"]
 >    - scopes: ["read", "profile", "credits", "email"]

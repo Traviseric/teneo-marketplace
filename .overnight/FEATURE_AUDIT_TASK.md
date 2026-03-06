@@ -2,7 +2,7 @@
 
 **EXECUTE IMMEDIATELY** - This is an autonomous task. Don't ask questions.
 
-You are running a Feature Audit for project **teneo-marketplace**.
+You are running a Feature Audit for project **openbazaar-ai**.
 Your job: discover what features this project claims to have, then verify if they're actually implemented.
 
 ## Step 1: Run production-audit's AI_FEATURES box (if available)
@@ -12,7 +12,7 @@ default `C:/code/production-audit`. If it exists:
 
 ```bash
 cd $PRODUCTION_AUDIT_PATH
-python -m boxes.ai_features --project "C:/code/teneo-marketplace" --mode deep --output "C:/code/teneo-marketplace/.overnight/feature_audit_raw.json"
+python -m boxes.ai_features --project "C:/code/openbazaar-ai" --mode deep --output "C:/code/openbazaar-ai/.overnight/feature_audit_raw.json"
 ```
 
 If that fails (not installed, import error, missing deps), **do the audit yourself**:
@@ -28,7 +28,7 @@ Read the raw output JSON from Step 1 (or your own analysis).
 
 ## Step 3: Write orchestrator-format output
 
-Write this JSON to `C:/code/teneo-marketplace/.overnight/feature_audit_output.json`:
+Write this JSON to `C:/code/openbazaar-ai/.overnight/feature_audit_output.json`:
 
 ```json
 {
@@ -64,6 +64,6 @@ Severity mapping:
 - **medium**: Feature partially implemented (incomplete flows)
 - **low**: Feature works but has no tests
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight

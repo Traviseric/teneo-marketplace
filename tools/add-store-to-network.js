@@ -79,7 +79,7 @@ class NetworkStoreManager {
                 method: 'GET',
                 timeout: 10000,
                 headers: {
-                    'User-Agent': 'Teneo-Network-Validator/1.0'
+                    'User-Agent': 'OpenBazaar-Network-Validator/1.0'
                 }
             };
 
@@ -146,7 +146,7 @@ class NetworkStoreManager {
                 version: "1.0",
                 updated: new Date().toISOString(),
                 network: {
-                    name: "Teneo Book Network",
+                    name: "OpenBazaar Book Network",
                     description: "A decentralized network of independent bookstores",
                     protocol: "TBN/1.0"
                 },
@@ -215,7 +215,7 @@ class NetworkStoreManager {
     async generatePullRequest(storeData) {
         console.log(colorize('\n📝 Generating Pull Request...', 'blue'));
         
-        const prTitle = `Add ${storeData.name} to Teneo Network`;
+        const prTitle = `Add ${storeData.name} to OpenBazaar Network`;
         const prBody = `## New Store Registration
 
 **Store Name:** ${storeData.name}  
@@ -239,7 +239,7 @@ This store has been automatically validated and is ready to join the network.
 ${storeData.apiCompatibility ? '✅ Fully compatible' : '⚠️ Partial compatibility'}
 
 ---
-*This PR was generated automatically by the Teneo Network registration tool.*`;
+*This PR was generated automatically by the OpenBazaar Network registration tool.*`;
 
         // In a real implementation, this would use GitHub API
         console.log(colorize('Pull Request Details:', 'bold'));
@@ -251,20 +251,20 @@ ${storeData.apiCompatibility ? '✅ Fully compatible' : '⚠️ Partial compatib
         console.log('1. Create a new branch: git checkout -b add-store-' + storeData.id);
         console.log('2. Commit changes: git add . && git commit -m "Add ' + storeData.name + ' to network"');
         console.log('3. Push branch: git push origin add-store-' + storeData.id);
-        console.log('4. Create PR at: https://github.com/TravisEric/teneo-marketplace/compare');
+        console.log('4. Create PR at: https://github.com/TravisEric/openbazaar-ai/compare');
         
         return { title: prTitle, body: prBody };
     }
 
     async addStore(storeUrl, options = {}) {
-        console.log(colorize('\n🌐 Adding Store to Teneo Network', 'bold'));
+        console.log(colorize('\n🌐 Adding Store to OpenBazaar Network', 'bold'));
         console.log(colorize('================================\n', 'blue'));
         
         // Validate and test store API
         const apiTest = await this.validateStoreAPI(storeUrl);
         
         if (!apiTest.compatible) {
-            console.log(colorize('\n❌ Store is not compatible with Teneo Network', 'red'));
+            console.log(colorize('\n❌ Store is not compatible with OpenBazaar Network', 'red'));
             console.log('Required APIs are not available or not functioning correctly.');
             return false;
         }
@@ -278,7 +278,7 @@ ${storeData.apiCompatibility ? '✅ Fully compatible' : '⚠️ Partial compatib
         const storeData = {
             id: options.id || (storeInfo?.id) || this.generateStoreId(options.name || 'unnamed-store', storeUrl),
             name: options.name || storeInfo?.name || 'Unknown Store',
-            tagline: options.tagline || storeInfo?.tagline || 'A member of the Teneo Book Network',
+            tagline: options.tagline || storeInfo?.tagline || 'A member of the OpenBazaar Book Network',
             url: storeUrl,
             api: storeUrl + '/api',
             specialties: options.specialties || storeInfo?.specialties || ['books'],
@@ -336,7 +336,7 @@ async function main() {
     const args = process.argv.slice(2);
     
     if (args.length === 0) {
-        console.log(colorize('\n🌐 Teneo Network Store Manager', 'bold'));
+        console.log(colorize('\n🌐 OpenBazaar Network Store Manager', 'bold'));
         console.log(colorize('Usage: node add-store-to-network.js <store-url> [options]', 'blue'));
         console.log('\nOptions:');
         console.log('  --name "Store Name"');

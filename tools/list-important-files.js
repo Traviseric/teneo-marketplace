@@ -127,7 +127,7 @@ function printTree(obj, prefix = '', isLast = true) {
 }
 
 function main() {
-  console.log(`${colors.bold}${colors.magenta}\n🔍 Teneo Marketplace - Project File Analysis${colors.reset}\n`);
+  console.log(`${colors.bold}${colors.magenta}\n🔍 OpenBazaar AI - Project File Analysis${colors.reset}\n`);
   
   const projectRoot = path.resolve(__dirname, '..');
   console.log(`${colors.cyan}Project Root:${colors.reset} ${projectRoot}\n`);

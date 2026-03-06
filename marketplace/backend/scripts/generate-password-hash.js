@@ -30,7 +30,7 @@ async function main() {
     const args = process.argv.slice(2);
     
     if (args.length === 0) {
-        console.log('🔐 Teneo Marketplace - Password Hash Generator\n');
+        console.log('🔐 OpenBazaar AI - Password Hash Generator\n');
         console.log('Usage:');
         console.log('  Generate hash for specific password:');
         console.log('    node generate-password-hash.js <password>\n');

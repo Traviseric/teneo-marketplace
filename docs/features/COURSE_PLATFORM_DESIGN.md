@@ -1,7 +1,7 @@
 # 🎓 Course Platform - Design Specifications
 
 **Based on:** Podia course interface (The Book Funnel Blueprint example)
-**Goal:** Clean, professional course player matching Teneo Marketplace branding
+**Goal:** Clean, professional course player matching OpenBazaar AI branding
 
 ---
 
@@ -156,7 +156,7 @@ MODULE 2: THE 4 FUNNEL BLUEPRINTS ▼
 
 ## 🎨 Color Palette
 
-**Matching Teneo Marketplace Branding:**
+**Matching OpenBazaar AI Branding:**
 
 ```css
 /* Primary Colors */
@@ -483,7 +483,7 @@ Response: {
 
 **Visual Match:**
 - [x] Layout matches Podia screenshots
-- [x] Branding matches Teneo Marketplace colors
+- [x] Branding matches OpenBazaar AI colors
 - [x] Professional, clean aesthetic
 - [x] Responsive on all devices
 

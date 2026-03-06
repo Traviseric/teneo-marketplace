@@ -1,4 +1,4 @@
--- Teneo Marketplace Database Initialization Script
+-- OpenBazaar AI Database Initialization Script
 -- This script creates the initial database schema for the marketplace
 
 -- Create books table

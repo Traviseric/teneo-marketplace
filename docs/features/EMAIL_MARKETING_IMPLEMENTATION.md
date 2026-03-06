@@ -1,6 +1,6 @@
 # 📧 Email Marketing System - Implementation Guide
 
-**Transform Teneo Marketplace from transactional emails → full marketing automation platform**
+**Transform OpenBazaar AI from transactional emails → full marketing automation platform**
 
 ---
 

@@ -1,6 +1,6 @@
 @echo off
 echo =========================================
-echo Starting Teneo Marketplace
+echo Starting OpenBazaar AI
 echo =========================================
 echo.
 
@@ -30,12 +30,12 @@ start "Teneo Backend Server" cmd /k "npm start"
 timeout /t 3 /nobreak >nul
 
 :: Open the frontend in the default browser
-echo Opening Teneo Marketplace in your browser...
+echo Opening OpenBazaar AI in your browser...
 start http://localhost:3001
 
 echo.
 echo =========================================
-echo Teneo Marketplace is running!
+echo OpenBazaar AI is running!
 echo =========================================
 echo Backend API: http://localhost:3001/api
 echo Frontend:    http://localhost:3001

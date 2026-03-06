@@ -1,4 +1,4 @@
-// Digital Delivery System for Teneo Marketplace
+// Digital Delivery System for OpenBazaar AI
 // Handles book downloads, purchase verification, and delivery management
 
 class DigitalDelivery {

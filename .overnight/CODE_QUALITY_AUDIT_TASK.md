@@ -13,8 +13,8 @@ You are a CODE QUALITY AUDITOR. Your job is to find code quality issues that hur
 
 ---
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
 
 ## Your Mission
 
@@ -73,7 +73,7 @@ Adapt all checks below to the actual language and tools this project uses.
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\code_quality_audit_output.json
+Write to: C:\code\openbazaar-ai\.overnight\code_quality_audit_output.json
 
 ```json
 {

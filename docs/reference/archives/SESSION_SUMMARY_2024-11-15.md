@@ -558,7 +558,7 @@ marketplace/frontend/brands/test_automation_brand/
 
 ```bash
 # Run test suite
-cd "D:\Travis Eric\TE Code\teneo-marketplace"
+cd "D:\Travis Eric\TE Code\openbazaar-ai"
 node test-webhooks.js
 
 # View test brand

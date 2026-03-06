@@ -1,6 +1,6 @@
 # Cross-Project Course Integration Guide
 
-**How teneo-marketplace and traviseric.com Course Components Work Together**
+**How openbazaar-ai and traviseric.com Course Components Work Together**
 
 ---
 
@@ -18,14 +18,14 @@ You have **TWO complete course systems** that need to complement each other:
 
 **Location:** `D:\Travis Eric\TE Code\traviseric.com\lib\course\`
 
-### **teneo-marketplace** (Express + SQLite)
+### **openbazaar-ai** (Express + SQLite)
 - ✅ Vanilla HTML/CSS/JS components
 - ✅ Framework-agnostic design
 - ✅ Brand-swappable via CSS variables
 - ✅ Self-contained, no dependencies
 - ✅ Ready to open source
 
-**Location:** `D:\Travis Eric\TE Code\teneo-marketplace\marketplace\frontend\components-library\courses\`
+**Location:** `D:\Travis Eric\TE Code\openbazaar-ai\marketplace\frontend\components-library\courses\`
 
 ---
 
@@ -42,7 +42,7 @@ You have **TWO complete course systems** that need to complement each other:
 | CourseLayout | `CourseLayout.tsx` | Main wrapper with sidebar (needs reading) |
 | EnrollButton | `EnrollButton.tsx` | Stripe checkout trigger (needs reading) |
 
-### **What teneo-marketplace Has (Vanilla HTML/CSS/JS)**
+### **What openbazaar-ai Has (Vanilla HTML/CSS/JS)**
 
 | Component | File | Features |
 |-----------|------|----------|
@@ -72,7 +72,7 @@ const timeSpent = useTimeTracking(courseSlug, moduleSlug);
 <Button size="lg" className="bg-sovereignty-gold">
 ```
 
-**teneo-marketplace:**
+**openbazaar-ai:**
 ```javascript
 // Vanilla JS fetch API
 async function loadProgress() {
@@ -94,7 +94,7 @@ async function loadProgress() {
 - Server Components + Client Components pattern
 - Real-time updates via Supabase subscriptions (optional)
 
-**teneo-marketplace:**
+**openbazaar-ai:**
 - Vanilla JavaScript state
 - LocalStorage fallback
 - Event-driven communication between components
@@ -110,7 +110,7 @@ async function loadProgress() {
   - `reality-black`
   - `success-green`
 
-**teneo-marketplace:**
+**openbazaar-ai:**
 - CSS-in-JS (style tags in components)
 - CSS variables for everything:
   - `--brand-primary`
@@ -123,12 +123,12 @@ async function loadProgress() {
 
 ## What Each Side Needs from the Other
 
-### **traviseric.com NEEDS from teneo-marketplace:**
+### **traviseric.com NEEDS from openbazaar-ai:**
 
 #### 1. **Module Cards for Landing Page**
 **Missing:** Cards to display all modules on `/framework` landing page
 
-**Copy from:** `teneo-marketplace/courses/module-card.html`
+**Copy from:** `openbazaar-ai/courses/module-card.html`
 
 **Adapt to React:**
 ```tsx
@@ -168,7 +168,7 @@ export function ModuleCard({ module, moduleNumber, isLocked, progress }: ModuleC
 #### 2. **Enhanced Progress Tracking**
 **Missing:** Milestone celebrations, streak tracking, time remaining
 
-**Copy from:** `teneo-marketplace/courses/progress-bar.html`
+**Copy from:** `openbazaar-ai/courses/progress-bar.html`
 
 **Add to ProgressBar.tsx:**
 - Milestone celebrations (🎉 at 25%, 50%, 75%, 100%)
@@ -179,7 +179,7 @@ export function ModuleCard({ module, moduleNumber, isLocked, progress }: ModuleC
 #### 3. **Rich Content Formatting**
 **Missing:** Callout boxes, code highlighting, better typography
 
-**Copy from:** `teneo-marketplace/courses/lesson-content.html`
+**Copy from:** `openbazaar-ai/courses/lesson-content.html`
 
 **Add styles for:**
 - Info/warning/success/error callouts
@@ -189,14 +189,14 @@ export function ModuleCard({ module, moduleNumber, isLocked, progress }: ModuleC
 
 ---
 
-### **teneo-marketplace NEEDS from traviseric.com:**
+### **openbazaar-ai NEEDS from traviseric.com:**
 
 #### 1. **Database Schema (SQLite version)**
 **Missing:** Complete database tables for courses
 
 **Port from:** `traviseric.com/supabase/migrations/20250117000000_create_course_tables.sql`
 
-**Create:** `teneo-marketplace/marketplace/backend/database/schema-courses.sql`
+**Create:** `openbazaar-ai/marketplace/backend/database/schema-courses.sql`
 
 ```sql
 -- SQLite version (no UUID type)
@@ -256,7 +256,7 @@ CREATE TABLE course_analytics (
 
 **Port from:** `traviseric.com/app/api/course/`
 
-**Create:** `teneo-marketplace/marketplace/backend/routes/courses.js`
+**Create:** `openbazaar-ai/marketplace/backend/routes/courses.js`
 
 ```javascript
 const express = require('express');
@@ -328,7 +328,7 @@ module.exports = router;
 
 **Port from:** `traviseric.com/lib/course/auth.ts`
 
-**Create:** `teneo-marketplace/marketplace/backend/services/authService.js`
+**Create:** `openbazaar-ai/marketplace/backend/services/authService.js`
 
 ```javascript
 const crypto = require('crypto');
@@ -382,7 +382,7 @@ module.exports = new AuthService();
 
 **Port from:** traviseric.com would have this (not yet built)
 
-**Create:** `teneo-marketplace/marketplace/backend/services/courseEmailService.js`
+**Create:** `openbazaar-ai/marketplace/backend/services/courseEmailService.js`
 
 ```javascript
 const emailService = require('./emailService'); // Existing email service
@@ -435,7 +435,7 @@ module.exports = new CourseEmailService();
 1. ✅ Database schema (already done via migration)
 2. ✅ React components (already built)
 3. ✅ API routes (already built)
-4. [ ] Add ModuleCard component (port from teneo-marketplace)
+4. [ ] Add ModuleCard component (port from openbazaar-ai)
 5. [ ] Enhance ProgressBar (add milestones, streak)
 6. [ ] Create course landing page `/framework`
 7. [ ] Convert 20 modules to MDX
@@ -448,7 +448,7 @@ module.exports = new CourseEmailService();
 
 ---
 
-### **Phase 2: teneo-marketplace Port (Open Source)**
+### **Phase 2: openbazaar-ai Port (Open Source)**
 
 **Timeline:** 1-2 weeks after traviseric.com launch
 
@@ -474,12 +474,12 @@ module.exports = new CourseEmailService();
 
 **Continuous improvement loop:**
 
-1. **traviseric.com → teneo-marketplace**
+1. **traviseric.com → openbazaar-ai**
    - Port new React components to vanilla HTML/CSS/JS
    - Extract reusable patterns
    - Add to component library
 
-2. **teneo-marketplace → traviseric.com**
+2. **openbazaar-ai → traviseric.com**
    - Port enhanced features back to React
    - Improve UX based on vanilla implementation
    - Add missing components (module cards, enhanced progress)
@@ -501,7 +501,7 @@ module.exports = new CourseEmailService();
 
 **File:** `components/course/ModuleCard.tsx`
 
-**Copy structure from:** `teneo-marketplace/courses/module-card.html`
+**Copy structure from:** `openbazaar-ai/courses/module-card.html`
 
 **Features needed:**
 - Module number badge
@@ -549,7 +549,7 @@ Your AI interactions reflect your cognitive architecture...
 
 ---
 
-### **For teneo-marketplace** (After traviseric.com launch)
+### **For openbazaar-ai** (After traviseric.com launch)
 
 #### 1. Database Schema
 **File:** `marketplace/backend/database/schema-courses.sql`
@@ -597,7 +597,7 @@ Your AI interactions reflect your cognitive architecture...
 - Advanced courses: 50 sales × $297 = $14,850
 - **Subtotal: $34,250/year**
 
-**teneo-marketplace book courses:**
+**openbazaar-ai book courses:**
 - 10 book courses @ $97-197 each
 - 100 sales/year total = $19,700
 - **Subtotal: $19,700/year**
@@ -614,7 +614,7 @@ Your AI interactions reflect your cognitive architecture...
 
 ### **How to Port Components Between Projects**
 
-#### **HTML → React (teneo-marketplace → traviseric.com)**
+#### **HTML → React (openbazaar-ai → traviseric.com)**
 
 1. **Copy HTML structure**
 2. **Convert class names to className**
@@ -625,7 +625,7 @@ Your AI interactions reflect your cognitive architecture...
 
 **Example:**
 ```html
-<!-- teneo-marketplace: progress-bar.html -->
+<!-- openbazaar-ai: progress-bar.html -->
 <div class="progress-bar">
   <span>{{PROGRESS_PERCENT}}%</span>
 </div>
@@ -646,7 +646,7 @@ export function ProgressBar({ progressPercent }: ProgressBarProps) {
 }
 ```
 
-#### **React → HTML (traviseric.com → teneo-marketplace)**
+#### **React → HTML (traviseric.com → openbazaar-ai)**
 
 1. **Remove TypeScript types**
 2. **Convert hooks to vanilla JS state**
@@ -661,7 +661,7 @@ const { progress, markComplete } = useCourseProgress(courseSlug, moduleSlug);
 ```
 
 ```javascript
-<!-- teneo-marketplace: lesson-content.html -->
+<!-- openbazaar-ai: lesson-content.html -->
 <script>
 (function() {
   let progress = { completed: false };
@@ -691,7 +691,7 @@ const { progress, markComplete } = useCourseProgress(courseSlug, moduleSlug);
 - React hooks for state management
 - **Missing:** Landing page, MDX content, enhanced components
 
-**teneo-marketplace (Vanilla/SQLite):**
+**openbazaar-ai (Vanilla/SQLite):**
 - Framework-agnosable HTML/CSS/JS components
 - Brand-swappable design system
 - Self-contained, no dependencies
@@ -700,12 +700,12 @@ const { progress, markComplete } = useCourseProgress(courseSlug, moduleSlug);
 ### **Strategy:**
 
 1. **Launch traviseric.com FIRST** (2-3 weeks)
-   - Port missing components from teneo-marketplace
+   - Port missing components from openbazaar-ai
    - Create landing page
    - Convert content to MDX
    - Launch at $97
 
-2. **Port to teneo-marketplace SECOND** (1-2 weeks)
+2. **Port to openbazaar-ai SECOND** (1-2 weeks)
    - Add database schema
    - Create API routes
    - Integrate auth system

@@ -89,8 +89,8 @@ echo '/swapfile none swap sw 0 0' >> /etc/fstab
 ```bash
 # Clone repository
 cd /opt
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 
 # Create environment config
 cd marketplace/backend
@@ -138,7 +138,7 @@ bcrypt-cli "YourSecurePassword123!" 10
 ### Task 7: Deploy with Docker (30 min)
 ```bash
 # Back to project root
-cd /opt/teneo-marketplace
+cd /opt/openbazaar-ai
 
 # Build and start
 docker-compose up -d
@@ -340,7 +340,7 @@ Create: `marketplace/frontend/crypto-checkout.html`
 
 ```bash
 # On VPS
-cd /opt/teneo-marketplace/marketplace/frontend/brands
+cd /opt/openbazaar-ai/marketplace/frontend/brands
 
 # Create new brand
 mkdir information_asymmetry
@@ -488,7 +488,7 @@ teneo.io/revolution → gateway.asymmetrybooks.com → asymmetrybooks.com
 ### Task 18: Remove Teneo Branding (1 hour)
 ```bash
 # Edit marketplace files to remove Teneo references
-cd /opt/teneo-marketplace/marketplace/frontend
+cd /opt/openbazaar-ai/marketplace/frontend
 
 # Update index.html, remove Teneo branding
 # Update footer, privacy policy
@@ -545,12 +545,12 @@ BACKUP_DIR="/root/backups"
 mkdir -p $BACKUP_DIR
 
 # Backup database
-cp /opt/teneo-marketplace/marketplace/backend/database/marketplace.db \
+cp /opt/openbazaar-ai/marketplace/backend/database/marketplace.db \
    $BACKUP_DIR/db_$DATE.db
 
 # Backup PDFs
 tar -czf $BACKUP_DIR/pdfs_$DATE.tar.gz \
-   /opt/teneo-marketplace/marketplace/frontend/brands/information_asymmetry/pdfs/
+   /opt/openbazaar-ai/marketplace/frontend/brands/information_asymmetry/pdfs/
 
 # Keep only last 7 days
 find $BACKUP_DIR -type f -mtime +7 -delete

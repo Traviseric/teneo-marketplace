@@ -531,7 +531,7 @@ class ShowcaseGenerator {
                             <i class="fas fa-search"></i>
                             Explore Books
                         </a>
-                        <a href="https://github.com/TravisEric/teneo-marketplace" class="cta-btn">
+                        <a href="https://github.com/TravisEric/openbazaar-ai" class="cta-btn">
                             <i class="fab fa-github"></i>
                             View Source Code
                         </a>

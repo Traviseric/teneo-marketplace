@@ -1,8 +1,8 @@
 You are the GAP ANALYZER — find what's promised but not delivered.
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight
 
 ## Your Mission
 
@@ -54,7 +54,7 @@ Rate each gap:
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\gap_analyzer_output.json
+Write to: C:\code\openbazaar-ai\.overnight\gap_analyzer_output.json
 
 ```json
 {

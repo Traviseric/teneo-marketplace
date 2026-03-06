@@ -4,6 +4,8 @@
 
 The marketplace operates in **two modes simultaneously**, with automatic failover and a **federated network** of independent nodes.
 
+> **Implementation note (March 2026):** The dual-mode payment routes (Stripe + crypto) are built and working. The automatic health monitoring and failover system described below is a design document -- not yet implemented in code. Federation peer discovery and cross-store search are working. Revenue sharing schema exists but is not yet wired to the checkout flow.
+
 ---
 
 ## 🔄 Dual-Mode Operation
@@ -499,7 +501,7 @@ async function settleRevenueShare(orderId) {
 ### Repository Structure
 
 ```
-teneo-marketplace/ (open source)
+openbazaar-ai/ (open source)
 ├── marketplace/
 │   ├── frontend/        # Static files
 │   ├── backend/         # Node.js API
@@ -523,8 +525,8 @@ teneo-marketplace/ (open source)
 
 ```bash
 # Clone repository
-git clone https://github.com/Traviseric/teneo-marketplace.git
-cd teneo-marketplace
+git clone https://github.com/Traviseric/openbazaar-ai.git
+cd openbazaar-ai
 
 # Configure your node
 cp .env.example .env

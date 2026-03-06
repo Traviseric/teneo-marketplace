@@ -1,6 +1,6 @@
 # Course Platform Integration Strategy
 
-**Shared Component Library Between teneo-marketplace & traviseric.com**
+**Shared Component Library Between openbazaar-ai & traviseric.com**
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### Projects Using This:
 1. **traviseric.com** - Your Framework course ($97)
-2. **teneo-marketplace** - Book courses ($97-297)
+2. **openbazaar-ai** - Book courses ($97-297)
 3. **White-label licensing** - Sell to other educators ($297/year)
 
 ---
@@ -24,7 +24,7 @@
 | Kajabi | $149 | $1,788 | This |
 | **Total** | **$317** | **$3,804** | **$0** |
 
-**Combined with teneo-marketplace SaaS replacement:**
+**Combined with openbazaar-ai SaaS replacement:**
 - ClickFunnels: $3,564/year
 - ConvertKit: $3,600/year
 - SamCart: $2,388/year
@@ -41,13 +41,13 @@
 ### **Shared Component Library**
 
 ```
-teneo-marketplace/
+openbazaar-ai/
 └── marketplace/frontend/components-library/
     ├── _base/
     │   ├── variables.css         # CSS custom properties
     │   └── reset.css             # Base styles
     ├── brand-themes/
-    │   ├── teneo-brand.css       # Teneo marketplace theme
+    │   ├── teneo-brand.css       # OpenBazaar AI theme
     │   └── traviseric-brand.css  # Travis Eric theme
     ├── heroes/                   # Landing page heroes
     ├── forms/                    # Forms & CTAs
@@ -100,7 +100,7 @@ CREATE TABLE course_certificates (...)
 
 ---
 
-### **teneo-marketplace (Express + SQLite):**
+### **openbazaar-ai (Express + SQLite):**
 
 **Tech Stack:**
 - Express.js (Node.js)
@@ -148,7 +148,7 @@ CREATE TABLE course_certificates (...)
 }
 ```
 
-**teneo-marketplace:**
+**openbazaar-ai:**
 ```css
 :root {
   --brand-primary: #1e3f54;      /* Navy */
@@ -173,7 +173,7 @@ CREATE TABLE course_certificates (...)
 - ✅ Test with real users
 
 **Steps:**
-1. Use components from teneo-marketplace library
+1. Use components from openbazaar-ai library
 2. Adapt to Next.js (copy HTML → React)
 3. Connect to Supabase
 4. Apply traviseric brand theme
@@ -184,7 +184,7 @@ CREATE TABLE course_certificates (...)
 
 ---
 
-### **Phase 2: Port to teneo-marketplace** (Month 2)
+### **Phase 2: Port to openbazaar-ai** (Month 2)
 
 **Why port later:**
 - ✅ Proven concept (works on traviseric.com)
@@ -197,7 +197,7 @@ CREATE TABLE course_certificates (...)
 2. Create SQLite version (no Supabase dependency)
 3. Adapt components to vanilla HTML (already done!)
 4. Apply teneo brand theme
-5. Add to teneo-marketplace
+5. Add to openbazaar-ai
 
 **Timeline:** 2 weeks
 **Result:** Self-hosted, portable course platform
@@ -251,7 +251,7 @@ CREATE TABLE course_certificates (...)
 - Advanced courses: 50 sales × $297 = $14,850/mo
 - **Subtotal: $34,250/mo**
 
-**Book Courses (teneo-marketplace):**
+**Book Courses (openbazaar-ai):**
 - 10 book courses @ $197 each
 - 100 sales/month total = $19,700/mo
 - **Subtotal: $19,700/mo**
@@ -279,7 +279,7 @@ payments: Stripe
 cost: $25/month (Supabase Pro)
 ```
 
-### **teneo-marketplace Stack:**
+### **openbazaar-ai Stack:**
 ```yaml
 frontend: Express.js (HTML, vanilla JS)
 database: SQLite (better-sqlite3)
@@ -363,7 +363,7 @@ cost: $5-20/month
 9. [ ] Get first 50 sales
 
 ### **Medium Term (Months 2-3):**
-10. [ ] Port to teneo-marketplace (SQLite version)
+10. [ ] Port to openbazaar-ai (SQLite version)
 11. [ ] Build 10 book courses
 12. [ ] Open source the platform
 13. [ ] Launch white-label licensing
@@ -374,7 +374,7 @@ cost: $5-20/month
 
 **You're building:**
 - ✅ Course infrastructure for traviseric.com (your courses)
-- ✅ Course infrastructure for teneo-marketplace (book courses)
+- ✅ Course infrastructure for openbazaar-ai (book courses)
 - ✅ Open source course platform (Teachable replacement)
 - ✅ White-label licensing product ($297/year)
 

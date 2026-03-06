@@ -1,5 +1,5 @@
 # Course Components
-## Reusable Course Infrastructure for traviseric.com AND teneo-marketplace
+## Reusable Course Infrastructure for traviseric.com AND openbazaar-ai
 
 **Built once. Used everywhere. Brand-swappable.**
 
@@ -9,7 +9,7 @@
 
 These components are **framework-agnostic** and **brand-agnostic**:
 
-- ✅ Work in static HTML (teneo-marketplace)
+- ✅ Work in static HTML (openbazaar-ai)
 - ✅ Work in Next.js (traviseric.com)
 - ✅ Work in React, Vue, Svelte
 - ✅ Brand-swappable via CSS variables
@@ -214,7 +214,7 @@ export default function CourseLayout({ children }) {
 
 ---
 
-### **Option B: teneo-marketplace (Express + SQLite)**
+### **Option B: openbazaar-ai (Express + SQLite)**
 
 ```html
 <!-- marketplace/frontend/courses/framework.html -->
@@ -266,7 +266,7 @@ fetch('/components-library/courses/course-nav.html')
 }
 ```
 
-### **teneo-marketplace Brand:**
+### **openbazaar-ai Brand:**
 ```css
 /* brand-themes/teneo-brand.css */
 :root {
@@ -303,7 +303,7 @@ const { data: progress } = await supabase
   .eq('course_slug', courseSlug)
 ```
 
-### **teneo-marketplace (SQLite):**
+### **openbazaar-ai (SQLite):**
 ```javascript
 // Check if user has access
 const purchase = db.prepare(
@@ -412,7 +412,7 @@ All course components follow the same pattern:
 ### **Example 1: Launch Framework Course on traviseric.com**
 
 ```
-1. Use course components from teneo-marketplace
+1. Use course components from openbazaar-ai
 2. Adapt to Next.js (copy HTML structure → React)
 3. Connect to Supabase (for purchases/progress)
 4. Apply traviseric brand theme
@@ -420,7 +420,7 @@ All course components follow the same pattern:
 6. Launch for $97
 ```
 
-### **Example 2: Port to teneo-marketplace**
+### **Example 2: Port to openbazaar-ai**
 
 ```
 1. Copy components as-is (already HTML)
@@ -472,7 +472,7 @@ All course components follow the same pattern:
 - Get real user feedback
 - Iterate and improve
 
-**Port to teneo-marketplace:**
+**Port to openbazaar-ai:**
 - Extract components
 - Make fully portable (no Supabase dependency)
 - Open source it
@@ -492,7 +492,7 @@ All course components follow the same pattern:
 1. ✅ Finish core course components (3-5 more)
 2. ✅ Build Framework course at traviseric.com
 3. ✅ Launch and validate ($97 price point)
-4. ✅ Port to teneo-marketplace (SQLite version)
+4. ✅ Port to openbazaar-ai (SQLite version)
 5. ✅ Open source the portable version
 6. ✅ Build white-label licensing ($297/year)
 

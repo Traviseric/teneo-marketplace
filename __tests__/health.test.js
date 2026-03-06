@@ -19,6 +19,6 @@ describe('Health endpoint', () => {
 
     it('includes the service name', async () => {
         const res = await request(app).get('/api/health');
-        expect(res.body.service).toBe('teneo-marketplace-api');
+        expect(res.body.service).toBe('openbazaar-ai-api');
     });
 });

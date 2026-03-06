@@ -244,7 +244,7 @@ Your funnel will have:
 │                                                         │
 │  Step 3: Deploy                                         │
 │  [Generate HTML Files] [Connect to Email Service]      │
-│  [Launch Funnel on Teneo Marketplace]                  │
+│  [Launch Funnel on OpenBazaar AI]                  │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -561,7 +561,7 @@ class FunnelBuilder {
 ### **Complete Journey:**
 
 ```
-1. User clicks "Build Your Book Funnel" on Teneo Marketplace
+1. User clicks "Build Your Book Funnel" on OpenBazaar AI
 
 2. Quiz (2 minutes)
    - Answer 5-7 questions
@@ -586,7 +586,7 @@ class FunnelBuilder {
    - Get integration instructions
 
 6. Deploy (5-10 minutes)
-   - Upload to website/Teneo Marketplace
+   - Upload to website/OpenBazaar AI
    - Connect email service
    - Launch ads
 

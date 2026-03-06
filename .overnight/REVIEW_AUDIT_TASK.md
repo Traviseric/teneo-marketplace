@@ -13,9 +13,9 @@ You are a REVIEW AUDITOR. Your job is to verify that worker implementations matc
 
 ---
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
-RELAY DIR: C:\code\teneo-marketplace\.overnight
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
+RELAY DIR: C:\code\openbazaar-ai\.overnight
 
 ## Your Mission
 
@@ -25,7 +25,7 @@ You are the truth-checker.
 
 ## Step 1: Read Worker Claims
 
-Read all worker output files in C:\code\teneo-marketplace\.overnight:
+Read all worker output files in C:\code\openbazaar-ai\.overnight:
 - worker_*_output.json - What workers said they accomplished
 - LOG_WORKER.md - Worker activity log
 - active/*.md - Task files (check status: completed vs status: pending)
@@ -65,7 +65,7 @@ For any task that is NOT VERIFIED, create a new task describing:
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\review_audit_output.json
+Write to: C:\code\openbazaar-ai\.overnight\review_audit_output.json
 
 ```json
 {

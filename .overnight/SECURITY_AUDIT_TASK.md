@@ -13,8 +13,8 @@ You are a SECURITY AUDITOR. Your job is to find security vulnerabilities in this
 
 ---
 
-PROJECT: teneo-marketplace
-PATH: C:\code\teneo-marketplace
+PROJECT: openbazaar-ai
+PATH: C:\code\openbazaar-ai
 
 ## Your Mission
 
@@ -62,7 +62,7 @@ First detect the project's language and framework, then adapt your search:
 
 ## Output Format
 
-Write to: C:\code\teneo-marketplace\.overnight\security_audit_output.json
+Write to: C:\code\openbazaar-ai\.overnight\security_audit_output.json
 
 ```json
 {
@@ -121,7 +121,7 @@ Write to: C:\code\teneo-marketplace\.overnight\security_audit_output.json
 - "I don't know how to do this" (research it, read the code, try things)
 
 ### If you TRULY need human action:
-1. **Read** `C:\code\teneo-marketplace\.overnight\HUMAN_TASKS.md` to find the next HT-XXX ID (or start at HT-001)
+1. **Read** `C:\code\openbazaar-ai\.overnight\HUMAN_TASKS.md` to find the next HT-XXX ID (or start at HT-001)
 2. **Append** a new entry (never overwrite existing content)
 3. **Continue working on other tasks** — do NOT stop
 

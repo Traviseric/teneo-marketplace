@@ -1,5 +1,5 @@
 #!/bin/bash
-# deploy-vps.sh - Automated VPS deployment script for Teneo Marketplace
+# deploy-vps.sh - Automated VPS deployment script for OpenBazaar AI
 # Usage: ./deploy-vps.sh [environment]
 # Environment: development|staging|production (default: production)
 
@@ -9,7 +9,7 @@ ENVIRONMENT=${1:-production}
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-echo "🚀 Starting Teneo Marketplace deployment to VPS"
+echo "🚀 Starting OpenBazaar AI deployment to VPS"
 echo "Environment: $ENVIRONMENT"
 echo "Project root: $PROJECT_ROOT"
 echo ""
@@ -124,7 +124,7 @@ npm install -g pm2
 cat > "$PROJECT_ROOT/ecosystem.config.js" << EOF
 module.exports = {
   apps: [{
-    name: 'teneo-marketplace',
+    name: 'openbazaar-ai',
     script: './marketplace/backend/server.js',
     cwd: '$PROJECT_ROOT',
     instances: 1,
@@ -154,7 +154,7 @@ echo -e "${YELLOW}🌐 Configuring Nginx...${NC}"
 echo -e "${YELLOW}Enter your domain name (e.g., marketplace.example.com):${NC}"
 read DOMAIN_NAME
 
-cat > /etc/nginx/sites-available/teneo-marketplace << EOF
+cat > /etc/nginx/sites-available/openbazaar-ai << EOF
 server {
     listen 80;
     server_name ${DOMAIN_NAME};
@@ -193,7 +193,7 @@ server {
 EOF
 
 # Enable site
-ln -sf /etc/nginx/sites-available/teneo-marketplace /etc/nginx/sites-enabled/
+ln -sf /etc/nginx/sites-available/openbazaar-ai /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 
 # Test Nginx configuration
@@ -224,7 +224,7 @@ echo ""
 echo -e "${YELLOW}🔍 Running final checks...${NC}"
 
 # Check if PM2 process is running
-pm2 status | grep teneo-marketplace
+pm2 status | grep openbazaar-ai
 
 # Check if Nginx is running
 systemctl status nginx --no-pager
@@ -241,8 +241,8 @@ echo "  3. Configure email settings (optional)"
 echo "  4. Test the deployment at https://${DOMAIN_NAME}"
 echo ""
 echo -e "${YELLOW}📊 Useful commands:${NC}"
-echo "  • Check logs: pm2 logs teneo-marketplace"
-echo "  • Restart app: pm2 restart teneo-marketplace"
+echo "  • Check logs: pm2 logs openbazaar-ai"
+echo "  • Restart app: pm2 restart openbazaar-ai"
 echo "  • Monitor: pm2 monit"
 echo "  • Nginx logs: tail -f /var/log/nginx/error.log"
 echo ""

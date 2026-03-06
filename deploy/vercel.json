@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "teneo-marketplace",
+  "name": "openbazaar-ai",
   "builds": [
     {
       "src": "marketplace/backend/server.js",

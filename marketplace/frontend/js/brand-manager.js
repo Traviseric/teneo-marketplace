@@ -1,4 +1,4 @@
-// Brand Management System for Teneo Marketplace
+// Brand Management System for OpenBazaar AI
 // Handles dynamic brand switching and theme application
 
 class BrandManager {

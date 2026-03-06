@@ -4,7 +4,7 @@
 
 ---
 
-I need to register the teneo-marketplace as an OAuth 2.0 client so it can use TENEO Auth SSO.
+I need to register the openbazaar-ai as an OAuth 2.0 client so it can use TENEO Auth SSO.
 
 Please create a script that registers the marketplace as a first-party OAuth client.
 
@@ -18,9 +18,9 @@ Please create a script that registers the marketplace as a first-party OAuth cli
 
 ```typescript
 {
-  client_id: "teneo-marketplace",
+  client_id: "openbazaar-ai",
   client_secret: "<hashed-secret>",
-  name: "TENEO Marketplace",
+  name: "OpenBazaar AI",
   description: "AI-generated book marketplace with dual-mode payments",
   is_first_party: true,
   is_active: true,
@@ -53,12 +53,12 @@ Please create a script that registers the marketplace as a first-party OAuth cli
 
 📋 Client Credentials (SAVE THESE):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CLIENT_ID: teneo-marketplace
+CLIENT_ID: openbazaar-ai
 CLIENT_SECRET: <generated-secret>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⚠️  Add these to marketplace .env:
-TENEO_CLIENT_ID=teneo-marketplace
+TENEO_CLIENT_ID=openbazaar-ai
 TENEO_CLIENT_SECRET=<generated-secret>
 TENEO_AUTH_URL=https://auth.teneo.io
 TENEO_CALLBACK_URL=https://marketplace.teneo.io/api/auth/callback

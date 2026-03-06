@@ -1,6 +1,6 @@
 @echo off
 title RESEARCHER - Claude Box
-cd /d "C:/code/teneo-marketplace"
+cd /d "C:/code/openbazaar-ai"
 
 REM Clear API key to prevent fallback
 set ANTHROPIC_API_KEY=
@@ -17,7 +17,7 @@ echo Using Pro subscription (OAuth)
 echo ========================================
 echo.
 
-claude --dangerously-skip-permissions --model opus "Read C:/code/teneo-marketplace/.overnight/RESEARCHER_TASK.md and execute the task autonomously. Don't ask questions - make reasonable decisions and proceed. Write output to C:/code/teneo-marketplace/.overnight/researcher_output.json then write DONE to C:/code/teneo-marketplace/.overnight/researcher_COMPLETE" 2>"C:/code/teneo-marketplace/.overnight/researcher_stderr.log"
+claude --dangerously-skip-permissions --model opus "Read C:/code/openbazaar-ai/.overnight/RESEARCHER_TASK.md and execute the task autonomously. Don't ask questions - make reasonable decisions and proceed. Write output to C:/code/openbazaar-ai/.overnight/researcher_output.json then write DONE to C:/code/openbazaar-ai/.overnight/researcher_COMPLETE" 2>"C:/code/openbazaar-ai/.overnight/researcher_stderr.log"
 set CLAUDE_EXIT=%ERRORLEVEL%
 
 echo.
@@ -26,23 +26,23 @@ echo RESEARCHER session ended. Exit code: %CLAUDE_EXIT%
 echo ========================================
 
 REM Check stderr for rate limit signals
-if exist "C:/code/teneo-marketplace/.overnight/researcher_stderr.log" (
-    findstr /i /c:"hit your limit" /c:"rate-limit" /c:"resets" "C:/code/teneo-marketplace/.overnight/researcher_stderr.log" >nul 2>&1
+if exist "C:/code/openbazaar-ai/.overnight/researcher_stderr.log" (
+    findstr /i /c:"hit your limit" /c:"rate-limit" /c:"resets" "C:/code/openbazaar-ai/.overnight/researcher_stderr.log" >nul 2>&1
     if not errorlevel 1 (
-        echo RATE_LIMITED: stderr matched rate limit pattern > "C:/code/teneo-marketplace/.overnight/researcher_RATE_LIMITED.txt"
-        type "C:/code/teneo-marketplace/.overnight/researcher_stderr.log" >> "C:/code/teneo-marketplace/.overnight/researcher_RATE_LIMITED.txt"
-        echo DONE> "C:/code/teneo-marketplace/.overnight/researcher_COMPLETE"
+        echo RATE_LIMITED: stderr matched rate limit pattern > "C:/code/openbazaar-ai/.overnight/researcher_RATE_LIMITED.txt"
+        type "C:/code/openbazaar-ai/.overnight/researcher_stderr.log" >> "C:/code/openbazaar-ai/.overnight/researcher_RATE_LIMITED.txt"
+        echo DONE> "C:/code/openbazaar-ai/.overnight/researcher_COMPLETE"
         ping -n 3 127.0.0.1 >nul 2>&1
         exit
     )
 )
 
 REM If Claude exited fast without writing output, likely rate limited
-if not exist "C:/code/teneo-marketplace/.overnight/researcher_output.json" (
+if not exist "C:/code/openbazaar-ai/.overnight/researcher_output.json" (
     if %CLAUDE_EXIT% NEQ 0 (
-        echo RATE_LIMITED: Claude exited with code %CLAUDE_EXIT% and no output > "C:/code/teneo-marketplace/.overnight/researcher_RATE_LIMITED.txt"
-        if exist "C:/code/teneo-marketplace/.overnight/researcher_stderr.log" type "C:/code/teneo-marketplace/.overnight/researcher_stderr.log" >> "C:/code/teneo-marketplace/.overnight/researcher_RATE_LIMITED.txt"
-        echo DONE> "C:/code/teneo-marketplace/.overnight/researcher_COMPLETE"
+        echo RATE_LIMITED: Claude exited with code %CLAUDE_EXIT% and no output > "C:/code/openbazaar-ai/.overnight/researcher_RATE_LIMITED.txt"
+        if exist "C:/code/openbazaar-ai/.overnight/researcher_stderr.log" type "C:/code/openbazaar-ai/.overnight/researcher_stderr.log" >> "C:/code/openbazaar-ai/.overnight/researcher_RATE_LIMITED.txt"
+        echo DONE> "C:/code/openbazaar-ai/.overnight/researcher_COMPLETE"
         ping -n 3 127.0.0.1 >nul 2>&1
         exit
     )
@@ -51,7 +51,7 @@ if not exist "C:/code/teneo-marketplace/.overnight/researcher_output.json" (
 REM Write completion marker only if Claude exited cleanly (exit code 0)
 REM If Claude crashed or was killed, let the Python timeout detect the failure
 if %CLAUDE_EXIT% EQU 0 (
-    if not exist "C:/code/teneo-marketplace/.overnight/researcher_COMPLETE" echo DONE> "C:/code/teneo-marketplace/.overnight/researcher_COMPLETE"
+    if not exist "C:/code/openbazaar-ai/.overnight/researcher_COMPLETE" echo DONE> "C:/code/openbazaar-ai/.overnight/researcher_COMPLETE"
 )
 
 REM Auto-close terminal after completion (Gas Town pattern)

@@ -1,6 +1,6 @@
 ---
 id: 70
-title: "Run docker compose build teneo-marketplace --no-cache and record result"
+title: "Run docker compose build openbazaar-ai --no-cache and record result"
 priority: P1
 severity: high
 status: completed
@@ -13,7 +13,7 @@ context_group: deployment_readiness
 group_reason: "Docker build verification is the final automatable portion of HT-005"
 ---
 
-# Run docker compose build teneo-marketplace --no-cache and record result
+# Run docker compose build openbazaar-ai --no-cache and record result
 
 **Priority:** P1 (high)
 **Source:** conductor_instructions (synthesizer_focus: deployment_readiness)
@@ -21,7 +21,7 @@ group_reason: "Docker build verification is the final automatable portion of HT-
 
 ## Problem
 
-Task 067 (verify-docker-image-builds) was marked `status: completed` but the review_audit only VERIFIED the Dockerfile code changes were present (python3/make/g++/curl added at line 15, commit 1f5e947). Task 067's acceptance criteria explicitly required running `docker compose build teneo-marketplace --no-cache` and recording the result — this was never actually executed.
+Task 067 (verify-docker-image-builds) was marked `status: completed` but the review_audit only VERIFIED the Dockerfile code changes were present (python3/make/g++/curl added at line 15, commit 1f5e947). Task 067's acceptance criteria explicitly required running `docker compose build openbazaar-ai --no-cache` and recording the result — this was never actually executed.
 
 The Python gate for SWITCH_PROJECT is blocked because the automatable portion of HT-005 (Deploy to Production) is specifically: "If using Docker, rebuild the image." The build command has not been run to produce evidence of a successful build.
 
@@ -48,8 +48,8 @@ CMD ["node", "backend/server.js"]
 Run the Docker build command from the project root:
 
 ```bash
-cd C:/code/teneo-marketplace
-docker compose build teneo-marketplace --no-cache 2>&1
+cd C:/code/openbazaar-ai
+docker compose build openbazaar-ai --no-cache 2>&1
 ```
 
 **If build succeeds:**
@@ -62,7 +62,7 @@ docker compose build teneo-marketplace --no-cache 2>&1
 cd marketplace/backend
 npm install
 cd ../..
-docker compose build teneo-marketplace --no-cache 2>&1
+docker compose build openbazaar-ai --no-cache 2>&1
 ```
 
 **If build fails with a different error:**
@@ -74,7 +74,7 @@ docker compose build teneo-marketplace --no-cache 2>&1
 
 ## Acceptance Criteria
 
-- [ ] `docker compose build teneo-marketplace --no-cache` runs to completion
+- [ ] `docker compose build openbazaar-ai --no-cache` runs to completion
 - [ ] Build exits with code 0 (success) OR failure is diagnosed and fixed
 - [ ] Docker image is created (run `docker images | grep teneo`)
 - [ ] No npm install failures in build output
@@ -103,7 +103,7 @@ _Generated from conductor_instructions. This is the LAST remaining automatable t
 
 **Resolution:** Human must either:
 1. Install Docker Desktop from https://docs.docker.com/desktop/install/windows-install/
-2. Run `docker compose build teneo-marketplace --no-cache` from `C:\code\teneo-marketplace`
+2. Run `docker compose build openbazaar-ai --no-cache` from `C:\code\openbazaar-ai`
 3. Record the output here
 
 HT-005 (DEPLOY TO PRODUCTION) already covers this: `docker compose down && docker compose build --no-cache && docker compose up -d`

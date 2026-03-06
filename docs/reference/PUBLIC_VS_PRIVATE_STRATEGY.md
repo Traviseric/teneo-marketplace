@@ -4,7 +4,7 @@
 
 ### ✅ You're Set Up Correctly
 
-**Public Repo:** `https://github.com/Traviseric/teneo-marketplace`
+**Public Repo:** `https://github.com/Traviseric/openbazaar-ai`
 
 **Protected by .gitignore:**
 - ✅ `.env` files (credentials)
@@ -22,7 +22,7 @@
 
 ## 📊 What Should Be Public vs Private
 
-### ✅ PUBLIC (GitHub: teneo-marketplace)
+### ✅ PUBLIC (GitHub: openbazaar-ai)
 
 **Core Marketplace Code:**
 - All marketplace application code
@@ -95,7 +95,7 @@
 ### Option A: Single Public Repo (Recommended for Federation)
 
 ```
-teneo-marketplace/ (PUBLIC)
+openbazaar-ai/ (PUBLIC)
 ├── marketplace/          # Core code (public)
 ├── docs/                # All documentation (public)
 ├── *.md                 # Architecture docs (public)
@@ -111,20 +111,20 @@ teneo-marketplace/ (PUBLIC)
 **Deploy books separately:**
 ```bash
 # On your VPS, after deploying code
-scp -r /local/books/*.pdf vps:/opt/teneo-marketplace/marketplace/frontend/books/
+scp -r /local/books/*.pdf vps:/opt/openbazaar-ai/marketplace/frontend/books/
 ```
 
 ---
 
 ### Option B: Public + Private Repos (Maximum Security)
 
-**Public Repo:** `teneo-marketplace` (open source)
+**Public Repo:** `openbazaar-ai` (open source)
 - Core marketplace code
 - Federation protocol
 - Public documentation
 - Sample data
 
-**Private Repo:** `teneo-marketplace-private` (business strategy)
+**Private Repo:** `openbazaar-ai-private` (business strategy)
 - Book Impact Matrix (detailed)
 - Actual book PDFs
 - Revenue data
@@ -135,13 +135,13 @@ scp -r /local/books/*.pdf vps:/opt/teneo-marketplace/marketplace/frontend/books/
 **Deploy from both:**
 ```bash
 # Clone public code
-git clone https://github.com/Traviseric/teneo-marketplace.git
+git clone https://github.com/Traviseric/openbazaar-ai.git
 
 # Clone private content (separate location)
-git clone https://github.com/Traviseric/teneo-marketplace-private.git private-content
+git clone https://github.com/Traviseric/openbazaar-ai-private.git private-content
 
 # Deploy public code
-cd teneo-marketplace
+cd openbazaar-ai
 docker-compose up -d
 
 # Add private content
@@ -268,11 +268,11 @@ git push origin main
 ### Deploy to Production (VPS)
 ```bash
 # On VPS: Clone public repo
-git clone https://github.com/Traviseric/teneo-marketplace.git
+git clone https://github.com/Traviseric/openbazaar-ai.git
 
 # Add private content (SCP from local or private storage)
-scp .env vps:/opt/teneo-marketplace/marketplace/backend/
-scp -r books/*.pdf vps:/opt/teneo-marketplace/marketplace/frontend/books/
+scp .env vps:/opt/openbazaar-ai/marketplace/backend/
+scp -r books/*.pdf vps:/opt/openbazaar-ai/marketplace/frontend/books/
 
 # Deploy
 docker-compose up -d

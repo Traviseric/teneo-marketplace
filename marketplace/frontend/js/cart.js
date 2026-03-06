@@ -1,4 +1,4 @@
-// Shopping Cart System for Teneo Marketplace
+// Shopping Cart System for OpenBazaar AI
 // Handles cart management, localStorage persistence, and UI interactions
 
 class ShoppingCart {

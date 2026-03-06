@@ -1,4 +1,4 @@
-// Network Client for Teneo Marketplace Federation
+// Network Client for OpenBazaar AI Federation
 // Handles network discovery, cross-store search, and federation features
 
 class NetworkClient {

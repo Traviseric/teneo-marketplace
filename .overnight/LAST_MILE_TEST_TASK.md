@@ -8,7 +8,7 @@ Your job: analyze the evidence and produce a definitive go/no-go verdict.
 
 ## Evidence File
 
-Read the evidence file at: `C:/code/teneo-marketplace/.overnight/last_mile_test_evidence.json`
+Read the evidence file at: `C:/code/openbazaar-ai/.overnight/last_mile_test_evidence.json`
 
 This file contains real browser evidence collected via Chrome DevTools Protocol:
 - **page_url** / **page_title** — What page was loaded
@@ -108,7 +108,7 @@ Mark all scenarios as SKIP with reason "evidence_collection_failed".
 
 ## Output
 
-Write a JSON file to: `C:/code/teneo-marketplace/.overnight/last_mile_test_output.json`
+Write a JSON file to: `C:/code/openbazaar-ai/.overnight/last_mile_test_output.json`
 
 The JSON MUST have this exact structure:
 ```json
@@ -143,6 +143,6 @@ The JSON MUST have this exact structure:
 
 ## After Writing Output
 
-After writing the JSON file, write `DONE` to: `C:/code/teneo-marketplace/.overnight/last_mile_test_COMPLETE`
+After writing the JSON file, write `DONE` to: `C:/code/openbazaar-ai/.overnight/last_mile_test_COMPLETE`
 
 Be thorough in your analysis. The evidence is real browser data — trust it.
