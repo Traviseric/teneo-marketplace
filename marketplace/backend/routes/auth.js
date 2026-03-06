@@ -240,7 +240,7 @@ router.get('/verify-magic-link', magicLinkLimiter, async (req, res) => {
   } catch (error) {
     console.error('[Auth] Magic link verification error:', error);
 
-    res.redirect('/login?error=invalid_link&message=' + encodeURIComponent(error.message));
+    res.redirect('/login?error=invalid_link');
   }
 });
 
