@@ -429,7 +429,7 @@ class AmazonService {
     }
 
     calculateDataQualityScore(bookData) {
-        let score = 0;
+        let score;
         const checks = [
             () => bookData.title ? 10 : 0,
             () => bookData.author ? 10 : 0,

@@ -254,31 +254,6 @@ class LuluService {
         }
     }
 
-    // Cancel a print job (only works within production_delay window)
-    async cancelPrintJob(printJobId) {
-        try {
-            const headers = await this.getHeaders();
-            
-            await axios.patch(
-                `${this.apiUrl}/print-jobs/${printJobId}/`,
-                { status: { name: 'CANCELED' } },
-                { headers }
-            );
-
-            return {
-                success: true,
-                message: 'Print job cancelled successfully'
-            };
-
-        } catch (error) {
-            console.error('Error cancelling print job:', error.response?.data || error.message);
-            return {
-                success: false,
-                error: error.response?.data?.errors?.[0]?.detail || 'Failed to cancel print job'
-            };
-        }
-    }
-
     // Calculate printing cost
     async calculatePrintingCost(pageCount, podPackageId, quantity = 1) {
         try {

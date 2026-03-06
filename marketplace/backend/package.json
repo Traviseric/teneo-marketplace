@@ -17,7 +17,9 @@
     "test:adapter": "node scripts/test-adapter-parity.js",
     "test:stripe-flow": "node scripts/test-stripe-flow.js",
     "test:pod-flow": "node scripts/test-pod-flow.js",
-    "test:store-builder": "node scripts/test-store-builder.js"
+    "test:store-builder": "node scripts/test-store-builder.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
   },
   "keywords": [
     "bookstore",
@@ -66,7 +68,9 @@
     "stripe": "^20.4.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "eslint": "^10.0.2",
     "hardhat": "^3.1.11",
     "jest": "^30.2.0",
     "nodemon": "^3.1.0",

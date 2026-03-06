@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const simpleDigestService = require('../services/simpleDigestService');
+const digestService = require('../services/digestService');
 
 // Get latest daily digest
 router.get('/daily', async (req, res) => {

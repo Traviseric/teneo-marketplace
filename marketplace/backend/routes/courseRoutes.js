@@ -262,7 +262,7 @@ router.get('/:slug/quiz/:quizId', requireEnrollment, async (req, res) => {
         // Parse options JSON for each question
         for (const q of questions) {
             if (q.options) {
-                try { q.options = JSON.parse(q.options); } catch (_) {}
+                try { q.options = JSON.parse(q.options); } catch (_) { /* invalid JSON — keep raw string */ }
             }
         }
 

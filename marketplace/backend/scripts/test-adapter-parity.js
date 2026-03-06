@@ -104,7 +104,7 @@ async function testOrderInsertAndRead() {
     // Cleanup
     try {
         await db.run('DELETE FROM orders WHERE order_id = ?', [testOrderId]);
-    } catch (_) {}
+    } catch (_) { /* cleanup — ignore errors */ }
 }
 
 // Test 2: Insert + read a user/profile (auth path)
@@ -129,7 +129,7 @@ async function testUserInsertAndRead() {
     // Cleanup
     try {
         await db.run(`DELETE FROM ${USERS_TABLE} WHERE id = ?`, [testUserId]);
-    } catch (_) {}
+    } catch (_) { /* cleanup — ignore errors */ }
 }
 
 // Test 3: Orders query that checkout uses (lookup by email)
@@ -158,7 +158,7 @@ async function testCheckoutOrderQuery() {
     // Cleanup
     try {
         await db.run('DELETE FROM orders WHERE order_id = ?', [testOrderId]);
-    } catch (_) {}
+    } catch (_) { /* cleanup — ignore errors */ }
 }
 
 // Test 4: User/profile query that auth uses (lookup by email)
@@ -186,7 +186,7 @@ async function testAuthUserQuery() {
     // Cleanup
     try {
         await db.run(`DELETE FROM ${USERS_TABLE} WHERE id = ?`, [testUserId]);
-    } catch (_) {}
+    } catch (_) { /* cleanup — ignore errors */ }
 }
 
 async function runTests() {

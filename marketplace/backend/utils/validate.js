@@ -14,7 +14,7 @@ function isValidEmail(email) {
     if (typeof email !== 'string') return false;
     const trimmed = email.trim();
     if (trimmed.length === 0 || trimmed.length > 254) return false;
-    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(trimmed);
 }
 

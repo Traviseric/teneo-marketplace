@@ -122,7 +122,7 @@ function translateSqliteToPostgres(sql) {
             /json_patch\(\s*([^,]+?)\s*,\s*'\$\.([A-Za-z0-9_]+)'\s*,\s*(\$\d+)\s*\)/gi,
             "jsonb_set(COALESCE($1::jsonb, '{}'::jsonb), '{$2}', to_jsonb($3::text), true)::text"
         )
-        .replace(/strftime\('%Y-%m'\s*,\s*([^\)]+)\)/gi, "to_char($1, 'YYYY-MM')")
+        .replace(/strftime\('%Y-%m'\s*,\s*([^)]+)\)/gi, "to_char($1, 'YYYY-MM')")
         .replace(/datetime\('now'\s*,\s*'-\s*([0-9]+)\s+days?'\)/gi, "(NOW() - INTERVAL '$1 days')")
         .replace(/datetime\('now'\s*,\s*'-\s*([0-9]+)\s+hours?'\)/gi, "(NOW() - INTERVAL '$1 hours')")
         .replace(/date\('now'\s*,\s*'-\s*([0-9]+)\s+days?'\)/gi, "(CURRENT_DATE - INTERVAL '$1 days')")

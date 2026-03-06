@@ -215,7 +215,7 @@ class DigestService {
         const velocityData = await db.all(velocityQuery);
 
         // Get genre distribution from database
-        let genreData = [];
+        let genreData;
         try {
             const genreQuery = `
                 SELECT

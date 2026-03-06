@@ -85,7 +85,7 @@ router.get('/:id', async (req, res) => {
         );
         for (const q of questions) {
             if (q.options) {
-                try { q.options = JSON.parse(q.options); } catch (_) {}
+                try { q.options = JSON.parse(q.options); } catch (_) { /* invalid JSON — keep raw string */ }
             }
         }
 
