@@ -21,6 +21,7 @@ async function initSqlite() {
     const funnelsSchemaPath = path.join(__dirname, 'schema-funnels.sql');
     const emailMarketingSchemaPath = path.join(__dirname, 'schema-email-marketing.sql');
     const appStoreSchemaPath = path.join(__dirname, 'schema-appstore.sql');
+    const storesSchemaPath = path.join(__dirname, 'schema-stores.sql');
 
     const dbDir = path.dirname(dbPath);
     if (!fs.existsSync(dbDir)) {
@@ -72,6 +73,7 @@ async function initSqlite() {
         { name: 'Funnels', sql: readSchemaIfExists(funnelsSchemaPath) },
         { name: 'Email Marketing', sql: readSchemaIfExists(emailMarketingSchemaPath) },
         { name: 'App Store', sql: readSchemaIfExists(appStoreSchemaPath) },
+        { name: 'Stores', sql: readSchemaIfExists(storesSchemaPath) },
     ];
 
     for (const part of schemaParts) {

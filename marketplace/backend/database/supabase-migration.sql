@@ -733,5 +733,41 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 -- =====================================================
--- DONE. 40 tables created. "profiles" = app users.
+-- AI STORE BUILDER
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS stores (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES profiles(id),
+    slug TEXT UNIQUE NOT NULL,
+    config JSONB NOT NULL,
+    html TEXT,
+    status TEXT DEFAULT 'draft',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS store_products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id UUID REFERENCES stores(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
+    description TEXT,
+    type TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_stores_user ON stores(user_id);
+CREATE INDEX IF NOT EXISTS idx_stores_slug ON stores(slug);
+CREATE INDEX IF NOT EXISTS idx_store_products_store ON store_products(store_id);
+
+DO $$ BEGIN
+    CREATE TRIGGER update_stores_timestamp
+        BEFORE UPDATE ON stores
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- =====================================================
+-- DONE. 42 tables created. "profiles" = app users.
 -- =====================================================
