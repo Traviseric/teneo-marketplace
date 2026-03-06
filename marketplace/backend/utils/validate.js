@@ -28,7 +28,10 @@ function isValidEmail(email) {
  * @returns {string}
  */
 function safeMessage(err) {
-    if (process.env.NODE_ENV === 'production') return 'Internal server error';
+    // Mask errors unless EXPOSE_ERRORS=true is explicitly set.
+    // Staging deployments omit EXPOSE_ERRORS to match production behaviour (CWE-209).
+    const isSecureEnv = process.env.NODE_ENV === 'production' || !process.env.EXPOSE_ERRORS;
+    if (isSecureEnv) return 'Internal server error';
     return (err && err.message) ? err.message : String(err);
 }
 
