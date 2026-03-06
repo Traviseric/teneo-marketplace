@@ -59,8 +59,11 @@ async function initSqlite() {
         });
     });
 
+    const authSchemaPath = path.join(__dirname, 'schema-auth.sql');
+
     const schemaParts = [
         { name: 'Main', sql: fs.readFileSync(schemaPath, 'utf8') },
+        { name: 'Auth', sql: readSchemaIfExists(authSchemaPath) },
         { name: 'Lulu', sql: readSchemaIfExists(luluSchemaPath) },
         { name: 'AI Discovery', sql: readSchemaIfExists(aiDiscoverySchemaPath) },
         { name: 'Censorship Tracker', sql: readSchemaIfExists(censorshipTrackerSchemaPath) },

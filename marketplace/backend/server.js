@@ -177,7 +177,11 @@ const csrfExcludePaths = [
     '/api/crypto/btcpay/webhook', // BTCPay payment webhook
     '/api/storefront/fulfill',     // ArxMint fulfillment webhook
     '/api/webhooks/printful',      // Printful shipment/order webhooks
-    '/webhooks' // Orchestrator webhooks
+    '/webhooks', // Orchestrator webhooks
+    '/api/auth/login',            // Magic link initiator — session created via GET verify
+    '/api/auth/register',         // Magic link initiator — session created via GET verify
+    '/api/auth/logout',           // Session destroy — protected by requireAuth, low CSRF risk
+    '/api/auth/nostr/verify',     // Nostr NIP-98 signed event — self-authenticated
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {

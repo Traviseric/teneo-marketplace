@@ -206,11 +206,11 @@ router.get('/callback', async (req, res) => {
     delete req.session.codeVerifier;
 
     // Redirect to dashboard or home
-    res.redirect('/dashboard');
+    res.redirect('/account-dashboard.html');
   } catch (error) {
     console.error('[Auth] OAuth callback error:', error);
 
-    res.redirect('/login?error=auth_failed');
+    res.redirect('/login.html?error=auth_failed');
   }
 });
 
@@ -236,11 +236,11 @@ router.get('/verify-magic-link', magicLinkLimiter, async (req, res) => {
     req.session.isAuthenticated = true;
 
     // Redirect to dashboard or home
-    res.redirect('/dashboard');
+    res.redirect('/account-dashboard.html');
   } catch (error) {
     console.error('[Auth] Magic link verification error:', error);
 
-    res.redirect('/login?error=invalid_link');
+    res.redirect('/login.html?error=invalid_link');
   }
 });
 
