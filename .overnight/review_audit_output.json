@@ -3,114 +3,82 @@
   "next_box": "CONDUCTOR",
   "context": {
     "audit_type": "review",
-    "tasks_reviewed": 10,
-    "verified": 10,
-    "partial": 0,
+    "scope": "commits since 2026-03-06T16:11 (4 commits: a861981..d922de6)",
+    "tasks_reviewed": 4,
+    "verified": 3,
+    "partial": 1,
     "fake": 0,
     "broken": 0,
     "missing": 0,
     "build_passes": true,
-    "tests_pass": true,
-    "tests_note": "147/158 tests pass (11 failures in cryptoCheckout.test.js and appStore.test.js are pre-existing, unrelated to worker changes). Auth tests pass.",
-    "verification_score": 100,
+    "tests_pass": false,
+    "test_results": {
+      "suites_passed": 17,
+      "suites_failed": 5,
+      "tests_total": 215,
+      "tests_passed": 202,
+      "tests_failed": 13,
+      "suites_failed_detail": [
+        "stripe-webhook-idempotency.test.js: Cannot find module checkoutProduction (BROKEN by d922de6 checkout unification)",
+        "webhook.test.js: 5 failures — tests written against old checkout.js structure, need updating for unified checkout",
+        "checkout-price-validation.test.js: 4 failures — tests expect old response shape after checkout unification",
+        "downloadRoutes.test.js: pre-existing 'exists is not a function' error",
+        "storeBuilder.test.js: 3 failures returning 500 — pre-existing, newly discovered by Jest roots fix (bd7d83f)"
+      ]
+    },
+    "verification_score": 75,
     "findings": [
       {
-        "task_id": "worker_001_001-P2-fix-magic-link-error-message-leak",
-        "worker": "worker_001",
-        "commit": "8d257ed",
-        "worker_claim": "Remove error.message from magic link verify redirect URL (CWE-209)",
-        "verdict": "VERIFIED",
-        "evidence": "auth.js line 243: redirect changed from '/login?error=invalid_link&message=' + encodeURIComponent(error.message) to '/login?error=invalid_link'. Clean 1-line fix, error still logged server-side via console.error. No stubs or TODOs.",
-        "file": "marketplace/backend/routes/auth.js",
-        "line": 243
+        "task_id": "060-P3-unify-checkout-checkoutproduction-routes",
+        "worker": "WORKER_001",
+        "worker_claim": "Unified checkout.js and checkoutProduction.js into single route file. All features merged. server.js updated to unconditionally require checkout. checkoutProduction.js deleted.",
+        "verdict": "PARTIAL",
+        "evidence": "Code change matches claim: checkout.js expanded (+388/-704 lines), checkoutProduction.js deleted, server.js simplified from conditional require to direct require. Real unification with all claimed features (stripeHealthService, courseSlug, IPFS, rate limiter, payment_intent_data, idempotent webhooks, etc). However, 3 test suites now broken: stripe-webhook-idempotency.test.js imports deleted checkoutProduction.js, and webhook.test.js + checkout-price-validation.test.js fail due to changed checkout structure. Worker did not update dependent tests.",
+        "file": "marketplace/backend/routes/checkout.js",
+        "fix_needed": "Update stripe-webhook-idempotency.test.js to import checkout.js instead of checkoutProduction.js. Update webhook.test.js and checkout-price-validation.test.js mocks/assertions for unified checkout structure."
       },
       {
-        "task_id": "worker_002_002-P2-fix-csrf-exemption-storefront-routes",
-        "worker": "worker_002",
-        "commit": "0082c43",
-        "worker_claim": "Narrow CSRF exemption for storefront/apps routes to GET-only; add API key middleware for POST",
+        "task_id": "059-P3-investigate-coep-credentialless-mode",
+        "worker": "WORKER_003",
+        "worker_claim": "Changed crossOriginEmbedderPolicy: false to { policy: 'credentialless' } in Helmet config. Restores browser-level Spectre isolation while remaining Stripe.js-compatible.",
         "verdict": "VERIFIED",
-        "evidence": "server.js CSRF middleware now restricts /api/apps and /api/storefront exemption to GET-only. storefront.js adds requireStorefrontApiKey middleware on POST /checkout — checks STOREFRONT_API_KEY env var, returns 401 on mismatch. .env.example updated. Real implementation with proper auth logic.",
-        "file": "marketplace/backend/routes/storefront.js",
-        "line": 188
+        "evidence": "1-line change in server.js exactly as claimed: `crossOriginEmbedderPolicy: false` replaced with `crossOriginEmbedderPolicy: { policy: 'credentialless' }`. Comment documents Chrome 96+/Firefox 119+ compatibility. No stubs, no TODOs."
       },
       {
-        "task_id": "worker_003_010-P3-sanitize-oauth-error-redirect",
-        "worker": "worker_003",
-        "commit": "9ce08d3",
-        "worker_claim": "Remove error.message from OAuth callback redirect URL (CWE-209)",
+        "task_id": "058-P2-fix-network-test-jest-discovery-path",
+        "worker": "WORKER_002",
+        "worker_claim": "Added marketplace/backend/__tests__ to Jest roots in package.json. All 21 federation/network tests now discovered and pass.",
         "verdict": "VERIFIED",
-        "evidence": "auth.js line 213: redirect changed from '/login?error=auth_failed&message=' + encodeURIComponent(error.message) to '/login?error=auth_failed'. Clean 1-line fix. Note: the adjacent magic link path (line 243) was later fixed by worker_001 in commit 8d257ed.",
-        "file": "marketplace/backend/routes/auth.js",
-        "line": 213
+        "evidence": "1-line addition to package.json Jest roots config: added `<rootDir>/marketplace/backend/__tests__`. Correct fix. Side effect: also discovered pre-existing storeBuilder.test.js failures (3 tests returning 500), but that's a pre-existing issue, not caused by this change."
       },
       {
-        "task_id": "005-P2-replace-unsafe-inline-csp",
-        "worker": "unattributed",
-        "commit": "9e0dec2",
-        "worker_claim": "Replace unsafe-inline scriptSrc with per-request CSP nonces",
+        "task_id": "057-P0-fix-storefront-emailservice-constructor-crash",
+        "worker": "WORKER_003",
+        "worker_claim": "Changed const EmailService = require(...) + new EmailService() to const emailService = require(...). Fixes TypeError crash.",
         "verdict": "VERIFIED",
-        "evidence": "server.js: crypto.randomBytes(16) nonce middleware before helmet, scriptSrc uses nonce function instead of unsafe-inline, sendNoncedHTML() helper injects nonce into inline <script> tags via regex. HTML interception middleware covers .html requests. Substantive implementation with no stubs.",
-        "file": "marketplace/backend/server.js",
-        "line": 106
-      },
-      {
-        "task_id": "007-P2-add-ssrf-protection-to-federation-peers",
-        "worker": "unattributed",
-        "commit": "ae63af1",
-        "worker_claim": "Add SSRF protection to federation peer endpoint requests",
-        "verdict": "VERIFIED",
-        "evidence": "server.js: isAllowedPeerEndpoint() validates URL scheme (http/https only), rejects localhost, 127.x, 10.x, 192.168.x, 172.16-31.x, 169.254.x, metadata.google.internal. searchPeers() filters through guard. Real validation logic.",
-        "file": "marketplace/backend/server.js",
-        "line": 457
-      },
-      {
-        "task_id": "002-P1-remove-session-id-from-auth-status",
-        "worker": "unattributed",
-        "commit": "3224e89",
-        "worker_claim": "Remove session ID from admin auth-status response (CWE-200)",
-        "verdict": "VERIFIED",
-        "evidence": "adminRoutes.js: sessionId field removed from auth-status response. Commit removed 4 lines, added 1. Clean removal confirmed.",
-        "file": "marketplace/backend/routes/adminRoutes.js"
-      },
-      {
-        "task_id": "001-P1-fix-crypto-checkout-price-bypass",
-        "worker": "unattributed",
-        "commit": "1f43f84",
-        "worker_claim": "Enforce server-side pricing and remove hardcoded fallback prices in crypto checkout",
-        "verdict": "VERIFIED",
-        "evidence": "cryptoCheckout.js: imports lookupBookPrice from checkoutOfferService, replaces client-supplied amountUsd with server-side lookup, returns 400 if product not found. getUsdPrice() throws on CoinGecko failure instead of returning hardcoded {bitcoin:65000, monero:150}. Returns 503 for price oracle failures. Real implementation.",
-        "file": "marketplace/backend/routes/cryptoCheckout.js",
-        "line": 118
-      },
-      {
-        "task_id": "008-P3-sanitize-content-disposition-header",
-        "worker": "unattributed",
-        "commit": "8a41ece",
-        "worker_claim": "Sanitize bookId filename and Content-Disposition header in downloadRoutes",
-        "verdict": "VERIFIED",
-        "evidence": "downloadRoutes.js: path.basename + character allowlist regex sanitizes bookId. Prevents path traversal. Real fix.",
-        "file": "marketplace/backend/routes/downloadRoutes.js"
-      },
-      {
-        "task_id": "009-P3-mask-error-messages-in-staging",
-        "worker": "unattributed",
-        "commit": "62d36da",
-        "worker_claim": "Add EXPOSE_ERRORS env var to toggle detailed error messages",
-        "verdict": "VERIFIED",
-        "evidence": "validate.js: safeMessage() checks EXPOSE_ERRORS env var. .env.example documents the variable. Real implementation.",
-        "file": "marketplace/backend/utils/validate.js"
-      },
-      {
-        "task_id": "004-P1-fix-npm-dependency-vulnerabilities",
-        "worker": "unattributed",
-        "commit": "ad5ee75",
-        "worker_claim": "Upgrade npm deps to resolve high-severity vulnerabilities",
-        "verdict": "VERIFIED",
-        "evidence": "package.json and package-lock.json updated. 5632 lines removed, 964 added in lock file — real dependency upgrade, not a stub."
+        "evidence": "Diff confirms: removed `const EmailService = require(...)` and `const emailService = new EmailService()`, replaced with `const emailService = require(...)`. Correct fix — emailService.js exports a singleton instance. This was a P0 crash bug correctly resolved."
       }
     ],
-    "new_tasks": [],
-    "summary": "10/10 tasks verified. All worker claims match actual code changes. Every implementation is substantive with real security logic — no stubs, TODOs, fakes, or empty functions found. The previous audit flagged a PARTIAL for the magic link error leak (CWE-209), but worker_001 subsequently fixed it in commit 8d257ed. Build loads successfully. 147/158 tests pass (11 pre-existing failures unrelated to worker changes). Auth and checkout tests all pass."
+    "new_tasks": [
+      {
+        "title": "Fix test suites broken by checkout unification",
+        "description": "d922de6 deleted checkoutProduction.js but 3 test suites still reference it or depend on old checkout.js structure: (1) stripe-webhook-idempotency.test.js line 70 requires checkoutProduction — change to checkout.js. (2) webhook.test.js has 5 failing tests due to changed webhook handler structure. (3) checkout-price-validation.test.js has 4 failing tests due to changed create-session response shape (now returns orderId, different Stripe session params).",
+        "priority": "P1",
+        "files": [
+          "__tests__/stripe-webhook-idempotency.test.js",
+          "__tests__/webhook.test.js",
+          "__tests__/checkout-price-validation.test.js"
+        ]
+      },
+      {
+        "title": "Fix pre-existing storeBuilder.test.js failures",
+        "description": "3 intake tests return 500 instead of 201. Likely missing DB table setup in test beforeAll or route initialization issue. Newly discovered by Jest roots fix (bd7d83f).",
+        "priority": "P2",
+        "files": [
+          "marketplace/backend/__tests__/storeBuilder.test.js"
+        ]
+      }
+    ],
+    "summary": "4 tasks reviewed across 4 commits (a861981..d922de6). 3 VERIFIED, 1 PARTIAL. The checkout unification (060-P3) is a correct refactor but broke 3 test suites that still reference the deleted checkoutProduction.js or depend on old checkout.js structure — 10 test failures directly attributable. The COEP fix, Jest roots fix, and emailService singleton fix are all clean, correct implementations. 2 new fix tasks created. Test suite: 202/215 passing (13 failures: 10 from checkout unification, 3 pre-existing storeBuilder)."
   }
 }

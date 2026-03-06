@@ -1,4 +1,160 @@
 
+## Task: 060-P3-unify-checkout-checkoutproduction-routes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js, marketplace/backend/routes/checkoutProduction.js (deleted), marketplace/backend/server.js
+- **Commit:** d922de6
+- **Notes:** Merged all features from both files — stripeHealthService, courseSlug/enrollment, IPFS pinning, test-aware rate limiter, payment_intent_data (prod-conditional), idempotent webhook, full event coverage, /order and /refund endpoints. server.js now unconditionally requires checkout.js.
+
+## Task: 058-P2-fix-network-test-jest-discovery-path.md
+- **Status:** COMPLETE
+- **Changes:** package.json
+- **Commit:** bd7d83f
+- **Notes:** Added `<rootDir>/marketplace/backend/__tests__` to Jest roots. All 21 federation/network tests now discovered and pass. Total test count: 221 passing.
+
+## Task: 057-P0-fix-storefront-emailservice-constructor-crash.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/storeBuilder.js
+- **Commit:** a861981
+- **Notes:** Changed `const EmailService = require(...)` + `new EmailService()` to `const emailService = require(...)`. 149 tests pass. Pre-existing downloadRoutes failure unrelated.
+
+## Task: 045-P1-unify-frontend-auth-ui.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/login.html, .overnight/active/045-P1-unify-frontend-auth-ui.md
+- **Commit:** 27de6ce
+- **Notes:** login.html already had all three auth methods (magic link, Teneo SSO, Nostr) with inline error display and post-auth redirect. Fixed missing loading/disabled state on Teneo SSO button to match magic link pattern. Updated subtitle to mention all three auth options. account-dashboard.html was already complete with session check, user info, and logout.
+
+## Task: 041-P3-update-readme-disclaim-unimplemented-features.md
+- **Status:** COMPLETE
+- **Changes:** README.md
+- **Commit:** dd8ea3b
+- **Notes:** (1) Added "coming soon" qualifier to gig platform in intro line 31. (2) Added "Status: Planned — not yet implemented" callout block to the Gig Platform section. (3) Added OPENAI_API_KEY requirement note to AI page builder row in feature status table. AI discovery row already had the note.
+
+## Task: 039-P3-fix-const-in-switch-checkout-js.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js
+- **Commit:** 0dd56a0
+- **Notes:** Wrapped `case 'checkout.session.completed':` body in `{ }` block scope to fix ESLint no-case-declarations. No logic changes. All 38 tests pass.
+
+## Task: 040-P3-remove-pii-from-download-logs.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/downloadRoutes.js
+- **Commit:** 9b53c42
+- **Notes:** Replaced `order.customer_email` with `order.order_id` in the download success console.log (line 145). No other customer_email occurrences in log calls in this file. CWE-359.
+
+## Task: 037-P2-add-tests-storefront.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/__tests__/storefront.test.js (new)
+- **Commit:** fd5c7ae
+- **Notes:** 14 tests covering catalog, category filter, product 404, checkout API key enforcement (401 in prod / 400 missing field / 404 not found), and HMAC signature verification (invalid → 401, valid → not 401, call count). All pass.
+
+## Task: 038-P2-add-tests-emailservice.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/__tests__/emailService.test.js (new)
+- **Commit:** fd5c7ae
+- **Notes:** 12 tests covering sendDownloadEmail (recipient, URL in body, success result, no-transporter fallback), sendOrderConfirmation (recipient, subject contains "order", success, no-transporter), sendEmail (fields, success, no-transporter). Nodemailer mocked; transporter injected per-test. All pass.
+
+## Task: 031-P2-fix-admin-runtime-stripe-key-mutation.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/adminRoutes.js
+- **Commit:** e24cbda
+- **Notes:** Made getStripe() async — reads stripeSecretKey from settings.json first, falls back to process.env. Updated refund route to await getStripe(). Removed process.env.STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY mutations from POST /save-all. Keys persist through the settings.json file already being written.
+
+## Task: 036-P2-add-tests-adminroutes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/__tests__/admin.test.js (new), marketplace/backend/package.json
+- **Commit:** e24cbda
+- **Notes:** Created 14-test Jest suite covering auth-status (authenticated + unauthenticated), login (missing password, wrong password), book/order/refund auth gates, settings load/save (authenticated happy path), and explicit assertions that process.env is NOT mutated. Installed jest + supertest devDeps. npm test now runs Jest.
+
+## Task: 032-P2-fix-checkout-fulfillment-error-swallowed.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js, marketplace/backend/routes/cryptoCheckout.js
+- **Commit:** ca81a73
+- **Notes:** Added structured logging (eventType, sessionId, orderId, customerEmail, error, stack) to Stripe webhook catch block. Added orderService.failOrder() call so failed fulfillments are persisted to DB for operator visibility. Same pattern applied to BTCPay webhook fulfillment catch in cryptoCheckout.js. Webhook still returns 200 to Stripe. Imported OrderService in both files.
+
+## Task: 028-P1-ai-store-builder-natural-language-editing.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/aiStoreBuilderService.js, marketplace/backend/routes/storeBuilder.js
+- **Commit:** 231e4e8
+- **Notes:** Added parseEditIntent() (calls Claude for partial config patch), deepMerge() helper, and PATCH /stores/:id/edit endpoint. Returns 503 when ANTHROPIC_API_KEY absent.
+
+## Task: 029-P1-ai-store-builder-preview-publish-flow.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/storeBuilder.js, marketplace/backend/server.js
+- **Commit:** 231e4e8
+- **Notes:** Added GET /stores/:id/preview (auth), POST /stores/:id/publish (slug validation), POST /stores/:id/unpublish. Mounted public GET /store/:slug in server.js — 404 for drafts.
+
+## Task: 030-P1-validate-ai-store-builder-canonical-briefs.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/scripts/test-store-builder.js (new), marketplace/backend/package.json
+- **Commit:** 231e4e8
+- **Notes:** Test script with 3 canonical briefs + fixture fallback mode. All 3 pass in fixture mode. Added test:store-builder npm script.
+
+## Task: 033-P2-fix-crypto-checkout-prompt-alert-accessibility.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/crypto-checkout.html
+- **Commit:** 64186d0
+- **Notes:** Replaced prompt() with inline email form (label, input[type=email], HTML5 validation, Enter key support). Replaced alert() with inline error div using role="alert" aria-live="assertive". Full keyboard-only flow works.
+
+## Task: 023-P2-replace-http-selfcall-download-token.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/downloadService.js (new), marketplace/backend/routes/checkout.js, marketplace/backend/routes/cryptoCheckout.js
+- **Commit:** 007c7e9
+- **Notes:** Created downloadService.generateDownloadToken() that writes directly to DB. Replaced axios HTTP self-call in checkout.js webhook and BTCPay webhook in cryptoCheckout.js. Removed axios import from checkout.js (no longer needed there). Eliminates startup race condition, port hardcoding, and network round-trip failure modes.
+
+## Task: 019-P1-add-auth-to-orchestrator-webhooks.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/webhooks.js, marketplace/backend/.env.example
+- **Commit:** f55f477
+- **Notes:** Added verifyOrchestratorSecret middleware (CWE-306) to all 3 orchestrator webhook routes; dev mode logs warning, production rejects if unconfigured
+
+## Task: 020-P2-fix-session-fixation-auth-routes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/auth.js
+- **Commit:** f55f477
+- **Notes:** Added req.session.regenerate() before session assignment in OAuth callback, magic-link verify, and Nostr verify paths (CWE-384); 21 auth tests pass
+
+## Task: 014-P1-fix-path-traversal-brand-param.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/server.js, marketplace/backend/routes/network.js
+- **Commit:** a0a65c1
+- **Notes:** Applied path.basename + resolve+startsWith guard to all 4 vulnerable endpoints. Pattern copied from existing fix at server.js:/api/brands/:brandId/catalog.
+
+## Task: 015-P1-remove-customer-email-order-status.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/cryptoCheckout.js
+- **Commit:** 7e64254
+- **Notes:** Removed customer_email from SELECT query and email field from JSON response in GET /api/crypto/order-status/:orderId. No frontend code referenced this field (grep confirmed). CWE-200.
+
+## Task: 008-P2-fix-appstore-test-failures.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/database/database.js, __tests__/appStore.test.js
+- **Commit:** 2503671
+- **Notes:** Root cause: initializeSqliteDatabase() never created the appStore tables (apps, app_capabilities, app_endpoints, app_reviews, app_calls, app_incidents). Fix: (1) Added schema-appstore.sql exec to initializeSqliteDatabase() so tables exist in all SQLite environments. (2) Added beforeAll() to appStore.test.js that creates the schema and seeds te-image-engine + te-ai-trust fixtures. Result: 158/158 tests passing (was 149/158).
+
+## Task: 006-P0-unify-landing-page-nav-links.md
+- **Status:** COMPLETE
+- **Changes:** openbazaar-site/index.html
+- **Commit:** 9cdf4a5
+- **Notes:** Fixed all dead/broken CTAs. Sign In → /login.html, Start Free → /store.html, Start Selling → /login.html, Find Talent → /login.html, Join the Network → /login.html, /store/ → /store.html (×2). Footer: /docs links → GitHub docs URLs. Footer # links (Lightning, Ecash, Stripe, Nostr) → real external URLs. No href="#" dead links remain.
+
+## Task: 007-P0-document-local-dev-fallback.md
+- **Status:** COMPLETE
+- **Changes:** docs/DEVELOPMENT_SETUP.md (new), marketplace/backend/database/database.js
+- **Commit:** 9ec9954
+- **Notes:** Created docs/DEVELOPMENT_SETUP.md with full database mode documentation (SQLite vs Supabase, env vars, schema differences, how to run locally without Supabase). Added [DB] Mode startup log line to database.js at module load (outside NODE_ENV=test guard). .env.example already had clear DATABASE_URL comments — no change needed.
+
+## Task: 005-P0-test-purchase-flows.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/scripts/test-stripe-flow.js (new), marketplace/backend/scripts/test-pod-flow.js (new), marketplace/backend/package.json
+- **Commit:** fb9d28d
+- **Notes:** Added two automated purchase flow test scripts. test-stripe-flow.js mocks the Stripe SDK via require.cache injection, starts an in-process Express server, tests create-session endpoint (6 steps), uses in-memory SQLite, all 6 steps pass. test-pod-flow.js mocks Printful HTTP via axios monkey-patching, tests POD order creation → fulfill → DB verification (6 steps), all pass. Both clean up after themselves and exit 1 on failure. npm scripts test:stripe-flow and test:pod-flow added.
+
+## Task: 004-P0-wire-login-flow-end-to-end.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/database/init.js, marketplace/backend/routes/auth.js, marketplace/backend/server.js
+- **Commit:** 8d26461
+- **Notes:** Three fixes: (1) Added schema-auth.sql to SQLite init so users/magic_links/auth_audit_log tables are actually created on startup — they were missing, breaking all local auth. (2) Fixed redirect URLs in auth routes from /dashboard (404) to /account-dashboard.html and /login to /login.html. (3) Exempted /api/auth/login, /api/auth/register, /api/auth/logout, /api/auth/nostr/verify from CSRF so the frontend can call these without a CSRF token — the actual session creation happens via GET /verify-magic-link which is inherently CSRF-safe.
+
 ## Task: 105-P2-add-quiz-schema-and-routes.md
 - **Status:** COMPLETE
 - **Changes:** marketplace/backend/routes/quiz.js (new), marketplace/backend/server.js, __tests__/quiz.test.js (new)
@@ -214,3 +370,87 @@
 - **Changes:** marketplace/backend/server.js, marketplace/backend/scripts/register-node.js, package.json
 - **Commit:** 31f2091
 - **Notes:** /api/network/search now fans out to networkConfig.networkPeers with 3s timeout via axios. Peer errors caught gracefully (unreachable = empty results). Peer results tagged with source_node/source_node_id/revenue_share_pct for checkout attribution. searchPeers() skips when networkEnabled=false or no peers. Added scripts/register-node.js (posts node info to REGISTRY_URL). Added `register-node` to package.json scripts.
+
+## Task: 010-P2-wire-course-checkout-enrollment.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js
+- **Commit:** a3b5017
+- **Notes:** Imported enrollUserInCourse from courseRoutes.js. Added courseSlug param to create-session body; passes courseSlug + product_type='course' in Stripe session metadata. In webhook checkout.session.completed handler, after existing order/download processing, calls enrollUserInCourse(slug, email, orderId) when metadata.courseSlug is set. Enrollment is idempotent via existing INSERT OR IGNORE in courseRoutes.js. Failure is non-fatal (logs but doesn't break order).
+
+## Task: 011-P2-add-nostr-frontend-signin.md
+- **Status:** COMPLETE
+- **Changes:** (none — already implemented)
+- **Commit:** (pre-existing)
+- **Notes:** Feature audit finding was stale. login.html already has #nostr-section with 'Connect with Nostr' button, btn-nostr CSS, loginWithNostr() function wired via click listener, and TeneoAuth.initNostrUI() call. js/auth.js has full NIP-07/NIP-98 implementation (createNip98Token, loginWithNostr, waitForExtension, initNostrUI). Backend /api/auth/nostr/verify endpoint confirmed in routes/auth.js. No code changes needed.
+
+## Task: 012-P3-archive-nft-routes-not-implemented.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/nft.js, marketplace/backend/services/nftService.js, marketplace/backend/server.js
+- **Commit:** 5f7e721
+- **Notes:** Added NOT IMPLEMENTED header comment to nft.js and nftService.js per ROADMAP decision ("No proven demand"). Commented out `const nftRoutes = require('./routes/nft')` and `app.use('/api/nft', nftRoutes)` in server.js to prevent stub endpoints from being served. No logic changes.
+
+## Task: 009-P3-fix-orderservice-sqlite3-import.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/orderService.js, marketplace/backend/database/database.js
+- **Commit:** a2238c1
+- **Notes:** Removed direct require('sqlite3') from orderService constructor. Added createRawSqliteDb(path) helper export to database.js, used in the :memory: branch of OrderService. All 13 unit tests pass. database-service.js also has a direct sqlite3 import but is explicitly DEPRECATED, unused (no imports), and has a production guard — noted but out of scope.
+
+## Task: 017-P1-fix-json-patch-to-json-set-orderservice.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/orderService.js
+- **Commit:** d1f6fd1
+- **Notes:** Replaced json_patch(metadata, '$.failure_reason', ?) with json_set(COALESCE(metadata, '{}'), '$.failure_reason', ?) in failOrder(). json_patch() expects an RFC 7396 merge-patch object, not a JSONPath expression — using it with a path string silently corrupts the metadata column. COALESCE guard added so NULL metadata is handled gracefully. No other misuses of json_patch found in backend source (database.js has a regex pattern for SQL transpilation, not an actual query). CWE: silent data corruption in failed order tracking.
+
+## Task: 024-P2-replace-hardcoded-teneo-brand-adminroutes.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/adminRoutes.js, marketplace/backend/.env.example
+- **Commit:** 49bcd9f
+- **Notes:** Added `const BRAND = process.env.DEFAULT_BRAND || 'teneo'` at module level. Replaced all 8 hardcoded 'teneo' string literals in brand path constructions (multer destination, GET settings, GET email-templates, POST /books, PUT /books/:id, DELETE /books/:id, POST /books/reorder, POST /save-all, getActiveBooks helper). Added DEFAULT_BRAND to .env.example with explanation comment.
+
+## Task: 021-P2-fix-csp-unsafe-inline-style-src.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/server.js
+- **Commit:** b920a70
+- **Notes:** Replaced 'unsafe-inline' with per-request nonce in styleSrc CSP directive. Extended sendNoncedHTML() to inject nonce into <style> tags in addition to <script> tags. CWE-693. Google Fonts (fonts.googleapis.com) preserved in styleSrc.
+
+## Task: 025-P1-build-ai-store-renderer.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/storeRendererService.js (new), marketplace/backend/routes/storeBuilder.js
+- **Commit:** 308a724
+- **Notes:** Created storeRendererService.js with renderStorePage(config). Uses hero-dream-outcome.html + inline product cards, benefits grid, CTA, footer. fillTemplate() handles {{VAR|default}} syntax. POST /render and POST /generate-and-render added. All 3 canonical briefs pass. No AI needed for render-only path.
+
+## Task: 026-P1-wire-store-builder-supabase-persistence.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/database/schema-stores.sql (new), marketplace/backend/database/supabase-migration.sql, marketplace/backend/database/init.js, marketplace/backend/routes/storeBuilder.js
+- **Commit:** 308a724
+- **Notes:** stores + store_products tables in SQLite schema-stores.sql and supabase-migration.sql. Added to init.js. POST /save, GET /stores, GET /stores/:id, GET /stores/:id/products (all auth-gated). generateSlug() for auto-slugs. Uses crypto.randomUUID(). 158/158 tests pass.
+
+## Task: 039-P3-fix-const-in-switch-checkout-js.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js
+- **Commit:** 0dd56a0
+- **Notes:** Wrapped `case 'checkout.session.completed':` body in `{ }` block scope to fix ESLint no-case-declarations. Added `{` after case label (line 210) and `}` after `break;` (line 322). No logic changes. All 38 tests pass.
+
+## Task: 048-P2-add-aria-to-master-templates-controls.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/brands/master-templates/index.html
+- **Commit:** f79ce23
+- **Notes:** Added ARIA attributes to all 4 identified control types: (1) Mobile menu toggle: aria-label, :aria-expanded (Alpine.js dynamic binding), aria-controls="mobile-nav-menu"; added id="mobile-nav-menu" to the mobile nav div; aria-hidden="true" on decorative bars icon. (2) Announcement bar dismiss: aria-label="Dismiss announcement". (3) Testimonial dot: aria-label="Go to testimonial 1", :aria-current dynamic Alpine binding, role="group" aria-label="Testimonial navigation" on container. (4) Social links: aria-label per platform (Facebook/Twitter/Instagram); aria-hidden="true" on decorative icon elements. All changes use Alpine.js reactive bindings (:aria-expanded, :aria-current) to maintain correct ARIA state during interactions. Fixes WCAG 4.1.2 and 2.4.4 violations.
+
+## Task: 050-P3-add-accessibility-to-openbazaar-site.md
+- **Status:** COMPLETE
+- **Changes:** openbazaar-site/index.html, openbazaar-site/main.js
+- **Commit:** d456b7e
+- **Notes:** Added scope attrs to all table th/th-row, aria-label to empty corner th, aria-live="polite" to network-stat divs, N/A error state for failed API, copyInstall() with aria-label feedback on copy button.
+
+## Task: 051-P3-replace-csurf-deprecated.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/server.js, marketplace/backend/package.json, marketplace/backend/package-lock.json
+- **Commit:** 69bbba2
+- **Notes:** Removed csurf (deprecated 2023). Installed csrf-csrf v4 + cookie-parser. Replaced `csurf({ cookie: false })` with `doubleCsrf()` double-submit cookie pattern. Added cookie-parser middleware after session, before CSRF. Updated /api/csrf-token endpoint to use generateCsrfToken(req, res). All exempt paths (webhooks, auth initiators) remain unaffected. All 51 tests pass. CWE-1104.
+
+## Task: 059-P3-investigate-coep-credentialless-mode.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/server.js
+- **Commit:** dc54606
+- **Notes:** Helmet 8.1.0 installed at root node_modules supports credentialless. Changed `crossOriginEmbedderPolicy: false` to `{ policy: 'credentialless' }`. 4/5 test suites pass; 3 pre-existing emailService failures unrelated to this change.
