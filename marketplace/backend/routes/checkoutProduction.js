@@ -6,7 +6,7 @@ const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const axios = require('axios');
 const { processMixedOrder } = require('./checkoutMixed');
-const { safeMessage } = require('../utils/validate');
+const { safeMessage, sanitizeMetadataValue } = require('../utils/validate');
 const db = require('../database/database');
 const {
     sanitizeBrandId,
@@ -21,13 +21,6 @@ const checkoutLimiter = rateLimit({
     max: 10,
     message: { error: 'Too many checkout attempts. Please try again in an hour.' }
 });
-
-function sanitizeMetadataValue(value, maxLength = 120) {
-    if (!value || typeof value !== 'string') return null;
-    const trimmed = value.trim();
-    if (!trimmed) return null;
-    return trimmed.slice(0, maxLength);
-}
 
 // Initialize order service
 const orderService = new OrderService();

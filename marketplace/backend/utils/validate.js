@@ -35,4 +35,19 @@ function safeMessage(err) {
     return (err && err.message) ? err.message : String(err);
 }
 
-module.exports = { isValidEmail, safeMessage };
+/**
+ * Sanitize a value for use as Stripe metadata.
+ * Returns null for falsy / non-string values; trims and truncates to maxLength.
+ *
+ * @param {*} value
+ * @param {number} maxLength
+ * @returns {string|null}
+ */
+function sanitizeMetadataValue(value, maxLength = 120) {
+    if (!value || typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    return trimmed.slice(0, maxLength);
+}
+
+module.exports = { isValidEmail, safeMessage, sanitizeMetadataValue };

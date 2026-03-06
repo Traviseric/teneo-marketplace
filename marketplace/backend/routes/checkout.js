@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
-const { safeMessage } = require('../utils/validate');
+const { safeMessage, sanitizeMetadataValue } = require('../utils/validate');
 const path = require('path');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const stripeHealthService = require('../services/stripeHealthService');
@@ -31,13 +31,6 @@ const { processMixedOrder } = require('./checkoutMixed');
 const nftService = require('../services/nftService');
 const db = require('../database/database');
 const { enrollUserInCourse } = require('./courseRoutes');
-
-function sanitizeMetadataValue(value, maxLength = 120) {
-  if (!value || typeof value !== 'string') return null;
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  return trimmed.slice(0, maxLength);
-}
 
 router.post('/create-session', checkoutLimiter, async (req, res) => {
   try {
