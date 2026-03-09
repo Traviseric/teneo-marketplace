@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(255,255,255,0.95);
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1.25rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5rem 24px;
+        }
+
+        /* Book summary */
+        .book-summary {
+            background: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .book-cover-thumb {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #E5E7EB;
+            flex-shrink: 0;
+        }
+
+        .book-meta h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .book-meta p {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+
+        .book-meta .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 0.5rem;
+        }
+
+        .book-meta .price-btc {
+            font-size: 0.8125rem;
+            color: #6B7280;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Section heading */
+        .section-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.8125rem;
+        }
+
+        /* Payment option cards */
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .payment-options { grid-template-columns: 1fr; }
+        }
+
+        .payment-card {
+            background: #fff;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .payment-card:hover {
+            border-color: #9CA3AF;
+        }
+
+        .payment-card.selected {
+            border-color: #111827;
+            background: #fff;
+        }
+
+        .payment-card-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .payment-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-card p {
+            font-size: 0.8125rem;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+
+        .payment-card .card-price {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 0.75rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .selected-indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #D1D5DB;
+            float: right;
+            margin-top: 2px;
+            transition: all 0.15s;
+        }
+
+        .payment-card.selected .selected-indicator {
+            background: #111827;
+            border-color: #111827;
+        }
+
+        /* Email form */
+        .checkout-form {
+            background: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .checkout-form.visible { display: block; }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.375rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            color: #111827;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17,24,39,0.08);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .btn-stripe {
+            background: #111827;
+            color: #fff;
+        }
+
+        .btn-stripe:hover { background: #374151; }
+
+        .btn-lightning {
+            background: #F59E0B;
+            color: #1C1917;
+        }
+
+        .btn-lightning:hover { background: #D97706; }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Invoice / QR panel */
+        .payment-result {
+            background: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .payment-result.visible { display: block; }
+
+        .qr-block {
+            text-align: center;
+            margin: 1.25rem 0;
+        }
+
+        .qr-block img {
+            border: 4px solid #E5E7EB;
+            border-radius: 8px;
+        }
+
+        .address-box {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8125rem;
+            color: #374151;
+            word-break: break-all;
+            margin: 0.75rem 0;
+        }
+
+        .copy-btn {
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .copy-btn:hover { background: #E5E7EB; }
+
+        .result-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-sub {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+        }
+
+        .order-id-note {
+            font-size: 0.8125rem;
+            color: #9CA3AF;
+            margin-top: 0.5rem;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+        }
+
+        .alert-success {
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            color: #065F46;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .btn-lightning .spinner {
+            border: 2px solid rgba(28,25,23,0.3);
+            border-top-color: #1C1917;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: #6B7280;
+            text-decoration: none;
+        }
+
+        .back-link:hover { color: #111827; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/store.html" class="logo" id="header-logo">Store</a>
+            <span id="header-brand" style="font-size:0.875rem;color:#6B7280;"></span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Book summary -->
+        <div class="book-summary" id="book-summary" style="display:none;">
+            <img id="book-cover-thumb" class="book-cover-thumb" src="" alt="" onerror="this.style.display='none'">
+            <div class="book-meta">
+                <h2 id="book-title">Loading…</h2>
+                <p id="book-author"></p>
+                <div class="price" id="book-price-usd"></div>
+                <div class="price-btc" id="book-price-btc"></div>
+            </div>
+        </div>
+
+        <!-- Payment options -->
+        <p class="section-heading">Choose payment method</p>
+
+        <div class="payment-options">
+            <!-- Stripe -->
+            <div class="payment-card" id="card-stripe" role="radio" tabindex="0" aria-checked="false"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMethod('stripe');}">
+                <div class="selected-indicator" id="ind-stripe"></div>
+                <div class="payment-card-icon">💳</div>
+                <h3>Pay with Card</h3>
+                <p>Secure Stripe checkout. Visa, Mastercard, Amex accepted.</p>
+                <div class="card-price" id="stripe-price-display"></div>
+            </div>
+
+            <!-- Lightning / Bitcoin -->
+            <div class="payment-card" id="card-lightning" role="radio" tabindex="0" aria-checked="false"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectMethod('lightning');}">
+                <div class="selected-indicator" id="ind-lightning"></div>
+                <div class="payment-card-icon">⚡</div>
+                <h3>Pay with Lightning / Bitcoin</h3>
+                <p>Instant Lightning Network payment or on-chain Bitcoin. No card required.</p>
+                <div class="card-price" id="lightning-price-display">Loading rate…</div>
+            </div>
+        </div>
+
+        <!-- Checkout form (revealed after selection) -->
+        <div class="checkout-form" id="checkout-form">
+            <div id="form-alert" class="alert" style="display:none;"></div>
+
+            <div class="form-group">
+                <label for="customer-email">Email address</label>
+                <input type="email" id="customer-email" autocomplete="email" placeholder="you@example.com" required>
+            </div>
+
+            <button class="btn btn-stripe" id="btn-stripe" type="button" onclick="submitStripe()" style="display:none;">
+                <span id="stripe-btn-text">Continue to Stripe</span>
+                <span class="spinner" id="stripe-spinner" style="display:none;"></span>
+            </button>
+
+            <button class="btn btn-lightning" id="btn-lightning" type="button" onclick="submitLightning()" style="display:none;">
+                <span id="lightning-btn-text">⚡ Pay with Lightning</span>
+                <span class="spinner" id="lightning-spinner" style="display:none;"></span>
+            </button>
+        </div>
+
+        <!-- Lightning payment result panel -->
+        <div class="payment-result" id="payment-result">
+            <div class="result-heading" id="result-heading"></div>
+            <div class="result-sub" id="result-sub"></div>
+            <div class="qr-block" id="qr-block" style="display:none;">
+                <img id="qr-img" src="" alt="Payment QR code" width="200" height="200">
+            </div>
+            <div id="address-row" style="display:none;">
+                <div class="address-box" id="address-display"></div>
+                <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+            </div>
+            <p class="order-id-note" id="order-id-note"></p>
+        </div>
+
+        <a href="#" class="back-link" id="back-link">← Back to store</a>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const BOOK_ID = params.get('id') || params.get('book') || '';
+        const BRAND_ID = params.get('brand') || 'teneo';
+        const FORMAT = params.get('format') || 'ebook';
+
+        let bookData = null;
+        let selectedMethod = null;
+        let btcPriceUsd = null;
+
+        // Back link
+        document.getElementById('back-link').href = '/store.html?brand=' + encodeURIComponent(BRAND_ID);
+        document.getElementById('header-logo').href = '/store.html?brand=' + encodeURIComponent(BRAND_ID);
+
+        function encodeHTML(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        // ── Load book details ───────────────────────────────────────────────────
+        async function loadBook() {
+            try {
+                const resp = await fetch('/brands/' + encodeURIComponent(BRAND_ID) + '/catalog.json');
+                const catalog = await resp.json();
+                bookData = (catalog.books || []).find(b => b.id === BOOK_ID);
+
+                if (!bookData) {
+                    showFormAlert('Book not found in catalog.', 'error');
+                    return;
+                }
+
+                document.getElementById('book-title').textContent = bookData.title;
+                document.getElementById('book-author').textContent = 'by ' + bookData.author;
+                document.getElementById('book-price-usd').textContent = '$' + bookData.price + ' USD';
+                document.getElementById('stripe-price-display').textContent = '$' + bookData.price + ' USD';
+
+                if (bookData.coverImage) {
+                    document.getElementById('book-cover-thumb').src = bookData.coverImage;
+                }
+                document.getElementById('book-summary').style.display = 'flex';
+                document.title = 'Checkout — ' + bookData.title;
+
+                // Update brand header
+                document.getElementById('header-brand').textContent = BRAND_ID;
+            } catch (err) {
+                console.error('Failed to load book:', err);
+            }
+        }
+
+        // ── Load BTC exchange rate ──────────────────────────────────────────────
+        async function loadRates() {
+            try {
+                const resp = await fetch('/api/crypto/rates');
+                if (!resp.ok) throw new Error('Rate fetch failed');
+                const data = await resp.json();
+                btcPriceUsd = data.rates?.bitcoin;
+                if (btcPriceUsd && bookData) {
+                    const btcAmount = (bookData.price / btcPriceUsd).toFixed(6);
+                    document.getElementById('book-price-btc').textContent = '≈ ' + btcAmount + ' BTC';
+                    document.getElementById('lightning-price-display').textContent = '≈ ' + btcAmount + ' BTC / $' + bookData.price + ' USD';
+                }
+            } catch (err) {
+                document.getElementById('lightning-price-display').textContent = 'Rate unavailable';
+            }
+        }
+
+        // ── Payment method selection ────────────────────────────────────────────
+        function selectMethod(method) {
+            selectedMethod = method;
+
+            document.getElementById('card-stripe').classList.toggle('selected', method === 'stripe');
+            document.getElementById('card-lightning').classList.toggle('selected', method === 'lightning');
+            document.getElementById('card-stripe').setAttribute('aria-checked', String(method === 'stripe'));
+            document.getElementById('card-lightning').setAttribute('aria-checked', String(method === 'lightning'));
+
+            document.getElementById('checkout-form').classList.add('visible');
+            document.getElementById('btn-stripe').style.display = method === 'stripe' ? 'flex' : 'none';
+            document.getElementById('btn-lightning').style.display = method === 'lightning' ? 'flex' : 'none';
+            document.getElementById('customer-email').focus();
+
+            // Reset any previous result
+            document.getElementById('payment-result').classList.remove('visible');
+            clearFormAlert();
+        }
+
+        document.getElementById('card-stripe').addEventListener('click', () => selectMethod('stripe'));
+        document.getElementById('card-lightning').addEventListener('click', () => selectMethod('lightning'));
+
+        // ── Stripe flow ─────────────────────────────────────────────────────────
+        async function submitStripe() {
+            const email = document.getElementById('customer-email').value.trim();
+            if (!validateEmail(email)) return;
+
+            setStripeLoading(true);
+            clearFormAlert();
+
+            try {
+                const resp = await fetch('/api/checkout/create-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bookId: BOOK_ID,
+                        format: FORMAT,
+                        brandId: BRAND_ID,
+                        bookTitle: bookData?.title || BOOK_ID,
+                        bookAuthor: bookData?.author || '',
+                        userEmail: email,
+                    }),
+                });
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    // Stripe may be down — offer Lightning fallback
+                    if (data.stripeDown) {
+                        showFormAlert('Card payments are temporarily unavailable. Try Lightning instead.', 'error');
+                        selectMethod('lightning');
+                    } else {
+                        showFormAlert(data.error || 'Stripe checkout failed. Please try again.', 'error');
+                    }
+                    return;
+                }
+
+                // Redirect to Stripe
+                window.location.href = data.checkoutUrl;
+            } catch (err) {
+                showFormAlert('Network error. Please try again.', 'error');
+            } finally {
+                setStripeLoading(false);
+            }
+        }
+
+        // ── Lightning / ArxMint flow ────────────────────────────────────────────
+        async function submitLightning() {
+            const email = document.getElementById('customer-email').value.trim();
+            if (!validateEmail(email)) return;
+
+            setLightningLoading(true);
+            clearFormAlert();
+
+            try {
+                const resp = await fetch('/api/checkout/arxmint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bookId: BOOK_ID,
+                        format: FORMAT,
+                        brandId: BRAND_ID,
+                        bookTitle: bookData?.title || BOOK_ID,
+                        bookAuthor: bookData?.author || '',
+                        userEmail: email,
+                    }),
+                });
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    showFormAlert(data.error || 'Lightning checkout failed. Please try again.', 'error');
+                    return;
+                }
+
+                if (data.paymentMethod === 'btcpay' && data.btcpayCheckoutUrl) {
+                    // Redirect to BTCPay hosted checkout
+                    window.location.href = data.btcpayCheckoutUrl;
+                    return;
+                }
+
+                if (data.paymentMethod === 'arxmint_lightning' && data.invoice) {
+                    showInvoiceResult(data);
+                    return;
+                }
+
+                // Manual BTC fallback
+                showManualBtcResult(data);
+
+            } catch (err) {
+                showFormAlert('Network error. Please try again.', 'error');
+            } finally {
+                setLightningLoading(false);
+            }
+        }
+
+        // ── Result display helpers ──────────────────────────────────────────────
+        function showInvoiceResult(data) {
+            document.getElementById('result-heading').textContent = '⚡ Lightning Invoice Ready';
+            document.getElementById('result-sub').textContent = 'Scan with your Lightning wallet to complete payment instantly.';
+            document.getElementById('order-id-note').textContent = 'Order ID: ' + data.orderId;
+
+            // BIP21 QR with lightning param
+            const qrData = 'lightning:' + data.invoice;
+            showQR(qrData);
+            showAddress(data.invoice, 'Copy Invoice');
+
+            document.getElementById('payment-result').classList.add('visible');
+        }
+
+        function showManualBtcResult(data) {
+            document.getElementById('result-heading').textContent = '₿ Bitcoin Payment';
+            document.getElementById('result-sub').textContent =
+                data.address
+                    ? 'Send exactly $' + data.amountUsd + ' USD in BTC to the address below.'
+                    : 'Bitcoin address not configured. Contact support with your order ID.';
+            document.getElementById('order-id-note').textContent = 'Order ID: ' + data.orderId;
+
+            if (data.bip21 || data.address) {
+                // BIP21 QR: bitcoin:ADDRESS or bitcoin:ADDRESS?amount=AMOUNT
+                const btcAmount = btcPriceUsd ? (data.amountUsd / btcPriceUsd).toFixed(8) : null;
+                const bip21 = data.address
+                    ? 'bitcoin:' + data.address + (btcAmount ? '?amount=' + btcAmount : '')
+                    : null;
+                if (bip21) showQR(bip21);
+                if (data.address) showAddress(data.address, 'Copy Address');
+            }
+
+            document.getElementById('payment-result').classList.add('visible');
+        }
+
+        function showQR(data) {
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(data);
+            document.getElementById('qr-img').src = qrUrl;
+            document.getElementById('qr-block').style.display = 'block';
+        }
+
+        function showAddress(addr, btnLabel) {
+            document.getElementById('address-display').textContent = addr;
+            document.querySelector('#address-row .copy-btn').textContent = btnLabel || 'Copy';
+            document.getElementById('address-row').style.display = 'block';
+            window._copyTarget = addr;
+        }
+
+        function copyAddress() {
+            const target = window._copyTarget || document.getElementById('address-display').textContent;
+            const btn = document.querySelector('#address-row .copy-btn');
+            navigator.clipboard.writeText(target).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = btn.dataset.label || 'Copy'; }, 2000);
+            }).catch(() => {});
+        }
+
+        // ── Loading states ──────────────────────────────────────────────────────
+        function setStripeLoading(on) {
+            const btn = document.getElementById('btn-stripe');
+            btn.disabled = on;
+            document.getElementById('stripe-spinner').style.display = on ? 'inline-block' : 'none';
+            document.getElementById('stripe-btn-text').textContent = on ? 'Connecting…' : 'Continue to Stripe';
+        }
+
+        function setLightningLoading(on) {
+            const btn = document.getElementById('btn-lightning');
+            btn.disabled = on;
+            document.getElementById('lightning-spinner').style.display = on ? 'inline-block' : 'none';
+            document.getElementById('lightning-btn-text').textContent = on ? 'Creating invoice…' : '⚡ Pay with Lightning';
+        }
+
+        // ── Alert helpers ───────────────────────────────────────────────────────
+        function showFormAlert(msg, type) {
+            const el = document.getElementById('form-alert');
+            el.textContent = msg;
+            el.className = 'alert alert-' + (type === 'error' ? 'error' : 'success');
+            el.style.display = 'block';
+        }
+
+        function clearFormAlert() {
+            document.getElementById('form-alert').style.display = 'none';
+        }
+
+        function validateEmail(email) {
+            if (!email) {
+                showFormAlert('Please enter your email address.', 'error');
+                document.getElementById('customer-email').focus();
+                return false;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFormAlert('Please enter a valid email address.', 'error');
+                document.getElementById('customer-email').focus();
+                return false;
+            }
+            return true;
+        }
+
+        // ── Allow Enter key in email field ──────────────────────────────────────
+        document.getElementById('customer-email').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (selectedMethod === 'stripe') submitStripe();
+                else if (selectedMethod === 'lightning') submitLightning();
+            }
+        });
+
+        // ── Init ────────────────────────────────────────────────────────────────
+        async function init() {
+            if (!BOOK_ID) {
+                document.querySelector('main').innerHTML = '<p style="padding:2rem;color:#6B7280;">No book selected. <a href="/store.html">Return to store</a>.</p>';
+                return;
+            }
+            await loadBook();
+            await loadRates();
+        }
+
+        init();
+    </script>
+</body>
+</html>

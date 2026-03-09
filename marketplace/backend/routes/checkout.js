@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
-const { safeMessage, sanitizeMetadataValue } = require('../utils/validate');
+const { safeMessage, sanitizeMetadataValue, isValidEmail } = require('../utils/validate');
 const path = require('path');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const btcpayService = require('../services/btcpayService');
+const arxmintService = require('../services/arxmintService');
 const stripeHealthService = require('../services/stripeHealthService');
 const {
   sanitizeBrandId,
@@ -651,6 +654,130 @@ router.get('/health/stripe', async (req, res) => {
     lastChecked: health.lastChecked ? new Date(health.lastChecked).toISOString() : null,
     ...(health.error && { error: health.error }),
   });
+});
+
+/**
+ * POST /api/checkout/arxmint
+ * ArxMint Lightning checkout endpoint.
+ * Tries ArxMint L402 first, then BTCPay, then manual wallet address fallback.
+ * Always enforces server-side pricing — never trusts client-supplied price.
+ */
+router.post('/arxmint', checkoutLimiter, async (req, res) => {
+  try {
+    const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+    const brandId = sanitizeBrandId(rawBrandId);
+
+    if (!bookId || !userEmail) {
+      return res.status(400).json({ success: false, error: 'Missing required fields: bookId, userEmail' });
+    }
+    if (!isValidEmail(userEmail)) {
+      return res.status(400).json({ success: false, error: 'Valid email address required' });
+    }
+
+    // Server-side price enforcement — never trust client-supplied price
+    const usdAmount = lookupBookPrice(bookId, format || 'ebook', brandId);
+    if (usdAmount == null) {
+      return res.status(400).json({ success: false, error: 'Product not found in catalog' });
+    }
+
+    const orderId = `arxmint_${Date.now()}_${bookId}`;
+
+    // 1. Try ArxMint L402 Lightning invoice (graceful degradation when stub)
+    let invoice = null;
+    let macaroon = null;
+    const amountSats = Math.round((usdAmount / 60000) * 1e8); // rough sats estimate for ArxMint
+    const arxmintAttempt = await arxmintService.createL402Invoice(
+      amountSats,
+      bookId,
+      `${bookTitle || bookId} (${format || 'ebook'})`
+    );
+    if (arxmintAttempt && arxmintAttempt.invoice) {
+      invoice = arxmintAttempt.invoice;
+      macaroon = arxmintAttempt.macaroon || null;
+    }
+
+    // 2. Try BTCPay if ArxMint not available
+    let btcpayInvoice = null;
+    if (!invoice) {
+      try {
+        btcpayInvoice = await btcpayService.createInvoice(usdAmount, orderId, userEmail);
+      } catch (btcErr) {
+        console.warn('[checkout/arxmint] BTCPay unavailable:', btcErr.message);
+      }
+    }
+
+    // 3. Manual wallet address fallback
+    const walletAddress = process.env.BTC_ADDRESS || null;
+
+    const paymentMethod = invoice ? 'arxmint_lightning' : btcpayInvoice ? 'btcpay' : 'manual_btc';
+
+    // Create order record
+    await orderService.createOrder({
+      orderId,
+      customerEmail: userEmail,
+      bookId,
+      bookTitle: bookTitle || bookId,
+      bookAuthor: bookAuthor || '',
+      format: format || 'ebook',
+      price: usdAmount,
+      currency: 'USD',
+      metadata: {
+        paymentMethod,
+        arxmintInvoice: invoice || null,
+        btcpayInvoiceId: btcpayInvoice?.invoiceId || null,
+        walletAddress: walletAddress || null,
+        brandId: brandId || null,
+        createdAt: new Date().toISOString(),
+      }
+    });
+
+    if (invoice) {
+      return res.json({
+        success: true,
+        orderId,
+        paymentMethod: 'arxmint_lightning',
+        invoice,
+        macaroon,
+        amountUsd: usdAmount,
+        statusUrl: `/api/checkout/order/${orderId}`,
+      });
+    }
+
+    if (btcpayInvoice) {
+      return res.json({
+        success: true,
+        orderId,
+        paymentMethod: 'btcpay',
+        btcpayCheckoutUrl: btcpayInvoice.checkoutUrl,
+        btcpayInvoiceId: btcpayInvoice.invoiceId,
+        amountUsd: usdAmount,
+        statusUrl: `/api/checkout/order/${orderId}`,
+      });
+    }
+
+    // Manual BTC fallback — show wallet address + BIP21 QR
+    const bip21 = walletAddress ? `bitcoin:${walletAddress}` : null;
+    res.json({
+      success: true,
+      orderId,
+      paymentMethod: 'manual_btc',
+      address: walletAddress,
+      amountUsd: usdAmount,
+      bip21,
+      instructions: {
+        step1: walletAddress
+          ? `Send $${usdAmount} USD equivalent in BTC to: ${walletAddress}`
+          : 'Bitcoin address not configured — contact support',
+        step2: `Include order ID in memo: ${orderId}`,
+        step3: 'Email payment proof to orders@teneo.market with subject: Order ' + orderId,
+        step4: 'Download link sent within 1-24 hours after verification',
+      },
+      statusUrl: `/api/checkout/order/${orderId}`,
+    });
+  } catch (error) {
+    console.error('[checkout/arxmint] Error:', error);
+    res.status(500).json({ success: false, error: 'Failed to create Lightning checkout', message: safeMessage(error) });
+  }
 });
 
 // Basic health check for monitoring

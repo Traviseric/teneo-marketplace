@@ -462,9 +462,11 @@
         function getBookUrl(bookId) {
             const features = brandConfig?.features || {};
             if (features.cryptoOnly) {
+                // Crypto-only brands: go straight to crypto checkout
                 return `/crypto-checkout.html?book=${encodeURIComponent(bookId)}&brand=${encodeURIComponent(BRAND_ID)}`;
             }
-            return `/book-detail.html?id=${encodeURIComponent(bookId)}&brand=${encodeURIComponent(BRAND_ID)}`;
+            // All other brands: use the dual checkout page (Stripe + Lightning)
+            return `/checkout.html?id=${encodeURIComponent(bookId)}&brand=${encodeURIComponent(BRAND_ID)}`;
         }
 
         const BRAND_EMOJIS = {
@@ -599,12 +601,7 @@
         }
 
         function viewBook(bookId) {
-            const features = brandConfig?.features || {};
-            if (features.cryptoOnly) {
-                window.location.href = `/crypto-checkout.html?book=${bookId}&brand=${BRAND_ID}`;
-            } else {
-                window.location.href = `/book-detail.html?id=${bookId}&brand=${BRAND_ID}`;
-            }
+            window.location.href = getBookUrl(bookId);
         }
 
         async function init() {
