@@ -36,6 +36,9 @@ const CHECKOUT_RATE_LIMIT_MAX = 10;
 const WEBHOOK_RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const WEBHOOK_RATE_LIMIT_MAX = 30;
 
+// Allowlist of valid product format values (CWE-20: input validation)
+const ALLOWED_FORMATS = ['pdf', 'epub', 'print', 'ebook', 'digital', 'bundle', 'hardcover'];
+
 // Checkout session rate limiter — 10 per hour per IP (CWE-770)
 // Disabled in test environment to allow test suites to run freely
 const checkoutLimiter = process.env.NODE_ENV === 'test'
@@ -75,6 +78,10 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       return res.status(400).json({
         error: 'Missing required fields: bookId, format, bookTitle, bookAuthor, userEmail'
       });
+    }
+
+    if (!ALLOWED_FORMATS.includes(format)) {
+      return res.status(400).json({ success: false, error: `Invalid format. Allowed values: ${ALLOWED_FORMATS.join(', ')}` });
     }
 
     // Check Stripe availability before attempting session creation.
@@ -904,7 +911,8 @@ router.get('/health/stripe', async (req, res) => {
  */
 router.post('/arxmint', checkoutLimiter, async (req, res) => {
   try {
-    const { bookId, format, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+    const { bookId, format: rawFormat, brandId: rawBrandId, bookTitle, bookAuthor, userEmail } = req.body;
+    const format = ALLOWED_FORMATS.includes(rawFormat) ? rawFormat : 'ebook';
     const brandId = sanitizeBrandId(rawBrandId);
 
     if (!bookId || !userEmail) {
