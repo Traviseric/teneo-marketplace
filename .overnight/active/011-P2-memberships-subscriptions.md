@@ -3,7 +3,7 @@ id: 11
 title: "Memberships & subscriptions — recurring payments, tiers, content gating"
 priority: P2
 severity: medium
-status: pending
+status: completed
 source: project_declared
 file: marketplace/backend/routes/checkout.js
 line: null

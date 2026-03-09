@@ -151,6 +151,30 @@ router.post('/create-session', async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// Public: List all subscriptions for a customer email (across all stores)
+// ---------------------------------------------------------------------------
+
+router.get('/all', (req, res) => {
+  const email = req.query.email || req.session?.userEmail;
+  if (!email || !isValidEmail(email)) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+  db.all(
+    `SELECT s.id, s.store_slug, s.tier_id, s.status, s.current_period_end, s.stripe_customer_id,
+            t.name AS tier_name, t.price_monthly
+     FROM subscriptions s
+     LEFT JOIN membership_tiers t ON s.tier_id = t.id
+     WHERE s.customer_email = ?
+     ORDER BY s.created_at DESC`,
+    [email],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      res.json({ success: true, subscriptions: rows });
+    }
+  );
+});
+
+// ---------------------------------------------------------------------------
 // Auth'd: Check active subscription for a store
 // ---------------------------------------------------------------------------
 
@@ -263,13 +287,32 @@ router.post('/admin/tiers', authenticateAdmin, async (req, res) => {
     }
     const featuresJson = JSON.stringify(features || []);
     const contentJson = JSON.stringify(content_access || []);
+
+    // Auto-create Stripe recurring Price if no stripe_price_id provided
+    let resolvedPriceId = stripe_price_id || null;
+    if (!resolvedPriceId && process.env.STRIPE_SECRET_KEY) {
+      try {
+        const stripePrice = await stripe.prices.create({
+          unit_amount: Math.round(price_monthly * 100), // cents
+          currency: 'usd',
+          recurring: { interval: 'month' },
+          product_data: { name: `${storeSlug} — ${name}` },
+          metadata: { store_slug: storeSlug },
+        });
+        resolvedPriceId = stripePrice.id;
+      } catch (stripeErr) {
+        console.warn('[subscriptions] Could not auto-create Stripe price:', stripeErr.message);
+        // Non-fatal — admin can set stripe_price_id later via PUT
+      }
+    }
+
     db.run(
       `INSERT INTO membership_tiers (store_slug, name, price_monthly, stripe_price_id, features, content_access)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [storeSlug, name, price_monthly, stripe_price_id || null, featuresJson, contentJson],
+      [storeSlug, name, price_monthly, resolvedPriceId, featuresJson, contentJson],
       function (err) {
         if (err) return res.status(500).json({ error: 'Database error' });
-        res.status(201).json({ success: true, id: this.lastID });
+        res.status(201).json({ success: true, id: this.lastID, stripe_price_id: resolvedPriceId });
       }
     );
   } catch (err) {
@@ -312,6 +355,89 @@ router.delete('/admin/tiers/:id', authenticateAdmin, (req, res) => {
     if (this.changes === 0) return res.status(404).json({ error: 'Tier not found' });
     res.json({ success: true });
   });
+});
+
+// ---------------------------------------------------------------------------
+// Admin: List subscribers per store
+// ---------------------------------------------------------------------------
+
+router.get('/admin/subscribers', authenticateAdmin, (req, res) => {
+  const { storeSlug } = req.query;
+  const sql = storeSlug
+    ? `SELECT s.*, t.name AS tier_name, t.price_monthly
+       FROM subscriptions s
+       JOIN membership_tiers t ON s.tier_id = t.id
+       WHERE s.store_slug = ?
+       ORDER BY s.created_at DESC`
+    : `SELECT s.*, t.name AS tier_name, t.price_monthly
+       FROM subscriptions s
+       JOIN membership_tiers t ON s.tier_id = t.id
+       ORDER BY s.created_at DESC`;
+  const params = storeSlug ? [storeSlug] : [];
+  db.all(sql, params, (err, rows) => {
+    if (err) return res.status(500).json({ success: false, error: 'Database error' });
+    res.json({ success: true, subscribers: rows });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Admin: Monthly recurring revenue (MRR)
+// ---------------------------------------------------------------------------
+
+router.get('/admin/mrr', authenticateAdmin, (req, res) => {
+  const { storeSlug } = req.query;
+  const sql = storeSlug
+    ? `SELECT t.price_monthly, COUNT(*) AS count
+       FROM subscriptions s
+       JOIN membership_tiers t ON s.tier_id = t.id
+       WHERE s.status = 'active' AND s.store_slug = ?
+       GROUP BY s.tier_id`
+    : `SELECT t.price_monthly, s.store_slug, COUNT(*) AS count
+       FROM subscriptions s
+       JOIN membership_tiers t ON s.tier_id = t.id
+       WHERE s.status = 'active'
+       GROUP BY s.tier_id, s.store_slug`;
+  const params = storeSlug ? [storeSlug] : [];
+  db.all(sql, params, (err, rows) => {
+    if (err) return res.status(500).json({ success: false, error: 'Database error' });
+    const mrr = rows.reduce((sum, r) => sum + r.price_monthly * r.count, 0);
+    const arr = mrr * 12;
+    res.json({ success: true, mrr: Math.round(mrr * 100) / 100, arr: Math.round(arr * 100) / 100, breakdown: rows });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Customer Portal — Stripe self-service subscription management
+// ---------------------------------------------------------------------------
+
+router.post('/portal', async (req, res) => {
+  try {
+    const { customerEmail, storeSlug, returnUrl } = req.body;
+    if (!customerEmail) return res.status(400).json({ error: 'customerEmail required' });
+
+    // Find the Stripe customer ID from active subscriptions
+    const sub = await new Promise((resolve, reject) => {
+      const sql = storeSlug
+        ? `SELECT stripe_customer_id FROM subscriptions WHERE customer_email = ? AND store_slug = ? AND stripe_customer_id IS NOT NULL LIMIT 1`
+        : `SELECT stripe_customer_id FROM subscriptions WHERE customer_email = ? AND stripe_customer_id IS NOT NULL LIMIT 1`;
+      const params = storeSlug ? [customerEmail, storeSlug] : [customerEmail];
+      db.get(sql, params, (err, row) => { if (err) return reject(err); resolve(row); });
+    });
+
+    if (!sub || !sub.stripe_customer_id) {
+      return res.status(404).json({ error: 'No Stripe subscription found for this email.' });
+    }
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: sub.stripe_customer_id,
+      return_url: returnUrl || `${process.env.MARKETPLACE_URL || 'http://localhost:3001'}/account/memberships.html`,
+    });
+
+    res.json({ success: true, url: session.url });
+  } catch (err) {
+    console.error('[subscriptions] portal error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ---------------------------------------------------------------------------

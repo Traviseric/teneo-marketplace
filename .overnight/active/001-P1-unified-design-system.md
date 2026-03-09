@@ -3,7 +3,7 @@ id: 1
 title: "Unified design system across HTML pages"
 priority: P1
 severity: high
-status: pending
+status: completed
 source: project_declared
 file: marketplace/frontend/
 line: null

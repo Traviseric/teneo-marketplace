@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Memberships</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+    header { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    header a { color: #555; text-decoration: none; font-size: 0.875rem; }
+    header h1 { font-size: 1.25rem; font-weight: 600; }
+    .container { max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .card h2 { font-size: 1.1rem; font-weight: 600; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+    .badge-past_due { background: #fef3c7; color: #92400e; }
+    .meta { font-size: 0.875rem; color: #555; margin-bottom: 0.5rem; }
+    .btn { display: inline-block; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; text-decoration: none; border: none; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-outline { background: transparent; border: 1px solid #d1d5db; color: #374151; }
+    .btn-outline:hover { background: #f9fafb; }
+    .empty { text-align: center; padding: 3rem 1rem; color: #6b7280; }
+    .empty h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    #email-form { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    #email-form input { flex: 1; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem; }
+    #store-filter { padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem; }
+    .loading { text-align: center; padding: 2rem; color: #6b7280; }
+    .error-msg { color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/account-dashboard.html">&larr; Account</a>
+    <h1>My Memberships</h1>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <label style="font-size:0.875rem;font-weight:500;display:block;margin-bottom:0.5rem;">Your email</label>
+      <div id="email-form">
+        <input type="email" id="email-input" placeholder="you@example.com">
+        <select id="store-filter">
+          <option value="">All stores</option>
+        </select>
+        <button class="btn btn-primary" onclick="loadMemberships()">Load</button>
+      </div>
+      <div id="email-error" class="error-msg" style="display:none"></div>
+    </div>
+
+    <div id="content">
+      <div class="empty">
+        <h3>Enter your email to view memberships</h3>
+        <p>We'll show all active subscriptions associated with your email address.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pre-fill email from query param or session storage
+    const params = new URLSearchParams(location.search);
+    if (params.get('email')) document.getElementById('email-input').value = params.get('email');
+    else if (sessionStorage.getItem('userEmail')) document.getElementById('email-input').value = sessionStorage.getItem('userEmail');
+
+    async function loadMemberships() {
+      const email = document.getElementById('email-input').value.trim();
+      const storeSlug = document.getElementById('store-filter').value;
+      const errEl = document.getElementById('email-error');
+      errEl.style.display = 'none';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('content').innerHTML = '<div class="loading">Loading memberships…</div>';
+
+      try {
+        const url = storeSlug
+          ? `/api/subscriptions/my/${encodeURIComponent(storeSlug)}?email=${encodeURIComponent(email)}`
+          : null;
+
+        // Fetch from all stores if no filter — use a custom endpoint listing all by email
+        const res = await fetch(`/api/subscriptions/all?email=${encodeURIComponent(email)}`);
+        if (!res.ok) throw new Error('Server error');
+        const data = await res.json();
+        renderMemberships(data.subscriptions || []);
+      } catch (err) {
+        document.getElementById('content').innerHTML = `<div class="card"><p style="color:#dc2626">Failed to load memberships: ${err.message}</p></div>`;
+      }
+    }
+
+    function renderMemberships(subs) {
+      const el = document.getElementById('content');
+      if (!subs.length) {
+        el.innerHTML = `<div class="empty"><h3>No active memberships</h3><p>You don't have any subscriptions yet. Browse available stores to subscribe.</p></div>`;
+        return;
+      }
+
+      el.innerHTML = subs.map(s => {
+        const periodEnd = s.current_period_end ? new Date(s.current_period_end * 1000).toLocaleDateString() : '—';
+        const badgeClass = s.status === 'active' ? 'badge-active' : s.status === 'cancelled' ? 'badge-cancelled' : 'badge-past_due';
+        return `
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2>${escHtml(s.tier_name || s.tier_id)}</h2>
+                <div class="meta">Store: ${escHtml(s.store_slug)}</div>
+              </div>
+              <span class="badge ${badgeClass}">${escHtml(s.status)}</span>
+            </div>
+            <div class="meta">Renews: ${periodEnd}</div>
+            ${s.status === 'active' ? `
+            <div style="margin-top:1rem;display:flex;gap:0.5rem">
+              <button class="btn btn-outline" onclick="openPortal('${escHtml(s.store_slug)}')">Manage / Cancel</button>
+            </div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function openPortal(storeSlug) {
+      const email = document.getElementById('email-input').value.trim();
+      const btn = event.target;
+      btn.textContent = 'Loading…';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/subscriptions/portal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customerEmail: email, storeSlug, returnUrl: location.href }),
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+        else alert(data.error || 'Could not open portal');
+      } catch (err) {
+        alert('Failed to open management portal: ' + err.message);
+      } finally {
+        btn.textContent = 'Manage / Cancel';
+        btn.disabled = false;
+      }
+    }
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>
