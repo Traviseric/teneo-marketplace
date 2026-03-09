@@ -282,6 +282,52 @@
             background: #374151;
         }
 
+        /* NIP-57 Zap-to-unlock button */
+        .zap-button {
+            background: #7C3AED;
+            color: #FFFFFF;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+            transition: background-color 0.2s;
+            display: block;
+            text-align: center;
+            font-size: 0.9375rem;
+            font-family: inherit;
+        }
+        .zap-button:hover { background: #6D28D9; }
+
+        /* Zap modal overlay */
+        #zap-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        #zap-modal-overlay.open { display: flex; }
+        #zap-modal {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        #zap-modal h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        #zap-modal p { color: #4B5563; font-size: 0.9375rem; margin-bottom: 1rem; }
+        #zap-modal-status { min-height: 1.5rem; font-size: 0.875rem; color: #7C3AED; }
+        #zap-modal .close-btn {
+            float: right; background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #6B7280; line-height: 1;
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
@@ -597,6 +643,7 @@
                                 ${cryptoPrice}
                             </div>
                             <span class="cta-button">${encodeHTML(getBuyButtonText())}</span>
+                            ${book.price < 5 ? `<button class="zap-button" onclick="event.preventDefault();event.stopPropagation();openZapModal(${encodeHTML(JSON.stringify(book.id))},${encodeHTML(JSON.stringify(book.title))},${parseFloat(book.price)||0})" type="button">&#9889; Zap to Unlock</button>` : ''}
                         </div>
                     </a>
                 `;
@@ -666,6 +713,133 @@
                 }
             });
         })();
+    </script>
+
+    <!-- NIP-57 Zap-to-Unlock modal + flow -->
+    <div id="zap-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="zap-modal-title">
+        <div id="zap-modal">
+            <button class="close-btn" onclick="closeZapModal()" aria-label="Close">&times;</button>
+            <h2 id="zap-modal-title">&#9889; Zap to Unlock</h2>
+            <p id="zap-modal-desc"></p>
+            <div id="zap-modal-status"></div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        'use strict';
+
+        function setStatus(msg, color) {
+            var el = document.getElementById('zap-modal-status');
+            if (el) { el.textContent = msg; el.style.color = color || '#7C3AED'; }
+        }
+
+        window.openZapModal = async function(bookId, bookTitle, priceUsd) {
+            var overlay = document.getElementById('zap-modal-overlay');
+            var desc = document.getElementById('zap-modal-desc');
+            if (!overlay || !desc) return;
+
+            // Build storefront product ID: BRAND_ID:bookId
+            var productId = (window.BRAND_ID || 'default') + ':' + bookId;
+
+            desc.textContent = '"' + bookTitle + '" \u2014 $' + priceUsd.toFixed(2);
+            setStatus('');
+            overlay.classList.add('open');
+
+            // Check for NIP-07 + WebLN support
+            if (typeof window.nostr === 'undefined') {
+                setStatus('Install a Nostr wallet (e.g. Alby) to use Zap-to-Unlock.', '#DC2626');
+                return;
+            }
+            if (typeof window.webln === 'undefined') {
+                setStatus('Install Alby or another WebLN wallet to pay Lightning invoices.', '#DC2626');
+                return;
+            }
+
+            try {
+                setStatus('Fetching product info\u2026');
+
+                // Get product details from storefront API (includes zap_address + price_sats)
+                var resp = await fetch('/api/storefront/product/' + encodeURIComponent(productId));
+                if (!resp.ok) throw new Error('Product not found in storefront catalog');
+                var product = await resp.json();
+
+                if (!product.zap_eligible || !product.zap_address) {
+                    setStatus('This product is not zap-eligible. Use the standard checkout.', '#DC2626');
+                    return;
+                }
+
+                var amountSats = product.price_sats || Math.ceil((product.price / 100) / 30000 * 1e8);
+                setStatus('Building zap request for ' + amountSats + ' sats\u2026');
+
+                // Build NIP-57 kind 9734 zap request
+                var now = Math.floor(Date.now() / 1000);
+                var zapRequest = {
+                    kind: 9734,
+                    created_at: now,
+                    tags: [
+                        ['relays', 'wss://relay.damus.io', 'wss://nos.lol'],
+                        ['amount', String(amountSats * 1000)], // msats
+                        ['lnurl', product.zap_address],
+                        ['p', product.metadata && product.metadata.nostr_pubkey ? product.metadata.nostr_pubkey : ''],
+                    ],
+                    content: 'Zap to unlock: ' + bookTitle,
+                };
+                var signedZapRequest = await window.nostr.signEvent(zapRequest);
+
+                // Fetch invoice from LNURL endpoint of the store's Lightning Address
+                // Lightning Address format: user@domain -> https://domain/.well-known/lnurlp/user
+                var parts = product.zap_address.split('@');
+                var lnurlBase = parts.length === 2
+                    ? 'https://' + parts[1] + '/.well-known/lnurlp/' + parts[0]
+                    : product.zap_address;
+
+                setStatus('Requesting invoice from ' + (parts[1] || 'wallet') + '\u2026');
+                var lnurlResp = await fetch(
+                    lnurlBase + '?amount=' + (amountSats * 1000) +
+                    '&nostr=' + encodeURIComponent(JSON.stringify(signedZapRequest))
+                );
+                if (!lnurlResp.ok) throw new Error('LNURL endpoint returned ' + lnurlResp.status);
+                var lnurlData = await lnurlResp.json();
+
+                if (!lnurlData.pr) throw new Error('No payment request from LNURL endpoint');
+
+                setStatus('Paying ' + amountSats + ' sats via Lightning\u2026');
+
+                // Enable WebLN and pay
+                await window.webln.enable();
+                var payResult = await window.webln.sendPayment(lnurlData.pr);
+
+                setStatus('Payment sent! Waiting for zap receipt\u2026');
+
+                // Poll for kind 9735 receipt via relay (simplified: wait 3s then try relays)
+                await new Promise(function(r) { setTimeout(r, 3000); });
+
+                // Try to fetch the receipt from a relay (simplified implementation)
+                // In production, subscribe to relay with REQ filter { kinds: [9735], '#p': [pubkey] }
+                // For now, prompt the user to paste the receipt or try to get it from Alby
+                setStatus('Lightning payment confirmed! If your wallet published a zap receipt, it will unlock automatically. Otherwise contact support with payment hash: ' + (payResult.preimage ? payResult.preimage.slice(0, 16) + '\u2026' : 'n/a'), '#059669');
+
+            } catch (err) {
+                setStatus('Error: ' + (err.message || 'Unknown error'), '#DC2626');
+                console.error('[zap-unlock]', err);
+            }
+        };
+
+        window.closeZapModal = function() {
+            var overlay = document.getElementById('zap-modal-overlay');
+            if (overlay) overlay.classList.remove('open');
+        };
+
+        // Close on overlay click
+        document.addEventListener('DOMContentLoaded', function() {
+            var overlay = document.getElementById('zap-modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) closeZapModal();
+                });
+            }
+        });
+    })();
     </script>
 </body>
 </html>

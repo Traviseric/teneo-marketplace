@@ -275,6 +275,62 @@ router.patch('/stores/:id/edit', requireAuth, async (req, res) => {
   }
 });
 
+// PATCH /api/store-builder/stores/:id/nostr
+// Save merchant's Nostr pubkey (hex or npub) for NIP-05 identity verification.
+// Body: { nostr_pubkey: string }
+router.patch('/stores/:id/nostr', requireAuth, async (req, res) => {
+  const { nostr_pubkey } = req.body;
+  const userId = req.session.userId || req.session.user_id || null;
+
+  if (!nostr_pubkey || typeof nostr_pubkey !== 'string') {
+    return res.status(400).json({ error: 'nostr_pubkey required' });
+  }
+
+  // Normalize npub to hex if needed (npub1... → hex pubkey)
+  let pubkeyHex = nostr_pubkey.trim();
+  if (pubkeyHex.startsWith('npub1')) {
+    // Basic bech32 decode: delegated to bech32 library if available, else accept as-is
+    try {
+      const nostrTools = require('nostr-tools');
+      if (nostrTools.nip19 && nostrTools.nip19.decode) {
+        const decoded = nostrTools.nip19.decode(pubkeyHex);
+        if (decoded.type === 'npub') {
+          pubkeyHex = decoded.data;
+        }
+      }
+    } catch {
+      // nostr-tools not available or decode failed — accept as-is, validate below
+    }
+  }
+
+  // Accept 64-char hex pubkeys only
+  if (!/^[0-9a-fA-F]{64}$/.test(pubkeyHex)) {
+    return res.status(400).json({ error: 'nostr_pubkey must be a 64-character hex public key or a valid npub1 address' });
+  }
+
+  try {
+    const store = await db.get(
+      'SELECT id, slug FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    await db.run(
+      'UPDATE stores SET nostr_pubkey = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [pubkeyHex.toLowerCase(), req.params.id]
+    );
+
+    res.json({
+      success: true,
+      nostr_pubkey: pubkeyHex.toLowerCase(),
+      nip05_identifier: `${store.slug}@openbazaar.ai`,
+    });
+  } catch (err) {
+    console.error('[nostr-patch] Error:', err.message);
+    res.status(500).json({ error: 'Failed to save Nostr pubkey' });
+  }
+});
+
 // ──────────────────────────────────────────────────
 // Preview, publish, unpublish
 // ──────────────────────────────────────────────────

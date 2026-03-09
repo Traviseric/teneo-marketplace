@@ -7,6 +7,10 @@ CREATE TABLE IF NOT EXISTS stores (
     config TEXT NOT NULL,
     html TEXT,
     status TEXT DEFAULT 'draft',
+    -- NIP-05 identity: merchant's Nostr public key (hex, 64 chars)
+    -- Enables <slug>@openbazaar.ai verification per NIP-05 spec.
+    -- Migration for existing DBs: ALTER TABLE stores ADD COLUMN nostr_pubkey TEXT;
+    nostr_pubkey TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );

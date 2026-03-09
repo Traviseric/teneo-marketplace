@@ -111,6 +111,7 @@ const printfulAdminRoutes = require('./routes/printfulAdmin');
 const licenseRoutes = require('./routes/licenseRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const hostingRoutes = require('./routes/hostingRoutes');
+const wellKnownRoutes = require('./routes/wellKnownRoutes');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -211,6 +212,7 @@ const csrfExcludePaths = [
     '/api/auth/nostr/verify',     // Nostr NIP-98 signed event — self-authenticated
     '/api/subscriptions/webhook', // Stripe subscription webhook
     '/api/hosting/webhook',       // Stripe hosting subscription webhook
+    '/api/storefront/zap-unlock', // NIP-57 zap receipt — self-authenticated via Schnorr sig
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
@@ -241,6 +243,9 @@ app.get('/api/csrf-token', (req, res) => {
     const csrfToken = generateCsrfToken(req, res);
     res.json({ csrfToken });
 });
+// NIP-05 DNS verification — must come before other routes so /.well-known/nostr.json is served
+app.use('/.well-known', wellKnownRoutes);
+
 app.use('/api/brands', brandRoutes);
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/checkout/mixed', checkoutMixedRoutes);

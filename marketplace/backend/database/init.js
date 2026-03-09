@@ -90,6 +90,17 @@ async function initSqlite() {
     const tables = await allAsync("SELECT name FROM sqlite_master WHERE type='table'");
     console.log('Tables created:', tables.map((t) => t.name).join(', '));
 
+    // NIP-05 migration: add nostr_pubkey to stores if the column doesn't exist yet
+    const hasStores = tables.some(t => t.name === 'stores');
+    if (hasStores) {
+        const storesCols = await allAsync('PRAGMA table_info(stores)');
+        const hasNostrPubkey = storesCols.some(c => c.name === 'nostr_pubkey');
+        if (!hasNostrPubkey) {
+            await execAsync('ALTER TABLE stores ADD COLUMN nostr_pubkey TEXT');
+            console.log('✅ Migration: added nostr_pubkey column to stores table');
+        }
+    }
+
     await closeAsync();
     console.log('Database initialization complete');
 

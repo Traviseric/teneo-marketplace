@@ -1063,6 +1063,30 @@
                         </div>
                     </div>
 
+                    <!-- NIP-05 Nostr Identity -->
+                    <div class="settings-section" id="nostrIdentitySection">
+                        <h3>&#128100; Nostr Identity (NIP-05)</h3>
+                        <p style="color:var(--text-muted,#6B7280);font-size:0.875rem;margin-bottom:1rem;">
+                            Add your Nostr public key to get a verified identity:
+                            <strong id="nostrNip05Identifier"></strong><br>
+                            Nostr clients will display your handle as verified once the key is saved.
+                        </p>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="nostrPubkeyInput">Your Nostr Public Key (npub or 64-char hex)</label>
+                                <input type="text" id="nostrPubkeyInput" placeholder="npub1... or 64-char hex"
+                                    autocomplete="off" spellcheck="false">
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:1rem;margin-top:0.75rem;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="saveNostrPubkey()" id="saveNostrBtn">Save Nostr Key</button>
+                            <span id="nostrSaveStatus" style="font-size:0.875rem;"></span>
+                        </div>
+                        <p id="nostrVerifiedBadge" style="display:none;color:#059669;font-size:0.875rem;margin-top:0.5rem;">
+                            &#10003; Nostr identity verified — your store slug maps to your pubkey
+                        </p>
+                    </div>
+
                     <!-- Printful Catalog Browser -->
                     <div class="card" style="margin-top:1.5rem;">
                         <div class="card-header">
@@ -2824,6 +2848,50 @@
 
         function updateColorPicker(id, value) {
             document.getElementById(id).value = value;
+        }
+
+        // ── NIP-05 Nostr Identity ──────────────────────────────────────────
+        // Set the NIP-05 identifier hint based on current store slug (if available)
+        (function initNostrSection() {
+            var storeSlug = window._adminStoreSlug || null;
+            var el = document.getElementById('nostrNip05Identifier');
+            if (el && storeSlug) el.textContent = storeSlug + '@openbazaar.ai';
+        })();
+
+        async function saveNostrPubkey() {
+            var input = document.getElementById('nostrPubkeyInput');
+            var statusEl = document.getElementById('nostrSaveStatus');
+            var badgeEl = document.getElementById('nostrVerifiedBadge');
+            if (!input || !statusEl) return;
+
+            var pubkey = input.value.trim();
+            if (!pubkey) { statusEl.textContent = 'Please enter a Nostr public key.'; statusEl.style.color = '#DC2626'; return; }
+
+            var storeId = window._adminStoreId || null;
+            if (!storeId) { statusEl.textContent = 'Store ID not found. Save your store first.'; statusEl.style.color = '#DC2626'; return; }
+
+            statusEl.textContent = 'Saving\u2026';
+            statusEl.style.color = '#7C3AED';
+
+            try {
+                var resp = await secureFetch('/api/store-builder/stores/' + encodeURIComponent(storeId) + '/nostr', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nostr_pubkey: pubkey }),
+                });
+                var data = await resp.json();
+                if (resp.ok && data.success) {
+                    statusEl.textContent = 'Saved! Your NIP-05 identifier: ' + (data.nip05_identifier || '');
+                    statusEl.style.color = '#059669';
+                    if (badgeEl) badgeEl.style.display = 'block';
+                } else {
+                    statusEl.textContent = data.error || 'Save failed.';
+                    statusEl.style.color = '#DC2626';
+                }
+            } catch (err) {
+                statusEl.textContent = 'Network error: ' + err.message;
+                statusEl.style.color = '#DC2626';
+            }
         }
 
         // Load orders

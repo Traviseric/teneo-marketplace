@@ -26,6 +26,7 @@ const arxmintProvider = require('../services/arxmintProvider');
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const fulfillmentService = require('../services/fulfillmentService');
+const zapService = require('../services/zapService');
 
 const orderService = new OrderService();
 
@@ -216,6 +217,20 @@ function normalizePodProvider(value) {
   return String(value).trim().toLowerCase();
 }
 
+/**
+ * Enrich a product with NIP-57 zap fields if eligible (price < $5 USD, digital fulfillment).
+ * Sets `zap_address` and `zap_eligible` on the product object (mutates in place).
+ */
+function enrichWithZapFields(product) {
+  const zapAddress = process.env.ZAP_ADDRESS || process.env.LIGHTNING_ADDRESS || null;
+  // price is in cents; < 500 = < $5
+  const eligible = product.fulfillment === 'digital' && product.price < 500 && zapAddress;
+  product.zap_eligible = !!eligible;
+  if (eligible) {
+    product.zap_address = zapAddress;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // API key authentication for state-changing storefront endpoints (CWE-352)
 // External callers (ArxMint, etc.) must include X-Api-Key header for POST requests.
@@ -275,6 +290,11 @@ router.get('/catalog', async (req, res) => {
       }
     }
 
+    // Enrich with NIP-57 zap fields for eligible low-value digital products
+    for (const product of products) {
+      enrichWithZapFields(product);
+    }
+
     const storeId = process.env.STORE_ID || 'openbazaar-default';
     const storeName = process.env.STORE_NAME || 'OpenBazaar Store';
 
@@ -331,6 +351,8 @@ router.get('/product/:id', async (req, res) => {
     if (btcRate) {
       product.price_sats = Math.ceil((product.price / 100) / btcRate * 1e8);
     }
+
+    enrichWithZapFields(product);
 
     res.json(product);
   } catch (error) {
@@ -767,6 +789,103 @@ async function handleFulfill(req, res) {
 
 // Register /fulfill route using the named handler (also exported for /api/arxmint/webhook alias)
 router.post('/fulfill', express.raw({ type: 'application/json' }), handleFulfill);
+
+/**
+ * POST /api/storefront/zap-unlock
+ * Accept a NIP-57 kind 9735 zap receipt, verify it, and return a one-time download token.
+ *
+ * This endpoint is CSRF-exempt (listed in server.js csrfExcludePaths) because callers
+ * are Lightning-native wallets / NIP-07 browser extensions that cannot provide a session cookie.
+ *
+ * Body:   { kind9735Event: object, productId: string }
+ * Returns: { success: true, downloadToken, downloadUrl, orderId, amountSats }
+ *   or 402 Payment Required with { error: string }
+ */
+router.post('/zap-unlock', async (req, res) => {
+  try {
+    const { kind9735Event, productId } = req.body || {};
+
+    if (!kind9735Event || !productId) {
+      return res.status(400).json({ error: 'kind9735Event and productId required' });
+    }
+
+    // Load and validate product
+    const products = await loadAllProducts();
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Zap unlock is only valid for low-value digital products
+    if (product.price >= 500) {
+      return res.status(403).json({ error: 'Zap unlock only available for products under $5' });
+    }
+    if (product.fulfillment !== 'digital') {
+      return res.status(403).json({ error: 'Zap unlock only available for digital products' });
+    }
+
+    // Determine minimum expected sats from live BTC/USD rate
+    const btcRate = await getBtcUsdRate();
+    const expectedSats = btcRate
+      ? Math.ceil((product.price / 100) / btcRate * 1e8)
+      : 1;
+
+    // Verify the NIP-57 zap receipt
+    const result = zapService.verifyZapReceipt(kind9735Event, expectedSats, productId);
+    if (!result.valid) {
+      return res.status(402).json({ error: result.error || 'Invalid zap receipt' });
+    }
+
+    // Create an order record and generate a one-time download token
+    const orderId = generateOrderId();
+    const zapperLabel = result.zapperPubkey
+      ? `npub:${result.zapperPubkey.slice(0, 8)}`
+      : 'Zap buyer';
+    const zapperEmail = `zap+${orderId}@nostr.invalid`;
+
+    await orderService.createOrder({
+      orderId,
+      stripeSessionId: `zap_${kind9735Event.id || Date.now()}`,
+      customerEmail: zapperEmail,
+      customerName: zapperLabel,
+      bookId: product.id,
+      bookTitle: product.title,
+      bookAuthor: product.metadata?.author || 'Unknown',
+      format: 'digital',
+      price: Number(product.price || 0) / 100,
+      currency: 'USD',
+      metadata: {
+        source: 'zap-unlock',
+        paymentMethod: 'nip57-zap',
+        amountSats: result.amountSats,
+        zapperPubkey: result.zapperPubkey || null,
+        zapReceiptId: kind9735Event.id || null,
+      },
+    });
+
+    const completed = await orderService.completeOrder(orderId, `zap_${kind9735Event.id || Date.now()}`);
+    const publicUrl = process.env.SITE_URL || process.env.PUBLIC_URL || 'http://localhost:3001';
+    const downloadUrl = `${publicUrl}/api/download/${completed.downloadToken}`;
+
+    // State machine: pending → processing → completed (non-fatal)
+    await orderService.updateOrderState(orderId, 'processing', { provider: 'nip57-zap' })
+      .then(() => orderService.updateOrderState(orderId, 'completed', { provider: 'nip57-zap', fulfillment: 'zap-digital' }))
+      .catch(err => console.warn('[zap-unlock] state-machine transition failed (non-fatal):', err.message));
+
+    console.log(`[zap-unlock] Unlocked product="${product.title}" orderId=${orderId} sats=${result.amountSats}`);
+
+    return res.json({
+      success: true,
+      downloadToken: completed.downloadToken,
+      downloadUrl,
+      orderId,
+      amountSats: result.amountSats,
+    });
+  } catch (error) {
+    console.error('[zap-unlock] Error:', error);
+    res.status(500).json({ error: 'Zap unlock failed' });
+  }
+});
 
 module.exports = router;
 module.exports.handleFulfill = handleFulfill;
