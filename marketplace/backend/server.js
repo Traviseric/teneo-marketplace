@@ -98,6 +98,7 @@ const emailTrackingRoutes = require('./routes/emailTracking');
 const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
+const printfulAdminRoutes = require('./routes/printfulAdmin');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -231,6 +232,7 @@ app.use('/api/download', downloadRoutes);
 app.use('/api/lulu', luluAdminRoutes);
 app.use('/api', luluWebhookRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin/printful', printfulAdminRoutes);
 app.use('/api/network', networkRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/published', publishedBooksRoutes);

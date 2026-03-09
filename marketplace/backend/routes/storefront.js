@@ -602,7 +602,11 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
           if (!variantId) {
             return res.status(422).json({ error: 'podVariantId is required for Printful POD fulfillment' });
           }
-          providerParams.variantId = variantId;
+          const variantIdNum = Number(variantId);
+          if (!Number.isInteger(variantIdNum) || variantIdNum <= 0) {
+            return res.status(422).json({ error: 'podVariantId must be a positive integer (valid Printful variant ID)' });
+          }
+          providerParams.variantId = variantIdNum;
         } else if (providerName === 'lulu') {
           const podPackageId = product.podPackageId || paymentMeta.podPackageId || product.podVariantId || paymentMeta.podVariantId;
           const luluPrintableId = product.luluPrintableId || paymentMeta.luluPrintableId || null;

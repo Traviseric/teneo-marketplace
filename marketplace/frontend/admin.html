@@ -1044,6 +1044,46 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Printful Catalog Browser -->
+                    <div class="card" style="margin-top:1.5rem;">
+                        <div class="card-header">
+                            <h3>Printful Catalog Browser</h3>
+                            <p style="color:var(--text-muted);font-size:0.875rem;">Browse Printful products and copy variant IDs into your product configuration.</p>
+                        </div>
+                        <div class="card-body" style="padding:1.5rem;">
+                            <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+                                <button class="btn btn-secondary" onclick="loadPrintfulCatalog()" id="loadCatalogBtn">
+                                    <i class="fas fa-sync-alt"></i> Load Catalog
+                                </button>
+                                <input type="text" id="printfulCatalogSearch" placeholder="Filter products..." style="flex:1;min-width:160px;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;" oninput="filterPrintfulCatalog()" disabled>
+                            </div>
+                            <div id="printfulCatalogStatus" style="color:var(--text-muted);font-size:0.875rem;"></div>
+                            <div id="printfulProductList" style="display:none;margin-top:0.75rem;">
+                                <select id="printfulProductSelect" size="8" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:0.5rem;" onchange="loadPrintfulVariants(this.value)">
+                                </select>
+                            </div>
+                            <div id="printfulVariantPanel" style="display:none;margin-top:1rem;">
+                                <h4 id="printfulVariantTitle" style="margin-bottom:0.5rem;font-size:0.95rem;"></h4>
+                                <div style="overflow-x:auto;">
+                                    <table id="printfulVariantTable" style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                        <thead>
+                                            <tr style="background:var(--background);">
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Variant ID</th>
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Name</th>
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Size</th>
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Color</th>
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Price</th>
+                                                <th scope="col" style="text-align:left;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="printfulVariantBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="printfulCopiedMsg" style="display:none;margin-top:0.75rem;padding:0.6rem 1rem;background:#d1fae5;color:#065f46;border-radius:6px;font-size:0.875rem;"></div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Orders Section -->
@@ -2511,6 +2551,117 @@
 
         function discoverPeers() {
             alert('Peer discovery feature coming soon');
+        }
+
+        // ── Printful Catalog Browser ──────────────────────────────────────────
+
+        let _printfulProducts = [];
+
+        async function loadPrintfulCatalog() {
+            const btn = document.getElementById('loadCatalogBtn');
+            const status = document.getElementById('printfulCatalogStatus');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading…';
+            status.textContent = 'Fetching catalog from Printful…';
+            try {
+                const res = await fetch('/api/admin/printful/catalog', {
+                    headers: { 'Authorization': 'Basic ' + authToken }
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || `HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                _printfulProducts = data.products || [];
+                status.textContent = `Loaded ${_printfulProducts.length} products.`;
+                document.getElementById('printfulCatalogSearch').disabled = false;
+                renderPrintfulProductList(_printfulProducts);
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Reload Catalog';
+            }
+        }
+
+        function renderPrintfulProductList(products) {
+            const sel = document.getElementById('printfulProductSelect');
+            sel.innerHTML = products.map(p =>
+                `<option value="${p.id}">[${p.id}] ${escapeHtml(p.title || p.name || 'Product')}</option>`
+            ).join('');
+            document.getElementById('printfulProductList').style.display = products.length ? '' : 'none';
+            document.getElementById('printfulVariantPanel').style.display = 'none';
+        }
+
+        function filterPrintfulCatalog() {
+            const q = document.getElementById('printfulCatalogSearch').value.toLowerCase();
+            const filtered = _printfulProducts.filter(p =>
+                String(p.id).includes(q) || (p.title || p.name || '').toLowerCase().includes(q)
+            );
+            renderPrintfulProductList(filtered);
+        }
+
+        async function loadPrintfulVariants(productId) {
+            if (!productId) return;
+            const panel = document.getElementById('printfulVariantPanel');
+            const title = document.getElementById('printfulVariantTitle');
+            const tbody = document.getElementById('printfulVariantBody');
+            title.textContent = 'Loading variants…';
+            panel.style.display = '';
+            tbody.innerHTML = '';
+            try {
+                const res = await fetch(`/api/admin/printful/catalog/${encodeURIComponent(productId)}/variants`, {
+                    headers: { 'Authorization': 'Basic ' + authToken }
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || `HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                const product = data.product || {};
+                const variants = data.variants || [];
+                title.textContent = `${product.title || product.name || 'Product'} — ${variants.length} variant(s)`;
+                tbody.innerHTML = variants.map(v => `
+                    <tr>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);font-family:monospace;">${v.id}</td>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">${escapeHtml(v.name || '')}</td>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">${escapeHtml(v.size || '')}</td>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">${escapeHtml(v.color || '')}</td>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">${v.price ? '$' + Number(v.price).toFixed(2) : '—'}</td>
+                        <td style="padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);">
+                            <button class="btn btn-secondary btn-small" onclick="copyPrintfulVariantId(${v.id})" title="Copy variant ID ${v.id}">
+                                Copy ID
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                title.textContent = 'Error: ' + e.message;
+            }
+        }
+
+        function copyPrintfulVariantId(variantId) {
+            navigator.clipboard.writeText(String(variantId)).catch(() => {
+                // fallback for older browsers
+                const el = document.createElement('textarea');
+                el.value = String(variantId);
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            });
+            const msg = document.getElementById('printfulCopiedMsg');
+            msg.textContent = `Variant ID ${variantId} copied to clipboard. Paste it into the "Pod Variant ID" field on your product.`;
+            msg.style.display = '';
+            setTimeout(() => { msg.style.display = 'none'; }, 4000);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
         }
     </script>
 </body>
