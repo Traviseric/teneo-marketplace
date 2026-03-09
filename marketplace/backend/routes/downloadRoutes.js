@@ -6,6 +6,10 @@ const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
 const arxmintService = require('../services/arxmintService');
 const { stampPDF } = require('../services/pdfStampingService');
+const { requireL402, initL402Table } = require('../middleware/l402Auth');
+
+// Ensure l402_payments table exists (no-op if already created)
+initL402Table().catch(err => console.warn('[L402] Table init skipped:', err.message));
 
 const OrderService = require('../services/orderService');
 const db = require('../database/database');

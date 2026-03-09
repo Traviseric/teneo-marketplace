@@ -650,6 +650,19 @@ CREATE TABLE IF NOT EXISTS product_versions (
 CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(product_id, brand_id);
 CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at);
 
+-- L402 payment records — Lightning invoice paywall credentials
+CREATE TABLE IF NOT EXISTS l402_payments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  payment_hash TEXT UNIQUE NOT NULL,
+  preimage TEXT,
+  amount_sat INTEGER NOT NULL,
+  resource_path TEXT NOT NULL,
+  paid_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_l402_hash ON l402_payments(payment_hash);
+
 -- Membership tiers table — creator-defined subscription tiers per store
 CREATE TABLE IF NOT EXISTS membership_tiers (
   id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
