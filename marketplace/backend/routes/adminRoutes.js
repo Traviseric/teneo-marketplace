@@ -11,6 +11,7 @@ const auditService = require('../services/auditService');
 const couponService = require('../services/couponService');
 const orderBumpService = require('../services/orderBumpService');
 const printfulProvider = require('../services/printfulFulfillmentProvider');
+const importService = require('../services/importService');
 
 const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 
@@ -38,6 +39,20 @@ async function getStripe() {
     }
     return _stripe;
 }
+
+// Memory-storage multer for CSV imports (no disk writes needed)
+const csvUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+    fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.(csv|txt)$/i) &&
+            file.mimetype !== 'text/csv' &&
+            file.mimetype !== 'text/plain') {
+            return cb(new Error('Only CSV or TXT files are allowed'));
+        }
+        cb(null, true);
+    }
+});
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -600,6 +615,86 @@ router.delete('/order-bumps/:id', authenticateAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error deactivating order bump:', error);
         res.status(500).json({ error: 'Failed to deactivate order bump' });
+    }
+});
+
+// ─── Gumroad CSV Import ───────────────────────────────────────────────────────
+
+// POST /api/admin/import/gumroad-csv
+// Accepts multipart/form-data with a "csv" file field.
+// Parses the Gumroad products export and merges products into catalog.json.
+router.post('/import/gumroad-csv', authenticateAdmin, csvUpload.single('csv'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'No CSV file uploaded' });
+    }
+
+    try {
+        const csvContent = req.file.buffer.toString('utf8');
+        const { products, imported, skipped, errors } = importService.importGumroadCsv(csvContent, BRAND);
+
+        if (imported === 0) {
+            return res.json({ success: true, imported: 0, skipped, errors, products: [] });
+        }
+
+        // Load (or create) the brand catalog
+        const catalogPath = path.join(__dirname, '../../frontend/brands', BRAND, 'catalog.json');
+        let catalog = { books: [] };
+        try {
+            const data = await fs.readFile(catalogPath, 'utf8');
+            catalog = JSON.parse(data);
+        } catch (_) { /* start fresh */ }
+
+        if (!Array.isArray(catalog.books)) catalog.books = [];
+
+        // Merge: skip products whose id already exists
+        const existingIds = new Set(catalog.books.map(b => b.id));
+        let merged = 0;
+        const addedProducts = [];
+
+        for (const p of products) {
+            let id = p.id;
+            // Deduplicate id if collision
+            if (existingIds.has(id)) {
+                let suffix = 2;
+                while (existingIds.has(`${id}-${suffix}`)) suffix++;
+                id = `${id}-${suffix}`;
+            }
+            p.id = id;
+            existingIds.add(id);
+            catalog.books.push(p);
+            addedProducts.push(p);
+            merged++;
+        }
+
+        await fs.writeFile(catalogPath, JSON.stringify(catalog, null, 2));
+
+        res.json({ success: true, imported: merged, skipped, errors, products: addedProducts });
+    } catch (error) {
+        console.error('[admin/import/gumroad-csv] Error:', error);
+        res.status(500).json({ success: false, error: 'Import failed: ' + error.message });
+    }
+});
+
+// ─── Email List CSV Import ────────────────────────────────────────────────────
+
+// POST /api/admin/import/email-list
+// Accepts multipart/form-data with a "csv" file field.
+// Optional query param: ?list_name=My+List
+router.post('/import/email-list', authenticateAdmin, csvUpload.single('csv'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'No CSV file uploaded' });
+    }
+
+    try {
+        const csvContent = req.file.buffer.toString('utf8');
+        const listName = (req.query.list_name || req.body.list_name || '').trim() || null;
+
+        const result = await importService.importEmailListCsv(csvContent, db, listName);
+
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('[admin/import/email-list] Error:', error);
+        res.status(500).json({ success: false, error: 'Import failed: ' + error.message });
     }
 });
 

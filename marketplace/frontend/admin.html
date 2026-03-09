@@ -916,6 +916,14 @@
                         <i class="fas fa-robot"></i>
                         <span>AI Funnel Builder</span>
                     </li>
+                    <li class="nav-item" data-section="import">
+                        <i class="fas fa-file-import"></i>
+                        <span>Import Tools</span>
+                    </li>
+                    <li class="nav-item" data-section="referrals">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Referrals</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1742,6 +1750,127 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Referrals Section -->
+                <section id="referralsSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>Referrals</h2>
+                        <p>Share your referral link to earn commissions when buyers you send make purchases.</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Your Referral Link</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">
+                            Share this link to earn 15% commission on new customers and 2% on returning customers.
+                        </p>
+                        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                            <input id="referralLinkInput" type="text" readonly
+                                style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;background:var(--bg-secondary);min-width:200px;"
+                                placeholder="Loading..." />
+                            <button class="btn btn-secondary" onclick="copyReferralLink()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <p id="referralCodeDisplay" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.4rem;"></p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Commission Summary</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1rem;">
+                            <div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;text-align:center;">
+                                <div id="refTotal" style="font-size:1.6rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Total Referrals</div>
+                            </div>
+                            <div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;text-align:center;">
+                                <div id="refPending" style="font-size:1.6rem;font-weight:700;color:#f59e0b;">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Pending</div>
+                            </div>
+                            <div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;text-align:center;">
+                                <div id="refPaid" style="font-size:1.6rem;font-weight:700;color:#10b981;">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Paid</div>
+                            </div>
+                            <div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;text-align:center;">
+                                <div id="refPendingCommission" style="font-size:1.6rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Pending Commission</div>
+                            </div>
+                            <div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;text-align:center;">
+                                <div id="refTotalCommission" style="font-size:1.6rem;font-weight:700;">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Total Commission</div>
+                            </div>
+                        </div>
+                        <p style="font-size:0.8rem;color:var(--text-muted);">Commissions are tracked automatically. Payouts are processed manually — contact support to request payout.</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Recent Referrals</h3>
+                        <p id="referralsStatus" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;"></p>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.5rem;">Order ID</th>
+                                        <th style="text-align:left;padding:0.5rem;">Email</th>
+                                        <th style="text-align:left;padding:0.5rem;">Type</th>
+                                        <th style="text-align:right;padding:0.5rem;">Commission</th>
+                                        <th style="text-align:left;padding:0.5rem;">Status</th>
+                                        <th style="text-align:left;padding:0.5rem;">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="referralsTableBody">
+                                    <tr><td colspan="6" style="padding:1rem;color:var(--text-muted);text-align:center;">Loading…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Import Tools Section -->
+                <section id="importSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>Import Tools</h2>
+                        <p>Migrate products and subscribers from Gumroad, Mailchimp, ConvertKit, Substack, and other platforms.</p>
+                    </div>
+
+                    <!-- Gumroad Product Import -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-store" style="color:var(--primary);margin-right:0.4rem;"></i> Import Products from Gumroad</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">
+                            Export your products from Gumroad: <strong>Products → Export → Download CSV</strong>, then upload the file below.
+                        </p>
+                        <div class="form-group">
+                            <label>CSV File</label>
+                            <input type="file" id="gumroadCsvFile" accept=".csv,.txt" style="display:block;margin-top:0.25rem;">
+                        </div>
+                        <button class="btn btn-primary" onclick="importGumroadCsv()" id="btnImportGumroad">
+                            <i class="fas fa-upload"></i> Import Products
+                        </button>
+                        <div id="gumroadImportResult" style="margin-top:1rem;display:none;"></div>
+                    </div>
+
+                    <!-- Email List Import -->
+                    <div class="settings-section" style="margin-top:1.5rem;">
+                        <h3><i class="fas fa-users" style="color:var(--secondary);margin-right:0.4rem;"></i> Import Email List</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem;">
+                            Supported platforms: <strong>Mailchimp</strong> (Audience → Export → All Contacts as CSV),
+                            <strong>ConvertKit</strong>, <strong>Substack</strong>, or any CSV with an <code>email</code> column.
+                        </p>
+                        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem;">
+                            Expected columns: <code>email</code>, <code>first_name</code>, <code>last_name</code> (optional), <code>status</code> (optional — unsubscribed contacts are skipped automatically).
+                        </p>
+                        <div class="form-group">
+                            <label>List Name (optional)</label>
+                            <input type="text" id="emailListName" placeholder="e.g. Mailchimp Export March 2026" style="max-width:360px;">
+                        </div>
+                        <div class="form-group">
+                            <label>CSV File</label>
+                            <input type="file" id="emailListCsvFile" accept=".csv,.txt" style="display:block;margin-top:0.25rem;">
+                        </div>
+                        <button class="btn btn-primary" onclick="importEmailList()" id="btnImportEmailList">
+                            <i class="fas fa-upload"></i> Import Subscribers
+                        </button>
+                        <div id="emailListImportResult" style="margin-top:1rem;display:none;"></div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -2047,6 +2176,9 @@
                     loadFunnels();
                     break;
                 case 'aiFunnel':
+                    break;
+                case 'referrals':
+                    loadReferrals();
                     break;
             }
         }
@@ -3750,6 +3882,75 @@
             }
         }
 
+        // ─── Referrals ────────────────────────────────────────────────────────────
+
+        async function loadReferrals() {
+            const statusEl = document.getElementById('referralsStatus');
+            const tbody = document.getElementById('referralsTableBody');
+            statusEl.textContent = 'Loading…';
+
+            try {
+                // Load referral code (creates one if it doesn't exist)
+                const codeRes = await secureFetch('/api/referral/code');
+                if (codeRes.ok) {
+                    const codeData = await codeRes.json();
+                    if (codeData.success) {
+                        document.getElementById('referralLinkInput').value = codeData.referral_url || '';
+                        document.getElementById('referralCodeDisplay').textContent = `Code: ${codeData.code}`;
+                    }
+                }
+
+                // Load stats
+                const statsRes = await secureFetch('/api/referral/stats');
+                if (statsRes.ok) {
+                    const d = await statsRes.json();
+                    if (d.success) {
+                        const s = d.stats;
+                        document.getElementById('refTotal').textContent = s.total;
+                        document.getElementById('refPending').textContent = s.pending;
+                        document.getElementById('refPaid').textContent = s.paid;
+                        document.getElementById('refPendingCommission').textContent = '$' + s.pending_commission.toFixed(2);
+                        document.getElementById('refTotalCommission').textContent = '$' + s.total_commission.toFixed(2);
+
+                        statusEl.textContent = s.total > 0 ? `${s.total} referral(s)` : 'No referrals yet. Share your link to get started.';
+
+                        if (d.recent && d.recent.length > 0) {
+                            tbody.innerHTML = d.recent.map(r => `
+                                <tr style="border-bottom:1px solid var(--border);">
+                                    <td style="padding:0.5rem;font-family:monospace;font-size:0.8rem;">${r.referred_order_id || '—'}</td>
+                                    <td style="padding:0.5rem;">${r.referred_email ? r.referred_email.replace(/(.{2})(.*)(@.*)/, '$1***$3') : '—'}</td>
+                                    <td style="padding:0.5rem;">${r.is_new_customer ? '<span style="color:#10b981;">New</span>' : '<span style="color:var(--text-muted);">Repeat</span>'}</td>
+                                    <td style="padding:0.5rem;text-align:right;">$${(r.commission_amount || 0).toFixed(2)}</td>
+                                    <td style="padding:0.5rem;">
+                                        <span style="padding:0.2rem 0.5rem;border-radius:4px;font-size:0.75rem;background:${r.status === 'paid' ? '#d1fae5' : r.status === 'cancelled' ? '#fee2e2' : '#fef3c7'};color:${r.status === 'paid' ? '#065f46' : r.status === 'cancelled' ? '#991b1b' : '#92400e'};">${r.status}</span>
+                                    </td>
+                                    <td style="padding:0.5rem;color:var(--text-muted);">${new Date(r.created_at).toLocaleDateString()}</td>
+                                </tr>
+                            `).join('');
+                        } else {
+                            tbody.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text-muted);text-align:center;">No referrals yet</td></tr>';
+                        }
+                    }
+                }
+            } catch (e) {
+                statusEl.textContent = 'Error loading referrals: ' + e.message;
+            }
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referralLinkInput');
+            if (!input.value) return;
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = event.target.closest('button');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            }).catch(() => {
+                input.select();
+                document.execCommand('copy');
+            });
+        }
+
         // ─── Funnels ──────────────────────────────────────────────────────────────
 
         async function loadFunnels() {
@@ -3935,6 +4136,116 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-save"></i> Save Funnel';
+            }
+        }
+
+        // ── Import Tools ──────────────────────────────────────────────────────
+
+        async function importGumroadCsv() {
+            const fileInput = document.getElementById('gumroadCsvFile');
+            const resultDiv = document.getElementById('gumroadImportResult');
+            const btn = document.getElementById('btnImportGumroad');
+
+            if (!fileInput.files.length) {
+                alert('Please select a CSV file first.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+            resultDiv.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('csv', fileInput.files[0]);
+
+                const res = await fetch('/api/admin/import/gumroad-csv', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': csrfToken },
+                    credentials: 'include',
+                    body: formData,
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    let html = `<div style="padding:1rem;background:#d1fae5;border-radius:8px;border:1px solid #6ee7b7;">
+                        <strong>Import complete!</strong> Imported <strong>${data.imported}</strong> products, skipped <strong>${data.skipped}</strong>.
+                    </div>`;
+                    if (data.errors && data.errors.length) {
+                        html += `<details style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);">
+                            <summary>${data.errors.length} row warning(s)</summary>
+                            <ul style="margin:0.5rem 0 0 1rem;">${data.errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </details>`;
+                    }
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">
+                        <strong>Import failed:</strong> ${data.error}
+                    </div>`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">Error: ${e.message}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Import Products';
+            }
+        }
+
+        async function importEmailList() {
+            const fileInput = document.getElementById('emailListCsvFile');
+            const listName = document.getElementById('emailListName').value.trim();
+            const resultDiv = document.getElementById('emailListImportResult');
+            const btn = document.getElementById('btnImportEmailList');
+
+            if (!fileInput.files.length) {
+                alert('Please select a CSV file first.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+            resultDiv.style.display = 'none';
+
+            try {
+                const url = '/api/admin/import/email-list' + (listName ? '?list_name=' + encodeURIComponent(listName) : '');
+                const formData = new FormData();
+                formData.append('csv', fileInput.files[0]);
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': csrfToken },
+                    credentials: 'include',
+                    body: formData,
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    let html = `<div style="padding:1rem;background:#d1fae5;border-radius:8px;border:1px solid #6ee7b7;">
+                        <strong>Import complete!</strong>
+                        Imported <strong>${data.imported}</strong> new subscribers &mdash;
+                        ${data.duplicates} duplicate(s) skipped, ${data.skipped} invalid row(s) skipped.
+                    </div>`;
+                    if (data.errors && data.errors.length) {
+                        html += `<details style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);">
+                            <summary>${data.errors.length} row warning(s)</summary>
+                            <ul style="margin:0.5rem 0 0 1rem;">${data.errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </details>`;
+                    }
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">
+                        <strong>Import failed:</strong> ${data.error}
+                    </div>`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">Error: ${e.message}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Import Subscribers';
             }
         }
     </script>
