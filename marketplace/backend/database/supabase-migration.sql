@@ -768,6 +768,21 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+-- Email capture for store visitor sign-ups
+CREATE TABLE IF NOT EXISTS store_subscribers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id UUID NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    name TEXT,
+    source TEXT DEFAULT 'storefront',
+    status TEXT DEFAULT 'active',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(store_id, email)
+);
+
+CREATE INDEX IF NOT EXISTS idx_store_subscribers_store ON store_subscribers(store_id);
+CREATE INDEX IF NOT EXISTS idx_store_subscribers_email ON store_subscribers(email);
+
 -- =====================================================
--- DONE. 42 tables created. "profiles" = app users.
+-- DONE. 43 tables created. "profiles" = app users.
 -- =====================================================

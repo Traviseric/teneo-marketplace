@@ -3,6 +3,7 @@ const { randomUUID } = require('crypto');
 const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
 const storeBuildService = require('../services/storeBuildService');
+const storeBuilderService = require('../services/storeBuilderService');
 const emailService = require('../services/emailService');
 const { isValidEmail } = require('../utils/validate');
 const db = require('../database/database');
@@ -70,39 +71,25 @@ router.post('/generate-and-render', async (req, res) => {
 // Persistence endpoints (require auth)
 // ──────────────────────────────────────────────────
 
-function generateSlug(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
 // POST /api/store-builder/save
 // Save a store config (and optionally rendered HTML) to the DB.
 // Body: { config, html?, slug? }
-// Returns: { success: true, storeId, slug }
+// Returns: { success: true, storeId, slug, url }
 router.post('/save', requireAuth, async (req, res) => {
   const { config, html, slug: providedSlug } = req.body;
   if (!config || !config.name) {
     return res.status(400).json({ error: 'config with name required' });
   }
 
-  const storeId = randomUUID();
-  const slug = providedSlug || generateSlug(config.name) + '-' + storeId.slice(0, 8);
   const userId = req.session.userId || req.session.user_id || null;
 
   try {
-    await db.run(
-      'INSERT INTO stores (id, user_id, slug, config, html, status) VALUES (?, ?, ?, ?, ?, ?)',
-      [storeId, userId, slug, JSON.stringify(config), html || null, 'draft']
-    );
+    const { storeId, slug, url } = await storeBuilderService.saveStore(config, html || null, userId, providedSlug || null);
 
     const products = (config.commerce && config.commerce.products) || [];
-    for (const product of products) {
-      await db.run(
-        'INSERT INTO store_products (id, store_id, name, price, description, type) VALUES (?, ?, ?, ?, ?, ?)',
-        [randomUUID(), storeId, product.name, product.price, product.description || '', product.type || 'digital']
-      );
-    }
+    await storeBuilderService.saveProducts(storeId, products);
 
-    res.json({ success: true, storeId, slug });
+    res.json({ success: true, storeId, slug, url });
   } catch (err) {
     if (err.message && err.message.includes('UNIQUE constraint')) {
       return res.status(409).json({ error: 'A store with this slug already exists.' });
@@ -169,6 +156,53 @@ router.get('/stores/:id/products', requireAuth, async (req, res) => {
       [store.id]
     );
     res.json({ success: true, products });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────
+// Subscriber capture (public — no auth required)
+// ──────────────────────────────────────────────────
+
+// POST /api/store-builder/stores/:id/subscribe
+// Capture an email address for a published store.
+// Body: { email, name? }
+// Returns: { success: true, subscribed: true } or { success: true, alreadySubscribed: true }
+router.post('/stores/:id/subscribe', async (req, res) => {
+  const { email, name } = req.body;
+  if (!email || !isValidEmail(email)) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+
+  try {
+    const store = await db.get(
+      "SELECT id FROM stores WHERE id = ? AND status = 'published'",
+      [req.params.id]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    const result = await storeBuilderService.addSubscriber(store.id, email, { name });
+    res.json({ success: true, subscribed: true, alreadySubscribed: result.alreadySubscribed || false });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/store-builder/stores/:id/subscribers
+// List subscribers for a store. Owner only.
+// Returns: { success: true, subscribers: [...] }
+router.get('/stores/:id/subscribers', requireAuth, async (req, res) => {
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT id FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    const subscribers = await storeBuilderService.listSubscribers(store.id);
+    res.json({ success: true, subscribers });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
