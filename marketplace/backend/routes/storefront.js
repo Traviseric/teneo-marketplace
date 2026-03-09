@@ -21,12 +21,41 @@ const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
+const axios = require('axios');
 const arxmintProvider = require('../services/arxmintProvider');
 const OrderService = require('../services/orderService');
 const emailService = require('../services/emailService');
 const fulfillmentService = require('../services/fulfillmentService');
 
 const orderService = new OrderService();
+
+// ---------------------------------------------------------------------------
+// BTC/USD rate cache — used to add sat pricing to catalog products
+// ---------------------------------------------------------------------------
+
+let _btcRateCache = { rate: null, fetchedAt: 0 };
+const BTC_RATE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+async function getBtcUsdRate() {
+  if (_btcRateCache.rate && Date.now() - _btcRateCache.fetchedAt < BTC_RATE_TTL_MS) {
+    return _btcRateCache.rate;
+  }
+  try {
+    const resp = await axios.get(
+      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+      { timeout: 5000 }
+    );
+    const rate = resp.data && resp.data.bitcoin && resp.data.bitcoin.usd;
+    if (rate) {
+      _btcRateCache = { rate, fetchedAt: Date.now() };
+      return rate;
+    }
+  } catch {
+    // CoinGecko unavailable — return cached value if we have one
+    if (_btcRateCache.rate) return _btcRateCache.rate;
+  }
+  return null;
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -229,12 +258,21 @@ router.get('/catalog', async (req, res) => {
       products = products.filter(p => p.active);
     }
 
+    // Enrich with sat pricing (best-effort; skipped if CoinGecko is unavailable)
+    const btcRate = await getBtcUsdRate();
+    if (btcRate) {
+      for (const product of products) {
+        product.price_sats = Math.ceil((product.price / 100) / btcRate * 1e8);
+      }
+    }
+
     const storeId = process.env.STORE_ID || 'openbazaar-default';
     const storeName = process.env.STORE_NAME || 'OpenBazaar Store';
 
     res.json({
       storeId,
       storeName,
+      btcUsdRate: btcRate || null,
       products,
       categories: extractCategories(products),
       updatedAt: new Date().toISOString(),
@@ -278,6 +316,11 @@ router.get('/product/:id', async (req, res) => {
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const btcRate = await getBtcUsdRate();
+    if (btcRate) {
+      product.price_sats = Math.ceil((product.price / 100) / btcRate * 1e8);
     }
 
     res.json(product);
@@ -408,7 +451,7 @@ router.post('/checkout', requireStorefrontApiKey, async (req, res) => {
  *   customerEmail?: string
  * }
  */
-router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, res) => {
+async function handleFulfill(req, res) {
   try {
     // Parse body — may arrive as raw buffer (for signature verification) or parsed JSON
     let body;
@@ -702,6 +745,10 @@ router.post('/fulfill', express.raw({ type: 'application/json' }), async (req, r
     console.error('[Fulfill] Error:', error);
     res.status(500).json({ error: 'Fulfillment failed' });
   }
-});
+}
+
+// Register /fulfill route using the named handler (also exported for /api/arxmint/webhook alias)
+router.post('/fulfill', express.raw({ type: 'application/json' }), handleFulfill);
 
 module.exports = router;
+module.exports.handleFulfill = handleFulfill;

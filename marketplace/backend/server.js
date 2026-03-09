@@ -97,6 +97,7 @@ const couponsRoutes = require('./routes/couponsRoutes');
 const emailTrackingRoutes = require('./routes/emailTracking');
 const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
+const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
 
@@ -189,6 +190,7 @@ const csrfExcludePaths = [
     '/api/lulu/webhook',
     '/api/crypto/btcpay/webhook', // BTCPay payment webhook
     '/api/storefront/fulfill',     // ArxMint fulfillment webhook
+    '/api/arxmint/webhook',        // ArxMint dedicated webhook alias
     '/api/webhooks/printful',      // Printful shipment/order webhooks
     '/webhooks', // Orchestrator webhooks
     '/api/auth/login',            // Magic link initiator — session created via GET verify
@@ -285,6 +287,8 @@ app.get('/store/:slug', async (req, res) => {
 
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);
+// ArxMint dedicated webhook alias — same handler as /api/storefront/fulfill
+app.post('/api/arxmint/webhook', express.raw({ type: 'application/json' }), handleArxMintWebhook);
 app.use('/api/webhooks', printfulWebhookRoutes);
 
 // Public certificate verification (separate mount so it doesn't need /api/courses prefix)

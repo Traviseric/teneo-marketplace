@@ -184,6 +184,22 @@ router.post('/create-order', async (req, res) => {
         }
 
         // ── Manual fallback: show wallet address + instructions ───────────────
+        // Build BIP21 URI for unified QR code (bitcoin: URI scheme, BIP-0021)
+        // Wallets that support Lightning will pick up the ?lightning= param automatically.
+        let bip21Uri = null;
+        if (paymentMethod === 'bitcoin' || paymentMethod === 'lightning') {
+            const btcAddress = process.env.BTC_ADDRESS || '';
+            const lightningAddress = process.env.LIGHTNING_ADDRESS || '';
+            if (btcAddress && btcAddress !== 'CONFIGURE_BTC_ADDRESS_IN_ENV') {
+                const label = encodeURIComponent(`Order #${orderId}`);
+                bip21Uri = `bitcoin:${btcAddress}?amount=${cryptoAmount}&label=${label}`;
+                // If a Lightning address (LNURL or bolt12) is configured, include it
+                if (lightningAddress && lightningAddress !== 'CONFIGURE_LIGHTNING_ADDRESS_IN_ENV') {
+                    bip21Uri += `&lightning=${encodeURIComponent(lightningAddress)}`;
+                }
+            }
+        }
+
         res.json({
             success: true,
             orderId,
@@ -191,6 +207,7 @@ router.post('/create-order', async (req, res) => {
             address: paymentAddress,
             amount: cryptoAmount,
             amountUsd: usdAmount,
+            bip21Uri,
             priceLockedAt: priceLockedAt.toISOString(),
             priceExpiresAt: priceExpiresAt.toISOString(),
             book: { id: bookId, title: bookTitle || bookId },

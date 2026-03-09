@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Checkout - Asymmetry Books</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSr7FurrTghIhDnDKRcVW9SNmz4DIPK7bZMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -271,6 +272,38 @@
         .error-message a {
             color: #991B1B;
         }
+
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.25rem 0;
+        }
+
+        .qr-container canvas, .qr-container img {
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background: #fff;
+        }
+
+        .qr-label {
+            font-size: 0.8rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+        }
+
+        .copy-bip21-btn {
+            margin-top: 0;
+            background: #374151;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            width: auto;
+        }
+
+        .copy-bip21-btn:hover {
+            background: #111827;
+        }
     </style>
 </head>
 <body>
@@ -334,6 +367,14 @@
 
         <div id="payment-details">
             <h2>Payment Instructions</h2>
+
+            <div id="qr-section" class="qr-container" style="display:none">
+                <div id="qr-code"></div>
+                <p class="qr-label" id="qr-label">Scan with your Bitcoin wallet</p>
+                <button type="button" class="copy-bip21-btn" id="copy-bip21-btn"
+                        aria-label="Copy BIP21 URI to clipboard"
+                        onclick="copyBip21()">Copy Payment URI</button>
+            </div>
 
             <div class="payment-address">
                 <p><strong>Send to:</strong></p>
@@ -461,56 +502,107 @@
             }
         });
 
+        let _currentBip21Uri = null;
+
         async function createOrder(paymentMethod, email) {
             // Clear any previous order error on retry
             const orderErrorEl = document.getElementById('orderError');
             orderErrorEl.style.display = 'none';
             document.getElementById('orderErrorText').textContent = '';
+            _currentBip21Uri = null;
 
             try {
-                // For MVP, create a simple order ID
-                const orderId = 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                const response = await fetch('/api/crypto/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bookId,
+                        bookTitle: document.getElementById('book-title').textContent,
+                        email,
+                        paymentMethod,
+                        brandId: brand,
+                    })
+                });
 
-                // Get payment address (placeholder for now)
-                const addresses = {
-                    'bitcoin': 'CONFIGURE_PRODUCTION_BTC_ADDRESS',
-                    'lightning': 'CONFIGURE_LIGHTNING_ADDRESS',
-                    'monero': 'CONFIGURE_MONERO_ADDRESS'
-                };
+                const data = await response.json();
 
-                const amounts = {
-                    'bitcoin': document.getElementById('btc-price').textContent,
-                    'lightning': document.getElementById('btc-price').textContent,
-                    'monero': document.getElementById('xmr-price').textContent
-                };
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Order creation failed');
+                }
 
-                // Display payment details
+                // If BTCPay returned a hosted checkout URL, redirect there
+                if (data.btcpayCheckoutUrl) {
+                    window.location.href = data.btcpayCheckoutUrl;
+                    return;
+                }
+
+                // Manual wallet flow — display address + instructions
+                const address = data.address || '';
+                const amount = data.amount || '';
+                const orderId = data.orderId || '';
+                const methodLabel = { bitcoin: 'Bitcoin', lightning: 'Lightning Network', monero: 'Monero' };
+
                 document.getElementById('payment-details').style.display = 'block';
                 const addrEl = document.getElementById('payment-address');
-                addrEl.textContent = addresses[paymentMethod];
-                const methodLabel = { bitcoin: 'Bitcoin', lightning: 'Lightning Network', monero: 'Monero' };
+                addrEl.textContent = address;
                 addrEl.setAttribute('aria-label', (methodLabel[paymentMethod] || 'Payment') + ' address');
-                document.getElementById('amount').textContent = amounts[paymentMethod];
+                document.getElementById('amount').textContent = `${amount} ${paymentMethod.toUpperCase()}`;
                 document.getElementById('order-id').textContent = orderId;
 
                 // Show status
                 document.getElementById('status').style.display = 'block';
                 document.getElementById('status-text').textContent = 'Awaiting payment...';
 
-                // In production, this would call the backend API:
-                // const response = await fetch('/api/crypto/create-order', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ bookId, email, paymentMethod })
-                // });
+                // BIP21 unified QR code (bitcoin: URI with optional lightning= param)
+                const bip21Uri = data.bip21Uri;
+                if (bip21Uri && typeof QRCode !== 'undefined') {
+                    _currentBip21Uri = bip21Uri;
+                    const qrSection = document.getElementById('qr-section');
+                    const qrCodeEl = document.getElementById('qr-code');
+                    qrCodeEl.innerHTML = ''; // clear previous QR
+                    new QRCode(qrCodeEl, {
+                        text: bip21Uri,
+                        width: 220,
+                        height: 220,
+                        correctLevel: QRCode.CorrectLevel.M,
+                    });
+                    const hasLightning = bip21Uri.includes('lightning=');
+                    document.getElementById('qr-label').textContent = hasLightning
+                        ? 'Scan with any Bitcoin or Lightning wallet (BIP21)'
+                        : 'Scan with your Bitcoin wallet';
+                    qrSection.style.display = 'flex';
+                } else if (address) {
+                    // Fallback: plain address QR (no BIP21)
+                    const qrSection = document.getElementById('qr-section');
+                    const qrCodeEl = document.getElementById('qr-code');
+                    qrCodeEl.innerHTML = '';
+                    if (typeof QRCode !== 'undefined') {
+                        new QRCode(qrCodeEl, { text: address, width: 220, height: 220 });
+                        document.getElementById('qr-label').textContent = 'Scan with your Bitcoin wallet';
+                        qrSection.style.display = 'flex';
+                    }
+                }
 
             } catch (error) {
-                // Show inline error instead of alert()
                 const errorEl = document.getElementById('orderError');
-                document.getElementById('orderErrorText').textContent = 'Unable to create order. Please try again or contact support.';
+                document.getElementById('orderErrorText').textContent =
+                    error.message && !error.message.includes('fetch')
+                        ? error.message
+                        : 'Unable to create order. Please try again or contact support.';
                 errorEl.style.display = 'block';
                 errorEl.scrollIntoView({ behavior: 'smooth' });
             }
+        }
+
+        function copyBip21() {
+            if (!_currentBip21Uri) return;
+            const btn = document.getElementById('copy-bip21-btn');
+            navigator.clipboard.writeText(_currentBip21Uri).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy Payment URI'; }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy BIP21 URI:', err);
+            });
         }
 
         function copyAddress() {
