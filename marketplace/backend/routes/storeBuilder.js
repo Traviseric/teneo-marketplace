@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const path = require('path');
 const { randomUUID } = require('crypto');
 const { buildStoreFromBrief, parseEditIntent, deepMerge } = require('../services/aiStoreBuilderService');
 const { renderStorePage } = require('../services/storeRendererService');
@@ -11,6 +12,8 @@ const { requireAuth } = require('./auth');
 const { authenticateAdmin } = require('../middleware/auth');
 const { requireNip98Auth } = require('../auth/nip98');
 
+const TIERS_CONFIG = require('../config/store-builder-tiers.json');
+
 /*
  * Managed-store intake schema
  * required: business_brief (>=50 chars), contact_email, tier
@@ -19,6 +22,12 @@ const { requireNip98Auth } = require('../auth/nip98');
  */
 const VALID_TIERS = ['builder', 'pro', 'white_label'];
 const BRIEF_MIN_LENGTH = 50;
+
+// GET /api/store-builder/tiers
+// Returns the available managed-service tiers and pricing (public, no auth required)
+router.get('/tiers', (req, res) => {
+  res.json({ success: true, tiers: TIERS_CONFIG.tiers });
+});
 
 // POST /api/store-builder/generate
 // Body: { "brief": "I sell soy candles online, earthy aesthetic" }
@@ -349,8 +358,8 @@ router.post('/stores/:id/unpublish', requireAuth, async (req, res) => {
 
 // POST /api/store-builder/intake
 // Production-facing paid entry point for managed store builds.
-// Validates the intake payload, creates a store_builds record, and sends
-// an acknowledgment email to the submitter.
+// Validates the intake payload, creates a store_builds record, creates a Stripe
+// Checkout session, and returns the payment URL.
 router.post('/intake', async (req, res) => {
   const {
     business_brief,
@@ -385,6 +394,8 @@ router.post('/intake', async (req, res) => {
     return res.status(400).json({ error: 'Validation failed', fields: errors });
   }
 
+  const tierConfig = TIERS_CONFIG.tiers.find(t => t.id === tier);
+
   const intakePayload = {
     business_brief: business_brief.trim(),
     contact_email,
@@ -399,7 +410,55 @@ router.post('/intake', async (req, res) => {
   try {
     const buildId = await storeBuildService.createBuild(intakePayload, tier);
 
+    // Create Stripe Checkout session if Stripe is configured
+    let paymentUrl = null;
+    if (process.env.STRIPE_SECRET_KEY && tierConfig) {
+      try {
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        const baseUrl = process.env.SITE_URL || process.env.BASE_URL || 'https://openbazaar.ai';
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          mode: 'payment',
+          customer_email: contact_email,
+          line_items: [
+            {
+              price_data: {
+                currency: 'usd',
+                unit_amount: tierConfig.price_usd * 100,
+                product_data: {
+                  name: `AI Store Builder — ${tierConfig.name}`,
+                  description: tierConfig.description,
+                },
+              },
+              quantity: 1,
+            },
+          ],
+          metadata: {
+            storeBuilderBuildId: buildId,
+            tier,
+            contact_email,
+          },
+          success_url: `${baseUrl}/store-builder-intake.html?payment=success&build_id=${buildId}`,
+          cancel_url: `${baseUrl}/store-builder-intake.html?payment=cancelled&build_id=${buildId}`,
+        });
+
+        paymentUrl = session.url;
+
+        // Persist the session ID so the webhook can look up the build
+        await db.run(
+          "UPDATE store_builds SET payment_session_id = ? WHERE id = ?",
+          [session.id, buildId]
+        );
+      } catch (stripeErr) {
+        console.warn('[Intake] Stripe session creation failed:', stripeErr.message);
+        // Non-fatal — build is created, payment can be handled manually
+      }
+    }
+
     // Fire-and-forget acknowledgment email — non-fatal
+    const paymentLine = paymentUrl
+      ? `<li><strong>Payment link:</strong> <a href="${paymentUrl}">${paymentUrl}</a></li>`
+      : '';
     emailService.sendEmail({
       to: contact_email,
       subject: 'Your AI store build request received',
@@ -407,11 +466,13 @@ router.post('/intake', async (req, res) => {
 <p>We've received your AI store build request. Here are your details:</p>
 <ul>
   <li><strong>Build ID:</strong> ${buildId}</li>
-  <li><strong>Tier:</strong> ${tier}</li>
+  <li><strong>Tier:</strong> ${tier}${tierConfig ? ` — $${tierConfig.price_usd}` : ''}</li>
   <li><strong>Estimated delivery:</strong> 48 hours</li>
+  ${paymentLine}
 </ul>
+${paymentUrl ? '<p><strong>Next step:</strong> Complete your payment using the link above to start your build.</p>' : ''}
 <p>We'll be in touch with updates. Keep your Build ID for reference.</p>`,
-      text: `Your AI store build request was received.\nBuild ID: ${buildId}\nTier: ${tier}\nEstimated delivery: 48h`,
+      text: `Your AI store build request was received.\nBuild ID: ${buildId}\nTier: ${tier}\nEstimated delivery: 48h${paymentUrl ? '\nPayment link: ' + paymentUrl : ''}`,
     }).catch(err => {
       console.warn('[Intake] Acknowledgment email failed:', err.message);
     });
@@ -421,6 +482,7 @@ router.post('/intake', async (req, res) => {
       build_id: buildId,
       status: 'intake',
       estimated_delivery: '48h',
+      ...(paymentUrl && { payment_url: paymentUrl }),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

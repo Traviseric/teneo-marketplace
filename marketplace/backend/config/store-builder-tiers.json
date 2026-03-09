@@ -1,0 +1,42 @@
+{
+  "tiers": [
+    {
+      "id": "builder",
+      "name": "Builder",
+      "price_usd": 97,
+      "description": "AI-generated store, 1 revision, delivered in 48h",
+      "features": [
+        "Store config generation",
+        "1 product catalog",
+        "Email capture",
+        "1 revision"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price_usd": 297,
+      "description": "Full store with funnel + email sequence, 3 revisions",
+      "features": [
+        "Everything in Builder",
+        "Funnel page",
+        "3-email sequence",
+        "3 revisions",
+        "30-day support"
+      ]
+    },
+    {
+      "id": "white_label",
+      "name": "White-label",
+      "price_usd": 997,
+      "description": "Custom-branded platform deployment",
+      "features": [
+        "Everything in Pro",
+        "Custom domain",
+        "Brand kit",
+        "Operator dashboard",
+        "Unlimited revisions for 90 days"
+      ]
+    }
+  ]
+}

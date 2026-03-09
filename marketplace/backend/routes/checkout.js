@@ -352,6 +352,19 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 async function handleCheckoutCompleted(session) {
   console.log('Processing successful checkout:', session.id);
 
+  // Route store builder payments — update build status to 'paid'
+  if (session.metadata && session.metadata.storeBuilderBuildId) {
+    const storeBuildService = require('../services/storeBuildService');
+    const buildId = session.metadata.storeBuilderBuildId;
+    try {
+      await storeBuildService.updateStatus(buildId, 'paid', `Stripe session ${session.id}`);
+      console.log(`[StoreBuilder] Build ${buildId} marked as paid via Stripe session ${session.id}`);
+    } catch (err) {
+      console.error(`[StoreBuilder] Failed to mark build ${buildId} as paid:`, err.message);
+    }
+    return;
+  }
+
   // Route mixed orders (digital + physical) to the dedicated mixed fulfillment handler
   if (session.metadata && session.metadata.orderType === 'mixed') {
     console.log('Mixed order detected, routing to processMixedOrder');

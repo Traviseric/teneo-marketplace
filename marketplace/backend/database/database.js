@@ -708,6 +708,13 @@ function initializeSqliteDatabase(db) {
         });
     }
 
+    // Store builds migration: add payment_session_id for Stripe checkout tracking (idempotent)
+    db.run('ALTER TABLE store_builds ADD COLUMN payment_session_id TEXT', (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding store_builds.payment_session_id:', err);
+        }
+    });
+
     // License keys table (content protection for software products)
     db.exec(`
         CREATE TABLE IF NOT EXISTS license_keys (

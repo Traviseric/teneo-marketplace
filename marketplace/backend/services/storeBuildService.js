@@ -1,11 +1,12 @@
 const db = require('../database/database');
 const { randomUUID } = require('crypto');
 
-const VALID_STATUSES = ['intake', 'planning', 'building', 'qa', 'delivered', 'failed'];
+const VALID_STATUSES = ['intake', 'paid', 'planning', 'building', 'qa', 'delivered', 'failed'];
 
 // Valid forward transitions (any status can also transition to 'failed')
 const ALLOWED_TRANSITIONS = {
-  intake: ['planning', 'failed'],
+  intake: ['paid', 'planning', 'failed'],
+  paid: ['planning', 'failed'],
   planning: ['building', 'failed'],
   building: ['qa', 'failed'],
   qa: ['delivered', 'failed'],

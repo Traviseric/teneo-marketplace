@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS store_builds (
   status TEXT NOT NULL DEFAULT 'intake',
   store_id TEXT REFERENCES stores(id),
   tier TEXT,
+  payment_session_id TEXT,
   operator_notes TEXT,
   error_message TEXT,
   created_at TEXT DEFAULT (datetime('now')),
