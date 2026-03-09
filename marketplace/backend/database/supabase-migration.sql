@@ -783,6 +783,21 @@ CREATE TABLE IF NOT EXISTS store_subscribers (
 CREATE INDEX IF NOT EXISTS idx_store_subscribers_store ON store_subscribers(store_id);
 CREATE INDEX IF NOT EXISTS idx_store_subscribers_email ON store_subscribers(email);
 
+-- Product versions — tracks file updates for digital products
+-- Buyers always receive the latest version via their download link.
+CREATE TABLE IF NOT EXISTS product_versions (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    product_id TEXT NOT NULL,
+    brand_id TEXT NOT NULL,
+    version TEXT NOT NULL,
+    file_path TEXT,
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(product_id, brand_id);
+CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at DESC);
+
 -- =====================================================
--- DONE. 43 tables created. "profiles" = app users.
+-- DONE. 44 tables created. "profiles" = app users.
 -- =====================================================
