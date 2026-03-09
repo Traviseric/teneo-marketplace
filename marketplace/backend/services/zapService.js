@@ -22,6 +22,8 @@ const { utf8ToBytes, bytesToHex } = require('@noble/hashes/utils');
 const NIP57_ZAP_RECEIPT_KIND = 9735;
 const NIP57_ZAP_REQUEST_KIND = 9734;
 
+const ZAP_POLL_LOOKBACK_SECONDS = 300; // 5-minute lookback for zap receipts
+
 // ---------------------------------------------------------------------------
 // Nostr cryptography helpers (reused from nostrService pattern)
 // ---------------------------------------------------------------------------
@@ -225,7 +227,7 @@ async function pollForZapReceipt(relayUrl, zapRequestEventId, timeoutMs = 30000)
     const finish = (result) => {
       if (settled) return;
       settled = true;
-      try { if (ws && ws.readyState === WebSocket.OPEN) ws.close(); } catch (_) {}
+      try { if (ws && ws.readyState === WebSocket.OPEN) ws.close(); } catch (e) { console.debug('[zapService] WS close error (expected):', e.message); }
       resolve(result);
     };
 
@@ -245,13 +247,13 @@ async function pollForZapReceipt(relayUrl, zapRequestEventId, timeoutMs = 30000)
 
     ws.on('open', () => {
       const subId = 'zap_' + Date.now();
-      const since = Math.floor(Date.now() / 1000) - 300; // look back 5 minutes
+      const since = Math.floor(Date.now() / 1000) - ZAP_POLL_LOOKBACK_SECONDS;
       const req = JSON.stringify(['REQ', subId, {
         kinds: [NIP57_ZAP_RECEIPT_KIND],
         '#e': [zapRequestEventId],
         since,
       }]);
-      try { ws.send(req); } catch (_) {}
+      try { ws.send(req); } catch (e) { console.error('[zapService] WS send failed — zap subscription lost:', e.message); }
     });
 
     ws.on('message', (data) => {
@@ -269,7 +271,7 @@ async function pollForZapReceipt(relayUrl, zapRequestEventId, timeoutMs = 30000)
             finish(event);
           }
         }
-      } catch (_) {}
+      } catch (e) { console.error('[zapService] Unexpected error in relay message handler:', e.message); }
     });
   });
 }
