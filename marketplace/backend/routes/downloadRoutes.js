@@ -13,10 +13,16 @@ const db = require('../database/database');
 // Initialize order service
 const orderService = new OrderService();
 
+// In production (read-only filesystem), store uploaded PDFs in /tmp; configurable via BOOKS_DIR
+const defaultBooksDir = process.env.NODE_ENV === 'production'
+  ? '/tmp/books'
+  : path.join(__dirname, '../books');
+const booksDir = process.env.BOOKS_DIR || defaultBooksDir;
+
 // Configure multer for PDF uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../books'));
+    cb(null, booksDir);
   },
   filename: (req, file, cb) => {
     // Use bookId from request body as filename — sanitize to prevent path traversal
@@ -107,7 +113,7 @@ router.get('/:token', async (req, res) => {
     }
     
     // Check if a newer versioned file exists for this product
-    let pdfPath = path.join(__dirname, '../books', `${order.book_id}.pdf`);
+    let pdfPath = path.join(booksDir, `${order.book_id}.pdf`);
     try {
       const latestVersion = await db.get(
         `SELECT file_path FROM product_versions
@@ -231,8 +237,6 @@ router.post('/upload', authenticateAdmin, upload.single('pdf'), async (req, res)
 // GET /api/download/list - List uploaded PDFs (requires auth)
 router.get('/list', authenticateAdmin, async (req, res) => {
   try {
-    const booksDir = path.join(__dirname, '../books');
-    
     // Create directory if it doesn't exist
     try {
       await fs.access(booksDir);
@@ -277,7 +281,7 @@ router.delete('/:bookId', authenticateAdmin, async (req, res) => {
   try {
     const { bookId } = req.params;
     const safeBookId = path.basename(bookId).replace(/[^a-zA-Z0-9_-]/g, '_');
-    const filePath = path.join(__dirname, '../books', `${safeBookId}.pdf`);
+    const filePath = path.join(booksDir, `${safeBookId}.pdf`);
     
     try {
       await fs.access(filePath);

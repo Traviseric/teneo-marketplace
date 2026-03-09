@@ -29,6 +29,13 @@ function validateEnvironment() {
         }
     }
     
+    // Warn if SQLite is used in production (non-persistent on most PaaS platforms)
+    if (!process.env.DATABASE_URL && !process.env.SUPABASE_DB_URL) {
+        const dbPath = process.env.DATABASE_PATH || '/tmp/marketplace.db';
+        console.warn(`⚠️  WARNING: Running SQLite in production (${dbPath}). Data will be lost on container restart.`);
+        console.warn('   Set DATABASE_URL (PostgreSQL) for persistent storage in production.');
+    }
+
     // Warn about optional but important variables
     const importantVars = [
         'STRIPE_SECRET_KEY',

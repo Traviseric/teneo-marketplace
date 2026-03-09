@@ -5,7 +5,11 @@ const path = require('path');
 
 class AuditService {
     constructor() {
-        this.auditLogPath = path.join(__dirname, '../logs/admin-audit.log');
+        // In production (read-only filesystem), default to /tmp; configurable via AUDIT_LOG_PATH
+        const defaultLogPath = process.env.NODE_ENV === 'production'
+            ? '/tmp/admin-audit.log'
+            : path.join(__dirname, '../logs/admin-audit.log');
+        this.auditLogPath = process.env.AUDIT_LOG_PATH || defaultLogPath;
         this.initializeLogDirectory();
     }
 

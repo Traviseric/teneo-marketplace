@@ -2,7 +2,12 @@ const fs = require('fs');
 const path = require('path');
 
 const isPostgres = Boolean(process.env.DATABASE_URL || process.env.SUPABASE_DB_URL);
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'marketplace.db');
+// In production containers (Render, Vercel) the app directory is read-only.
+// Fall back to /tmp which is always writable, unless DATABASE_PATH is explicitly set.
+const defaultDbPath = process.env.NODE_ENV === 'production'
+    ? '/tmp/marketplace.db'
+    : path.join(__dirname, 'marketplace.db');
+const dbPath = process.env.DATABASE_PATH || defaultDbPath;
 
 function readSchemaIfExists(filePath) {
     return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';

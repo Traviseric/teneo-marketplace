@@ -11,6 +11,7 @@
  */
 
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 
 // Simple in-memory cache for LLM responses (keyed by prompt)
@@ -547,11 +548,9 @@ class AIPageBuilder {
     const dir = path.dirname(filePath);
 
     // Ensure directory exists
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    await fsPromises.mkdir(dir, { recursive: true });
 
-    fs.writeFileSync(filePath, html, 'utf8');
+    await fsPromises.writeFile(filePath, html, 'utf8');
 
     // Register route in Express (would need to add route dynamically or restart)
     // For now, just return the file path
