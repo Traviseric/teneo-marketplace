@@ -1,0 +1,161 @@
+{
+  "success": true,
+  "next_box": "CONDUCTOR",
+  "context": {
+    "audit_type": "code_quality",
+    "findings": [
+      {
+        "severity": "critical",
+        "category": "errors",
+        "file": "marketplace/backend/services/zapService.js",
+        "line": 228,
+        "description": "Empty catch blocks silently swallow errors: `catch (_) {}` appears at lines 228, 254, 272. Debugging is impossible when errors are silently ignored.",
+        "recommendation": "At minimum log the error: `catch (e) { console.error('zapService context:', e); }`. For WebSocket close errors, log at debug level."
+      },
+      {
+        "severity": "critical",
+        "category": "errors",
+        "file": "marketplace/backend/services/storeBuilderService.js",
+        "line": 117,
+        "description": "Empty catch blocks `catch (_) {}` at lines 117, 138, 173 suppress errors silently during store-building operations.",
+        "recommendation": "Log errors with context. Use `catch (e) { logger.error('storeBuilderService failed:', e); throw e; }` unless the failure is genuinely ignorable."
+      },
+      {
+        "severity": "critical",
+        "category": "errors",
+        "file": "marketplace/backend/routes/checkout.js",
+        "line": 559,
+        "description": "Unhandled promise rejections using `.catch(() => {})` pattern at lines 559, 420, 510. `await orderService.failOrder(orderId, error.message).catch(() => {})` silently ignores failures when marking orders failed.",
+        "recommendation": "Replace with `.catch(err => console.error('Failed to update order status:', orderId, err))` to at minimum log the secondary failure."
+      },
+      {
+        "severity": "critical",
+        "category": "patterns",
+        "file": "marketplace/backend/routes/checkout.js",
+        "line": 38,
+        "description": "Magic numbers scattered throughout: `windowMs: 60 * 60 * 1000` (rate limit window), `Math.round((usdAmount / 60000) * 1e8)` (hardcoded BTC price estimate of $60k), `windowMs: 60 * 1000, max: 30` at line 1022. The BTC price hardcode is especially dangerous.",
+        "recommendation": "Extract to named constants at top of file: `const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; const CHECKOUT_RATE_LIMIT_MAX = 10;`. Remove hardcoded BTC price \u2014 fetch from live API or config."
+      },
+      {
+        "severity": "critical",
+        "category": "patterns",
+        "file": "marketplace/backend/routes/cryptoCheckout.js",
+        "line": 80,
+        "description": "DB helper functions `dbGet`, `dbAll`, `dbRun` are copy-pasted identically in cryptoCheckout.js (lines 80-94) and courseRoutes.js (lines 35-58) and adminRoutes.js. This duplication is a maintenance hazard.",
+        "recommendation": "Create `marketplace/backend/services/databaseHelper.js` with promisified wrappers. Import everywhere instead of redefining."
+      },
+      {
+        "severity": "high",
+        "category": "dead_code",
+        "file": "marketplace/backend/services/arxmintService.js",
+        "line": 38,
+        "description": "Core L402 functionality marked TODO and unimplemented: 'TODO: port from C:\\code\\arxmint\\app\\api\\l402\\route.ts' and 'TODO: implement once ArxMint SDK is available' at lines 38, 41, 61, 64, 83, 86. Methods exist as stubs that throw at runtime.",
+        "recommendation": "Either implement or remove stubs entirely. If planned, document in docs/PLANNED_FEATURES.md and remove the throwing stubs to prevent silent runtime failures."
+      },
+      {
+        "severity": "high",
+        "category": "dead_code",
+        "file": "marketplace/backend/routes/nft.js",
+        "line": 237,
+        "description": "NFT smart contract calls stubbed with TODOs at lines 237, 296, 436: 'TODO: Call smart contract when deployed'. These are user-facing features that silently do nothing.",
+        "recommendation": "Return explicit 501 Not Implemented responses or remove the routes until the feature is ready."
+      },
+      {
+        "severity": "high",
+        "category": "patterns",
+        "file": "marketplace/backend/routes/checkout.js",
+        "line": 1,
+        "description": "1000+ console.log calls across 102+ files with no structured logging. No timestamps, severity levels, or correlation IDs. Critical payment events (Stripe webhooks, order creation) use the same channel as debug prints.",
+        "recommendation": "Implement Winston or Pino logger with log levels (error/warn/info/debug). Replace console.log in routes/services with logger.info(). Add request correlation IDs for tracing."
+      },
+      {
+        "severity": "high",
+        "category": "patterns",
+        "file": "marketplace/backend/services/emailService.js",
+        "line": 1,
+        "description": "emailService.js is 1151 lines. checkout.js is 1077 lines. storefront.js is 932 lines. adminRoutes.js is 1120 lines. Functions within these files exceed 100 lines with deeply nested conditionals.",
+        "recommendation": "Break emailService.js into transactional/, marketing/, and template/ modules. Extract checkout business logic to a dedicated checkoutService. Target <200 lines per file, <50 lines per function."
+      },
+      {
+        "severity": "high",
+        "category": "errors",
+        "file": "marketplace/backend/routes/adminRoutes.js",
+        "line": 241,
+        "description": "Inconsistent error response formats across routes. adminRoutes returns `{error: '...'}` without `success` field (line 241). checkout.js returns `{success: false, error: '...'}` OR `{success: false, stripeDown: true, fallbackUrl: '...'}`. storeBuilder returns `{error: '...'}`. Clients must handle multiple shapes.",
+        "recommendation": "Standardize to `{success: boolean, code: string, message: string, data?: object}` with an error code enum. Create a `sendError(res, code, message)` helper."
+      },
+      {
+        "severity": "medium",
+        "category": "errors",
+        "file": "marketplace/backend/routes/checkout.js",
+        "line": 88,
+        "description": "Missing input validation: `format` parameter from user not validated against allowed formats before catalog lookup. Missing schema validation at route entry points throughout.",
+        "recommendation": "Add Zod or Joi schema validation at route handlers. Example: `const schema = z.object({ format: z.enum(['pdf','epub','print']) })`."
+      },
+      {
+        "severity": "medium",
+        "category": "errors",
+        "file": "marketplace/backend/routes/adminRoutes.js",
+        "line": 26,
+        "description": "Race condition in lazy Stripe initialization: `let _stripe = null; if (!_stripe) { _stripe = require('stripe')(key); }` \u2014 concurrent requests can trigger duplicate initialization. Same pattern in aiDiscoveryService.js.",
+        "recommendation": "Use a module-level promise: `const stripePromise = createStripeClient(); async function getStripe() { return stripePromise; }`"
+      },
+      {
+        "severity": "medium",
+        "category": "errors",
+        "file": "marketplace/backend/routes/cryptoCheckout.js",
+        "line": 99,
+        "description": "Weak environment variable fallbacks: `process.env.BTC_ADDRESS || 'CONFIGURE_BTC_ADDRESS_IN_ENV'` and similar for Lightning address. In misconfigured deployments, payments would be sent to placeholder string.",
+        "recommendation": "Fail fast in production: `if (!process.env.BTC_ADDRESS) throw new Error('BTC_ADDRESS env var required')`. Validate all payment-critical env vars at startup."
+      },
+      {
+        "severity": "medium",
+        "category": "tests",
+        "file": "marketplace/backend/routes/",
+        "line": 1,
+        "description": "41 route files in routes/ but only ~8-10 have associated tests. Critical payment routes checkout.js, cryptoCheckout.js, storefront.js lack comprehensive test coverage. ~50 service files, only ~5 have tests.",
+        "recommendation": "Add Jest tests for all payment-critical routes. Aim for >80% coverage on checkout.js, cryptoCheckout.js, storefront.js, and auth.js. Add integration tests for Stripe webhook handlers."
+      },
+      {
+        "severity": "medium",
+        "category": "patterns",
+        "file": "marketplace/backend/database/database.js",
+        "line": 1,
+        "description": "Mixed callback and Promise patterns throughout codebase. database.js exports callback-based API; routes manually wrap in Promises; services use async/await directly. Inconsistency makes control flow hard to follow and error-prone.",
+        "recommendation": "Promisify the database layer once in databaseHelper.js and use async/await consistently everywhere."
+      },
+      {
+        "severity": "low",
+        "category": "dead_code",
+        "file": "marketplace/backend/routes/_archive/checkoutProduction.js",
+        "line": 1,
+        "description": "Archive directory contains 581-line checkoutProduction.js and other stale files. Commented-out NFT route in server.js (line 101): `// const nftRoutes = require('./routes/nft')`.",
+        "recommendation": "Move _archive/ contents to git history with a tag. Remove commented-out imports in server.js."
+      },
+      {
+        "severity": "low",
+        "category": "patterns",
+        "file": "marketplace/backend/services/",
+        "line": 1,
+        "description": "Inconsistent file naming: `database-service.js` (kebab-case) vs `orderService.js` (camelCase) vs `aiDiscoveryService.js`. DB column snake_case mixed with JS object camelCase without consistent mapping layer.",
+        "recommendation": "Adopt camelCase for all JS files. Add a DB result mapper to convert snake_case columns to camelCase properties at the database layer."
+      },
+      {
+        "severity": "low",
+        "category": "dead_code",
+        "file": "marketplace/backend/services/zapService.js",
+        "line": 248,
+        "description": "Magic number in zapService.js line 248: `Math.floor(Date.now() / 1000) - 300` (5-minute lookback hardcoded). In storefront.js line 38: `BTC_RATE_TTL_MS = 5 * 60 * 1000` is named but inline.",
+        "recommendation": "Extract to named constants: `const ZAP_POLL_LOOKBACK_SECONDS = 300; const BTC_RATE_CACHE_TTL_MS = 5 * 60 * 1000;`"
+      }
+    ],
+    "severity_counts": {
+      "critical": 5,
+      "high": 5,
+      "medium": 5,
+      "low": 3
+    },
+    "summary": "The openbazaar-ai backend (Node.js/Express, JavaScript, SQLite) has 18 code quality issues across 4 severity levels. The most urgent are: (1) silent error swallowing in empty catch blocks across payment-critical services, (2) hardcoded BTC price estimate ($60k) in checkout.js that will cause incorrect pricing, (3) copy-pasted database helper functions creating a maintenance hazard, and (4) unimplemented L402/NFT stubs that throw at runtime. High-priority improvements include replacing 1000+ unstructured console.log calls with a structured logger, breaking up 1000+ line files, and standardizing error response formats. Test coverage is critically low \u2014 only ~20% of route and service files have tests, with no coverage on the most important payment routes. Quick wins: add error logging to empty catch blocks (30 min), extract magic numbers to constants (1 hr), create centralized databaseHelper.js (1 hr)."
+  },
+  "_cache_key": "fe1e7f4fa7e02300_78044149f4df-dirty-7f0ef28c_6c1dcdd097b3"
+}

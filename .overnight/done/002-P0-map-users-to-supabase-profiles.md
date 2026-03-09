@@ -1,50 +1,52 @@
 ---
 id: 2
-title: "Map code expecting 'users' table onto Supabase 'profiles'"
+title: "Map users table references to Supabase profiles"
 priority: P0
 severity: critical
 status: completed
-source: AGENT_TASKS.md
-file: marketplace/backend/database/
+source: project_declared
+file: marketplace/backend/
 line: null
-created: "2026-03-09T00:00:00"
+created: "2026-03-09T21:00:00"
 execution_hint: sequential
 context_group: supabase_migration
-group_reason: "Supabase migration group — tasks 002-003 both affect DB adapter and auth paths"
+group_reason: "Supabase DB adapter and schema alignment"
 ---
 
-# Map Code Expecting 'users' Table onto Supabase 'profiles'
+# Map users table references to Supabase profiles
 
 **Priority:** P0 (critical)
-**Source:** AGENT_TASKS.md Phase 0 production deployment
-**Location:** marketplace/backend/database/, marketplace/backend/auth/
+**Source:** project_declared (AGENT_TASKS.md Phase 0 item)
+**Location:** marketplace/backend/ (database adapter, auth routes)
 
 ## Problem
 
-The codebase was originally built against a `users` table in SQLite. Supabase uses `profiles` (linked to `auth.users` via FK). The DB adapter has partial mapping but some routes/services may still query `users` directly or expect the `users` table to exist.
+The codebase was originally built against a SQLite `users` table. Supabase uses `auth.users` and a public `profiles` table (created by `supabase-migration.sql`). Any code that directly queries or references `users` instead of going through the DB adapter's profile methods will fail silently or crash in production.
 
-When the production backend connects to Supabase and a query hits `users` instead of `profiles`, it will fail with a table-not-found error, breaking auth, checkout, and order flows.
+This is a P0 blocking item: production Supabase queries will return empty results or errors if the table mapping is wrong.
+
+AGENT_TASKS.md: `[P0] IMPLEMENT: Map code that expects users onto Supabase profiles where needed`
 
 ## How to Fix
 
-1. Grep for all references to `users` table in routes/services:
-   ```bash
-   grep -rn "FROM users\|INTO users\|UPDATE users\|JOIN users\|table.*users" marketplace/backend/
+1. Search for all direct `users` table references in the codebase:
    ```
-2. For each hit, determine if it should map to `profiles` in Supabase mode
-3. Update the DB adapter (`marketplace/backend/database/`) to translate `users` → `profiles` queries OR update the queries directly to use `profiles`
-4. Check auth routes (`marketplace/backend/auth/`) — magic link, OAuth, and Nostr callbacks that store user sessions
-5. Check `orderService.js` — any FK references to `users` table in orders
-6. Run the parity test script (task 003) after changes to verify
+   grep -r "FROM users\|INTO users\|UPDATE users\|JOIN users\|db.get.*users\|db.run.*users\|db.all.*users" marketplace/backend/
+   ```
+2. For each reference, determine if it should go through `dbAdapter.js` instead
+3. Check `dbAdapter.js` methods for user operations — ensure they map to `profiles` table when `SUPABASE_URL` is configured
+4. Check `marketplace/backend/routes/auth.js` for any direct `users` table queries
+5. Verify `marketplace/backend/database/schema.sql` `users` table is the SQLite fallback equivalent of Supabase `profiles`
+6. If the DB adapter is already handling this via `getProfile()` / `createProfile()` methods, verify those are being called everywhere instead of raw SQL
+7. Run `node marketplace/backend/database/init.js` and verify startup doesn't error
 
 ## Acceptance Criteria
 
-- [ ] No raw `FROM users` / `INTO users` queries remain that would break in Supabase mode
-- [ ] DB adapter correctly routes user queries to `profiles` when Supabase adapter is active
-- [ ] Auth flows (magic link, OAuth) still create/find user records correctly
-- [ ] Order creation with user FK still works
-- [ ] SQLite mode still works (no regression)
+- [ ] No raw SQL queries reference `FROM users` / `INTO users` outside of the SQLite schema init
+- [ ] All user lookups go through `dbAdapter.js` methods
+- [ ] Auth routes (magic link, OAuth) correctly read/write to `profiles` table in Supabase mode
+- [ ] Existing tests still pass after refactor
 
 ## Notes
 
-_Generated from AGENT_TASKS.md P0 Phase 0 production item. Blocks going live on Supabase._
+_Generated from AGENT_TASKS.md Phase 0. This task has appeared in previous synthesis runs — verify first whether dbAdapter already handles this mapping before making broad changes._

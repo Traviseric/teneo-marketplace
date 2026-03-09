@@ -1,31 +1,30 @@
 {
   "success": true,
-  "summary": "Added merchant fulfillment provider UI: PATCH admin endpoint + admin HTML section with per-product provider dropdown, wired storefront.js to honour explicit fulfillment_provider field in catalog.json.",
+  "summary": "Added Jest test suites for checkout.js (16 tests, Stripe) and cryptoCheckout.js (21 tests, BTC/LN/BTCPay) with full mocking — all 314 tests pass with 0 failures",
   "next_box": "CONDUCTOR",
   "context": {
     "completed": 1,
     "blocked": 0,
     "in_progress": 0,
-    "commits": ["49ba082"],
+    "commits": ["1dcf7b3"],
     "files_changed": [
-      "marketplace/backend/routes/adminRoutes.js",
-      "marketplace/backend/routes/storefront.js",
-      "marketplace/frontend/admin.html"
+      "marketplace/backend/__tests__/checkout.test.js",
+      "marketplace/backend/__tests__/cryptoCheckout.test.js",
+      ".overnight/active/003-P2-add-checkout-cryptocheckout-tests.md"
     ],
-    "task_file": "005-P2-merchant-fulfillment-provider-ui.md",
+    "task_file": "003-P2-add-checkout-cryptocheckout-tests.md",
     "blockers": [],
     "follow_up_tasks": [],
     "context_for_next_worker": {
-      "commits_made": ["49ba082 - feat(admin): add merchant fulfillment provider UI + PATCH endpoint"],
+      "commits_made": ["1dcf7b3 - test(payment): add Jest suites for checkout.js and cryptoCheckout.js"],
       "files_modified": [
-        "marketplace/backend/routes/adminRoutes.js",
-        "marketplace/backend/routes/storefront.js",
-        "marketplace/frontend/admin.html"
+        "marketplace/backend/__tests__/checkout.test.js",
+        "marketplace/backend/__tests__/cryptoCheckout.test.js"
       ],
-      "approach_used": "Added GET /api/admin/products/fulfillment + PATCH /api/admin/products/:id/fulfillment to adminRoutes.js (reads/writes catalog.json); added 'Product Fulfillment' sidebar nav item and section to admin.html with a per-product <select> (stripe_digital/printful/lulu/arxmint/manual) and variant ID input; updated bookToProduct() in storefront.js to map explicit fulfillment_provider values to the correct fulfillment type string used by checkout routing.",
-      "what_worked": "Reading/writing catalog.json from adminRoutes follows the same pattern used by the existing books CRUD endpoints.",
-      "what_didnt": "None — clean implementation on first attempt.",
-      "next_recommended_step": "Next pending tasks include 011-P2-memberships-subscriptions.md and 012-P2-machine-payable-endpoints.md — both are independent and can proceed immediately."
+      "approach_used": "Mocked all heavy dependencies (stripe, sqlite3/databaseHelper, orderService, emailService, express-rate-limit) using jest.mock() at the top of each test file; used supertest for HTTP-level testing.",
+      "what_worked": "Mock express-rate-limit to passthrough in tests; use jest.fn().mockReturnValue in beforeEach to re-initialize mocks after clearAllMocks(); re-set btcpayService.verifyWebhookSignature and lookupBookPrice defaults in beforeEach.",
+      "what_didnt": "jest.isolateModulesAsync with jest.mock() inside corrupts global mock registry — do not use. Buffer payloads with Content-Type application/json in supertest get serialized as {type:'Buffer',data:[...]} JSON — always send string payloads for raw-body webhook tests.",
+      "next_recommended_step": "Only remaining active tasks are 001-P2-fix-stripe-lazy-init-race-condition.md and 002-P2-add-structured-logging.md — both appear to be small focused fixes."
     }
   }
 }

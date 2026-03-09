@@ -63,6 +63,44 @@ the task was likely already done. **SKIP it** and log the reason.
 from, into, task, issue, error, make, update, remove, change, ensure, handle, support (too generic).
 
 Recent commits:
+  b528d77 feat(design-system): create unified CSS entry point and apply to 5 key pages
+  232ad04 chore(tasks): mark agent API endpoints task as completed
+  30f47c0 feat(agent): add /api/agent/* machine-payable endpoints for AI agents
+  5964d90 refactor(db): extract shared databaseHelper.js, remove copy-pasted db wrappers
+  284311e fix(adminRoutes): add success: false to all error responses (CQA-007)
+  2c1c3e3 fix(cryptoCheckout): throw on unconfigured payment address instead of returning placeholder
+  c91eb41 fix(checkout): add allowlist validation for format input parameter (CWE-20)
+  fb28014 chore(tasks): mark checkout unification test failures as resolved
+  056de3b fix(checkout): replace hardcoded BTC price and extract rate limit constants
+  42fa225 fix(zapService): add logging to empty catch blocks and extract magic number
+  f00f55e fix(checkout): replace silent .catch(() => {}) with logging catch handlers
+  7804414 feat(email): add Resend API provider to emailService for Vercel serverless
+  10bf43c feat(l402): add dedicated L402 download endpoint for Lightning-native AI agents
+  da5916d feat(nostr): add NIP-57 zap receipt relay polling endpoint and auto-unlock
+  9f87cdf feat(payments): implement L402 paywall middleware with Lightning invoice gating
+  f014e27 feat(landing): add briefâ†’store example to AI Store Builder section
+  193d89f fix(tests): add missing updateOrderState mock to storefront test
+  8697fdc fix(db): add missing columns to supabase-migration.sql to sync with SQLite schema
+  00aeccd feat(nostr): implement NIP-57 zap-to-unlock and NIP-05 DNS verification
+  c5999ac feat(design-system): migrate remaining 18 HTML pages to use variables.css
+  0b36cff feat(import): add Teachable course import (service, route, admin UI, tests)
+  d78a954 feat(referral): wire ?ref= sessionStorage capture on store + checkout pages
+  96ebc1d feat(subscriptions): add membership tiers + managed hosting subscription system
+  4818e1f feat(orders): add payment-agnostic state machine (pendingâ†’processingâ†’completedâ†’refunded)
+  29b9f65 feat(design-system): add unified CSS design token system
+  b646a2e feat(payments): wire ArxMint webhook tests + referral commission tracking
+  18e60a0 feat(versioning): add product_versions table to Supabase migration
+  2aaf245 feat(analytics): add funnel analytics UI + email open/click tracking dashboard
+  e5e28ed feat(store-builder): add pricing tiers, Stripe checkout, and intake UI
+  a2a2168 fix(deploy): redirect filesystem writes to /tmp for production read-only environments
+  63481cf fix(landing): fix all broken CTA links â€” replace /login.html and /store.html with on-page anchors
+  f5f8ad3 chore: stage all overnight workflow state + pending task files
+  49ba082 feat(admin): add merchant fulfillment provider UI + PATCH endpoint
+  ff9369c feat(referrals): add cross-store referral system with commission tracking
+  f50d40c feat(import): add Gumroad CSV product import + email list CSV import
+  a4bade2 feat(nostr): add NIP-99 product listings â€” publish kind 30402 events to Nostr network
+  1456959 feat(funnels): wire email funnel pipeline + AI funnel builder
+  fa02aa9 feat(auth): add standalone NIP-98 HTTP auth middleware + headless login endpoint
   df8b35c feat(license): add license key generation, validation, and admin management
   60114b5 feat(courses): add AI course builder â€” generate full course outline from natural language brief
   020cc86 feat(arxmint+bip21): wire ArxMint webhook alias, sat pricing in catalog, BIP21 QR checkout
@@ -75,44 +113,6 @@ Recent commits:
   f4b0050 feat(supabase-wiring): wire funnels, email-marketing, and courses to shared DB adapter
   d2d5fb0 feat(checkout): add server-side coupons (DB+expiry+usage limits) and order bumps
   e78b129 feat(store-builder): add storeBuilderService with persistence + subscriber capture
-  851d4da feat(managed-service): add operator build runner, delivery checker, and example store page
-  04783a0 test(store-renderer): add 38-test suite for storeRendererService
-  f39e435 test(db-adapter): add parity test suite for checkout and auth DB paths
-  5b354fe fix(tests): update storeBuilder mock to match emailService singleton export
-  1f4935d chore(overnight): review audit â€” 4 tasks verified, 1 partial (checkout unification broke tests)
-  d922de6 refactor(checkout): unify checkout.js and checkoutProduction.js into single route
-  dc54606 fix(security): enable COEP credentialless mode to replace disabled crossOriginEmbedderPolicy
-  bd7d83f test(jest): add marketplace/backend/__tests__ to Jest roots
-  a861981 fix(storeBuilder): use emailService singleton instead of constructor
-  bf9aa9e fix(arxmint): replace throwing stubs with graceful NOT_IMPLEMENTED returns
-  64cf144 fix(security): replace in-memory download rate limit Map with DB-backed query
-  cb0b1b4 test(network): add 21 Jest tests for federation catalog + config routes
-  a8fe712 feat(tooling): add ESLint config to marketplace/backend; fix all 28 lint errors
-  7b54571 refactor: deduplicate sanitizeMetadataValue into shared utils/validate.js
-  69bbba2 fix(security): replace deprecated csurf with csrf-csrf (double-submit cookie pattern)
-  d456b7e fix(a11y): add accessibility to openbazaar-site comparison table, network stats, copy button
-  f79ce23 fix(a11y): add ARIA attributes to master-templates interactive controls
-  944d72d feat(frontend): add AI Store Builder intake form and landing page section (task 044)
-  1c26c2e feat(store-builder): add POST /intake route with validation + ack email (task 043)
-  7b7f275 fix(ux): store.html mobile hamburger nav + crypto-checkout inline error
-  7edda8c feat(store-builder): add store_builds table, service, and CRUD API (task 042)
-  27de6ce feat(auth): unify frontend auth UI with loading states and clear journey
-  dd8ea3b docs(readme): disclaim gig platform as planned; note OPENAI_API_KEY for AI features
-  0dd56a0 fix(checkout): wrap switch case body in block scope (no-case-declarations)
-  9b53c42 fix(security): remove customer email PII from download logs (CWE-359)
-  fd5c7ae test: add Jest test coverage for storefront routes and emailService
-  e24cbda fix(admin): remove process.env Stripe key mutation; add admin test suite
-  ca81a73 fix(checkout): structured logging and failOrder for swallowed fulfillment errors
-  2dc42e8 fix(security/a11y): XSS escaping + keyboard accessibility in store.html; fix WCAG failures in email capture form
-  231e4e8 feat(ai-builder): natural language editing, preview/publish flow, and test suite (tasks 028-030)
-  64186d0 fix(ux): replace prompt() and alert() with accessible inline UI in crypto checkout
-  308a724 feat(ai-builder): add store renderer + Supabase persistence (tasks 025, 026)
-  007c7e9 refactor: replace HTTP self-calls for download token generation with direct service
-  49bcd9f refactor(admin): replace hardcoded 'teneo' brand with DEFAULT_BRAND env var
-  b920a70 fix(security): replace unsafe-inline with nonce in CSP styleSrc (CWE-693)
-  63b1b8c fix(security): fail closed on storefront API when no key set in production (CWE-306)
-  bdd350d fix(security): add rate limiter to checkoutProduction POST /create-session
-  f55f477 fix(security): add HMAC auth to orchestrator webhooks + session regeneration on login
 
 **When skipping a git-deduped task**, log it in your review report under a `"git_deduped"` array:
 ```json

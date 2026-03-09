@@ -3,93 +3,71 @@
   "next_box": "CONDUCTOR",
   "context": {
     "task_files": [
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\001-P1-unified-design-system.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\002-P2-email-funnel-pipeline.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\003-P2-ai-funnel-builder.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\004-P2-file-versioning.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\005-P2-merchant-fulfillment-provider-ui.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\006-P2-gumroad-product-import.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\007-P2-email-list-csv-import.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\008-P2-nip98-http-auth.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\009-P2-nip99-product-listings.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\010-P2-cross-store-referral-system.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\011-P2-memberships-subscriptions.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\012-P2-machine-payable-endpoints.md"
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\001-P2-fix-stripe-lazy-init-race-condition.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\002-P2-add-structured-logging.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\003-P2-add-checkout-cryptocheckout-tests.md"
     ],
-    "task_count": 12,
+    "task_count": 3,
     "tasks_by_priority": {
       "P0": 0,
-      "P1": 1,
-      "P2": 11,
+      "P1": 0,
+      "P2": 3,
       "P3": 0
     },
     "sources": {
-      "project_declared": 12,
-      "security_audit": 0,
-      "ux_audit": 0,
-      "code_quality_audit": 0
+      "code_quality_audit": 2,
+      "project_declared": 0,
+      "review_audit": 0
     },
-    "git_deduped_count": 29,
-    "human_tasks_logged": 19,
+    "audit_files_read": [
+      "code_quality_audit_output.json",
+      "review_audit_output.json",
+      "roadmap_sync_output.json",
+      "conductor_output.json",
+      "AGENT_TASKS.md"
+    ],
+    "findings_summary": {
+      "total_evaluated": 22,
+      "accepted": 3,
+      "rejected": 3,
+      "deferred": 7,
+      "git_deduped": 16
+    },
+    "rejected_findings": [
+      {
+        "finding": "storeBuilderService.js empty catch blocks at lines 117, 138, 173",
+        "reason": "FALSE POSITIVE \u2014 grep found no empty catch patterns in storeBuilderService.js"
+      },
+      {
+        "finding": "Map users to Supabase profiles (P0 AGENT_TASKS.md)",
+        "reason": "ALREADY DONE \u2014 done/002-P0-map-users-to-supabase-profiles.md status:completed"
+      },
+      {
+        "finding": "Document SQLite vs Supabase fallback story (P0 AGENT_TASKS.md)",
+        "reason": "ALREADY DONE \u2014 done/007-P0-document-local-dev-fallback.md status:completed"
+      }
+    ],
+    "git_deduped_count": 14,
     "task_groups": {
-      "email_funnel": {
+      "logging_system": {
         "tasks": [
-          "002-P2-email-funnel-pipeline.md",
-          "003-P2-ai-funnel-builder.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "Both touch funnels.js and emailMarketingService.js; task 003 builds on 002's pipeline wiring"
-      },
-      "nostr_auth": {
-        "tasks": [
-          "008-P2-nip98-http-auth.md",
-          "009-P2-nip99-product-listings.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "Both use nostr-tools; NIP-99 can reuse auth patterns from NIP-98 task"
-      },
-      "creator_migration": {
-        "tasks": [
-          "006-P2-gumroad-product-import.md",
-          "007-P2-email-list-csv-import.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "Both create/extend importService.js; task 007 should reuse service created in task 006"
-      },
-      "frontend_design": {
-        "tasks": [
-          "001-P1-unified-design-system.md"
+          "002-P2-add-structured-logging.md"
         ],
         "execution_hint": "long_running",
-        "reason": "Large refactor spanning 33+ HTML files; needs sustained warm context and iterative validation"
-      },
-      "subscriptions": {
-        "tasks": [
-          "011-P2-memberships-subscriptions.md"
-        ],
-        "execution_hint": "long_running",
-        "reason": "Large feature \u2014 schema + Stripe recurring + webhooks + content gating + UI; multiple build-test-fix cycles needed"
-      },
-      "referral_system": {
-        "tasks": [
-          "010-P2-cross-store-referral-system.md"
-        ],
-        "execution_hint": "sequential",
-        "reason": "Touches checkout.js webhook handler and adds new schema tables"
+        "reason": "Cross-cutting change spanning 100+ files; needs deep iteration across routes/ and services/"
       },
       "independent": {
         "tasks": [
-          "004-P2-file-versioning.md",
-          "005-P2-merchant-fulfillment-provider-ui.md",
-          "012-P2-machine-payable-endpoints.md"
+          "001-P2-fix-stripe-lazy-init-race-condition.md",
+          "003-P2-add-checkout-cryptocheckout-tests.md"
         ],
         "execution_hint": "parallel",
-        "reason": "No file overlap with each other or other groups \u2014 can run in any order"
+        "reason": "Single-file fix (adminRoutes.js) and new test files \u2014 no overlap with each other or the logging task"
       }
     },
     "recommended_mode": "managed",
-    "recommended_lanes": 3,
-    "synthesis_notes": "Round 19. 29 items git-deduped (most P2 Creator Toolkit items completed in prior sessions). 12 new tasks focus on remaining Phase 2 features: email funnel automation, AI funnel builder, creator migration tools (Gumroad/CSV import), Nostr ecosystem (NIP-98/NIP-99), cross-store referrals, memberships/subscriptions, and machine-payable endpoints. Long-running tasks (design system, memberships) should run in managed mode. Creator migration tools (006+007) share importService.js and should run sequentially. Human tasks HT-018 and HT-019 added for production filesystem verification and SMTP config."
+    "recommended_lanes": 2,
+    "notes": "Low task count (3) reflects aggressive git-dedup \u2014 14 of 18 code_quality findings were already addressed by recent commits (42fa225, f00f55e, 056de3b, 5964d90, etc.). Remaining tasks are genuine gaps: Stripe lazy init race (adminRoutes.js verified), structured logging (no Winston/Pino found), and checkout test coverage (checkout.js/cryptoCheckout.js have no test files). P0 items in AGENT_TASKS.md are either DONE (done/ files exist) or human-required (HT-008 through HT-022 in HUMAN_TASKS.md)."
   },
-  "_cache_key": "1ff2dadc29f3e527_df8b35ce1b48-dirty-39dbaa0f_290d3a0d2c14"
+  "_cache_key": "835ca45c9f33f27e_b528d77e5a45-dirty-5ef30741_87ab99c7b907"
 }

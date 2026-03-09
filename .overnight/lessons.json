@@ -41,6 +41,24 @@
       "finding": "Fix duplicate payment_intent_data key in checkoutProduction.js (lines 138-151 define it twice)",
       "reason": "FALSE POSITIVE — only ONE payment_intent_data key exists at line 138 in checkoutProduction.js. No duplicate. Finding was already fixed or never existed.",
       "rejected_at": "2026-02-28T10:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "storeBuilderService.js empty catch blocks catch(_){} at lines 117, 138, 173 suppress errors silently",
+      "reason": "FALSE POSITIVE — grep found NO matches for empty catch patterns in storeBuilderService.js. Already fixed by a prior worker or audit hallucinated the line numbers.",
+      "rejected_at": "2026-03-09T16:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Map code that expects users table onto Supabase profiles (P0 unchecked)",
+      "reason": "ALREADY DONE — done/002-P0-map-users-to-supabase-profiles.md exists with status:completed. AGENT_TASKS.md checkbox not updated. Auto-reject if seen again.",
+      "rejected_at": "2026-03-09T16:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Verify and document local dev fallback story SQLite vs Supabase (P0 unchecked)",
+      "reason": "ALREADY DONE — done/007-P0-document-local-dev-fallback.md exists with status:completed. AGENT_TASKS.md checkbox not updated. Auto-reject if seen again.",
+      "rejected_at": "2026-03-09T16:00:00Z"
     }
   ],
   "unproductive_audits": [],

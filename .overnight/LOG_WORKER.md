@@ -1,4 +1,34 @@
 
+## Task: 003-P2-add-checkout-cryptocheckout-tests.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/__tests__/checkout.test.js, marketplace/backend/__tests__/cryptoCheckout.test.js
+- **Commit:** 1dcf7b3
+- **Notes:** 16 tests for Stripe checkout route + 21 tests for crypto checkout route. Key finding: supertest serializes Buffer to JSON when Content-Type=application/json — must send string payloads for raw-body webhook tests. Mock express-rate-limit to bypass rate limiting in tests. All 18 test suites pass (314 tests total, 0 failures).
+
+## Task: 001-P2-fix-stripe-lazy-init-race-condition.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/adminRoutes.js
+- **Commit:** 5c45df5
+- **Notes:** Replaced two-variable `let _stripe=null; let _stripeKey=null;` with single `_stripeCache={key,client}` object. aiDiscoveryService.js uses instance-level synchronous init (class pattern, no fix needed).
+
+## Task: 011-P2-memberships-subscriptions.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/subscriptionRoutes.js, marketplace/frontend/account/memberships.html
+- **Commit:** b528d77 (already committed)
+- **Notes:** Full subscription system was implemented in commit b528d77. Schema has membership_tiers + subscriptions tables. Routes: POST /create-session (Stripe checkout), GET /tiers/:storeSlug, GET /all (by email), GET /my/:storeSlug, POST /portal (Stripe Customer Portal), GET /admin/subscribers, GET /admin/mrr, POST /webhook (subscription lifecycle), admin CRUD with auto Stripe Price creation. requiresSubscription() middleware exported. account/memberships.html customer self-service page created.
+
+## Task: 001-P1-unified-design-system.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/css/design-system.css (new), login.html, store.html, cart-custom.html, account-dashboard.html, crypto-checkout.html
+- **Commit:** b528d77
+- **Notes:** Created css/design-system.css as single @import wrapper over existing styles/variables.css + styles/base.css. Updated 4 pages (login, store, cart-custom, account-dashboard) to use one link instead of two. Added design system to crypto-checkout.html which previously had only inline styles with hardcoded values — all hardcoded colors/spacing replaced with CSS custom properties.
+
+## Task: 012-P2-machine-payable-endpoints.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/agentRoutes.js (new), marketplace/backend/routes/wellKnownRoutes.js, marketplace/backend/server.js
+- **Commit:** 30f47c0
+- **Notes:** Created /api/agent/catalog, /api/agent/quote (multi-item TTL cache), /api/agent/purchase (Lightning+Stripe), /api/agent/order/:id. Auth: NIP-98 or X-Api-Key. Rate limited. Added /.well-known/agent-capabilities.json discovery doc. Assignment file was missing — picked task from previous worker recommendation.
+
 ## Task: 005-P2-merchant-fulfillment-provider-ui.md
 - **Status:** COMPLETE
 - **Changes:** marketplace/backend/routes/adminRoutes.js, marketplace/backend/routes/storefront.js, marketplace/frontend/admin.html

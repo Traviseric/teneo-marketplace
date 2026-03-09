@@ -56,20 +56,19 @@ If `C:\code\openbazaar-ai\.overnight/progress.json` contains a `features` array,
 ## Previous Worker Context
 
 **Recent commits (last 5):**
-  - ff9369c feat(referrals): add cross-store referral system with commission tracking
-  - f50d40c feat(import): add Gumroad CSV product import + email list CSV import
-  - a4bade2 feat(nostr): add NIP-99 product listings — publish kind 30402 events to Nostr network
-  - 1456959 feat(funnels): wire email funnel pipeline + AI funnel builder
-  - fa02aa9 feat(auth): add standalone NIP-98 HTTP auth middleware + headless login endpoint
+  - b528d77 feat(design-system): create unified CSS entry point and apply to 5 key pages
+  - 232ad04 chore(tasks): mark agent API endpoints task as completed
+  - 30f47c0 feat(agent): add /api/agent/* machine-payable endpoints for AI agents
+  - 5964d90 refactor(db): extract shared databaseHelper.js, remove copy-pasted db wrappers
+  - 284311e fix(adminRoutes): add success: false to all error responses (CQA-007)
 
 **Previous worker handoffs:**
 **worker_002_output:**
-  Commits: ff9369c - feat(referrals): add cross-store referral system with commission tracking
-  Files modified: marketplace/backend/database/schema.sql, marketplace/backend/routes/referralRoutes.js, marketplace/backend/routes/checkout.js, marketplace/backend/server.js, marketplace/frontend/admin.html
-  Approach: Added referral_codes + referrals tables to schema.sql; created referralRoutes.js with GET /code (auto-generate) and GET /stats; sanitized + passed referralCode through Stripe session metadata; called trackReferral() (exported from referralRoutes) in handleCheckoutCompleted after order fulfillment; added nav item + full Referrals section to admin.html with copyReferralLink() and loadReferrals() functions.
-  What worked: Exporting trackReferral as a named function from the routes module keeps the checkout webhook handler clean. The new-vs-repeat customer check uses a simple prior-completed-order query against the orders table.
-  What didn't: Post-commit hook fires a permission error to stderr on every commit — cosmetic only, does not block commits.
-  Recommended next step: Next pending tasks from active/: 011-P2-memberships-subscriptions.md, 012-P2-machine-payable-endpoints.md, and other independent tasks. No blockers remaining from this session.
+  Commits: b528d77 - feat(design-system): create unified CSS entry point and apply to 5 key pages (also included subscriptions completion)
+  Files modified: marketplace/backend/routes/subscriptionRoutes.js, marketplace/frontend/account/memberships.html
+  Approach: Implementation was already complete in commit b528d77 — subscriptionRoutes.js has POST /create-session, GET /tiers/:storeSlug, GET /my/:storeSlug, GET /all, GET /admin/subscribers, GET /admin/mrr, POST /portal, POST /webhook, and admin CRUD with auto Stripe Price creation. account/memberships.html provides customer self-service view with portal link.
+  What worked: Full subscription feature set including membership_tiers + subscriptions schema tables, requiresSubscription() middleware, Stripe recurring price auto-creation on tier setup, and Stripe Customer Portal for self-service cancellation.
+  Recommended next step: Only remaining active task is 001-P1-unified-design-system.md — a frontend CSS consistency pass across 33+ HTML pages. Design system CSS already exists at marketplace/frontend/css/design-system.css; work remaining is applying it to more pages beyond the initial 5.
 
 ## Workflow
 

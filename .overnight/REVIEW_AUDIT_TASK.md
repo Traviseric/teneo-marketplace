@@ -17,13 +17,6 @@ PROJECT: openbazaar-ai
 PATH: C:\code\openbazaar-ai
 RELAY DIR: C:\code\openbazaar-ai\.overnight
 
-## SCOPE: Only Review RECENT Work
-
-A previous REVIEW_AUDIT ran at 2026-03-06 16:11. There have been 4 commits since then.
-**Only review worker output and commits from AFTER 2026-03-06 16:11.**
-Use `git log --oneline --since="2026-03-06T16:11:14.279012"` to see only recent changes — do NOT re-review older work.
-Worker output files with mtime before 2026-03-06 16:11 have already been reviewed.
-
 ## Your Mission
 
 Review what workers CLAIMED they did vs what was ACTUALLY implemented.

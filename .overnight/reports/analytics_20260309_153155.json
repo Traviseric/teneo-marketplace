@@ -1,0 +1,380 @@
+{
+  "run": {
+    "total_events": 183,
+    "run_id": "run_20260309_080437",
+    "run_start": "2026-03-09T14:04:40.905647+00:00",
+    "run_end": "2026-03-09T21:30:03.358213+00:00",
+    "run_end_source": "last_event",
+    "status": "in_progress",
+    "duration_s": 26722.5,
+    "duration_h": 7.42,
+    "time_in_boxes_s": 7289.1,
+    "overhead_s": 19433.4,
+    "summary": null
+  },
+  "boxes": {
+    "CONDUCTOR": {
+      "invocations": 2,
+      "completed": 2,
+      "successes": 2,
+      "failures": 0,
+      "success_rate": 100.0,
+      "total_time_s": 148.3,
+      "avg_duration_s": 74.2,
+      "min_duration_s": 64.7,
+      "max_duration_s": 83.6
+    },
+    "DIGEST": {
+      "invocations": 1,
+      "completed": 1,
+      "successes": 1,
+      "failures": 0,
+      "success_rate": 100.0,
+      "total_time_s": 252.9,
+      "avg_duration_s": 252.9,
+      "min_duration_s": 252.9,
+      "max_duration_s": 252.9
+    },
+    "ROADMAP_SYNC": {
+      "invocations": 1,
+      "completed": 1,
+      "successes": 1,
+      "failures": 0,
+      "success_rate": 100.0,
+      "total_time_s": 204.3,
+      "avg_duration_s": 204.3,
+      "min_duration_s": 204.3,
+      "max_duration_s": 204.3
+    },
+    "TASK_SYNTHESIZER": {
+      "invocations": 3,
+      "completed": 3,
+      "successes": 3,
+      "failures": 0,
+      "success_rate": 100.0,
+      "total_time_s": 2330.1,
+      "avg_duration_s": 776.7,
+      "min_duration_s": 523.0,
+      "max_duration_s": 1198.8
+    },
+    "WORKER": {
+      "invocations": 3,
+      "completed": 2,
+      "successes": 2,
+      "failures": 0,
+      "success_rate": 100.0,
+      "total_time_s": 4353.5,
+      "avg_duration_s": 2176.8,
+      "min_duration_s": 1390.3,
+      "max_duration_s": 2963.2
+    }
+  },
+  "workers": {
+    "total_spawns": 28,
+    "total_completions": 26,
+    "success_count": 26,
+    "productive_spawns": 26,
+    "wasted_spawns": 0,
+    "productivity_rate": 100.0,
+    "total_tasks_completed": 28,
+    "avg_tasks_per_spawn": 1.1,
+    "per_lane": {
+      "2": {
+        "starts": 13,
+        "completes": 12,
+        "tasks": 13
+      },
+      "1": {
+        "starts": 15,
+        "completes": 14,
+        "tasks": 15
+      }
+    }
+  },
+  "workflows": {
+    "triggered": 0,
+    "names": []
+  },
+  "errors": {
+    "total": 0,
+    "events": []
+  },
+  "convergence": {
+    "end_game_triggers": [],
+    "end_game_phases": [],
+    "circuit_breakers": [
+      {
+        "ts": "2026-03-09T16:01:14.800748+00:00",
+        "pattern": "ping_pong",
+        "box": "TASK_SYNTHESIZER",
+        "count": 3,
+        "override": "DIGEST"
+      }
+    ],
+    "task_classifications": [],
+    "url_invalidations": []
+  },
+  "per_box_costs": {
+    "ROADMAP_SYNC": {
+      "cost_usd": 1.51,
+      "tokens_input": 11208,
+      "tokens_output": 31,
+      "tokens_cache_read": 247060,
+      "invocations": 1
+    },
+    "CONDUCTOR": {
+      "cost_usd": 1.93,
+      "tokens_input": 400,
+      "tokens_output": 1112,
+      "tokens_cache_read": 402206,
+      "invocations": 2
+    },
+    "TASK_SYNTHESIZER": {
+      "cost_usd": 21.35,
+      "tokens_input": 3060,
+      "tokens_output": 48702,
+      "tokens_cache_read": 8463192,
+      "invocations": 3
+    },
+    "DIGEST": {
+      "cost_usd": 2.01,
+      "tokens_input": 20,
+      "tokens_output": 2566,
+      "tokens_cache_read": 694905,
+      "invocations": 1
+    }
+  },
+  "total_attributed_cost_usd": 26.8,
+  "token_usage": {
+    "session_count": 74,
+    "total_messages": 2582,
+    "tokens": {
+      "input": 78040,
+      "output": 1130041,
+      "cache_write": 4519725,
+      "cache_read": 152657797,
+      "total": 158385603
+    },
+    "api_equivalent_cost": 399.65,
+    "exact_usage_events": 2582,
+    "raw_usage_records": 4879,
+    "duplicate_records_skipped": 2297,
+    "conflicting_records": 1412,
+    "models": {
+      "claude-sonnet-4-6": {
+        "requests": 2545,
+        "tokens": {
+          "input": 66450,
+          "output": 1107596,
+          "cache_write": 4395969,
+          "cache_read": 151308619,
+          "total": 156878634
+        },
+        "service_tiers": {
+          "standard": 2545
+        }
+      },
+      "claude-opus-4-6": {
+        "requests": 37,
+        "tokens": {
+          "input": 11590,
+          "output": 22445,
+          "cache_write": 123756,
+          "cache_read": 1349178,
+          "total": 1506969
+        },
+        "service_tiers": {
+          "standard": 37
+        }
+      }
+    },
+    "pricing_reference": "fixed_opus_reference",
+    "attribution": {
+      "exact": 712,
+      "time_inferred": 173,
+      "unattributed": 1697
+    },
+    "session_attribution": {
+      "sessions_exact": 20,
+      "sessions_time_inferred": 6,
+      "sessions_unattributed": 48,
+      "tokens_exact": 44537819,
+      "tokens_time_inferred": 10193826,
+      "tokens_attributed": 54731645,
+      "tokens_unattributed": 103653958,
+      "boxes": {
+        "WORKER_002": {
+          "sessions": 10,
+          "requests": 440,
+          "tokens": {
+            "input": 2798,
+            "output": 165640,
+            "cache_write": 743318,
+            "cache_read": 28210254,
+            "total": 29122010
+          },
+          "box": "WORKER_002"
+        },
+        "WORKER_001": {
+          "sessions": 9,
+          "requests": 292,
+          "tokens": {
+            "input": 312,
+            "output": 100841,
+            "cache_write": 495652,
+            "cache_read": 14634222,
+            "total": 15231027
+          },
+          "box": "WORKER_001"
+        },
+        "ROADMAP_SYNC": {
+          "sessions": 1,
+          "requests": 7,
+          "tokens": {
+            "input": 11208,
+            "output": 6656,
+            "cache_write": 51672,
+            "cache_read": 247060,
+            "total": 316596
+          },
+          "box": "ROADMAP_SYNC"
+        },
+        "TASK_SYNTHESIZER": {
+          "sessions": 3,
+          "requests": 114,
+          "tokens": {
+            "input": 3060,
+            "output": 111432,
+            "cache_write": 264508,
+            "cache_read": 8463192,
+            "total": 8842192
+          },
+          "box": "TASK_SYNTHESIZER"
+        },
+        "CONDUCTOR": {
+          "sessions": 2,
+          "requests": 14,
+          "tokens": {
+            "input": 400,
+            "output": 5330,
+            "cache_write": 66215,
+            "cache_read": 402206,
+            "total": 474151
+          },
+          "box": "CONDUCTOR"
+        },
+        "DIGEST": {
+          "sessions": 1,
+          "requests": 18,
+          "tokens": {
+            "input": 20,
+            "output": 9613,
+            "cache_write": 41131,
+            "cache_read": 694905,
+            "total": 745669
+          },
+          "box": "DIGEST"
+        }
+      },
+      "accounts": {
+        "claude-max-1772470724379": {
+          "sessions": 26,
+          "requests": 885,
+          "tokens": {
+            "input": 17798,
+            "output": 399512,
+            "cache_write": 1662496,
+            "cache_read": 52651839,
+            "total": 54731645
+          },
+          "account_id": "claude-max-1772470724379",
+          "display_name": "Travis AI"
+        }
+      },
+      "spawn_modes": {
+        "standard": {
+          "sessions": 5,
+          "requests": 143,
+          "tokens": {
+            "input": 186,
+            "output": 59663,
+            "cache_write": 328066,
+            "cache_read": 8426464,
+            "total": 8814379
+          },
+          "spawn_mode": "standard"
+        },
+        "managed_initial_prompt": {
+          "sessions": 1,
+          "requests": 30,
+          "tokens": {
+            "input": 34,
+            "output": 9919,
+            "cache_write": 48443,
+            "cache_read": 1321051,
+            "total": 1379447
+          },
+          "spawn_mode": "managed_initial_prompt"
+        }
+      },
+      "tasks": {
+        "1:006-P2-create-database-helper-module.md": {
+          "sessions": 0,
+          "requests": 23,
+          "tokens": {
+            "input": 23,
+            "output": 8361,
+            "cache_write": 29033,
+            "cache_read": 1112021,
+            "total": 1149438
+          },
+          "task_name": "006-P2-create-database-helper-module.md",
+          "lane": 1,
+          "box": "WORKER_001",
+          "account_id": "claude-max-1772470724379",
+          "confidence": "time_inferred",
+          "status": "completed"
+        }
+      }
+    },
+    "oauth_pool": {
+      "available": true,
+      "db_path": "C:\\code\\orchestrator\\.orchestrator\\oauth_pool.db",
+      "events_total": 178,
+      "quota_hits_total": 0,
+      "token_issued_total": 178,
+      "accounts": [
+        {
+          "account_id": "claude-max-1772470724386",
+          "display_name": "tbergsgaard",
+          "events_total": 103,
+          "last_event_at": "2026-03-09T21:29:01.908000+00:00",
+          "last_details": null,
+          "token_used": 103,
+          "quota_hit": 0,
+          "token_refreshed": 0,
+          "disabled": 0,
+          "enabled": 0,
+          "cooldown_expired": 0,
+          "cooldown_expired_on_startup": 0,
+          "refresh_failed": 0
+        },
+        {
+          "account_id": "claude-max-1772470724379",
+          "display_name": "Travis AI",
+          "events_total": 75,
+          "last_event_at": "2026-03-09T21:26:11.265000+00:00",
+          "last_details": null,
+          "token_used": 75,
+          "quota_hit": 0,
+          "token_refreshed": 0,
+          "disabled": 0,
+          "enabled": 0,
+          "cooldown_expired": 0,
+          "cooldown_expired_on_startup": 0,
+          "refresh_failed": 0
+        }
+      ]
+    }
+  }
+}
