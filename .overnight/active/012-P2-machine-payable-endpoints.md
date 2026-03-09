@@ -3,7 +3,7 @@ id: 12
 title: "Machine-payable endpoints for AI agents"
 priority: P2
 severity: medium
-status: pending
+status: completed
 source: project_declared
 file: marketplace/backend/routes/storefront.js
 line: null
