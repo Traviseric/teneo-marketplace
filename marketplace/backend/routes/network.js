@@ -373,6 +373,93 @@ router.get('/stats', async (req, res) => {
     }
 });
 
+// ──────────────────────────────────────────────────────────────────────────────
+// NIP-99 Product Listings — publish products to the Nostr network (kind 30402)
+// ──────────────────────────────────────────────────────────────────────────────
+
+const nostrService = require('../services/nostrService');
+const { authenticateAdmin } = require('../middleware/auth');
+
+/**
+ * POST /api/network/publish-products
+ * Admin-only. Publishes all products for a given brand (or all brands) to Nostr as kind 30402 events.
+ *
+ * Body: { brand: "teneo" }  — omit to publish all brands
+ */
+router.post('/publish-products', authenticateAdmin, async (req, res) => {
+    try {
+        const { brand } = req.body;
+        const brandsDir = path.join(__dirname, '../../frontend/brands');
+        const allBrands = brand ? [brand] : ['default', 'teneo', 'true-earth', 'wealth-wise'];
+
+        const summary = [];
+        for (const brandName of allBrands) {
+            try {
+                const catalogPath = path.join(brandsDir, brandName, 'catalog.json');
+                const configPath = path.join(brandsDir, brandName, 'config.json');
+
+                const [catalogData, configData] = await Promise.all([
+                    fs.readFile(catalogPath, 'utf8'),
+                    fs.readFile(configPath, 'utf8').catch(() => '{}'),
+                ]);
+
+                const catalog = JSON.parse(catalogData);
+                const brandConfig = { id: brandName, ...JSON.parse(configData) };
+                const products = catalog.books || catalog.products || [];
+
+                const results = await nostrService.publishAllProducts(products, brandConfig);
+                summary.push({ brand: brandName, products: products.length, results });
+            } catch (err) {
+                console.error(`[network] Failed to publish brand ${brandName}:`, err.message);
+                summary.push({ brand: brandName, error: err.message });
+            }
+        }
+
+        res.json({ success: true, published: summary });
+    } catch (err) {
+        console.error('[network] publish-products error:', err);
+        res.status(500).json({ success: false, error: 'Failed to publish products to Nostr' });
+    }
+});
+
+/**
+ * POST /api/network/publish-product/:productId
+ * Admin-only. Publishes a single product to Nostr.
+ *
+ * Body: { brand: "teneo" }
+ */
+router.post('/publish-product/:productId', authenticateAdmin, async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { brand = 'teneo' } = req.body;
+        const brandsDir = path.join(__dirname, '../../frontend/brands');
+
+        const catalogPath = path.join(brandsDir, brand, 'catalog.json');
+        const configPath = path.join(brandsDir, brand, 'config.json');
+
+        const [catalogData, configData] = await Promise.all([
+            fs.readFile(catalogPath, 'utf8'),
+            fs.readFile(configPath, 'utf8').catch(() => '{}'),
+        ]);
+
+        const catalog = JSON.parse(catalogData);
+        const products = catalog.books || catalog.products || [];
+        const product = products.find(p => String(p.id) === String(productId));
+
+        if (!product) {
+            return res.status(404).json({ success: false, error: `Product ${productId} not found in brand ${brand}` });
+        }
+
+        const brandConfig = { id: brand, ...JSON.parse(configData) };
+        const result = await nostrService.publishProductListing(product, brandConfig);
+
+        res.json({ success: true, product: product.id, ...result });
+    } catch (err) {
+        console.error('[network] publish-product error:', err);
+        res.status(500).json({ success: false, error: 'Failed to publish product to Nostr' });
+    }
+});
+
 // Helper function to calculate search relevance
 function calculateRelevance(book, searchTerm) {
     let score = 0;

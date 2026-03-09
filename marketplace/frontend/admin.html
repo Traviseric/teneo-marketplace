@@ -1432,6 +1432,21 @@
                     </div>
 
                     <div class="settings-section">
+                        <h3>Nostr Network Publishing</h3>
+                        <p style="margin-bottom:12px;color:#6b7280;font-size:14px;">
+                            Publish your product listings as <strong>NIP-99 kind 30402</strong> events,
+                            making them discoverable across the Nostr relay network.
+                            Requires <code>NOSTR_PRIVATE_KEY</code> to be set in your environment.
+                        </p>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                            <button class="btn btn-secondary" onclick="publishAllToNostr()">
+                                <i class="fas fa-broadcast-tower"></i> Publish All Products to Nostr
+                            </button>
+                        </div>
+                        <div id="nostrPublishResult" style="margin-top:12px;font-size:13px;"></div>
+                    </div>
+
+                    <div class="settings-section">
                         <h3>Basic Settings</h3>
                         <div class="form-group">
                             <label class="checkbox-label">
@@ -3365,6 +3380,27 @@
             } catch (error) {
                 console.error('Error regenerating keys:', error);
                 alert('Error regenerating keys');
+            }
+        }
+
+        async function publishAllToNostr() {
+            const resultEl = document.getElementById('nostrPublishResult');
+            resultEl.textContent = 'Publishing to Nostr relays…';
+            try {
+                const response = await secureFetch('/api/network/publish-products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}),
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    const total = data.published.reduce((sum, b) => sum + (b.products || 0), 0);
+                    resultEl.innerHTML = `<span style="color:#16a34a;">✓ Published ${total} products across ${data.published.length} brand(s).</span>`;
+                } else {
+                    resultEl.innerHTML = `<span style="color:#dc2626;">✗ ${data.error || 'Publish failed'}</span>`;
+                }
+            } catch (err) {
+                resultEl.innerHTML = `<span style="color:#dc2626;">✗ ${err.message}</span>`;
             }
         }
 
