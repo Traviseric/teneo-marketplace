@@ -106,6 +106,7 @@ const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
 const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
 const machineRoutes = require('./routes/machine');
+const l402Routes = require('./routes/l402Routes');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
 const licenseRoutes = require('./routes/licenseRoutes');
@@ -213,6 +214,7 @@ const csrfExcludePaths = [
     '/api/subscriptions/webhook', // Stripe subscription webhook
     '/api/hosting/webhook',       // Stripe hosting subscription webhook
     '/api/storefront/zap-unlock', // NIP-57 zap receipt — self-authenticated via Schnorr sig
+    '/api/l402',                  // L402 Lightning auth — self-authenticated via preimage, not session
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
@@ -321,6 +323,9 @@ app.get('/store/:slug', async (req, res) => {
     res.status(500).send('<h1>Internal Server Error</h1>');
   }
 });
+
+// L402 Lightning-native download endpoints — AI agents pay-and-retrieve via Lightning
+app.use('/api/l402', l402Routes);
 
 // Machine-payable endpoints — AI agent commerce (Lightning invoices, NIP-98 auth)
 app.use('/api/machine', machineRoutes);
