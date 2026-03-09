@@ -449,6 +449,15 @@
         const urlParams = new URLSearchParams(window.location.search);
         const BRAND_ID = urlParams.get('brand') || 'teneo';
 
+        // Capture referral code from ?ref= query param and persist to sessionStorage
+        // so it survives navigation to the checkout page.
+        (function captureReferral() {
+            const ref = urlParams.get('ref');
+            if (ref) {
+                sessionStorage.setItem('referralCode', ref.slice(0, 20).toUpperCase());
+            }
+        })();
+
         let brandConfig = null;
         let catalogData = null;
 

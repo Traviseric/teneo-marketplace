@@ -450,6 +450,16 @@
         const BRAND_ID = params.get('brand') || 'teneo';
         const FORMAT = params.get('format') || 'ebook';
 
+        // Capture ?ref= from URL and/or inherit from sessionStorage (set by store.html).
+        // URL param takes precedence so direct referral links always win.
+        (function captureReferral() {
+            const urlRef = params.get('ref');
+            if (urlRef) {
+                sessionStorage.setItem('referralCode', urlRef.slice(0, 20).toUpperCase());
+            }
+        })();
+        const REFERRAL_CODE = sessionStorage.getItem('referralCode') || null;
+
         let bookData = null;
         let selectedMethod = null;
         let btcPriceUsd = null;
@@ -552,6 +562,7 @@
                         bookTitle: bookData?.title || BOOK_ID,
                         bookAuthor: bookData?.author || '',
                         userEmail: email,
+                        ...(REFERRAL_CODE ? { referralCode: REFERRAL_CODE } : {}),
                     }),
                 });
                 const data = await resp.json();
@@ -595,6 +606,7 @@
                         bookTitle: bookData?.title || BOOK_ID,
                         bookAuthor: bookData?.author || '',
                         userEmail: email,
+                        ...(REFERRAL_CODE ? { referralCode: REFERRAL_CODE } : {}),
                     }),
                 });
                 const data = await resp.json();
