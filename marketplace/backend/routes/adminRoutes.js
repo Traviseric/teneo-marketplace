@@ -12,6 +12,7 @@ const couponService = require('../services/couponService');
 const orderBumpService = require('../services/orderBumpService');
 const printfulProvider = require('../services/printfulFulfillmentProvider');
 const importService = require('../services/importService');
+const teachableImportService = require('../services/teachableImportService');
 const emailService = require('../services/emailService');
 
 const BRAND = process.env.DEFAULT_BRAND || 'teneo';
@@ -673,6 +674,40 @@ router.post('/import/gumroad-csv', authenticateAdmin, csvUpload.single('csv'), a
     } catch (error) {
         console.error('[admin/import/gumroad-csv] Error:', error);
         res.status(500).json({ success: false, error: 'Import failed: ' + error.message });
+    }
+});
+
+// Memory-storage multer for JSON imports
+const jsonUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB
+    fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.json$/i) && file.mimetype !== 'application/json') {
+            return cb(new Error('Only JSON files are allowed'));
+        }
+        cb(null, true);
+    }
+});
+
+// ─── Teachable Course Import ──────────────────────────────────────────────────
+
+// POST /api/admin/import/teachable
+// Accepts multipart/form-data with a "json" file field (Teachable school export).
+// Returns: { success, courses, modules, lessons, students, enrollments, errors }
+router.post('/import/teachable', authenticateAdmin, jsonUpload.single('json'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'No JSON file uploaded' });
+    }
+
+    try {
+        const jsonContent = req.file.buffer.toString('utf8');
+        const parsed = teachableImportService.parseTeachableExport(jsonContent);
+        const result = await teachableImportService.importToDatabase(parsed, db, BRAND);
+
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('[admin/import/teachable] Error:', error);
+        res.status(400).json({ success: false, error: 'Import failed: ' + error.message });
     }
 });
 

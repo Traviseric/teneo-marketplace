@@ -105,6 +105,7 @@ const emailTrackingRoutes = require('./routes/emailTracking');
 const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
 const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
+const machineRoutes = require('./routes/machine');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
 const licenseRoutes = require('./routes/licenseRoutes');
@@ -201,6 +202,7 @@ const csrfExcludePaths = [
     '/api/crypto/btcpay/webhook', // BTCPay payment webhook
     '/api/storefront/fulfill',     // ArxMint fulfillment webhook
     '/api/arxmint/webhook',        // ArxMint dedicated webhook alias
+    '/api/machine/webhook',        // Machine-payable ArxMint webhook
     '/api/webhooks/printful',      // Printful shipment/order webhooks
     '/webhooks', // Orchestrator webhooks
     '/api/auth/login',            // Magic link initiator — session created via GET verify
@@ -225,7 +227,9 @@ app.use((req, res, next) => {
     if (req.method === 'GET' ||
         req.path.startsWith('/api/health') ||
         req.path.startsWith('/api/network/status') ||
-        ((req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront')) && req.method === 'GET')) {
+        ((req.path.startsWith('/api/apps') || req.path.startsWith('/api/storefront') || req.path.startsWith('/api/machine')) && req.method === 'GET') ||
+        req.path.startsWith('/api/machine/order') // machine order creation uses NIP-98 auth, not session cookies
+    ) {
         return next();
     }
     // Apply CSRF protection to all other routes
@@ -312,6 +316,9 @@ app.get('/store/:slug', async (req, res) => {
     res.status(500).send('<h1>Internal Server Error</h1>');
   }
 });
+
+// Machine-payable endpoints — AI agent commerce (Lightning invoices, NIP-98 auth)
+app.use('/api/machine', machineRoutes);
 
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);

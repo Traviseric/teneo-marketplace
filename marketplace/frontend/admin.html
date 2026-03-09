@@ -1879,7 +1879,7 @@
                 <section id="importSection" class="content-section" style="display: none;">
                     <div class="content-header">
                         <h2>Import Tools</h2>
-                        <p>Migrate products and subscribers from Gumroad, Mailchimp, ConvertKit, Substack, and other platforms.</p>
+                        <p>Migrate products and subscribers from Gumroad, Teachable, Mailchimp, ConvertKit, Substack, and other platforms.</p>
                     </div>
 
                     <!-- Gumroad Product Import -->
@@ -1896,6 +1896,23 @@
                             <i class="fas fa-upload"></i> Import Products
                         </button>
                         <div id="gumroadImportResult" style="margin-top:1rem;display:none;"></div>
+                    </div>
+
+                    <!-- Teachable Course Import -->
+                    <div class="settings-section" style="margin-top:1.5rem;">
+                        <h3><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.4rem;"></i> Import Courses from Teachable</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">
+                            Export your school from Teachable: <strong>Settings → Export → Download School Export (JSON)</strong>, then upload the file below.
+                            Imports courses, sections, lectures, and student enrollments.
+                        </p>
+                        <div class="form-group">
+                            <label>School Export JSON File</label>
+                            <input type="file" id="teachableJsonFile" accept=".json" style="display:block;margin-top:0.25rem;">
+                        </div>
+                        <button class="btn btn-primary" onclick="importTeachable()" id="btnImportTeachable">
+                            <i class="fas fa-upload"></i> Import Courses
+                        </button>
+                        <div id="teachableImportResult" style="margin-top:1rem;display:none;"></div>
                     </div>
 
                     <!-- Email List Import -->
@@ -4550,6 +4567,63 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-upload"></i> Import Products';
+            }
+        }
+
+        async function importTeachable() {
+            const fileInput = document.getElementById('teachableJsonFile');
+            const resultDiv = document.getElementById('teachableImportResult');
+            const btn = document.getElementById('btnImportTeachable');
+
+            if (!fileInput.files.length) {
+                alert('Please select a JSON file first.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+            resultDiv.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('json', fileInput.files[0]);
+
+                const res = await fetch('/api/admin/import/teachable', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': csrfToken },
+                    credentials: 'include',
+                    body: formData,
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    let html = `<div style="padding:1rem;background:#d1fae5;border-radius:8px;border:1px solid #6ee7b7;">
+                        <strong>Import complete!</strong><br>
+                        Courses: <strong>${data.courses}</strong> &mdash;
+                        Modules: <strong>${data.modules}</strong> &mdash;
+                        Lessons: <strong>${data.lessons}</strong><br>
+                        Students: <strong>${data.students}</strong> added to subscribers &mdash;
+                        Enrollments: <strong>${data.enrollments}</strong> recorded.
+                    </div>`;
+                    if (data.errors && data.errors.length) {
+                        html += `<details style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);">
+                            <summary>${data.errors.length} warning(s)</summary>
+                            <ul style="margin:0.5rem 0 0 1rem;">${data.errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </details>`;
+                    }
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">
+                        <strong>Import failed:</strong> ${data.error}
+                    </div>`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                resultDiv.innerHTML = `<div style="padding:1rem;background:#fee2e2;border-radius:8px;border:1px solid #fca5a5;">Error: ${e.message}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Import Courses';
             }
         }
 
