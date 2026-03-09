@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
@@ -13,31 +14,75 @@ function escapeHtml(str) {
 class EmailService {
   constructor() {
     this.transporter = null;
+    this._resend = null;
+    this._provider = null;
     this.initializeTransporter();
   }
 
   initializeTransporter() {
     try {
-      // Configure email transporter based on environment
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      if (process.env.RESEND_API_KEY) {
+        // Resend API — works on Vercel serverless, no SMTP connection needed
+        this._resend = new Resend(process.env.RESEND_API_KEY);
+        this._provider = 'resend';
+        console.log('Email service: using Resend API');
+      } else if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         this.transporter = nodemailer.createTransport({
-          service: 'gmail',
+          service: process.env.EMAIL_SERVICE || 'gmail',
           auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
           }
         });
+        this._provider = 'nodemailer';
+        console.log('Email service: using Nodemailer SMTP');
       } else {
-        console.warn('Email not configured. Set EMAIL_USER and EMAIL_PASS environment variables.');
+        console.warn('Email not configured. Set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS environment variables.');
       }
     } catch (error) {
       console.error('Error initializing email transporter:', error);
       this.transporter = null;
+      this._provider = null;
+    }
+  }
+
+  /**
+   * Returns true when either Resend or a nodemailer transporter is ready.
+   * Tests that inject emailService.transporter directly also satisfy this check.
+   */
+  _isConfigured() {
+    return this._provider === 'resend' || !!this.transporter;
+  }
+
+  /**
+   * Low-level send — routes to Resend or nodemailer depending on provider.
+   * Accepts the same options object as nodemailer.sendMail().
+   * @param {{ to, subject, html, text?, from?, replyTo? }} opts
+   */
+  async _send(opts) {
+    const { to, subject, html, text, replyTo } = opts;
+    const defaultFrom = process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@openbazaar.ai';
+    const from = opts.from || defaultFrom;
+
+    if (this._provider === 'resend') {
+      const payload = { from, to, subject, html };
+      if (text) payload.text = text;
+      if (replyTo) payload.replyTo = replyTo;
+      const { error } = await this._resend.emails.send(payload);
+      if (error) throw new Error(error.message);
+      return { messageId: `resend-${Date.now()}` };
+    } else if (this.transporter) {
+      const mailOpts = { from, to, subject, html };
+      if (text) mailOpts.text = text;
+      if (replyTo) mailOpts.replyTo = replyTo;
+      return this.transporter.sendMail(mailOpts);
+    } else {
+      throw new Error('Email service not configured');
     }
   }
 
   async sendDownloadEmail(orderData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -53,7 +98,7 @@ class EmailService {
         maxDownloads = 5
       } = orderData;
 
-      const htmlContent = this.generateDownloadEmailHTML({
+      const html = this.generateDownloadEmailHTML({
         bookTitle,
         bookAuthor,
         downloadUrl,
@@ -62,11 +107,10 @@ class EmailService {
         maxDownloads
       });
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `📚 Your book "${bookTitle}" is ready for download`,
-        html: htmlContent,
+        html,
         text: this.generateDownloadEmailText({
           bookTitle,
           bookAuthor,
@@ -75,9 +119,7 @@ class EmailService {
           expiresIn,
           maxDownloads
         })
-      };
-
-      const result = await this.transporter.sendMail(mailOptions);
+      });
 
       console.log(`Download email sent to ${userEmail} for order ${orderId}`);
 
@@ -273,7 +315,7 @@ Questions? Reply to this email or visit our support page.
   }
 
   async sendOrderConfirmation(orderData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -288,7 +330,7 @@ Questions? Reply to this email or visit our support page.
         paymentMethod = 'Credit Card'
       } = orderData;
 
-      const htmlContent = this.generateOrderConfirmationHTML({
+      const html = this.generateOrderConfirmationHTML({
         bookTitle,
         bookAuthor,
         price,
@@ -296,11 +338,10 @@ Questions? Reply to this email or visit our support page.
         paymentMethod
       });
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `✅ Order Confirmed: "${bookTitle}" - Order #${orderId}`,
-        html: htmlContent,
+        html,
         text: this.generateOrderConfirmationText({
           bookTitle,
           bookAuthor,
@@ -308,9 +349,7 @@ Questions? Reply to this email or visit our support page.
           orderId,
           paymentMethod
         })
-      };
-
-      const result = await this.transporter.sendMail(mailOptions);
+      });
 
       console.log(`Order confirmation sent to ${userEmail} for order ${orderId}`);
 
@@ -464,7 +503,7 @@ Questions about your order? Reply to this email or visit our support page.
   }
 
   async sendPaymentFailureEmail(data) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -472,7 +511,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, bookTitle, orderId, errorMessage } = data;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -559,15 +598,12 @@ Questions about your order? Reply to this email or visit our support page.
 </html>
       `;
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `Payment Failed: "${bookTitle}"`,
-        html: htmlContent,
+        html,
         text: `Payment Failed\n\nWe couldn't process your payment for "${bookTitle}".\n\nError: ${errorMessage || 'Payment processing failed'}\n\nPlease check your payment details and try again.\n\nOrder ID: ${orderId}`
-      };
-
-      const result = await this.transporter.sendMail(mailOptions);
+      });
 
       return {
         success: true,
@@ -584,7 +620,7 @@ Questions about your order? Reply to this email or visit our support page.
   }
 
   async sendRefundConfirmationEmail(data) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -592,7 +628,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, bookTitle, orderId, refundAmount, currency = 'USD' } = data;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -680,15 +716,12 @@ Questions about your order? Reply to this email or visit our support page.
 </html>
       `;
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `Refund Processed: $${refundAmount.toFixed(2)} for "${bookTitle}"`,
-        html: htmlContent,
+        html,
         text: `Refund Processed\n\nYour refund of $${refundAmount.toFixed(2)} ${currency} has been processed.\n\nBook: ${bookTitle}\nOrder ID: ${orderId}\n\nThe refund will appear on your statement within 5-10 business days.\n\nNote: Your download access for this book has been revoked.`
-      };
-
-      const result = await this.transporter.sendMail(mailOptions);
+      });
 
       return {
         success: true,
@@ -706,7 +739,7 @@ Questions about your order? Reply to this email or visit our support page.
 
   // Print status update email
   async sendPrintStatusUpdate(emailData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -714,7 +747,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, orderId, bookTitle, status, message, estimatedTime } = emailData;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -744,11 +777,10 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `📚 Print Status Update - ${bookTitle}`,
-        html: htmlContent
+        html
       });
 
       return { success: true, messageId: result.messageId };
@@ -760,7 +792,7 @@ Questions about your order? Reply to this email or visit our support page.
 
   // Shipping confirmation email
   async sendShippingConfirmation(emailData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -768,7 +800,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, orderId, bookTitle, trackingUrl, trackingId, estimatedDelivery } = emailData;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -799,11 +831,10 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `🚚 Shipped! Track order ${trackingId}`,
-        html: htmlContent
+        html
       });
 
       return { success: true, messageId: result.messageId };
@@ -815,7 +846,7 @@ Questions about your order? Reply to this email or visit our support page.
 
   // Print cancellation email
   async sendPrintCancellation(emailData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -823,7 +854,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, orderId, bookTitle, reason, refundInfo } = emailData;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -850,11 +881,10 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `Order Cancelled - ${bookTitle}`,
-        html: htmlContent
+        html
       });
 
       return { success: true, messageId: result.messageId };
@@ -866,7 +896,7 @@ Questions about your order? Reply to this email or visit our support page.
 
   // Print failure email
   async sendPrintFailure(emailData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -874,7 +904,7 @@ Questions about your order? Reply to this email or visit our support page.
     try {
       const { userEmail, orderId, bookTitle, errorMessage, supportInfo } = emailData;
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -901,11 +931,10 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `⚠️ Print Order Issue - ${bookTitle}`,
-        html: htmlContent
+        html
       });
 
       return { success: true, messageId: result.messageId };
@@ -917,7 +946,7 @@ Questions about your order? Reply to this email or visit our support page.
 
   // Mixed order confirmation email
   async sendMixedOrderConfirmation(emailData) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -941,7 +970,7 @@ Questions about your order? Reply to this email or visit our support page.
         <p>We'll email you tracking information when your items ship.</p>
       ` : '';
 
-      const htmlContent = `
+      const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -970,11 +999,10 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `✅ Order Confirmed - Mixed Digital & Physical Items`,
-        html: htmlContent
+        html
       });
 
       return { success: true, messageId: result.messageId };
@@ -989,19 +1017,12 @@ Questions about your order? Reply to this email or visit our support page.
    * Accepts standard nodemailer fields: { to, subject, html, text, from, replyTo }
    */
   async sendEmail({ to, subject, html, text, from, replyTo }) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.warn('Email service not configured — cannot send email');
       return { success: false, error: 'Email service not configured' };
     }
     try {
-      const result = await this.transporter.sendMail({
-        from: from || process.env.EMAIL_USER,
-        to,
-        subject,
-        html,
-        text,
-        replyTo
-      });
+      const result = await this._send({ to, subject, html, text, from, replyTo });
       return { success: true, messageId: result.messageId };
     } catch (error) {
       console.error('Error sending email:', error);
@@ -1010,14 +1031,13 @@ Questions about your order? Reply to this email or visit our support page.
   }
 
   async sendAlertVerificationEmail({ to, verifyUrl }) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.warn('Email service not configured — cannot send verification email');
       return { success: false, error: 'Email service not configured' };
     }
 
     try {
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to,
         subject: 'Verify your censorship alert subscription',
         html: `
@@ -1037,7 +1057,7 @@ Questions about your order? Reply to this email or visit our support page.
   }
 
   async sendLicenseKeyEmail({ userEmail, bookTitle, orderId, licenseKey, maxActivations = 3 }) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -1046,7 +1066,7 @@ Questions about your order? Reply to this email or visit our support page.
       const safeKey = escapeHtml(licenseKey);
       const safeOrderId = escapeHtml(orderId);
 
-      const htmlContent = `<!DOCTYPE html>
+      const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;max-width:600px;margin:0 auto;padding:20px;background:#f9fafb;">
@@ -1067,12 +1087,11 @@ Questions about your order? Reply to this email or visit our support page.
 </body>
 </html>`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `Your license key for "${bookTitle}"`,
-        html: htmlContent,
-        text: `Your license key for "${bookTitle}"\n\nKey: ${licenseKey}\nActivations allowed: ${maxActivations}\nOrder: ${orderId}\n\nKeep this email safe.`,
+        html,
+        text: `Your license key for "${bookTitle}"\n\nKey: ${licenseKey}\nActivations allowed: ${maxActivations}\nOrder: ${orderId}\n\nKeep this email safe.`
       });
       console.log(`License key email sent to ${userEmail} for order ${orderId}`);
       return { success: true, messageId: result.messageId };
@@ -1083,7 +1102,7 @@ Questions about your order? Reply to this email or visit our support page.
   }
 
   async sendProductUpdateEmail({ userEmail, customerName, productTitle, version, notes, downloadUrl, orderId }) {
-    if (!this.transporter) {
+    if (!this._isConfigured()) {
       console.error('Email service not configured');
       return { success: false, error: 'Email service not configured' };
     }
@@ -1113,8 +1132,7 @@ Questions about your order? Reply to this email or visit our support page.
 
       const text = `Updated file available: ${productTitle} (v${version})\n\nHi ${customerName || 'there'},\n\n${productTitle} has been updated to version ${version}.\n${notes ? `What's new: ${notes}\n\n` : '\n'}Download the latest version: ${downloadUrl}\n\nOrder: ${orderId}`;
 
-      const result = await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      const result = await this._send({
         to: userEmail,
         subject: `📦 Updated: ${productTitle} — version ${version} available`,
         html,

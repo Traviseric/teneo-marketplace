@@ -3,14 +3,16 @@
 /**
  * Tests for marketplace/backend/services/emailService.js
  *
- * Nodemailer is mocked so no real emails are sent.
- * The EmailService singleton's transporter is overridden in beforeEach
- * to inject a jest mock, isolating each test.
+ * Both nodemailer and resend are mocked so no real emails are sent.
+ * The EmailService singleton's internals are overridden in beforeEach
+ * to inject the relevant jest mock, isolating each test.
  *
  * Covers:
  *   - sendDownloadEmail()
  *   - sendOrderConfirmation()
  *   - sendEmail()
+ *   - Nodemailer SMTP provider (injected transporter mock)
+ *   - Resend API provider (injected _resend mock)
  *   - Transporter-not-configured fallback (all methods)
  */
 
@@ -22,21 +24,35 @@ jest.mock('nodemailer', () => ({
   })),
 }));
 
+// Mock resend so no real HTTP calls are made.
+jest.mock('resend', () => ({
+  Resend: jest.fn().mockImplementation(() => ({
+    emails: {
+      send: jest.fn().mockResolvedValue({ data: { id: 'resend-mock-id' }, error: null }),
+    },
+  })),
+}));
+
 const emailService = require('../services/emailService');
 
 // ---------------------------------------------------------------------------
-// Shared setup — inject a fresh mock transporter before each test
+// Shared setup — inject a fresh mock transporter (nodemailer path) before each test
 // ---------------------------------------------------------------------------
 
 let mockSendMail;
 
 beforeEach(() => {
   mockSendMail = jest.fn().mockResolvedValue({ messageId: '<mock@test>', response: '250 OK' });
+  // Simulate nodemailer provider
+  emailService._provider = null;
+  emailService._resend = null;
   emailService.transporter = { sendMail: mockSendMail };
 });
 
 afterEach(() => {
   emailService.transporter = null;
+  emailService._provider = null;
+  emailService._resend = null;
 });
 
 // ---------------------------------------------------------------------------
@@ -52,7 +68,7 @@ describe('sendDownloadEmail()', () => {
     orderId: 'ORD-001',
   };
 
-  it('calls sendMail once', async () => {
+  it('calls sendMail once (nodemailer path)', async () => {
     await emailService.sendDownloadEmail(validData);
     expect(mockSendMail).toHaveBeenCalledTimes(1);
   });
@@ -76,11 +92,26 @@ describe('sendDownloadEmail()', () => {
     expect(result.messageId).toBeDefined();
   });
 
-  it('returns { success: false } when transporter is not configured', async () => {
+  it('returns { success: false } when not configured', async () => {
     emailService.transporter = null;
+    emailService._provider = null;
     const result = await emailService.sendDownloadEmail(validData);
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/not configured/i);
+  });
+
+  it('routes through Resend when _provider is resend', async () => {
+    const mockResendSend = jest.fn().mockResolvedValue({ error: null });
+    emailService.transporter = null;
+    emailService._provider = 'resend';
+    emailService._resend = { emails: { send: mockResendSend } };
+
+    const result = await emailService.sendDownloadEmail(validData);
+    expect(mockResendSend).toHaveBeenCalledTimes(1);
+    expect(mockResendSend).toHaveBeenCalledWith(
+      expect.objectContaining({ to: 'customer@example.com', subject: expect.stringContaining('My Awesome Book') })
+    );
+    expect(result.success).toBe(true);
   });
 });
 
@@ -115,11 +146,23 @@ describe('sendOrderConfirmation()', () => {
     expect(result.success).toBe(true);
   });
 
-  it('returns { success: false } when transporter is not configured', async () => {
+  it('returns { success: false } when not configured', async () => {
     emailService.transporter = null;
+    emailService._provider = null;
     const result = await emailService.sendOrderConfirmation(orderData);
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/not configured/i);
+  });
+
+  it('routes through Resend when _provider is resend', async () => {
+    const mockResendSend = jest.fn().mockResolvedValue({ error: null });
+    emailService.transporter = null;
+    emailService._provider = 'resend';
+    emailService._resend = { emails: { send: mockResendSend } };
+
+    const result = await emailService.sendOrderConfirmation(orderData);
+    expect(mockResendSend).toHaveBeenCalledTimes(1);
+    expect(result.success).toBe(true);
   });
 });
 
@@ -153,8 +196,9 @@ describe('sendEmail()', () => {
     expect(result.messageId).toBeDefined();
   });
 
-  it('returns { success: false } when transporter is not configured', async () => {
+  it('returns { success: false } when not configured', async () => {
     emailService.transporter = null;
+    emailService._provider = null;
     const result = await emailService.sendEmail({
       to: 'x@example.com',
       subject: 'Test',
@@ -162,5 +206,41 @@ describe('sendEmail()', () => {
     });
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/not configured/i);
+  });
+
+  it('routes through Resend when _provider is resend', async () => {
+    const mockResendSend = jest.fn().mockResolvedValue({ error: null });
+    emailService.transporter = null;
+    emailService._provider = 'resend';
+    emailService._resend = { emails: { send: mockResendSend } };
+
+    const result = await emailService.sendEmail({
+      to: 'resend-test@example.com',
+      subject: 'Resend Test',
+      html: '<p>Via Resend</p>',
+    });
+    expect(mockResendSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'resend-test@example.com',
+        subject: 'Resend Test',
+        html: '<p>Via Resend</p>',
+      })
+    );
+    expect(result.success).toBe(true);
+  });
+
+  it('propagates Resend API errors as { success: false }', async () => {
+    const mockResendSend = jest.fn().mockResolvedValue({ error: { message: 'invalid_api_key' } });
+    emailService.transporter = null;
+    emailService._provider = 'resend';
+    emailService._resend = { emails: { send: mockResendSend } };
+
+    const result = await emailService.sendEmail({
+      to: 'x@example.com',
+      subject: 'Err',
+      html: '<p>Fail</p>',
+    });
+    expect(result.success).toBe(false);
+    expect(result.error).toMatch(/invalid_api_key/);
   });
 });
