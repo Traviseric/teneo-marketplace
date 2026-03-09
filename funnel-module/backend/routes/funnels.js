@@ -322,6 +322,30 @@ router.post('/events', async (req, res) => {
       [funnelId, pageSlug || funnelId, eventType, sessionId || null, metadataJson]
     );
 
+    // Update conversion_rate in funnels table after purchase events
+    if (eventType === 'purchase') {
+      try {
+        const counts = await dbAll(
+          `SELECT event_type, COUNT(*) as count FROM funnel_events WHERE funnel_id = ? GROUP BY event_type`,
+          [funnelId]
+        );
+        let pageviews = 0;
+        let purchases = 0;
+        counts.forEach(row => {
+          if (row.event_type === 'pageview') pageviews = row.count;
+          if (row.event_type === 'purchase') purchases = row.count;
+        });
+        const rate = pageviews > 0 ? (purchases / pageviews) * 100 : 0;
+        await dbRun(
+          `UPDATE funnels SET conversion_rate = ?, updated_at = CURRENT_TIMESTAMP WHERE slug = ?`,
+          [parseFloat(rate.toFixed(4)), funnelId]
+        );
+      } catch (rateErr) {
+        // Non-fatal
+        console.warn('[funnels] Failed to update conversion_rate:', rateErr.message);
+      }
+    }
+
     res.json({ success: true });
   } catch (error) {
     console.error('Funnel event tracking error:', error);
@@ -392,6 +416,12 @@ router.delete('/:slug', async (req, res) => {
 
       // Delete directory
       await fs.rm(funnelDir, { recursive: true, force: true });
+
+      // Remove from DB (non-fatal if record not found)
+      await dbRun(
+        'DELETE FROM funnels WHERE slug = ? AND user_id = ?',
+        [slug, userId]
+      ).catch((dbErr) => console.warn('[funnels] DB delete failed:', dbErr.message));
 
       res.json({
         success: true,

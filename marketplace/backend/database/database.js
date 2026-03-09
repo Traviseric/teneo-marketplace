@@ -658,9 +658,50 @@ function initializeSqliteDatabase(db) {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(user_id, funnel_name)
         );
+        CREATE TABLE IF NOT EXISTS funnel_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            funnel_id TEXT NOT NULL,
+            page_slug TEXT,
+            event_type TEXT NOT NULL,
+            session_id TEXT,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_funnel_events_funnel ON funnel_events(funnel_id);
+        CREATE INDEX IF NOT EXISTS idx_funnel_events_type ON funnel_events(funnel_id, event_type);
     `, (err) => {
         if (err) console.error('Error creating funnel tables:', err);
     });
+
+    // Funnel schema migrations (idempotent)
+    db.run('ALTER TABLE funnels ADD COLUMN config_json TEXT', (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding funnels.config_json:', err);
+        }
+    });
+    db.run('ALTER TABLE funnels ADD COLUMN conversion_rate REAL DEFAULT 0', (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding funnels.conversion_rate:', err);
+        }
+    });
+
+    // Email marketing tables (schema-email-marketing.sql)
+    const emailMktSqlPath = path.join(__dirname, 'schema-email-marketing.sql');
+    if (fs.existsSync(emailMktSqlPath)) {
+        const emailMktSql = fs.readFileSync(emailMktSqlPath, 'utf8');
+        db.exec(emailMktSql, (err) => {
+            if (err) console.error('Error creating email marketing tables:', err.message);
+        });
+    }
+
+    // Course quiz/certificate tables (schema-courses.sql)
+    const coursesSqlPath = path.join(__dirname, 'schema-courses.sql');
+    if (fs.existsSync(coursesSqlPath)) {
+        const coursesSql = fs.readFileSync(coursesSqlPath, 'utf8');
+        db.exec(coursesSql, (err) => {
+            if (err) console.error('Error creating extended course tables:', err.message);
+        });
+    }
 }
 
 const db = SQLITE_MODE ? createSqliteAdapter() : createPostgresAdapter();

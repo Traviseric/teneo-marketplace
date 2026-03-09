@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS subscribers (
     unsubscribed_at DATETIME
 );
 
-CREATE INDEX idx_subscribers_email ON subscribers(email);
-CREATE INDEX idx_subscribers_status ON subscribers(status);
-CREATE INDEX idx_subscribers_created ON subscribers(created_at);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_status ON subscribers(status);
+CREATE INDEX IF NOT EXISTS idx_subscribers_created ON subscribers(created_at);
 
 -- Segments (groups for targeting)
 CREATE TABLE IF NOT EXISTS segments (
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS subscriber_segments (
     UNIQUE(subscriber_id, segment_id)
 );
 
-CREATE INDEX idx_subscriber_segments_subscriber ON subscriber_segments(subscriber_id);
-CREATE INDEX idx_subscriber_segments_segment ON subscriber_segments(segment_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_segments_subscriber ON subscriber_segments(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_segments_segment ON subscriber_segments(segment_id);
 
 -- Tags (flexible categorization)
 CREATE TABLE IF NOT EXISTS tags (
@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS subscriber_tags (
     UNIQUE(subscriber_id, tag_id)
 );
 
-CREATE INDEX idx_subscriber_tags_subscriber ON subscriber_tags(subscriber_id);
-CREATE INDEX idx_subscriber_tags_tag ON subscriber_tags(tag_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_tags_subscriber ON subscriber_tags(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_tags_tag ON subscriber_tags(tag_id);
 
 -- Email Templates
 CREATE TABLE IF NOT EXISTS email_templates (
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS sequence_emails (
     UNIQUE(sequence_id, order_number)
 );
 
-CREATE INDEX idx_sequence_emails_sequence ON sequence_emails(sequence_id);
+CREATE INDEX IF NOT EXISTS idx_sequence_emails_sequence ON sequence_emails(sequence_id);
 
 -- Subscriber Sequences (track who's in what sequence)
 CREATE TABLE IF NOT EXISTS subscriber_sequences (
@@ -160,9 +160,9 @@ CREATE TABLE IF NOT EXISTS subscriber_sequences (
     FOREIGN KEY (sequence_id) REFERENCES email_sequences(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_subscriber_sequences_subscriber ON subscriber_sequences(subscriber_id);
-CREATE INDEX idx_subscriber_sequences_sequence ON subscriber_sequences(sequence_id);
-CREATE INDEX idx_subscriber_sequences_status ON subscriber_sequences(status);
+CREATE INDEX IF NOT EXISTS idx_subscriber_sequences_subscriber ON subscriber_sequences(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_sequences_sequence ON subscriber_sequences(sequence_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_sequences_status ON subscriber_sequences(status);
 
 -- Email Broadcasts (one-time campaigns)
 CREATE TABLE IF NOT EXISTS email_broadcasts (
@@ -181,8 +181,8 @@ CREATE TABLE IF NOT EXISTS email_broadcasts (
     FOREIGN KEY (template_id) REFERENCES email_templates(id)
 );
 
-CREATE INDEX idx_broadcasts_status ON email_broadcasts(status);
-CREATE INDEX idx_broadcasts_scheduled ON email_broadcasts(scheduled_at);
+CREATE INDEX IF NOT EXISTS idx_broadcasts_status ON email_broadcasts(status);
+CREATE INDEX IF NOT EXISTS idx_broadcasts_scheduled ON email_broadcasts(scheduled_at);
 
 -- Email Sends (log of all emails sent)
 CREATE TABLE IF NOT EXISTS email_sends (
@@ -210,10 +210,10 @@ CREATE TABLE IF NOT EXISTS email_sends (
     FOREIGN KEY (template_id) REFERENCES email_templates(id)
 );
 
-CREATE INDEX idx_email_sends_subscriber ON email_sends(subscriber_id);
-CREATE INDEX idx_email_sends_status ON email_sends(status);
-CREATE INDEX idx_email_sends_sent ON email_sends(sent_at);
-CREATE INDEX idx_email_sends_type ON email_sends(email_type);
+CREATE INDEX IF NOT EXISTS idx_email_sends_subscriber ON email_sends(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_email_sends_status ON email_sends(status);
+CREATE INDEX IF NOT EXISTS idx_email_sends_sent ON email_sends(sent_at);
+CREATE INDEX IF NOT EXISTS idx_email_sends_type ON email_sends(email_type);
 
 -- Email Links (track clicks)
 CREATE TABLE IF NOT EXISTS email_links (
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS email_links (
     FOREIGN KEY (send_id) REFERENCES email_sends(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_email_links_send ON email_links(send_id);
+CREATE INDEX IF NOT EXISTS idx_email_links_send ON email_links(send_id);
 
 -- Analytics Events
 CREATE TABLE IF NOT EXISTS analytics_events (
@@ -245,10 +245,10 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     FOREIGN KEY (subscriber_id) REFERENCES subscribers(id) ON DELETE SET NULL
 );
 
-CREATE INDEX idx_analytics_events_type ON analytics_events(event_type);
-CREATE INDEX idx_analytics_events_subscriber ON analytics_events(subscriber_id);
-CREATE INDEX idx_analytics_events_created ON analytics_events(created_at);
-CREATE INDEX idx_analytics_events_session ON analytics_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_type ON analytics_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_subscriber ON analytics_events(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_created ON analytics_events(created_at);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_session ON analytics_events(session_id);
 
 -- Conversion Funnels
 CREATE TABLE IF NOT EXISTS funnels (
@@ -281,9 +281,9 @@ CREATE TABLE IF NOT EXISTS funnel_conversions (
     FOREIGN KEY (subscriber_id) REFERENCES subscribers(id) ON DELETE SET NULL
 );
 
-CREATE INDEX idx_funnel_conversions_funnel ON funnel_conversions(funnel_id);
-CREATE INDEX idx_funnel_conversions_session ON funnel_conversions(session_id);
-CREATE INDEX idx_funnel_conversions_completed ON funnel_conversions(completed);
+CREATE INDEX IF NOT EXISTS idx_funnel_conversions_funnel ON funnel_conversions(funnel_id);
+CREATE INDEX IF NOT EXISTS idx_funnel_conversions_session ON funnel_conversions(session_id);
+CREATE INDEX IF NOT EXISTS idx_funnel_conversions_completed ON funnel_conversions(completed);
 
 -- Subscriber Activity (consolidated view of engagement)
 CREATE TABLE IF NOT EXISTS subscriber_activity (
@@ -304,9 +304,9 @@ CREATE TABLE IF NOT EXISTS subscriber_activity (
     FOREIGN KEY (subscriber_id) REFERENCES subscribers(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_subscriber_activity_subscriber ON subscriber_activity(subscriber_id);
-CREATE INDEX idx_subscriber_activity_score ON subscriber_activity(engagement_score);
-CREATE INDEX idx_subscriber_activity_last_active ON subscriber_activity(last_active_at);
+CREATE INDEX IF NOT EXISTS idx_subscriber_activity_subscriber ON subscriber_activity(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_subscriber_activity_score ON subscriber_activity(engagement_score);
+CREATE INDEX IF NOT EXISTS idx_subscriber_activity_last_active ON subscriber_activity(last_active_at);
 
 -- ================================================
 -- VIEWS FOR COMMON QUERIES

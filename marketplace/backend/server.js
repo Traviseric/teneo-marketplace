@@ -95,6 +95,7 @@ const censorshipTrackerRoutes = require('./routes/censorshipTracker');
 const authRoutes = require('./routes/auth');
 const couponsRoutes = require('./routes/couponsRoutes');
 const emailTrackingRoutes = require('./routes/emailTracking');
+const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 
@@ -245,6 +246,7 @@ app.use('/api/censorship', censorshipTrackerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/email', emailTrackingRoutes);
+app.use('/api/email-marketing', emailMarketingRoutes);
 
 // Funnel builder API
 app.use('/api/funnels', funnelRoutes);
