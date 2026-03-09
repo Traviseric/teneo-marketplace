@@ -12,6 +12,7 @@ const couponService = require('../services/couponService');
 const orderBumpService = require('../services/orderBumpService');
 const printfulProvider = require('../services/printfulFulfillmentProvider');
 const importService = require('../services/importService');
+const emailService = require('../services/emailService');
 
 const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 
@@ -854,6 +855,75 @@ router.post('/fulfillment/:orderId/refresh', authenticateAdmin, async (req, res)
     }
 });
 
+// ── Product Fulfillment Mapping ────────────────────────────────────────────────
+
+// GET /api/admin/products/fulfillment?brand_id=teneo
+// Returns all products for a brand with their current fulfillment_provider.
+router.get('/products/fulfillment', authenticateAdmin, async (req, res) => {
+    try {
+        const brand = req.query.brand_id || BRAND;
+        const catalogPath = path.join(__dirname, '../../frontend/brands', brand, 'catalog.json');
+        const data = await fs.readFile(catalogPath, 'utf8');
+        const catalog = JSON.parse(data);
+        const products = (catalog.books || []).map(b => ({
+            id: b.id,
+            title: b.title,
+            fulfillment_provider: b.fulfillment_provider || null,
+            printful_variant_id: b.printfulVariantId || b.podVariantId || null,
+            lulu_podbook_id: b.luluPodPackageId || b.pod_package_id || null,
+        }));
+        res.json({ success: true, brand, products });
+    } catch (error) {
+        if (error.code === 'ENOENT') return res.status(404).json({ error: 'Brand catalog not found' });
+        console.error('[admin/products/fulfillment] Error:', error);
+        res.status(500).json({ error: 'Failed to load products' });
+    }
+});
+
+// PATCH /api/admin/products/:productId/fulfillment
+// Body: { brand_id?, fulfillment_provider, printful_variant_id?, lulu_podbook_id? }
+router.patch('/products/:productId/fulfillment', authenticateAdmin, async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { brand_id, fulfillment_provider, printful_variant_id, lulu_podbook_id } = req.body || {};
+
+        const VALID_PROVIDERS = ['stripe_digital', 'printful', 'lulu', 'arxmint', 'manual'];
+        if (!fulfillment_provider || !VALID_PROVIDERS.includes(fulfillment_provider)) {
+            return res.status(400).json({
+                error: `fulfillment_provider must be one of: ${VALID_PROVIDERS.join(', ')}`,
+            });
+        }
+
+        const brand = brand_id || BRAND;
+        const catalogPath = path.join(__dirname, '../../frontend/brands', brand, 'catalog.json');
+        const data = await fs.readFile(catalogPath, 'utf8');
+        const catalog = JSON.parse(data);
+
+        const bookIndex = (catalog.books || []).findIndex(b => b.id === productId);
+        if (bookIndex === -1) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        catalog.books[bookIndex].fulfillment_provider = fulfillment_provider;
+        if (printful_variant_id !== undefined) catalog.books[bookIndex].printfulVariantId = printful_variant_id || null;
+        if (lulu_podbook_id !== undefined) catalog.books[bookIndex].luluPodPackageId = lulu_podbook_id || null;
+
+        await fs.writeFile(catalogPath, JSON.stringify(catalog, null, 2));
+
+        res.json({
+            success: true,
+            productId,
+            fulfillment_provider,
+            printful_variant_id: catalog.books[bookIndex].printfulVariantId || null,
+            lulu_podbook_id: catalog.books[bookIndex].luluPodPackageId || null,
+        });
+    } catch (error) {
+        if (error.code === 'ENOENT') return res.status(404).json({ error: 'Brand catalog not found' });
+        console.error('[admin/products/fulfillment] PATCH error:', error);
+        res.status(500).json({ error: 'Failed to update fulfillment provider' });
+    }
+});
+
 // ─── Upsell management ───────────────────────────────────────────────────────
 
 // List all upsells
@@ -898,6 +968,118 @@ router.delete('/upsells/:id', authenticateAdmin, async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ── Product Versioning ──────────────────────────────────────────────────────
+
+// Multer config for versioned PDF uploads — stored in books/versions/<productId>/
+const versionStorage = multer.diskStorage({
+    destination: async (req, file, cb) => {
+        const safeId = path.basename(req.params.productId || 'unknown').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const dir = path.join(__dirname, '../books/versions', safeId);
+        await fs.mkdir(dir, { recursive: true });
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        const safeVersion = (req.body.version || 'new').replace(/[^a-zA-Z0-9._-]/g, '_');
+        cb(null, `v${safeVersion}.pdf`);
+    }
+});
+const versionUpload = multer({
+    storage: versionStorage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') cb(null, true);
+        else cb(new Error('Only PDF files are allowed'), false);
+    },
+    limits: { fileSize: 50 * 1024 * 1024 }
+});
+
+// GET /api/admin/products/:productId/versions — list version history
+router.get('/products/:productId/versions', authenticateAdmin, async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const brand = req.query.brand_id || BRAND;
+        const rows = await new Promise((resolve, reject) => {
+            db.all(
+                `SELECT id, product_id, brand_id, version, file_path, notes, created_at
+                 FROM product_versions
+                 WHERE product_id = ? AND brand_id = ?
+                 ORDER BY created_at DESC`,
+                [productId, brand],
+                (err, rows) => err ? reject(err) : resolve(rows)
+            );
+        });
+        res.json({ success: true, versions: rows });
+    } catch (error) {
+        console.error('[admin/products/versions] Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to load version history' });
+    }
+});
+
+// POST /api/admin/products/:productId/version — upload a new version and notify buyers
+router.post('/products/:productId/version', authenticateAdmin, versionUpload.single('pdf'), async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { version, notes, brand_id } = req.body || {};
+        const brand = brand_id || BRAND;
+
+        if (!version) {
+            return res.status(400).json({ success: false, error: 'version is required (e.g. "2.0")' });
+        }
+
+        const filePath = req.file ? req.file.path : null;
+
+        // Insert version record
+        const result = await new Promise((resolve, reject) => {
+            db.run(
+                `INSERT INTO product_versions (product_id, brand_id, version, file_path, notes) VALUES (?, ?, ?, ?, ?)`,
+                [productId, brand, version, filePath, notes || null],
+                function (err) { err ? reject(err) : resolve({ id: this.lastID }); }
+            );
+        });
+
+        await auditService.log('product_version_added', { productId, brand, version, versionId: result.id });
+
+        // Notify all buyers of this product
+        const buyers = await new Promise((resolve, reject) => {
+            db.all(
+                `SELECT customer_email, customer_name, download_token, order_id, book_title
+                 FROM orders
+                 WHERE book_id = ? AND status = 'completed' AND download_token IS NOT NULL`,
+                [productId],
+                (err, rows) => err ? reject(err) : resolve(rows)
+            );
+        });
+
+        let notified = 0;
+        for (const buyer of buyers) {
+            const downloadUrl = `${process.env.APP_URL || 'http://localhost:3001'}/api/download/${buyer.download_token}`;
+            try {
+                await emailService.sendProductUpdateEmail({
+                    userEmail: buyer.customer_email,
+                    customerName: buyer.customer_name,
+                    productTitle: buyer.book_title || productId,
+                    version,
+                    notes: notes || '',
+                    downloadUrl,
+                    orderId: buyer.order_id
+                });
+                notified++;
+            } catch (emailErr) {
+                console.warn(`[product-version] Failed to notify ${buyer.customer_email}:`, emailErr.message);
+            }
+        }
+
+        res.json({
+            success: true,
+            versionId: result.id,
+            notifiedBuyers: notified,
+            totalBuyers: buyers.length
+        });
+    } catch (error) {
+        console.error('[admin/products/version] Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to save version' });
     }
 });
 

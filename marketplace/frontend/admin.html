@@ -924,6 +924,10 @@
                         <i class="fas fa-share-alt"></i>
                         <span>Referrals</span>
                     </li>
+                    <li class="nav-item" data-section="productFulfillment">
+                        <i class="fas fa-boxes"></i>
+                        <span>Product Fulfillment</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1871,6 +1875,45 @@
                         <div id="emailListImportResult" style="margin-top:1rem;display:none;"></div>
                     </div>
                 </section>
+
+                <!-- Product Fulfillment Section -->
+                <section id="productFulfillmentSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>Product Fulfillment</h2>
+                        <p>Map each product to its fulfillment provider. Changes take effect immediately for new orders.</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <div style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.25rem;">
+                            <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+                                <label>Brand</label>
+                                <input type="text" id="fulfillmentBrandInput" placeholder="teneo"
+                                    style="padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;width:100%;" />
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadProductFulfillment()">
+                                <i class="fas fa-sync-alt"></i> Load Products
+                            </button>
+                        </div>
+                        <p id="productFulfillmentStatus" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;"></p>
+
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Product</th>
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Fulfillment Provider</th>
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Variant / Pod ID</th>
+                                        <th style="text-align:center;padding:0.6rem 0.5rem;">Save</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productFulfillmentTableBody">
+                                    <tr><td colspan="4" style="padding:1.5rem;color:var(--text-muted);text-align:center;">Enter a brand name above and click "Load Products".</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
             </main>
         </div>
     </div>
@@ -2179,6 +2222,9 @@
                     break;
                 case 'referrals':
                     loadReferrals();
+                    break;
+                case 'productFulfillment':
+                    loadProductFulfillment();
                     break;
             }
         }
@@ -3949,6 +3995,142 @@
                 input.select();
                 document.execCommand('copy');
             });
+        }
+
+        // ─── Product Fulfillment ─────────────────────────────────────────────────
+
+        const FULFILLMENT_PROVIDER_LABELS = {
+            stripe_digital: 'Stripe Digital',
+            printful: 'Printful (POD)',
+            lulu: 'Lulu (POD Books)',
+            arxmint: 'ArxMint (Crypto)',
+            manual: 'Manual / Physical',
+        };
+
+        async function loadProductFulfillment() {
+            const statusEl = document.getElementById('productFulfillmentStatus');
+            const tbody = document.getElementById('productFulfillmentTableBody');
+            const brandInput = document.getElementById('fulfillmentBrandInput');
+            const brand = (brandInput.value || '').trim() || 'teneo';
+            brandInput.value = brand;
+
+            statusEl.textContent = 'Loading…';
+            tbody.innerHTML = '<tr><td colspan="4" style="padding:1.5rem;color:var(--text-muted);text-align:center;">Loading…</td></tr>';
+
+            try {
+                const res = await secureFetch(`/api/admin/products/fulfillment?brand_id=${encodeURIComponent(brand)}`);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    statusEl.textContent = err.error || `Error ${res.status}`;
+                    tbody.innerHTML = '';
+                    return;
+                }
+                const { products } = await res.json();
+                statusEl.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} in "${brand}"`;
+
+                if (!products.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding:1.5rem;color:var(--text-muted);text-align:center;">No products found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = products.map(p => {
+                    const providerOptions = Object.entries(FULFILLMENT_PROVIDER_LABELS).map(([val, label]) =>
+                        `<option value="${val}" ${p.fulfillment_provider === val ? 'selected' : ''}>${label}</option>`
+                    ).join('');
+                    const variantVal = p.printful_variant_id || p.lulu_podbook_id || '';
+                    return `<tr data-product-id="${p.id}" style="border-bottom:1px solid var(--border);">
+                        <td style="padding:0.6rem 0.5rem;font-weight:500;">${escapeHtml(p.title)}<br><span style="font-size:0.75rem;color:var(--text-muted);">${p.id}</span></td>
+                        <td style="padding:0.6rem 0.5rem;">
+                            <select class="fulfillment-provider-select" style="padding:0.4rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;width:100%;max-width:200px;" onchange="onFulfillmentProviderChange(this)">
+                                <option value="">— not set —</option>
+                                ${providerOptions}
+                            </select>
+                        </td>
+                        <td style="padding:0.6rem 0.5rem;">
+                            <input class="variant-id-input" type="text" value="${escapeHtml(variantVal)}"
+                                placeholder="Printful variant ID or Lulu pod package ID"
+                                style="padding:0.4rem 0.5rem;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;width:100%;max-width:220px;"
+                                data-provider="${p.fulfillment_provider || ''}" />
+                        </td>
+                        <td style="padding:0.6rem 0.5rem;text-align:center;">
+                            <button class="btn btn-primary" style="padding:0.4rem 0.8rem;font-size:0.8rem;"
+                                onclick="saveProductFulfillment(this, '${brand}', '${p.id}')">
+                                Save
+                            </button>
+                            <span class="save-status" style="display:none;font-size:0.75rem;margin-left:0.4rem;"></span>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } catch (error) {
+                console.error('[productFulfillment] load error:', error);
+                statusEl.textContent = 'Failed to load products.';
+            }
+        }
+
+        function onFulfillmentProviderChange(select) {
+            const row = select.closest('tr');
+            const variantInput = row.querySelector('.variant-id-input');
+            const provider = select.value;
+            variantInput.dataset.provider = provider;
+            const showVariant = provider === 'printful' || provider === 'lulu';
+            variantInput.style.opacity = showVariant ? '1' : '0.4';
+            variantInput.placeholder = provider === 'lulu'
+                ? 'Lulu pod package ID (e.g. 0600X0900BWSTDPB060UW444MXX)'
+                : provider === 'printful'
+                    ? 'Printful variant ID (integer)'
+                    : 'N/A for this provider';
+        }
+
+        async function saveProductFulfillment(btn, brand, productId) {
+            const row = btn.closest('tr');
+            const provider = row.querySelector('.fulfillment-provider-select').value;
+            const variantRaw = row.querySelector('.variant-id-input').value.trim();
+            const statusSpan = row.querySelector('.save-status');
+
+            if (!provider) {
+                statusSpan.style.display = 'inline';
+                statusSpan.style.color = 'var(--danger)';
+                statusSpan.textContent = 'Select a provider';
+                return;
+            }
+
+            btn.disabled = true;
+            statusSpan.style.display = 'none';
+
+            const body = {
+                brand_id: brand,
+                fulfillment_provider: provider,
+            };
+            if (provider === 'printful') body.printful_variant_id = variantRaw || null;
+            if (provider === 'lulu') body.lulu_podbook_id = variantRaw || null;
+
+            try {
+                const res = await secureFetch(`/api/admin/products/${encodeURIComponent(productId)}/fulfillment`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+                statusSpan.style.display = 'inline';
+                if (res.ok) {
+                    statusSpan.style.color = 'var(--secondary)';
+                    statusSpan.textContent = 'Saved';
+                } else {
+                    statusSpan.style.color = 'var(--danger)';
+                    statusSpan.textContent = data.error || 'Error';
+                }
+            } catch (err) {
+                statusSpan.style.display = 'inline';
+                statusSpan.style.color = 'var(--danger)';
+                statusSpan.textContent = 'Failed';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
 
         // ─── Funnels ──────────────────────────────────────────────────────────────

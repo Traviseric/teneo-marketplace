@@ -70,6 +70,8 @@ function bookToProduct(book, brandId) {
   const inferredLuluPackage = book.podPackageId || book.pod_package_id || book.luluPodPackageId || null;
   const inferredLuluPrintable = book.luluPrintableId || book.printableId || book.printable_id || null;
   const inferredProvider = (() => {
+    if (book.fulfillment_provider === 'printful') return 'printful';
+    if (book.fulfillment_provider === 'lulu') return 'lulu';
     if (book.podProvider) return String(book.podProvider).toLowerCase();
     if (inferredPrintfulVariant) return 'printful';
     if (inferredLuluPackage || inferredLuluPrintable) return 'lulu';
@@ -78,7 +80,14 @@ function bookToProduct(book, brandId) {
   const inferredPodVariant = inferredProvider === 'lulu'
     ? inferredLuluPackage
     : inferredPrintfulVariant;
-  const inferredFulfillment = book.fulfillment || (inferredProvider ? 'pod' : 'digital');
+  // Explicit fulfillment_provider overrides heuristic detection
+  const inferredFulfillment = (() => {
+    if (book.fulfillment_provider === 'stripe_digital') return 'digital';
+    if (book.fulfillment_provider === 'printful' || book.fulfillment_provider === 'lulu') return 'pod';
+    if (book.fulfillment_provider === 'arxmint') return 'digital';
+    if (book.fulfillment_provider === 'manual') return 'physical';
+    return book.fulfillment || (inferredProvider ? 'pod' : 'digital');
+  })();
 
   return {
     id: `${brandId}:${book.id}`,
