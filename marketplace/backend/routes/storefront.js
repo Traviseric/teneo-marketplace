@@ -615,6 +615,11 @@ async function handleFulfill(req, res) {
         metadata: JSON.stringify(paymentMeta),
       });
 
+      // State machine: pending→processing→completed (non-fatal for existing DBs)
+      await orderService.updateOrderState(effectiveOrderId, 'processing', { provider: paymentProvider })
+        .then(() => orderService.updateOrderState(effectiveOrderId, 'completed', { provider: paymentProvider, fulfillment: 'digital' }))
+        .catch(err => console.warn('[state-machine] fulfill digital state transition failed (non-fatal):', err.message));
+
       return res.json({
         success: true,
         orderId: effectiveOrderId,
@@ -639,6 +644,10 @@ async function handleFulfill(req, res) {
         shipping_method: paymentMeta.shippingMethod || paymentMeta.luluShippingLevel || null,
         metadata: JSON.stringify(paymentMeta),
       });
+
+      // State machine: pending→processing (non-fatal for existing DBs)
+      await orderService.updateOrderState(effectiveOrderId, 'processing', { provider: paymentProvider, fulfillment: product.fulfillment })
+        .catch(err => console.warn('[state-machine] fulfill physical state transition failed (non-fatal):', err.message));
 
       if (product.fulfillment === 'pod') {
         const providerName = normalizePodProvider(product.podProvider || paymentMeta.podProvider) || 'printful';

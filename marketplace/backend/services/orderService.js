@@ -1,5 +1,23 @@
 const crypto = require('crypto');
 
+// Canonical order states for the payment-agnostic state machine.
+const ORDER_STATES = Object.freeze({
+    PENDING:    'pending',
+    PROCESSING: 'processing',
+    COMPLETED:  'completed',
+    FAILED:     'failed',
+    REFUNDED:   'refunded',
+});
+
+// Valid state transitions — enforces lifecycle rules.
+const VALID_TRANSITIONS = Object.freeze({
+    pending:    new Set(['processing', 'failed']),
+    processing: new Set(['completed', 'failed']),
+    completed:  new Set(['refunded']),
+    failed:     new Set(),
+    refunded:   new Set(),
+});
+
 // Whitelist of columns that may be updated via updateOrderStatus().
 // Prevents SQL injection if a caller ever passes user-controlled keys.
 const ALLOWED_UPDATE_KEYS = new Set([
@@ -26,6 +44,8 @@ const ALLOWED_UPDATE_KEYS = new Set([
     'tracking_url',
     'estimated_delivery',
     'shipping_cost',
+    'state',
+    'state_transitions',
 ]);
 
 class OrderService {
@@ -154,6 +174,62 @@ class OrderService {
                     reject(err);
                 } else {
                     resolve({ changes: this.changes });
+                }
+            });
+        });
+    }
+
+    /**
+     * Payment-agnostic state machine transition.
+     *
+     * Validates the transition (current → newState) against VALID_TRANSITIONS
+     * and writes the new state + appends a timestamped transition entry to
+     * state_transitions (JSON array).
+     *
+     * @param {string} orderId
+     * @param {string} newState  One of ORDER_STATES values
+     * @param {object} metadata  Optional context about the transition
+     * @throws if order not found or transition is invalid
+     */
+    async updateOrderState(orderId, newState, metadata = {}) {
+        const order = await this.getOrder(orderId);
+        if (!order) {
+            throw new Error(`updateOrderState: order '${orderId}' not found`);
+        }
+
+        const currentState = order.state || 'pending';
+        const allowed = VALID_TRANSITIONS[currentState];
+
+        if (!allowed) {
+            throw new Error(`updateOrderState: unknown current state '${currentState}'`);
+        }
+        if (!allowed.has(newState)) {
+            throw new Error(
+                `updateOrderState: invalid transition ${currentState} → ${newState}. ` +
+                `Allowed from '${currentState}': [${[...allowed].join(', ')}]`
+            );
+        }
+
+        let transitions;
+        try {
+            transitions = JSON.parse(order.state_transitions || '[]');
+            if (!Array.isArray(transitions)) transitions = [];
+        } catch {
+            transitions = [];
+        }
+        transitions.push({ from: currentState, to: newState, at: new Date().toISOString(), metadata });
+
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE orders
+                SET state = ?, state_transitions = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE order_id = ?
+            `;
+            this.db.run(sql, [newState, JSON.stringify(transitions), orderId], function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ changes: this.changes, from: currentState, to: newState });
                 }
             });
         });
@@ -522,3 +598,5 @@ class OrderService {
 }
 
 module.exports = OrderService;
+module.exports.ORDER_STATES = ORDER_STATES;
+module.exports.VALID_TRANSITIONS = VALID_TRANSITIONS;

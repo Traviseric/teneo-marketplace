@@ -53,6 +53,8 @@ CREATE TABLE IF NOT EXISTS orders (
     abandonment_email_stage INTEGER DEFAULT 0, -- 0=none, 1=1h sent, 2=24h sent, 3=72h sent
     stripe_customer_id TEXT,
     stripe_payment_method_id TEXT,
+    state TEXT DEFAULT 'pending',
+    state_transitions TEXT DEFAULT '[]',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     completed_at DATETIME,
@@ -647,3 +649,38 @@ CREATE TABLE IF NOT EXISTS product_versions (
 
 CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(product_id, brand_id);
 CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at);
+
+-- Membership tiers table — creator-defined subscription tiers per store
+CREATE TABLE IF NOT EXISTS membership_tiers (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
+  store_slug TEXT NOT NULL,
+  name TEXT NOT NULL,
+  price_monthly REAL NOT NULL,
+  stripe_price_id TEXT,
+  features TEXT DEFAULT '[]',       -- JSON array of feature strings
+  content_access TEXT DEFAULT '[]', -- JSON array of product IDs gated to this tier
+  active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_membership_tiers_store ON membership_tiers(store_slug, active);
+
+-- Subscriptions table — active subscriber records
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  customer_email TEXT NOT NULL,
+  store_slug TEXT NOT NULL,
+  tier_id TEXT NOT NULL REFERENCES membership_tiers(id),
+  stripe_subscription_id TEXT UNIQUE,
+  stripe_customer_id TEXT,
+  status TEXT DEFAULT 'active',       -- active | cancelled | past_due
+  current_period_end INTEGER,         -- Unix timestamp
+  created_at INTEGER DEFAULT (strftime('%s','now')),
+  updated_at INTEGER DEFAULT (strftime('%s','now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(customer_email);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_store ON subscriptions(store_slug);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe ON subscriptions(stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);

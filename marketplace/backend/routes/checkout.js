@@ -381,6 +381,13 @@ async function handleCheckoutCompleted(session) {
     orderId
   } = session.metadata;
 
+  // Transition order to 'processing' when payment is confirmed (non-fatal —
+  // state column may not exist on older databases that haven't re-run init.js)
+  await orderService.updateOrderState(orderId, 'processing', {
+    provider: 'stripe',
+    sessionId: session.id,
+  }).catch(err => console.warn('[state-machine] pending→processing failed (non-fatal):', err.message));
+
   try {
     // Record funnel purchase event if applicable
     if (session.metadata?.funnelId) {
@@ -482,6 +489,12 @@ async function handleCheckoutCompleted(session) {
 
     await orderService.fulfillOrder(orderId);
 
+    // Transition to 'completed' after fulfillment (non-fatal)
+    await orderService.updateOrderState(orderId, 'completed', {
+      provider: 'stripe',
+      paymentIntent: session.payment_intent,
+    }).catch(err => console.warn('[state-machine] processing→completed failed (non-fatal):', err.message));
+
     console.log(`Download link sent to ${userEmail} for order ${orderId}`);
 
     // Generate license key if product requires it (non-fatal)
@@ -544,6 +557,10 @@ async function handleCheckoutCompleted(session) {
     });
     if (orderId) {
       await orderService.failOrder(orderId, error.message).catch(() => {});
+      await orderService.updateOrderState(orderId, 'failed', {
+        reason: error.message,
+        provider: 'stripe',
+      }).catch(() => {});
     }
     throw error;
   }
@@ -602,6 +619,13 @@ async function handleChargeRefunded(charge) {
       amount: refundAmount,
       reason: charge.refunds.data[0]?.reason || 'requested_by_customer'
     });
+
+    // Transition to 'refunded' state (non-fatal)
+    await orderService.updateOrderState(orderId, 'refunded', {
+      refundId,
+      stripeRefundId: charge.refunds.data[0]?.id,
+      amount: refundAmount,
+    }).catch(err => console.warn('[state-machine] completed→refunded failed (non-fatal):', err.message));
 
     const order = await orderService.getOrder(orderId);
     if (order && order.customer_email) {
