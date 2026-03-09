@@ -107,6 +107,94 @@
       margin: 0 auto;
     }
 
+    /* ─── Example brief section ─── */
+    .example-section {
+      background: #F5F3FF;
+      border: 1px solid #DDD6FE;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 540px) {
+      .example-section { padding: 20px; }
+    }
+    .example-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .example-section h2 {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .example-brief-box {
+      background: var(--surface);
+      border: 1px solid #DDD6FE;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.65;
+      margin: 12px 0;
+      position: relative;
+    }
+    .example-brief-box::before {
+      content: '"';
+      font-size: 2rem;
+      color: #C4B5FD;
+      position: absolute;
+      top: 4px;
+      left: 12px;
+      line-height: 1;
+    }
+    .example-brief-box p { padding-left: 16px; }
+    .example-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    .example-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    .example-link:hover { text-decoration: underline; }
+
+    /* ─── Social proof strip ─── */
+    .social-proof {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+    .proof-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .proof-icon {
+      color: var(--success);
+      font-size: 1rem;
+    }
+
     /* ─── Tier cards ─── */
     .tier-grid {
       display: grid;
@@ -393,6 +481,42 @@
         <span class="page-badge">AI Store Builder</span>
         <h1>We'll build your store for you.</h1>
         <p>Tell us about your business and our team will use the AI Store Builder to create a custom storefront — designed, configured, and ready to sell.</p>
+      </div>
+
+      <!-- Example brief section -->
+      <div class="example-section" aria-label="Example brief">
+        <div class="example-label">See how it works</div>
+        <h2>Here's what a great brief looks like:</h2>
+        <div class="example-brief-box">
+          <p>I run Earthy Candle Co., a small batch soy candle brand focused on sustainable, eco-conscious customers. We sell hand-poured candles in earthy scents (cedar, sage, sandalwood) plus a digital "candle making starter kit" eBook. Our aesthetic is warm, minimal, and nature-inspired. Target customers are 25–45 women who care about clean ingredients and sustainable packaging. I want a store that feels boutique, captures email leads, and lets people buy both physical and digital products.</p>
+        </div>
+        <div class="example-meta">
+          <span>Built in minutes by AI · Delivered in hours by our team</span>
+          <a href="/store-example.html" target="_blank" rel="noopener" class="example-link">
+            See example output
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Social proof strip -->
+      <div class="social-proof" aria-label="Service highlights">
+        <div class="proof-item">
+          <span class="proof-icon">✓</span>
+          <span>AI-generated in minutes</span>
+        </div>
+        <div class="proof-item">
+          <span class="proof-icon">✓</span>
+          <span>Human-reviewed &amp; delivered in 48h</span>
+        </div>
+        <div class="proof-item">
+          <span class="proof-icon">✓</span>
+          <span>No payment collected here</span>
+        </div>
       </div>
 
       <!-- Success state (hidden until submission) -->

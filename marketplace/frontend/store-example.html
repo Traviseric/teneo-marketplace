@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthy Candle Co. — Example AI-Generated Store</title>
+  <meta name="description" content="Example of an AI-generated storefront built by OpenBazaar.ai. Soy candle brand with physical and digital products.">
+  <meta property="og:title" content="Earthy Candle Co. — Example Store">
+  <meta property="og:description" content="See what an AI-generated store looks like. Built in minutes from a one-paragraph brief.">
+  <meta property="og:image" content="/images/og-example-store.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --brand-primary: #5C4A32;
+      --brand-accent: #8B6B4A;
+      --brand-light: #F7F3EE;
+      --brand-dark: #2D2018;
+      --brand-success: #6B8F4E;
+      --text: #2D2018;
+      --text-muted: #7A6652;
+      --border: #E8DDD2;
+      --surface: #FFFFFF;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--brand-light);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Demo banner ── */
+    .demo-banner {
+      background: #1F2937;
+      color: #F9FAFB;
+      text-align: center;
+      padding: 10px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.8125rem;
+    }
+    .demo-banner a {
+      color: #A78BFA;
+      text-decoration: underline;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+      letter-spacing: 0.02em;
+    }
+    nav {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    nav a {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    nav a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--brand-primary);
+      color: #fff !important;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: var(--brand-dark) !important; }
+    @media (max-width: 600px) {
+      nav a:not(.nav-cta) { display: none; }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #F7F3EE 0%, #EDE4D8 100%);
+      padding: 72px 24px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #E8DDD2;
+      color: var(--brand-accent);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 700;
+      color: var(--brand-dark);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-muted);
+      font-size: 1.0625rem;
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--brand-primary);
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 2px solid var(--brand-primary);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #F0EAE3; }
+
+    /* ── Section wrapper ── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      font-size: 1rem;
+    }
+
+    /* ── Product grid ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .product-card:hover {
+      box-shadow: 0 8px 24px rgba(93,74,50,0.12);
+    }
+    .product-image {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+    }
+    .product-body {
+      padding: 18px 20px;
+    }
+    .product-type-badge {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-accent);
+      margin-bottom: 6px;
+    }
+    .product-name {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 6px;
+    }
+    .product-desc {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    .btn-buy {
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-buy:hover { background: var(--brand-dark); }
+
+    /* ── Values strip ── */
+    .values-strip {
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .values-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 600px) {
+      .values-inner { grid-template-columns: 1fr; gap: 20px; }
+    }
+    .value-item h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .value-item p {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+      opacity: 0.8;
+      line-height: 1.55;
+    }
+
+    /* ── Email capture ── */
+    .email-section {
+      background: #EDE4D8;
+      padding: 64px 24px;
+      text-align: center;
+    }
+    .email-section h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 8px;
+    }
+    .email-section p {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .email-form {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .email-form input[type="email"] {
+      flex: 1;
+      min-width: 220px;
+      padding: 12px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.9375rem;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+    }
+    .email-form input[type="email"]:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+    }
+    .email-form button {
+      padding: 12px 24px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .email-form button:hover { background: var(--brand-dark); }
+    .email-note {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--brand-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 32px 24px;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+    }
+    footer a {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo banner -->
+  <div class="demo-banner">
+    This is an example AI-generated store. &nbsp;
+    <a href="/store-builder-intake.html">Get your own built →</a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">Earthy Candle Co.</div>
+    <nav>
+      <a href="#products">Shop</a>
+      <a href="#values">Our Values</a>
+      <a href="#signup">Newsletter</a>
+      <a href="#products" class="nav-cta">Shop Now</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="hero-badge">Hand-poured · Small batch · Sustainable</span>
+    <h1>Candles that bring<br>the outdoors in.</h1>
+    <p>
+      Pure soy wax, clean ingredients, and earthy scents inspired by cedar forests,
+      sage meadows, and sandalwood groves. Made for eco-conscious homes.
+    </p>
+    <div class="hero-buttons">
+      <a href="#products" class="btn-primary">Shop Collection</a>
+      <a href="#signup" class="btn-secondary">Join the Newsletter</a>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <div class="section" id="products">
+    <div class="section-title">Our Collection</div>
+    <div class="section-sub">Hand-poured with love. Free shipping on orders over $40.</div>
+
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="product-image" style="background: #EEE8E0;">🕯️</div>
+        <div class="product-body">
+          <div class="product-type-badge">Physical</div>
+          <div class="product-name">Cedar &amp; Sage Candle</div>
+          <div class="product-desc">
+            Our bestseller. Hand-poured soy wax with cedar wood and sage essential oils.
+            Burns 45–50 hours. 8 oz.
+          </div>
+          <div class="product-footer">
+            <span class="product-price">$28</span>
+            <a href="#checkout" class="btn-buy">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image" style="background: #EAE4DE;">🌿</div>
+        <div class="product-body">
+          <div class="product-type-badge">Physical</div>
+          <div class="product-name">Sandalwood Meditation Set</div>
+          <div class="product-desc">
+            Three-candle set for your wellness ritual. Cedar, sandalwood, and white sage.
+            Presented in recyclable kraft box.
+          </div>
+          <div class="product-footer">
+            <span class="product-price">$72</span>
+            <a href="#checkout" class="btn-buy">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image" style="background: #F0EBE4;">📖</div>
+        <div class="product-body">
+          <div class="product-type-badge">Digital Download</div>
+          <div class="product-name">Candle Making Starter Kit</div>
+          <div class="product-desc">
+            37-page guide + ingredient cheat sheet. Learn to make soy candles at home
+            with clean, eco-friendly materials. Instant download.
+          </div>
+          <div class="product-footer">
+            <span class="product-price">$14</span>
+            <a href="#checkout" class="btn-buy">Buy Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image" style="background: #E8E0D8;">🌲</div>
+        <div class="product-body">
+          <div class="product-type-badge">Physical</div>
+          <div class="product-name">Forest Floor Candle</div>
+          <div class="product-desc">
+            Deep, grounding scent of moss, pine, and damp earth. Limited seasonal batch.
+            12 oz with wooden lid.
+          </div>
+          <div class="product-footer">
+            <span class="product-price">$36</span>
+            <a href="#checkout" class="btn-buy">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Values -->
+  <div class="values-strip" id="values">
+    <div class="values-inner">
+      <div class="value-item">
+        <h3>100% Soy Wax</h3>
+        <p>No paraffin, no toxins. Our wax is sustainably sourced from US-grown soybeans.</p>
+      </div>
+      <div class="value-item">
+        <h3>Eco Packaging</h3>
+        <p>Recyclable kraft boxes, compostable wrap, and soy-based inks on every label.</p>
+      </div>
+      <div class="value-item">
+        <h3>Small Batch</h3>
+        <p>Each candle is hand-poured in runs of 50 or fewer to ensure consistent quality.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email signup -->
+  <section class="email-section" id="signup">
+    <h2>New scents. Real stories.</h2>
+    <p>Join 1,200+ subscribers for new releases, candle care tips, and subscriber-only discounts.</p>
+    <form class="email-form" onsubmit="return false;">
+      <input type="email" placeholder="your@email.com" aria-label="Email address">
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="email-note">No spam. Unsubscribe anytime.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      &copy; 2026 Earthy Candle Co. &nbsp;&mdash;&nbsp;
+      <a href="#">Privacy</a> &nbsp;&middot;&nbsp;
+      <a href="#">Shipping</a> &nbsp;&middot;&nbsp;
+      <a href="#">Contact</a>
+    </p>
+    <p style="margin-top: 8px; font-size: 0.75rem; opacity: 0.55;">
+      This store was built by <a href="/">OpenBazaar.ai</a> AI Store Builder.
+      <a href="/store-builder-intake.html">Get yours →</a>
+    </p>
+  </footer>
+
+</body>
+</html>
