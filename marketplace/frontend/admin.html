@@ -1369,6 +1369,22 @@
                             </div>
                         </div>
 
+                        <!-- Analytics summary row -->
+                        <div id="emailAnalyticsSummary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1.5rem;">
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="emailSummaryOpenRate" style="font-size:1.6rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Avg Open Rate</div>
+                            </div>
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="emailSummaryClickRate" style="font-size:1.6rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Avg Click Rate</div>
+                            </div>
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="emailSummaryBestSubject" style="font-size:0.85rem;font-weight:600;color:var(--primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Best Subject Line</div>
+                            </div>
+                        </div>
+
                         <h4>Broadcast Performance</h4>
                         <div style="overflow-x:auto;">
                             <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
@@ -1376,12 +1392,33 @@
                                     <tr style="border-bottom:2px solid var(--border);">
                                         <th style="text-align:left;padding:0.5rem 0.75rem;">Subject</th>
                                         <th style="text-align:center;padding:0.5rem 0.75rem;">Sent</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Opens</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Open Rate</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Click Rate</th>
                                         <th style="text-align:center;padding:0.5rem 0.75rem;">Status</th>
                                         <th style="text-align:center;padding:0.5rem 0.75rem;">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody id="analyticsTable">
-                                    <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading analytics...</td></tr>
+                                    <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading analytics...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4 style="margin-top:1.5rem;">Sequence Performance</h4>
+                        <div style="overflow-x:auto;margin-bottom:1.5rem;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.5rem 0.75rem;">Sequence</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Total Subs</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Active</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Completed</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analyticsSequencesTable">
+                                    <tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1706,11 +1743,35 @@
                 <section id="funnelsSection" class="content-section" style="display: none;">
                     <div class="content-header">
                         <h2>Funnels</h2>
-                        <p>View deployed funnels and link each to an email sequence for automatic subscriber enrollment</p>
+                        <p>View deployed funnels and their analytics — views, conversions, and revenue</p>
+                    </div>
+
+                    <!-- Funnel Analytics Summary -->
+                    <div class="settings-section">
+                        <h3>Analytics Summary</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1rem;">
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="funnelTotalViews" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Total Views</div>
+                            </div>
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="funnelTotalClicks" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">CTA Clicks</div>
+                            </div>
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="funnelTotalPurchases" style="font-size:1.8rem;font-weight:700;color:#10b981;">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Purchases</div>
+                            </div>
+                            <div style="background:var(--bg-secondary,#f9f9f9);padding:1rem;border-radius:8px;text-align:center;border:1px solid var(--border);">
+                                <div id="funnelAvgConversion" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Avg Conv. Rate</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="settings-section">
                         <div style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1rem;">
+                            <h3 style="margin:0;flex:1;">Funnel Performance</h3>
                             <button class="btn btn-secondary" onclick="loadFunnels()" style="padding:0.5rem 1rem;">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -3318,33 +3379,65 @@
 
         async function loadEmailAnalytics() {
             try {
-                const [subsRes, broadRes, seqRes] = await Promise.all([
+                const [subsRes, analyticsRes] = await Promise.all([
                     secureFetch('/api/email-marketing/subscribers?limit=100'),
-                    secureFetch('/api/email-marketing/broadcasts'),
-                    secureFetch('/api/email-marketing/sequences')
+                    secureFetch('/api/email-marketing/analytics')
                 ]);
-                const [subsData, broadData, seqData] = await Promise.all([
-                    subsRes.json(), broadRes.json(), seqRes.json()
+                const [subsData, analyticsData] = await Promise.all([
+                    subsRes.json(), analyticsRes.json()
                 ]);
 
-                document.getElementById('analyticsStatSubscribers').textContent =
-                    subsData.success ? (subsData.total || 0) : '—';
-                document.getElementById('analyticsStatSent').textContent =
-                    broadData.success ? (broadData.broadcasts || []).filter(b => b.status === 'sent').length : '—';
-                document.getElementById('analyticsStatSequences').textContent =
-                    seqData.success ? (seqData.sequences || []).filter(s => s.active).length : '—';
+                // Summary stats (top row)
+                if (analyticsData.success) {
+                    const sum = analyticsData.summary || {};
+                    const broadcasts = analyticsData.broadcasts || [];
+                    const sequences = analyticsData.sequences || [];
+                    document.getElementById('analyticsStatSubscribers').textContent =
+                        subsData.success ? (subsData.total || 0) : '—';
+                    document.getElementById('analyticsStatSent').textContent =
+                        broadcasts.filter(b => b.status === 'sent').length;
+                    document.getElementById('analyticsStatSequences').textContent =
+                        sequences.filter(s => s.active).length;
 
-                // Broadcasts table
-                const tbody = document.getElementById('analyticsTable');
-                const broadcasts = broadData.success ? (broadData.broadcasts || []) : [];
-                tbody.innerHTML = broadcasts.length ? broadcasts.map(b => `
-                    <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:0.5rem 0.75rem;">${escapeHtml(b.subject_override || b.name)}</td>
-                        <td style="text-align:center;padding:0.5rem 0.75rem;">${b.sent_count || b.total_recipients || '—'}</td>
-                        <td style="text-align:center;padding:0.5rem 0.75rem;">${escapeHtml(b.status)}</td>
-                        <td style="text-align:center;padding:0.5rem 0.75rem;">${b.created_at ? new Date(b.created_at).toLocaleDateString() : '—'}</td>
-                    </tr>
-                `).join('') : '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No broadcasts yet.</td></tr>';
+                    // New summary cards
+                    const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+                    setEl('emailSummaryOpenRate', sum.overall_open_rate || '—');
+                    setEl('emailSummaryClickRate', sum.overall_click_rate || '—');
+                    setEl('emailSummaryBestSubject', sum.best_subject || '—');
+
+                    // Broadcasts table (with open/click rates)
+                    const tbody = document.getElementById('analyticsTable');
+                    tbody.innerHTML = broadcasts.length ? broadcasts.map(b => {
+                        const openPct = parseFloat(b.open_rate) || 0;
+                        const openColor = openPct >= 20 ? '#10b981' : openPct >= 10 ? '#f59e0b' : 'var(--text-muted)';
+                        return `
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="padding:0.5rem 0.75rem;">${escapeHtml(b.subject)}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;">${b.sent || '—'}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;">${b.opened || 0}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;font-weight:600;color:${openColor};">${b.open_rate}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;">${b.click_rate}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;">${escapeHtml(b.status)}</td>
+                            <td style="text-align:center;padding:0.5rem 0.75rem;">${b.sent_at ? new Date(b.sent_at).toLocaleDateString() : '—'}</td>
+                        </tr>`;
+                    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No broadcasts yet.</td></tr>';
+
+                    // Sequences table
+                    const seqTbody = document.getElementById('analyticsSequencesTable');
+                    if (seqTbody) {
+                        seqTbody.innerHTML = sequences.length ? sequences.map(s => `
+                            <tr style="border-bottom:1px solid var(--border);">
+                                <td style="padding:0.5rem 0.75rem;">${escapeHtml(s.name)}</td>
+                                <td style="text-align:center;padding:0.5rem 0.75rem;">${s.total_subscribers || 0}</td>
+                                <td style="text-align:center;padding:0.5rem 0.75rem;">${s.active_subscribers || 0}</td>
+                                <td style="text-align:center;padding:0.5rem 0.75rem;">${s.completed_subscribers || 0}</td>
+                                <td style="text-align:center;padding:0.5rem 0.75rem;">
+                                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:10px;background:${s.active ? '#D1FAE5' : '#F3F4F6'};color:${s.active ? '#065F46' : '#6B7280'};">${s.active ? 'Active' : 'Inactive'}</span>
+                                </td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No sequences yet.</td></tr>';
+                    }
+                }
 
                 // Subscribers table
                 const stbody = document.getElementById('subscribersTable');
@@ -4236,6 +4329,19 @@
                 const funnels = data.funnels || [];
                 status.textContent = `${funnels.length} funnel(s) found`;
 
+                // Populate summary stats
+                const totalViews = funnels.reduce((s, f) => s + (f.stats ? f.stats.pageviews : 0), 0);
+                const totalClicks = funnels.reduce((s, f) => s + (f.stats ? f.stats.cta_clicks : 0), 0);
+                const totalPurchases = funnels.reduce((s, f) => s + (f.stats ? f.stats.purchases : 0), 0);
+                const avgConv = funnels.length
+                    ? (funnels.reduce((s, f) => s + parseFloat(f.stats ? f.stats.conversion_rate : 0), 0) / funnels.length).toFixed(2)
+                    : '0.00';
+                const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+                setEl('funnelTotalViews', totalViews.toLocaleString());
+                setEl('funnelTotalClicks', totalClicks.toLocaleString());
+                setEl('funnelTotalPurchases', totalPurchases.toLocaleString());
+                setEl('funnelAvgConversion', avgConv + '%');
+
                 if (funnels.length === 0) {
                     list.innerHTML = '<p style="color:var(--text-muted)">No funnels deployed yet. Use the Funnel Builder or AI Funnel Builder to create one.</p>';
                     return;
@@ -4246,24 +4352,34 @@
                 ).join('');
 
                 list.innerHTML = `
+                    <div style="overflow-x:auto;">
                     <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
                         <thead>
                             <tr style="background:var(--background);">
                                 <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Name</th>
-                                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Slug</th>
-                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Conversions</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Views</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">CTA Clicks</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Checkouts</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Purchases</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Conv. Rate</th>
                                 <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Email Sequence</th>
                                 <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${funnels.map(f => `
+                            ${funnels.map(f => {
+                                const s = f.stats || { pageviews: 0, cta_clicks: 0, checkout_starts: 0, purchases: 0, conversion_rate: '0.00' };
+                                const convColor = parseFloat(s.conversion_rate) >= 2 ? '#10b981' : parseFloat(s.conversion_rate) >= 0.5 ? '#f59e0b' : 'var(--text-muted)';
+                                return `
                                 <tr style="border-bottom:1px solid var(--border);">
-                                    <td style="padding:0.6rem 0.75rem;">${escapeHtml(f.name || '—')}</td>
-                                    <td style="padding:0.6rem 0.75rem;font-family:monospace;font-size:0.8rem;">${escapeHtml(f.slug)}</td>
-                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${f.stats ? f.stats.conversion_rate + '%' : '—'}</td>
+                                    <td style="padding:0.6rem 0.75rem;font-weight:500;">${escapeHtml(f.name || f.slug)}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${s.pageviews.toLocaleString()}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${s.cta_clicks.toLocaleString()}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${s.checkout_starts.toLocaleString()}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${s.purchases.toLocaleString()}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;font-weight:600;color:${convColor};">${s.conversion_rate}%</td>
                                     <td style="padding:0.6rem 0.75rem;">
-                                        <select id="seq_${f.id}" style="padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:4px;font-size:0.85rem;max-width:200px;">
+                                        <select id="seq_${f.id}" style="padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:4px;font-size:0.85rem;max-width:180px;">
                                             <option value="">— None —</option>
                                             ${seqOptions}
                                         </select>
@@ -4273,10 +4389,11 @@
                                             <i class="fas fa-link"></i> Link
                                         </button>
                                     </td>
-                                </tr>
-                            `).join('')}
+                                </tr>`;
+                            }).join('')}
                         </tbody>
                     </table>
+                    </div>
                 `;
             } catch (e) {
                 status.textContent = 'Error: ' + e.message;

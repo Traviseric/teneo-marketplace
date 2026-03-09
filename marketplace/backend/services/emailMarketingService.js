@@ -303,11 +303,11 @@ class EmailMarketingService {
     // Wrap absolute http/https links with click tracker
     const tracked = html.replace(
       /href="(https?:\/\/[^"]+)"/gi,
-      (_, url) => `href="${baseUrl}/api/email/track/click/${sendId}?url=${encodeURIComponent(url)}"`
+      (_, url) => `href="${baseUrl}/api/email-marketing/track/click/${sendId}?url=${encodeURIComponent(url)}"`
     );
 
     // Append 1×1 tracking pixel before </body>, or at end if no </body> tag
-    const pixel = `<img src="${baseUrl}/api/email/track/open/${sendId}" width="1" height="1" alt="" style="display:none;border:0">`;
+    const pixel = `<img src="${baseUrl}/api/email-marketing/track/open/${sendId}" width="1" height="1" alt="" style="display:none;border:0">`;
     return tracked.includes('</body>')
       ? tracked.replace('</body>', `${pixel}</body>`)
       : tracked + pixel;
@@ -539,21 +539,31 @@ class EmailMarketingService {
           SUBSCRIBER_EMAIL: recipient.email
         });
 
+        // Pre-insert send record so we have an ID to embed in tracking URLs
+        const sendRecord = await this.db.run(
+          `INSERT INTO email_sends
+           (subscriber_id, email_type, broadcast_id, template_id, subject, from_email, to_email, status, sent_at)
+           VALUES (?, 'broadcast', ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)`,
+          [recipient.id, broadcastId, broadcast.template_id, subject, broadcast.from_email, recipient.email]
+        );
+        const sendId = sendRecord.lastID;
+
+        // Inject open pixel + click wrappers
+        const trackedHtml = this.injectTracking(processedHtml, sendId);
+
         await emailService.sendEmail({
           to: recipient.email,
           subject,
-          html: processedHtml,
+          html: trackedHtml,
           text: broadcast.body_text,
           from: `${broadcast.from_name} <${broadcast.from_email}>`,
           replyTo: broadcast.reply_to
         });
 
-        // Log send
+        // Mark as sent
         await this.db.run(
-          `INSERT INTO email_sends
-           (subscriber_id, email_type, broadcast_id, template_id, subject, from_email, to_email, status, sent_at)
-           VALUES (?, 'broadcast', ?, ?, ?, ?, ?, 'sent', CURRENT_TIMESTAMP)`,
-          [recipient.id, broadcastId, broadcast.template_id, subject, broadcast.from_email, recipient.email]
+          `UPDATE email_sends SET status = 'sent' WHERE id = ?`,
+          [sendId]
         );
 
         // Update broadcast count

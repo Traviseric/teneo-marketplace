@@ -299,6 +299,162 @@ router.post('/broadcasts', authenticateAdmin, async (req, res) => {
     }
 });
 
+// ─── Analytics ────────────────────────────────────────────────────────────────
+
+// GET /api/email-marketing/analytics
+// Returns broadcast performance and sequence stats with open/click rates
+router.get('/analytics', authenticateAdmin, async (req, res) => {
+    try {
+        // Broadcast performance: join sends to compute open/click rates per broadcast
+        const broadcasts = await dbAll(
+            `SELECT
+                b.id,
+                b.name,
+                b.subject_override,
+                b.status,
+                b.sent_at,
+                b.created_at,
+                b.total_recipients,
+                b.sent_count,
+                COUNT(DISTINCT es.id) as send_count,
+                COUNT(DISTINCT CASE WHEN es.opened_at IS NOT NULL THEN es.id END) as opened_count,
+                COUNT(DISTINCT CASE WHEN es.clicked_at IS NOT NULL THEN es.id END) as clicked_count
+             FROM email_broadcasts b
+             LEFT JOIN email_sends es ON es.broadcast_id = b.id
+             GROUP BY b.id
+             ORDER BY b.created_at DESC`,
+            []
+        );
+
+        const broadcastStats = broadcasts.map(b => {
+            const sent = b.send_count || b.sent_count || 0;
+            const opened = b.opened_count || 0;
+            const clicked = b.clicked_count || 0;
+            return {
+                id: b.id,
+                name: b.name,
+                subject: b.subject_override || b.name,
+                status: b.status,
+                sent,
+                opened,
+                clicked,
+                open_rate: sent > 0 ? ((opened / sent) * 100).toFixed(1) + '%' : '—',
+                click_rate: sent > 0 ? ((clicked / sent) * 100).toFixed(1) + '%' : '—',
+                sent_at: b.sent_at || b.created_at
+            };
+        });
+
+        // Sequence stats: subscribers per sequence and step completion
+        const sequences = await dbAll(
+            `SELECT
+                es.id,
+                es.name,
+                es.active,
+                COUNT(DISTINCT ss.subscriber_id) as total_subscribers,
+                COUNT(DISTINCT CASE WHEN ss.status = 'active' THEN ss.subscriber_id END) as active_subscribers,
+                COUNT(DISTINCT CASE WHEN ss.status = 'completed' THEN ss.subscriber_id END) as completed_subscribers
+             FROM email_sequences es
+             LEFT JOIN subscriber_sequences ss ON ss.sequence_id = es.id
+             GROUP BY es.id
+             ORDER BY es.created_at DESC`,
+            []
+        );
+
+        // Summary stats
+        const totalSent = broadcastStats.reduce((s, b) => s + b.sent, 0);
+        const totalOpened = broadcastStats.reduce((s, b) => s + b.opened, 0);
+        const totalClicked = broadcastStats.reduce((s, b) => s + b.clicked, 0);
+        const bestBroadcast = broadcastStats.length
+            ? broadcastStats.reduce((best, b) => {
+                const rate = b.sent > 0 ? b.opened / b.sent : 0;
+                const bestRate = best.sent > 0 ? best.opened / best.sent : 0;
+                return rate > bestRate ? b : best;
+              }, broadcastStats[0])
+            : null;
+
+        res.json({
+            success: true,
+            summary: {
+                total_sent: totalSent,
+                total_opened: totalOpened,
+                total_clicked: totalClicked,
+                overall_open_rate: totalSent > 0 ? ((totalOpened / totalSent) * 100).toFixed(1) + '%' : '—',
+                overall_click_rate: totalSent > 0 ? ((totalClicked / totalSent) * 100).toFixed(1) + '%' : '—',
+                best_subject: bestBroadcast ? bestBroadcast.subject : null
+            },
+            broadcasts: broadcastStats,
+            sequences
+        });
+    } catch (error) {
+        console.error('[emailMarketing] analytics error:', error);
+        res.status(500).json({ success: false, error: 'Failed to load analytics' });
+    }
+});
+
+// ─── Open / Click Tracking (public pixel + redirect) ─────────────────────────
+
+// 1×1 transparent GIF for open tracking
+const TRACKING_PIXEL = Buffer.from(
+    'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+    'base64'
+);
+
+// GET /api/email-marketing/track/open/:sendId
+// Called by the tracking pixel embedded in emails
+router.get('/track/open/:sendId', async (req, res) => {
+    // Always return the pixel — never fail visibly
+    res.set('Content-Type', 'image/gif');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.send(TRACKING_PIXEL);
+
+    // Record the open asynchronously (don't block the pixel response)
+    const sendId = parseInt(req.params.sendId, 10);
+    if (!Number.isFinite(sendId)) return;
+    try {
+        await dbRun(
+            `UPDATE email_sends SET opened_at = COALESCE(opened_at, CURRENT_TIMESTAMP) WHERE id = ?`,
+            [sendId]
+        );
+        await dbRun(
+            `INSERT INTO email_events (event_type, send_id, ip_address, user_agent)
+             VALUES ('open', ?, ?, ?)`,
+            [sendId, req.ip || null, req.get('user-agent') || null]
+        );
+    } catch (e) {
+        // Non-fatal — pixel already sent
+    }
+});
+
+// GET /api/email-marketing/track/click/:sendId?url=https://...
+// Logs a click then redirects to the destination URL
+router.get('/track/click/:sendId', async (req, res) => {
+    const destination = req.query.url;
+    const sendId = parseInt(req.params.sendId, 10);
+
+    // Record asynchronously then redirect
+    if (Number.isFinite(sendId) && destination) {
+        try {
+            await dbRun(
+                `UPDATE email_sends SET clicked_at = COALESCE(clicked_at, CURRENT_TIMESTAMP) WHERE id = ?`,
+                [sendId]
+            );
+            await dbRun(
+                `INSERT INTO email_events (event_type, send_id, url, ip_address, user_agent)
+                 VALUES ('click', ?, ?, ?, ?)`,
+                [sendId, destination, req.ip || null, req.get('user-agent') || null]
+            );
+        } catch (e) {
+            // Non-fatal
+        }
+    }
+
+    if (destination) {
+        res.redirect(302, destination);
+    } else {
+        res.status(400).send('Missing url parameter');
+    }
+});
+
 // ─── Unsubscribe (public) ─────────────────────────────────────────────────────
 
 // GET /api/email-marketing/unsubscribe/:token
