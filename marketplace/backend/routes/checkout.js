@@ -21,6 +21,7 @@ const orderService = new OrderService();
 const emailService = require('../services/emailService');
 const { processMixedOrder } = require('./checkoutMixed');
 const nftService = require('../services/nftService');
+const shippingService = require('../services/shippingService');
 const db = require('../database/database');
 const { enrollUserInCourse } = require('./courseRoutes');
 
@@ -167,9 +168,10 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
         courseSlug: courseSlug || '',
         product_type: courseSlug ? 'course' : ''
       },
-      // Production-specific payment settings
+      // Save payment method for post-purchase one-click upsells
       payment_intent_data: {
         description: `Order ${orderId}: ${bookTitle}`,
+        setup_future_usage: 'off_session',
         ...(isProduction && {
           statement_descriptor: 'TENEO BOOKS',
           statement_descriptor_suffix: bookId.substring(0, 10).toUpperCase(),
@@ -397,6 +399,23 @@ async function handleCheckoutCompleted(session) {
       orderId,
       session.payment_intent
     );
+
+    // Persist Stripe customer + payment method for post-purchase one-click upsells (non-fatal)
+    if (session.customer && session.payment_intent) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(session.payment_intent);
+        const pmId = pi.payment_method;
+        if (pmId) {
+          db.run(
+            `UPDATE orders SET stripe_customer_id = ?, stripe_payment_method_id = ? WHERE order_id = ?`,
+            [session.customer, pmId, orderId],
+            err => { if (err) console.warn('[upsell] Failed to save customer/pm:', err.message); }
+          );
+        }
+      } catch (pmErr) {
+        console.warn('[upsell] Could not retrieve payment method (non-fatal):', pmErr.message);
+      }
+    }
 
     // Send order confirmation email
     await emailService.sendOrderConfirmation({
@@ -645,6 +664,147 @@ router.get('/bump', async (req, res) => {
   }
 });
 
+// ─── Post-purchase upsell endpoints ─────────────────────────────────────────
+
+/**
+ * GET /api/checkout/upsell-offer?orderId=X
+ * Returns the upsell offer for the product in the given order.
+ */
+router.get('/upsell-offer', async (req, res) => {
+  try {
+    const { orderId } = req.query;
+    if (!orderId) return res.status(400).json({ error: 'orderId required' });
+
+    const order = await orderService.getOrder(orderId);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+
+    const upsell = await new Promise((resolve, reject) => {
+      db.get(
+        `SELECT * FROM upsells
+         WHERE active = 1
+           AND (product_id = ? OR product_id IS NULL)
+         ORDER BY product_id DESC LIMIT 1`,
+        [order.book_id],
+        (err, row) => (err ? reject(err) : resolve(row || null))
+      );
+    });
+
+    if (!upsell) return res.json({ upsell: null });
+
+    res.json({
+      upsell: {
+        id: upsell.id,
+        productId: upsell.upsell_product_id,
+        productName: upsell.upsell_product_name,
+        headline: upsell.headline,
+        description: upsell.description,
+        priceCents: upsell.upsell_price_cents,
+        priceUsd: (upsell.upsell_price_cents / 100).toFixed(2),
+        hasOneClick: !!(order.stripe_customer_id && order.stripe_payment_method_id),
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching upsell offer:', error);
+    res.status(500).json({ error: 'Failed to fetch upsell offer', message: safeMessage(error) });
+  }
+});
+
+/**
+ * POST /api/checkout/upsell
+ * Process a one-click post-purchase upsell.
+ * Body: { orderId, upsellId }
+ * Uses the saved payment method — no card re-entry required.
+ * Falls back to new Stripe Checkout session when payment method not available.
+ */
+router.post('/upsell', checkoutLimiter, async (req, res) => {
+  try {
+    const { orderId, upsellId } = req.body;
+    if (!orderId || !upsellId) {
+      return res.status(400).json({ error: 'orderId and upsellId are required' });
+    }
+
+    const order = await orderService.getOrder(orderId);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    if (order.status !== 'completed') {
+      return res.status(400).json({ error: 'Original order must be completed to add an upsell' });
+    }
+
+    const upsell = await new Promise((resolve, reject) => {
+      db.get(
+        `SELECT * FROM upsells WHERE id = ? AND active = 1`,
+        [Number(upsellId)],
+        (err, row) => (err ? reject(err) : resolve(row || null))
+      );
+    });
+
+    if (!upsell) return res.status(404).json({ error: 'Upsell offer not found or inactive' });
+
+    const upsellOrderId = `upsell_${Date.now()}_${upsell.upsell_product_id}`;
+
+    // One-click path: charge saved payment method off-session
+    if (order.stripe_customer_id && order.stripe_payment_method_id) {
+      const pi = await stripe.paymentIntents.create({
+        amount: upsell.upsell_price_cents,
+        currency: 'usd',
+        customer: order.stripe_customer_id,
+        payment_method: order.stripe_payment_method_id,
+        confirm: true,
+        off_session: true,
+        description: `Upsell ${upsellOrderId}: ${upsell.upsell_product_name}`,
+        metadata: { orderId: upsellOrderId, originalOrderId: orderId, upsellId: String(upsell.id) }
+      });
+
+      await orderService.createOrder({
+        orderId: upsellOrderId,
+        customerEmail: order.customer_email,
+        bookId: upsell.upsell_product_id,
+        bookTitle: upsell.upsell_product_name,
+        bookAuthor: '',
+        format: 'upsell',
+        price: upsell.upsell_price_cents / 100,
+        currency: 'USD',
+        metadata: { originalOrderId: orderId, upsellId: upsell.id, stripePaymentIntentId: pi.id }
+      });
+
+      return res.json({ success: true, method: 'one_click', newOrderId: upsellOrderId, status: pi.status });
+    }
+
+    // Fallback: new Stripe Checkout session (card entry required)
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer_email: order.customer_email,
+      client_reference_id: upsellOrderId,
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: upsell.upsell_product_name, description: upsell.description || undefined },
+          unit_amount: upsell.upsell_price_cents,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.PUBLIC_URL || 'http://localhost:3001'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.PUBLIC_URL || 'http://localhost:3001'}/`,
+      metadata: { orderId: upsellOrderId, originalOrderId: orderId, upsellId: String(upsell.id) }
+    });
+
+    res.json({ success: true, method: 'new_session', newOrderId: upsellOrderId, checkoutUrl: session.url });
+  } catch (error) {
+    console.error('Upsell processing error:', error);
+    if (error.code === 'authentication_required' || error.code === 'card_declined') {
+      return res.status(402).json({
+        success: false,
+        requiresAction: true,
+        error: 'Card requires authentication. Please complete purchase in a new session.',
+        message: safeMessage(error)
+      });
+    }
+    res.status(500).json({ success: false, error: 'Failed to process upsell', message: safeMessage(error) });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Stripe health status endpoint — used by status pages and monitoring
 router.get('/health/stripe', async (req, res) => {
   const health = await stripeHealthService.checkStripeHealth();
@@ -777,6 +937,50 @@ router.post('/arxmint', checkoutLimiter, async (req, res) => {
   } catch (error) {
     console.error('[checkout/arxmint] Error:', error);
     res.status(500).json({ success: false, error: 'Failed to create Lightning checkout', message: safeMessage(error) });
+  }
+});
+
+// POST /api/checkout/shipping-rates
+// Returns Printful shipping rate estimates for physical/POD items in the cart.
+// Body: { items: [{variantId, quantity}], address: {address1, city, country_code, zip, state_code?} }
+// Digital-only carts (no variantId) return an empty rates array immediately.
+const shippingRatesLimiter = process.env.NODE_ENV === 'test'
+  ? (req, res, next) => next()
+  : rateLimit({ windowMs: 60 * 1000, max: 30, standardHeaders: true, legacyHeaders: false });
+
+router.post('/shipping-rates', shippingRatesLimiter, async (req, res) => {
+  try {
+    const { items, address } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'items array is required' });
+    }
+
+    // Filter to items that have a Printful variant ID (physical/POD only)
+    const physicalItems = items.filter(i => i.variantId);
+    if (physicalItems.length === 0) {
+      return res.json({ success: true, rates: [], message: 'No physical items in cart' });
+    }
+
+    if (!address || !address.address1 || !address.city || !address.country_code || !address.zip) {
+      return res.status(400).json({
+        success: false,
+        error: 'address.address1, city, country_code, and zip are required for shipping estimates'
+      });
+    }
+
+    const rates = await shippingService.getShippingRates(physicalItems, address);
+
+    if (rates === null) {
+      // Printful provider not configured — graceful fallback
+      return res.json({ success: true, rates: [], fallback: true, message: 'Shipping calculated at checkout' });
+    }
+
+    return res.json({ success: true, rates });
+  } catch (error) {
+    console.error('[shipping-rates] Error:', error.message);
+    // Non-fatal: return fallback so checkout can still proceed
+    return res.json({ success: true, rates: [], fallback: true, message: 'Shipping calculated at checkout' });
   }
 });
 

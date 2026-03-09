@@ -896,6 +896,10 @@
                         <i class="fas fa-network-wired"></i>
                         <span>Network</span>
                     </li>
+                    <li class="nav-item" data-section="fulfillment">
+                        <i class="fas fa-truck"></i>
+                        <span>Fulfillment</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1314,6 +1318,56 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Fulfillment Dashboard Section -->
+                <section id="fulfillmentSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>Fulfillment Dashboard</h2>
+                        <p>Track POD orders submitted to Printful — submitted, in production, shipped, failed</p>
+                    </div>
+
+                    <div class="orders-table">
+                        <div class="table-header">
+                            <h3>POD Orders</h3>
+                            <div style="display:flex;gap:0.5rem;align-items:center;">
+                                <select id="fulfillmentStatusFilter" onchange="loadFulfillmentOrders()" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;">
+                                    <option value="">All statuses</option>
+                                    <option value="submitted">Submitted</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="in_production">In Production</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="print_failed">Failed</option>
+                                    <option value="canceled">Canceled</option>
+                                </select>
+                                <button class="btn btn-secondary btn-small" onclick="loadFulfillmentOrders()">
+                                    <i class="fas fa-sync-alt"></i> Refresh List
+                                </button>
+                            </div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Fulfillment Status</th>
+                                    <th scope="col">Printful ID</th>
+                                    <th scope="col">Tracking</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fulfillmentTable">
+                                <tr>
+                                    <td colspan="8" class="loading">
+                                        <div class="spinner"></div>
+                                        Loading fulfillment orders...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -1607,6 +1661,9 @@
                     loadNetworkSettings();
                     loadNetworkStatus();
                     loadNetworkStats();
+                    break;
+                case 'fulfillment':
+                    loadFulfillmentOrders();
                     break;
             }
         }
@@ -2137,6 +2194,96 @@
             a.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
         }
+
+        // ── Fulfillment Dashboard ──────────────────────────────────────────────
+        const FULFILLMENT_STATUS_COLORS = {
+            submitted: '#3B82F6',
+            pending: '#6B7280',
+            in_production: '#F59E0B',
+            shipped: '#10B981',
+            print_failed: '#EF4444',
+            print_canceled: '#EF4444',
+            canceled: '#EF4444',
+            on_hold: '#F97316',
+            print_on_hold: '#F97316',
+            print_processing: '#8B5CF6',
+        };
+
+        async function loadFulfillmentOrders() {
+            const tbody = document.getElementById('fulfillmentTable');
+            const statusFilter = document.getElementById('fulfillmentStatusFilter')?.value || '';
+            tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading...</td></tr>';
+            try {
+                const url = '/api/admin/fulfillment' + (statusFilter ? '?status=' + encodeURIComponent(statusFilter) : '');
+                const res = await secureFetch(url);
+                if (!res.ok) throw new Error('Failed to load fulfillment orders');
+                const data = await res.json();
+                renderFulfillmentOrders(data.orders || []);
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="8" style="color:var(--danger)">Error loading fulfillment orders</td></tr>';
+                console.error('Error loading fulfillment orders:', err);
+            }
+        }
+
+        function renderFulfillmentOrders(orders) {
+            const tbody = document.getElementById('fulfillmentTable');
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="8">No POD orders found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = orders.map(o => {
+                const statusColor = FULFILLMENT_STATUS_COLORS[o.fulfillment_status] || '#6B7280';
+                const badge = `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:0.75rem;font-weight:600;color:#fff;background:${statusColor}">${o.fulfillment_status || 'unknown'}</span>`;
+                const tracking = o.tracking_number
+                    ? (o.tracking_url
+                        ? `<a href="${escapeHtml(o.tracking_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(o.tracking_number)}</a>`
+                        : escapeHtml(o.tracking_number))
+                    : '—';
+                const printfulLink = o.printful_order_id
+                    ? `<a href="https://www.printful.com/dashboard/orders/${encodeURIComponent(o.printful_order_id)}" target="_blank" rel="noopener noreferrer">#${escapeHtml(String(o.printful_order_id))}</a>`
+                    : '—';
+                return `<tr${o.fulfillment_status === 'print_failed' ? ' style="background:#FEF2F2"' : ''}>
+                    <th scope="row" style="font-size:0.78rem">${escapeHtml(o.order_id)}</th>
+                    <td>${escapeHtml(o.customer_email || '—')}</td>
+                    <td>${escapeHtml(o.book_title || '—')}</td>
+                    <td>${badge}</td>
+                    <td>${printfulLink}</td>
+                    <td>${tracking}</td>
+                    <td>${new Date(o.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-small" onclick="refreshFulfillmentOrder('${escapeHtml(o.order_id)}', this)" title="Sync status from Printful">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function refreshFulfillmentOrder(orderId, btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            try {
+                const res = await secureFetch(`/api/admin/fulfillment/${encodeURIComponent(orderId)}/refresh`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    await loadFulfillmentOrders();
+                } else {
+                    alert('Refresh failed: ' + (data.error || 'Unknown error'));
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                }
+            } catch (err) {
+                alert('Refresh failed: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        // ──────────────────────────────────────────────────────────────────────
 
         // Load email templates
         async function loadEmailTemplates() {

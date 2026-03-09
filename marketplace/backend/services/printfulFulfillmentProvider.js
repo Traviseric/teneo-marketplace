@@ -99,6 +99,34 @@ class PrintfulFulfillmentProvider extends FulfillmentProvider {
     };
   }
 
+  /**
+   * Fetch the current status of a Printful order.
+   *
+   * @param {string|number} printfulOrderId
+   * @returns {Promise<{printfulOrderId: number, status: string, trackingNumber: string|null, trackingUrl: string|null}>}
+   */
+  async getOrderStatus(printfulOrderId) {
+    if (!this.enabled) {
+      throw new Error('[Printful] Provider not configured');
+    }
+
+    const response = await axios.get(`${this.baseUrl}/orders/${printfulOrderId}`, {
+      headers: this.getHeaders(),
+      timeout: 10000,
+    });
+
+    const result = response.data?.result || {};
+    const shipments = result.shipments || [];
+    const shipment = shipments[0] || {};
+
+    return {
+      printfulOrderId: result.id,
+      status: result.status || 'unknown',
+      trackingNumber: shipment.tracking_number || null,
+      trackingUrl: shipment.tracking_url || null,
+    };
+  }
+
   async estimateShippingRates(params) {
     if (!this.enabled) {
       throw new Error('[Printful] Provider not configured');

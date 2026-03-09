@@ -10,6 +10,7 @@ const db = require('../database/database');
 const auditService = require('../services/auditService');
 const couponService = require('../services/couponService');
 const orderBumpService = require('../services/orderBumpService');
+const printfulProvider = require('../services/printfulFulfillmentProvider');
 
 const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 
@@ -699,5 +700,110 @@ async function deleteBookFromDatabase(bookId) {
         );
     });
 }
+
+// ── Fulfillment Dashboard ──────────────────────────────────────────────────────
+
+// GET /api/admin/fulfillment
+// Returns all orders that have a printful_order_id (POD orders), sorted newest first.
+// Optional query params: status (filter by fulfillment_status), limit, offset.
+router.get('/fulfillment', authenticateAdmin, async (req, res) => {
+    try {
+        const { status, limit = 100, offset = 0 } = req.query;
+        const params = [];
+        let sql = 'SELECT * FROM orders WHERE printful_order_id IS NOT NULL';
+        if (status) {
+            sql += ' AND fulfillment_status = ?';
+            params.push(status);
+        }
+        sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+        params.push(Number(limit), Number(offset));
+
+        const orders = await new Promise((resolve, reject) => {
+            db.all(sql, params, (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows || []);
+            });
+        });
+
+        res.json({ success: true, orders });
+    } catch (error) {
+        console.error('[admin/fulfillment] Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to load fulfillment orders' });
+    }
+});
+
+// POST /api/admin/fulfillment/:orderId/refresh
+// Syncs the latest fulfillment status from Printful for a single order.
+router.post('/fulfillment/:orderId/refresh', authenticateAdmin, async (req, res) => {
+    try {
+        const order = await orderService.getOrder(req.params.orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, error: 'Order not found' });
+        }
+        if (!order.printful_order_id) {
+            return res.status(400).json({ success: false, error: 'Order has no Printful order ID' });
+        }
+
+        const status = await printfulProvider.getOrderStatus(order.printful_order_id);
+
+        const updates = { fulfillment_status: status.status };
+        if (status.trackingNumber) updates.tracking_number = status.trackingNumber;
+        if (status.trackingUrl) updates.tracking_url = status.trackingUrl;
+
+        await orderService.updateOrderStatus(order.order_id, updates);
+
+        res.json({ success: true, orderId: order.order_id, status });
+    } catch (error) {
+        console.error('[admin/fulfillment/refresh] Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to refresh fulfillment status' });
+    }
+});
+
+// ─── Upsell management ───────────────────────────────────────────────────────
+
+// List all upsells
+router.get('/upsells', authenticateAdmin, async (req, res) => {
+    try {
+        const rows = await new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM upsells ORDER BY id DESC`, [], (err, r) => err ? reject(err) : resolve(r || []));
+        });
+        res.json({ success: true, upsells: rows });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Create an upsell
+router.post('/upsells', authenticateAdmin, async (req, res) => {
+    try {
+        const { product_id, upsell_product_id, upsell_product_name, headline, description, upsell_price_cents } = req.body;
+        if (!upsell_product_id || !upsell_product_name || !headline || !upsell_price_cents) {
+            return res.status(400).json({ error: 'upsell_product_id, upsell_product_name, headline, and upsell_price_cents are required' });
+        }
+        const result = await new Promise((resolve, reject) => {
+            db.run(
+                `INSERT INTO upsells (product_id, upsell_product_id, upsell_product_name, headline, description, upsell_price_cents)
+                 VALUES (?, ?, ?, ?, ?, ?)`,
+                [product_id || null, upsell_product_id, upsell_product_name, headline, description || null, Number(upsell_price_cents)],
+                function(err) { err ? reject(err) : resolve({ id: this.lastID }); }
+            );
+        });
+        res.json({ success: true, id: result.id });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Deactivate (soft-delete) an upsell
+router.delete('/upsells/:id', authenticateAdmin, async (req, res) => {
+    try {
+        await new Promise((resolve, reject) => {
+            db.run(`UPDATE upsells SET active = 0 WHERE id = ?`, [Number(req.params.id)], err => err ? reject(err) : resolve());
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 module.exports = router;
