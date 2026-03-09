@@ -202,7 +202,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
         });
     } catch (error) {
         console.error('Dashboard error:', error);
-        res.status(500).json({ error: 'Failed to load dashboard data' });
+        res.status(500).json({ success: false, error: 'Failed to load dashboard data' });
     }
 });
 
@@ -224,7 +224,7 @@ router.get('/orders', authenticateAdmin, async (req, res) => {
         res.json(orders);
     } catch (error) {
         console.error('Error fetching orders:', error);
-        res.status(500).json({ error: 'Failed to fetch orders' });
+        res.status(500).json({ success: false, error: 'Failed to fetch orders' });
     }
 });
 
@@ -237,7 +237,7 @@ router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
         // Get order details
         const order = await orderService.getOrder(orderId);
         if (!order) {
-            return res.status(404).json({ error: 'Order not found' });
+            return res.status(404).json({ success: false, error: 'Order not found' });
         }
         
         // Process refund through Stripe
@@ -270,11 +270,11 @@ router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
                 amount: refund.amount / 100
             });
         } else {
-            res.status(400).json({ error: 'No payment intent found' });
+            res.status(400).json({ success: false, error: 'No payment intent found' });
         }
     } catch (error) {
         console.error('Refund error:', error);
-        res.status(500).json({ error: 'Failed to process refund' });
+        res.status(500).json({ success: false, error: 'Failed to process refund' });
     }
 });
 
@@ -308,7 +308,7 @@ router.get('/settings', authenticateAdmin, async (req, res) => {
         res.json({ ...settings, storeSlug: BRAND });
     } catch (error) {
         console.error('Error loading settings:', error);
-        res.status(500).json({ error: 'Failed to load settings' });
+        res.status(500).json({ success: false, error: 'Failed to load settings' });
     }
 });
 
@@ -344,7 +344,7 @@ router.get('/email-templates', authenticateAdmin, async (req, res) => {
         res.json(templates);
     } catch (error) {
         console.error('Error loading templates:', error);
-        res.status(500).json({ error: 'Failed to load templates' });
+        res.status(500).json({ success: false, error: 'Failed to load templates' });
     }
 });
 
@@ -399,7 +399,7 @@ router.post('/books', authenticateAdmin, upload.fields([
         });
     } catch (error) {
         console.error('Error adding book:', error);
-        res.status(500).json({ error: 'Failed to add book' });
+        res.status(500).json({ success: false, error: 'Failed to add book' });
     }
 });
 
@@ -430,7 +430,7 @@ router.put('/books/:bookId', authenticateAdmin, upload.fields([
         // Update book in catalog
         const bookIndex = catalog.books.findIndex(b => b.id === bookId);
         if (bookIndex === -1) {
-            return res.status(404).json({ error: 'Book not found' });
+            return res.status(404).json({ success: false, error: 'Book not found' });
         }
         
         catalog.books[bookIndex] = { 
@@ -451,7 +451,7 @@ router.put('/books/:bookId', authenticateAdmin, upload.fields([
         });
     } catch (error) {
         console.error('Error updating book:', error);
-        res.status(500).json({ error: 'Failed to update book' });
+        res.status(500).json({ success: false, error: 'Failed to update book' });
     }
 });
 
@@ -481,7 +481,7 @@ router.delete('/books/:bookId', authenticateAdmin, async (req, res) => {
         });
     } catch (error) {
         console.error('Error deleting book:', error);
-        res.status(500).json({ error: 'Failed to delete book' });
+        res.status(500).json({ success: false, error: 'Failed to delete book' });
     }
 });
 
@@ -516,7 +516,7 @@ router.post('/books/reorder', authenticateAdmin, async (req, res) => {
         });
     } catch (error) {
         console.error('Error reordering books:', error);
-        res.status(500).json({ error: 'Failed to reorder books' });
+        res.status(500).json({ success: false, error: 'Failed to reorder books' });
     }
 });
 
@@ -543,7 +543,7 @@ router.post('/save-all', authenticateAdmin, async (req, res) => {
         });
     } catch (error) {
         console.error('Error saving settings:', error);
-        res.status(500).json({ error: 'Failed to save settings' });
+        res.status(500).json({ success: false, error: 'Failed to save settings' });
     }
 });
 
@@ -556,7 +556,7 @@ router.get('/coupons', authenticateAdmin, async (req, res) => {
         res.json({ success: true, coupons });
     } catch (error) {
         console.error('Error listing coupons:', error);
-        res.status(500).json({ error: 'Failed to list coupons' });
+        res.status(500).json({ success: false, error: 'Failed to list coupons' });
     }
 });
 
@@ -569,7 +569,7 @@ router.post('/coupons', authenticateAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error creating coupon:', error);
         const status = error.message.includes('required') || error.message.includes('must be') ? 400 : 500;
-        res.status(status).json({ error: error.message });
+        res.status(status).json({ success: false, error: error.message });
     }
 });
 
@@ -580,7 +580,7 @@ router.delete('/coupons/:id', authenticateAdmin, async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error deactivating coupon:', error);
-        res.status(500).json({ error: 'Failed to deactivate coupon' });
+        res.status(500).json({ success: false, error: 'Failed to deactivate coupon' });
     }
 });
 
@@ -593,7 +593,7 @@ router.get('/order-bumps', authenticateAdmin, async (req, res) => {
         res.json({ success: true, bumps });
     } catch (error) {
         console.error('Error listing order bumps:', error);
-        res.status(500).json({ error: 'Failed to list order bumps' });
+        res.status(500).json({ success: false, error: 'Failed to list order bumps' });
     }
 });
 
@@ -605,7 +605,7 @@ router.post('/order-bumps', authenticateAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error creating order bump:', error);
         const status = error.message.includes('required') ? 400 : 500;
-        res.status(status).json({ error: error.message });
+        res.status(status).json({ success: false, error: error.message });
     }
 });
 
@@ -616,7 +616,7 @@ router.delete('/order-bumps/:id', authenticateAdmin, async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error deactivating order bump:', error);
-        res.status(500).json({ error: 'Failed to deactivate order bump' });
+        res.status(500).json({ success: false, error: 'Failed to deactivate order bump' });
     }
 });
 
@@ -909,9 +909,9 @@ router.get('/products/fulfillment', authenticateAdmin, async (req, res) => {
         }));
         res.json({ success: true, brand, products });
     } catch (error) {
-        if (error.code === 'ENOENT') return res.status(404).json({ error: 'Brand catalog not found' });
+        if (error.code === 'ENOENT') return res.status(404).json({ success: false, error: 'Brand catalog not found' });
         console.error('[admin/products/fulfillment] Error:', error);
-        res.status(500).json({ error: 'Failed to load products' });
+        res.status(500).json({ success: false, error: 'Failed to load products' });
     }
 });
 
@@ -925,6 +925,7 @@ router.patch('/products/:productId/fulfillment', authenticateAdmin, async (req, 
         const VALID_PROVIDERS = ['stripe_digital', 'printful', 'lulu', 'arxmint', 'manual'];
         if (!fulfillment_provider || !VALID_PROVIDERS.includes(fulfillment_provider)) {
             return res.status(400).json({
+                success: false,
                 error: `fulfillment_provider must be one of: ${VALID_PROVIDERS.join(', ')}`,
             });
         }
@@ -936,7 +937,7 @@ router.patch('/products/:productId/fulfillment', authenticateAdmin, async (req, 
 
         const bookIndex = (catalog.books || []).findIndex(b => b.id === productId);
         if (bookIndex === -1) {
-            return res.status(404).json({ error: 'Product not found' });
+            return res.status(404).json({ success: false, error: 'Product not found' });
         }
 
         catalog.books[bookIndex].fulfillment_provider = fulfillment_provider;
@@ -953,9 +954,9 @@ router.patch('/products/:productId/fulfillment', authenticateAdmin, async (req, 
             lulu_podbook_id: catalog.books[bookIndex].luluPodPackageId || null,
         });
     } catch (error) {
-        if (error.code === 'ENOENT') return res.status(404).json({ error: 'Brand catalog not found' });
+        if (error.code === 'ENOENT') return res.status(404).json({ success: false, error: 'Brand catalog not found' });
         console.error('[admin/products/fulfillment] PATCH error:', error);
-        res.status(500).json({ error: 'Failed to update fulfillment provider' });
+        res.status(500).json({ success: false, error: 'Failed to update fulfillment provider' });
     }
 });
 
@@ -978,7 +979,7 @@ router.post('/upsells', authenticateAdmin, async (req, res) => {
     try {
         const { product_id, upsell_product_id, upsell_product_name, headline, description, upsell_price_cents } = req.body;
         if (!upsell_product_id || !upsell_product_name || !headline || !upsell_price_cents) {
-            return res.status(400).json({ error: 'upsell_product_id, upsell_product_name, headline, and upsell_price_cents are required' });
+            return res.status(400).json({ success: false, error: 'upsell_product_id, upsell_product_name, headline, and upsell_price_cents are required' });
         }
         const result = await new Promise((resolve, reject) => {
             db.run(
