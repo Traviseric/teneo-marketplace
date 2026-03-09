@@ -251,6 +251,7 @@ app.use('/api/censorship', censorshipTrackerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/license', licenseRoutes);
+app.use('/api/referral', require('./routes/referralRoutes'));
 app.use('/api/email', emailTrackingRoutes);
 app.use('/api/email-marketing', emailMarketingRoutes);
 

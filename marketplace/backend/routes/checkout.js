@@ -26,6 +26,7 @@ const shippingService = require('../services/shippingService');
 const db = require('../database/database');
 const { enrollUserInCourse } = require('./courseRoutes');
 const licenseKeyService = require('../services/licenseKeyService');
+const { trackReferral } = require('./referralRoutes');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -53,9 +54,11 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       userEmail,
       couponCode,
       bumpAccepted,
-      bumpId
+      bumpId,
+      referralCode: rawReferralCode
     } = req.body;
     const brandId = sanitizeBrandId(rawBrandId);
+    const referralCode = rawReferralCode ? sanitizeMetadataValue(String(rawReferralCode).toUpperCase(), 20) : null;
     const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
     const funnelSessionId = sanitizeMetadataValue(req.body.funnelSessionId, 120);
     const courseSlug = sanitizeMetadataValue(req.body.courseSlug, 120);
@@ -168,7 +171,8 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
         funnelId: funnelId || '',
         funnelSessionId: funnelSessionId || '',
         courseSlug: courseSlug || '',
-        product_type: courseSlug ? 'course' : ''
+        product_type: courseSlug ? 'course' : '',
+        referralCode: referralCode || ''
       },
       // Save payment method for post-purchase one-click upsells
       payment_intent_data: {
@@ -481,6 +485,16 @@ async function handleCheckoutCompleted(session) {
       }
     } catch (licenseErr) {
       console.error('[license] License key generation failed (non-fatal):', licenseErr.message);
+    }
+
+    // Track referral commission if order came via a referral link (non-fatal)
+    if (session.metadata?.referralCode) {
+      trackReferral({
+        referralCode: session.metadata.referralCode,
+        orderId,
+        customerEmail: userEmail,
+        orderAmount: session.amount_total ? session.amount_total / 100 : 0,
+      }).catch(err => console.warn('[referral] trackReferral failed (non-fatal):', err.message));
     }
 
     // Pin purchased book to IPFS for censorship-resistant delivery (non-fatal)

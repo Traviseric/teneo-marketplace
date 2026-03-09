@@ -603,3 +603,32 @@ CREATE TABLE IF NOT EXISTS license_keys (
 CREATE INDEX IF NOT EXISTS idx_license_keys_key ON license_keys(key);
 CREATE INDEX IF NOT EXISTS idx_license_keys_order ON license_keys(order_id);
 CREATE INDEX IF NOT EXISTS idx_license_keys_email ON license_keys(customer_email);
+
+-- Referral codes table — each brand can have one referral code
+CREATE TABLE IF NOT EXISTS referral_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT UNIQUE NOT NULL,
+  referrer_brand_id TEXT NOT NULL,
+  commission_rate_new REAL DEFAULT 0.15,
+  commission_rate_repeat REAL DEFAULT 0.02,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_referral_codes_code ON referral_codes(code);
+CREATE INDEX IF NOT EXISTS idx_referral_codes_brand ON referral_codes(referrer_brand_id);
+
+-- Referrals table — tracks referral events tied to orders
+CREATE TABLE IF NOT EXISTS referrals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  referral_code TEXT NOT NULL,
+  referred_order_id TEXT,
+  referred_email TEXT,
+  is_new_customer INTEGER DEFAULT 1,
+  commission_amount REAL,
+  status TEXT DEFAULT 'pending',  -- pending | paid | cancelled
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
+CREATE INDEX IF NOT EXISTS idx_referrals_order ON referrals(referred_order_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_status ON referrals(status);
