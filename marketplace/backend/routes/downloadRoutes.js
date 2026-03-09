@@ -5,6 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const { authenticateAdmin } = require('../middleware/auth');
 const arxmintService = require('../services/arxmintService');
+const { stampPDF } = require('../services/pdfStampingService');
 
 const OrderService = require('../services/orderService');
 const db = require('../database/database');
@@ -151,10 +152,20 @@ router.get('/:token', async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${safeTitle}.pdf"`);
     res.setHeader('X-Download-Count', order.download_count + 1);
     res.setHeader('X-Downloads-Remaining', 5 - (order.download_count + 1));
-    
-    // Stream file to client
-    const fileStream = require('fs').createReadStream(pdfPath);
-    fileStream.pipe(res);
+
+    // Stamp PDFs with buyer identity (content protection — traced if shared)
+    // Stamped buffer is served directly, never written to disk
+    const rawBuffer = await fs.readFile(pdfPath);
+    try {
+      const stamped = await stampPDF(rawBuffer, order.customer_email, order.customer_name);
+      res.setHeader('Content-Length', stamped.length);
+      res.end(stamped);
+    } catch (stampErr) {
+      // If stamping fails (corrupt PDF, encryption), fall back to raw file
+      console.warn(`PDF stamping failed for order ${order.order_id}, serving raw:`, stampErr.message);
+      res.setHeader('Content-Length', rawBuffer.length);
+      res.end(rawBuffer);
+    }
     
   } catch (error) {
     console.error('Error downloading file:', error);
