@@ -1,20 +1,31 @@
 {
   "success": true,
+  "summary": "Added merchant fulfillment provider UI: PATCH admin endpoint + admin HTML section with per-product provider dropdown, wired storefront.js to honour explicit fulfillment_provider field in catalog.json.",
   "next_box": "CONDUCTOR",
   "context": {
     "completed": 1,
     "blocked": 0,
     "in_progress": 0,
-    "commits": ["0082c43"],
+    "commits": ["49ba082"],
     "files_changed": [
-      "marketplace/backend/server.js",
+      "marketplace/backend/routes/adminRoutes.js",
       "marketplace/backend/routes/storefront.js",
-      "marketplace/backend/.env.example",
-      ".overnight/active/002-P2-fix-csrf-exemption-storefront-routes.md"
+      "marketplace/frontend/admin.html"
     ],
-    "task_file": "002-P2-fix-csrf-exemption-storefront-routes.md",
+    "task_file": "005-P2-merchant-fulfillment-provider-ui.md",
     "blockers": [],
     "follow_up_tasks": [],
-    "summary": "Narrowed CSRF exemption for /api/storefront and /api/apps routes from all-methods to GET-only. Added requireStorefrontApiKey middleware to POST /api/storefront/checkout — when STOREFRONT_API_KEY env var is set, callers must include X-Api-Key header. POST /api/storefront/fulfill was already excluded from CSRF via csrfExcludePaths with HMAC webhook signature verification. Added STOREFRONT_API_KEY to .env.example with description."
+    "context_for_next_worker": {
+      "commits_made": ["49ba082 - feat(admin): add merchant fulfillment provider UI + PATCH endpoint"],
+      "files_modified": [
+        "marketplace/backend/routes/adminRoutes.js",
+        "marketplace/backend/routes/storefront.js",
+        "marketplace/frontend/admin.html"
+      ],
+      "approach_used": "Added GET /api/admin/products/fulfillment + PATCH /api/admin/products/:id/fulfillment to adminRoutes.js (reads/writes catalog.json); added 'Product Fulfillment' sidebar nav item and section to admin.html with a per-product <select> (stripe_digital/printful/lulu/arxmint/manual) and variant ID input; updated bookToProduct() in storefront.js to map explicit fulfillment_provider values to the correct fulfillment type string used by checkout routing.",
+      "what_worked": "Reading/writing catalog.json from adminRoutes follows the same pattern used by the existing books CRUD endpoints.",
+      "what_didnt": "None — clean implementation on first attempt.",
+      "next_recommended_step": "Next pending tasks include 011-P2-memberships-subscriptions.md and 012-P2-machine-payable-endpoints.md — both are independent and can proceed immediately."
+    }
   }
 }

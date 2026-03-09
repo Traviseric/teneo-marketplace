@@ -2,7 +2,8 @@ You are the DIGEST creator - summarize the session AND prepare the next one.
 
 PROJECT: openbazaar-ai
 RELAY DIR: C:\code\openbazaar-ai\.overnight
-OVERNIGHT_TASKS_PATH: C:\code\openbazaar-ai\OVERNIGHT_TASKS.md
+AGENT_TASKS_PATH: C:\code\openbazaar-ai\AGENT_TASKS.md
+
 
 ## Your Mission
 
@@ -40,15 +41,27 @@ Before writing the digest, read these files from the relay dir to identify remai
 
 3. **`progress.json`** — Current phase, stuck status, feature pass/fail states.
 
-**Write a "## Next Session Work" section** to `C:\code\openbazaar-ai\OVERNIGHT_TASKS.md`:
-- List partial/missing/stub features as actionable tasks
-- List deferred audit findings that should be addressed
-- List LAST_MILE_TEST failures with specific error details
-- List any pending tasks from active/ that were not completed
-- Prioritize: P0 = failing features, P1 = partial features, P2 = deferred findings
+**Write session state to HANDOFF.md** (NOT to AGENT_TASKS.md):
 
-If the file already exists, APPEND the new section (don't overwrite existing content).
-Use markdown checkboxes (- [ ]) so the task synthesizer can parse them.
+Write `C:\code\openbazaar-ai\.overnight/HANDOFF.md` with a "## Next Session Work" section containing:
+- LAST_MILE_TEST failures with specific error details (which tests broke, which files to edit)
+- Deferred audit findings that should be addressed next
+- Pending tasks from active/ that were not completed
+- Specific debugging context (error messages, stack traces, file paths)
+
+This granular session state belongs in HANDOFF.md because it's ephemeral — the next session
+reads it for context, then acts on it. It does NOT belong in AGENT_TASKS.md.
+
+
+
+**Update AGENT_TASKS.md** (`C:\code\openbazaar-ai\AGENT_TASKS.md`) ONLY for durable task changes:
+- Mark completed items as `[x]` (tasks that were finished this session)
+- Add new high-level tasks discovered during the session (not granular session state)
+- Do NOT append specific test failures, error messages, or debugging context here
+- AGENT_TASKS.md tracks *what to build* (aligned with ROADMAP.md); HANDOFF.md tracks *session state*
+
+If the file already exists, update checkboxes in-place. Only append genuinely new tasks
+using markdown checkboxes (- [ ]) with priority tags ([P0], [P1], [P2]).
 
 ## Output Format
 

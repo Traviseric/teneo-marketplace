@@ -1,0 +1,1641 @@
+{
+  "project": "openbazaar-ai",
+  "time_window": {
+    "start": "2026-03-06T19:22:36.016633+00:00",
+    "end": "2026-03-06T23:42:10.605751+00:00"
+  },
+  "aggregate": {
+    "session_count": 81,
+    "total_messages": 4248,
+    "tokens": {
+      "input": 182809,
+      "output": 860153,
+      "cache_write": 13861842,
+      "cache_read": 173696474,
+      "total": 188601278
+    },
+    "api_equivalent_cost": 587.72
+  },
+  "sessions": [
+    {
+      "session_id": "058838a3-8e76-48a0-89a6-fec0fbfc6bd3",
+      "messages": 29,
+      "first_ts": "2026-03-06T22:02:18.111000+00:00",
+      "last_ts": "2026-03-06T22:05:03.304000+00:00",
+      "tokens": {
+        "input": 4440,
+        "output": 8545,
+        "cache_write": 152892,
+        "cache_read": 852925,
+        "total": 1018802
+      },
+      "api_equivalent_cost": {
+        "input": 0.0666,
+        "output": 0.6409,
+        "cache_write": 2.8667,
+        "cache_read": 1.2794,
+        "total": 4.85
+      }
+    },
+    {
+      "session_id": "06289276-f3c1-4d26-ac5a-734deec42136",
+      "messages": 297,
+      "first_ts": "2026-03-06T22:39:07.897000+00:00",
+      "last_ts": "2026-03-06T23:03:54.631000+00:00",
+      "tokens": {
+        "input": 9427,
+        "output": 51068,
+        "cache_write": 416307,
+        "cache_read": 27347135,
+        "total": 27823937
+      },
+      "api_equivalent_cost": {
+        "input": 0.1414,
+        "output": 3.8301,
+        "cache_write": 7.8058,
+        "cache_read": 41.0207,
+        "total": 52.8
+      }
+    },
+    {
+      "session_id": "0645f05c-45d5-4869-8ef6-b8a19a0d198b",
+      "messages": 30,
+      "first_ts": "2026-03-06T21:50:59.950000+00:00",
+      "last_ts": "2026-03-06T21:53:16.025000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 5393,
+        "cache_write": 146880,
+        "cache_read": 858340,
+        "total": 1010661
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.4045,
+        "cache_write": 2.754,
+        "cache_read": 1.2875,
+        "total": 4.45
+      }
+    },
+    {
+      "session_id": "0d79df03-c18d-48bd-89f6-c5a9fd0df843",
+      "messages": 25,
+      "first_ts": "2026-03-06T20:46:29.574000+00:00",
+      "last_ts": "2026-03-06T20:47:50.518000+00:00",
+      "tokens": {
+        "input": 16964,
+        "output": 3028,
+        "cache_write": 144698,
+        "cache_read": 627267,
+        "total": 791957
+      },
+      "api_equivalent_cost": {
+        "input": 0.2545,
+        "output": 0.2271,
+        "cache_write": 2.7131,
+        "cache_read": 0.9409,
+        "total": 4.14
+      }
+    },
+    {
+      "session_id": "0df22854-d4a9-4ecd-9037-829dcccd71b3",
+      "messages": 26,
+      "first_ts": "2026-03-06T19:49:31.621000+00:00",
+      "last_ts": "2026-03-06T19:51:07.078000+00:00",
+      "tokens": {
+        "input": 40,
+        "output": 4246,
+        "cache_write": 107284,
+        "cache_read": 574620,
+        "total": 686190
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.3185,
+        "cache_write": 2.0116,
+        "cache_read": 0.8619,
+        "total": 3.19
+      }
+    },
+    {
+      "session_id": "12f7c0db-c8c3-41e0-bf5e-1ea2e52fb7a9",
+      "messages": 29,
+      "first_ts": "2026-03-06T20:38:34.320000+00:00",
+      "last_ts": "2026-03-06T20:40:02.476000+00:00",
+      "tokens": {
+        "input": 2523,
+        "output": 3634,
+        "cache_write": 172688,
+        "cache_read": 1022881,
+        "total": 1201726
+      },
+      "api_equivalent_cost": {
+        "input": 0.0378,
+        "output": 0.2726,
+        "cache_write": 3.2379,
+        "cache_read": 1.5343,
+        "total": 5.08
+      }
+    },
+    {
+      "session_id": "1346523a-0b3b-419a-8664-641d28fa8948",
+      "messages": 81,
+      "first_ts": "2026-03-06T20:47:56.551000+00:00",
+      "last_ts": "2026-03-06T20:56:58.247000+00:00",
+      "tokens": {
+        "input": 103,
+        "output": 32659,
+        "cache_write": 358858,
+        "cache_read": 3953658,
+        "total": 4345278
+      },
+      "api_equivalent_cost": {
+        "input": 0.0015,
+        "output": 2.4494,
+        "cache_write": 6.7286,
+        "cache_read": 5.9305,
+        "total": 15.11
+      }
+    },
+    {
+      "session_id": "16471674-3ed0-4fbf-9fda-86ebefd5e88a",
+      "messages": 40,
+      "first_ts": "2026-03-06T19:51:13.888000+00:00",
+      "last_ts": "2026-03-06T19:53:30.431000+00:00",
+      "tokens": {
+        "input": 1912,
+        "output": 7500,
+        "cache_write": 194685,
+        "cache_read": 970584,
+        "total": 1174681
+      },
+      "api_equivalent_cost": {
+        "input": 0.0287,
+        "output": 0.5625,
+        "cache_write": 3.6503,
+        "cache_read": 1.4559,
+        "total": 5.7
+      }
+    },
+    {
+      "session_id": "164f1506-ad87-4198-9a89-922762f663ed",
+      "messages": 52,
+      "first_ts": "2026-03-06T23:26:10.504000+00:00",
+      "last_ts": "2026-03-06T23:31:07.173000+00:00",
+      "tokens": {
+        "input": 76,
+        "output": 16032,
+        "cache_write": 142426,
+        "cache_read": 1915048,
+        "total": 2073582
+      },
+      "api_equivalent_cost": {
+        "input": 0.0011,
+        "output": 1.2024,
+        "cache_write": 2.6705,
+        "cache_read": 2.8726,
+        "total": 6.75
+      }
+    },
+    {
+      "session_id": "17813d93-6c4a-4542-b3fc-52dc6e76ff2f",
+      "messages": 54,
+      "first_ts": "2026-03-06T22:38:44.890000+00:00",
+      "last_ts": "2026-03-06T22:41:40.720000+00:00",
+      "tokens": {
+        "input": 70,
+        "output": 9360,
+        "cache_write": 144086,
+        "cache_read": 1844922,
+        "total": 1998438
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 0.702,
+        "cache_write": 2.7016,
+        "cache_read": 2.7674,
+        "total": 6.17
+      }
+    },
+    {
+      "session_id": "17f711e5-69df-49a4-ad7b-6a9a5daf1d30",
+      "messages": 30,
+      "first_ts": "2026-03-06T23:23:00.085000+00:00",
+      "last_ts": "2026-03-06T23:24:22.789000+00:00",
+      "tokens": {
+        "input": 40,
+        "output": 3156,
+        "cache_write": 78914,
+        "cache_read": 794798,
+        "total": 876908
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.2367,
+        "cache_write": 1.4796,
+        "cache_read": 1.1922,
+        "total": 2.91
+      }
+    },
+    {
+      "session_id": "17fdee1a-56fc-4b10-a063-48b3effcc161",
+      "messages": 25,
+      "first_ts": "2026-03-06T21:24:37.998000+00:00",
+      "last_ts": "2026-03-06T21:25:59.926000+00:00",
+      "tokens": {
+        "input": 43,
+        "output": 3306,
+        "cache_write": 120551,
+        "cache_read": 609100,
+        "total": 733000
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.248,
+        "cache_write": 2.2603,
+        "cache_read": 0.9136,
+        "total": 3.42
+      }
+    },
+    {
+      "session_id": "1898a596-88c6-473d-b8a9-4916365017a9",
+      "messages": 33,
+      "first_ts": "2026-03-06T21:19:42.519000+00:00",
+      "last_ts": "2026-03-06T21:22:18.241000+00:00",
+      "tokens": {
+        "input": 51,
+        "output": 6802,
+        "cache_write": 137757,
+        "cache_read": 936869,
+        "total": 1081479
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.5101,
+        "cache_write": 2.5829,
+        "cache_read": 1.4053,
+        "total": 4.5
+      }
+    },
+    {
+      "session_id": "1cc91827-da28-4c1b-8289-0dcee9e46e31",
+      "messages": 29,
+      "first_ts": "2026-03-06T20:36:40.737000+00:00",
+      "last_ts": "2026-03-06T20:38:00.034000+00:00",
+      "tokens": {
+        "input": 43,
+        "output": 2863,
+        "cache_write": 65173,
+        "cache_read": 553357,
+        "total": 621436
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.2147,
+        "cache_write": 1.222,
+        "cache_read": 0.83,
+        "total": 2.27
+      }
+    },
+    {
+      "session_id": "2d1b8d68-fed9-42f8-bda7-c41537771871",
+      "messages": 48,
+      "first_ts": "2026-03-06T23:23:15.461000+00:00",
+      "last_ts": "2026-03-06T23:25:58.100000+00:00",
+      "tokens": {
+        "input": 58,
+        "output": 5291,
+        "cache_write": 100727,
+        "cache_read": 1561863,
+        "total": 1667939
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.3968,
+        "cache_write": 1.8886,
+        "cache_read": 2.3428,
+        "total": 4.63
+      }
+    },
+    {
+      "session_id": "3238ac76-d0d4-480c-90eb-88cdf949a1d3",
+      "messages": 17,
+      "first_ts": "2026-03-06T19:25:27.804000+00:00",
+      "last_ts": "2026-03-06T19:26:23.914000+00:00",
+      "tokens": {
+        "input": 29,
+        "output": 2399,
+        "cache_write": 88528,
+        "cache_read": 256590,
+        "total": 347546
+      },
+      "api_equivalent_cost": {
+        "input": 0.0004,
+        "output": 0.1799,
+        "cache_write": 1.6599,
+        "cache_read": 0.3849,
+        "total": 2.23
+      }
+    },
+    {
+      "session_id": "3790d6c5-6575-4c1d-aebb-4833a0589442",
+      "messages": 50,
+      "first_ts": "2026-03-06T21:41:59.364000+00:00",
+      "last_ts": "2026-03-06T21:44:32.644000+00:00",
+      "tokens": {
+        "input": 70,
+        "output": 5843,
+        "cache_write": 93367,
+        "cache_read": 1519735,
+        "total": 1619015
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 0.4382,
+        "cache_write": 1.7506,
+        "cache_read": 2.2796,
+        "total": 4.47
+      }
+    },
+    {
+      "session_id": "41cd537a-4783-4107-9161-d9ce7276d251",
+      "messages": 30,
+      "first_ts": "2026-03-06T20:41:44.373000+00:00",
+      "last_ts": "2026-03-06T20:43:38.612000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 4343,
+        "cache_write": 106074,
+        "cache_read": 761257,
+        "total": 871722
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.3257,
+        "cache_write": 1.9889,
+        "cache_read": 1.1419,
+        "total": 3.46
+      }
+    },
+    {
+      "session_id": "42b6855b-ac78-4beb-96fa-0317902dd69b",
+      "messages": 45,
+      "first_ts": "2026-03-06T22:30:10.510000+00:00",
+      "last_ts": "2026-03-06T22:32:13.509000+00:00",
+      "tokens": {
+        "input": 2516,
+        "output": 5696,
+        "cache_write": 125187,
+        "cache_read": 1564215,
+        "total": 1697614
+      },
+      "api_equivalent_cost": {
+        "input": 0.0377,
+        "output": 0.4272,
+        "cache_write": 2.3473,
+        "cache_read": 2.3463,
+        "total": 5.16
+      }
+    },
+    {
+      "session_id": "44b0a831-478b-442d-93de-6dffa29cb7e1",
+      "messages": 30,
+      "first_ts": "2026-03-06T23:11:19.165000+00:00",
+      "last_ts": "2026-03-06T23:12:47.221000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 4853,
+        "cache_write": 141842,
+        "cache_read": 793638,
+        "total": 940381
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.364,
+        "cache_write": 2.6595,
+        "cache_read": 1.1905,
+        "total": 4.21
+      }
+    },
+    {
+      "session_id": "44fe3c7c-9c3e-4f9f-a478-bb52ac30e2bd",
+      "messages": 79,
+      "first_ts": "2026-03-06T21:26:05.256000+00:00",
+      "last_ts": "2026-03-06T21:37:10.922000+00:00",
+      "tokens": {
+        "input": 107,
+        "output": 40233,
+        "cache_write": 439483,
+        "cache_read": 4131628,
+        "total": 4611451
+      },
+      "api_equivalent_cost": {
+        "input": 0.0016,
+        "output": 3.0175,
+        "cache_write": 8.2403,
+        "cache_read": 6.1974,
+        "total": 17.46
+      }
+    },
+    {
+      "session_id": "469962f8-cd7c-45cd-a9d3-6e9c723c6da4",
+      "messages": 28,
+      "first_ts": "2026-03-06T21:16:14.462000+00:00",
+      "last_ts": "2026-03-06T21:19:35.056000+00:00",
+      "tokens": {
+        "input": 4666,
+        "output": 5898,
+        "cache_write": 75394,
+        "cache_read": 600525,
+        "total": 686483
+      },
+      "api_equivalent_cost": {
+        "input": 0.07,
+        "output": 0.4423,
+        "cache_write": 1.4136,
+        "cache_read": 0.9008,
+        "total": 2.83
+      }
+    },
+    {
+      "session_id": "46ce098f-9b5f-403f-a205-ae99f530d04e",
+      "messages": 40,
+      "first_ts": "2026-03-06T22:15:33.835000+00:00",
+      "last_ts": "2026-03-06T22:18:38.707000+00:00",
+      "tokens": {
+        "input": 56,
+        "output": 9034,
+        "cache_write": 165040,
+        "cache_read": 1284211,
+        "total": 1458341
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.6775,
+        "cache_write": 3.0945,
+        "cache_read": 1.9263,
+        "total": 5.7
+      }
+    },
+    {
+      "session_id": "4b1f6fbd-d07a-4d78-8ba2-b145e455426a",
+      "messages": 34,
+      "first_ts": "2026-03-06T20:57:37.447000+00:00",
+      "last_ts": "2026-03-06T20:59:30.949000+00:00",
+      "tokens": {
+        "input": 50,
+        "output": 4002,
+        "cache_write": 65754,
+        "cache_read": 717370,
+        "total": 787176
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.3002,
+        "cache_write": 1.2329,
+        "cache_read": 1.0761,
+        "total": 2.61
+      }
+    },
+    {
+      "session_id": "54f7a1c4-0011-4468-a6e1-c0385f7abaa4",
+      "messages": 89,
+      "first_ts": "2026-03-06T21:42:22.715000+00:00",
+      "last_ts": "2026-03-06T21:50:53.775000+00:00",
+      "tokens": {
+        "input": 117,
+        "output": 28101,
+        "cache_write": 262834,
+        "cache_read": 5019478,
+        "total": 5310530
+      },
+      "api_equivalent_cost": {
+        "input": 0.0018,
+        "output": 2.1076,
+        "cache_write": 4.9281,
+        "cache_read": 7.5292,
+        "total": 14.57
+      }
+    },
+    {
+      "session_id": "5e6993dc-36be-4a09-9d8c-16d086932ab8",
+      "messages": 48,
+      "first_ts": "2026-03-06T23:04:08.802000+00:00",
+      "last_ts": "2026-03-06T23:06:27.440000+00:00",
+      "tokens": {
+        "input": 1559,
+        "output": 7246,
+        "cache_write": 224212,
+        "cache_read": 1999703,
+        "total": 2232720
+      },
+      "api_equivalent_cost": {
+        "input": 0.0234,
+        "output": 0.5434,
+        "cache_write": 4.204,
+        "cache_read": 2.9996,
+        "total": 7.77
+      }
+    },
+    {
+      "session_id": "6181a1fd-ed7e-43e4-a782-ca4a8f33404c",
+      "messages": 47,
+      "first_ts": "2026-03-06T19:40:31.997000+00:00",
+      "last_ts": "2026-03-06T19:43:20.258000+00:00",
+      "tokens": {
+        "input": 63,
+        "output": 8432,
+        "cache_write": 123987,
+        "cache_read": 1542112,
+        "total": 1674594
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.6324,
+        "cache_write": 2.3248,
+        "cache_read": 2.3132,
+        "total": 5.27
+      }
+    },
+    {
+      "session_id": "63de60c2-cbd6-41a4-862c-2fd955cdb3e0",
+      "messages": 81,
+      "first_ts": "2026-03-06T19:31:54.360000+00:00",
+      "last_ts": "2026-03-06T19:40:23.611000+00:00",
+      "tokens": {
+        "input": 5558,
+        "output": 25353,
+        "cache_write": 250808,
+        "cache_read": 4761715,
+        "total": 5043434
+      },
+      "api_equivalent_cost": {
+        "input": 0.0834,
+        "output": 1.9015,
+        "cache_write": 4.7026,
+        "cache_read": 7.1426,
+        "total": 13.83
+      }
+    },
+    {
+      "session_id": "67d5172a-5971-4209-8566-c4ba3dc2d5b4",
+      "messages": 45,
+      "first_ts": "2026-03-06T21:02:54.431000+00:00",
+      "last_ts": "2026-03-06T21:05:14.131000+00:00",
+      "tokens": {
+        "input": 65,
+        "output": 6112,
+        "cache_write": 106995,
+        "cache_read": 1414517,
+        "total": 1527689
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 0.4584,
+        "cache_write": 2.0062,
+        "cache_read": 2.1218,
+        "total": 4.59
+      }
+    },
+    {
+      "session_id": "704a72dd-80e7-492e-8bbc-94a8e96f743e",
+      "messages": 104,
+      "first_ts": "2026-03-06T22:30:02.751000+00:00",
+      "last_ts": "2026-03-06T22:38:18.174000+00:00",
+      "tokens": {
+        "input": 140,
+        "output": 25783,
+        "cache_write": 234402,
+        "cache_read": 5547576,
+        "total": 5807901
+      },
+      "api_equivalent_cost": {
+        "input": 0.0021,
+        "output": 1.9337,
+        "cache_write": 4.395,
+        "cache_read": 8.3214,
+        "total": 14.65
+      }
+    },
+    {
+      "session_id": "71d7112d-65b5-435a-9c6c-bfbc8d442125",
+      "messages": 51,
+      "first_ts": "2026-03-06T21:02:23.483000+00:00",
+      "last_ts": "2026-03-06T21:05:00.724000+00:00",
+      "tokens": {
+        "input": 71,
+        "output": 7098,
+        "cache_write": 91714,
+        "cache_read": 1600033,
+        "total": 1698916
+      },
+      "api_equivalent_cost": {
+        "input": 0.0011,
+        "output": 0.5323,
+        "cache_write": 1.7196,
+        "cache_read": 2.4,
+        "total": 4.65
+      }
+    },
+    {
+      "session_id": "7524cdd1-f6f0-48c1-8786-f0fe3ff9c398",
+      "messages": 24,
+      "first_ts": "2026-03-06T21:22:24.992000+00:00",
+      "last_ts": "2026-03-06T21:24:31.347000+00:00",
+      "tokens": {
+        "input": 14352,
+        "output": 6121,
+        "cache_write": 181800,
+        "cache_read": 426676,
+        "total": 628949
+      },
+      "api_equivalent_cost": {
+        "input": 0.2153,
+        "output": 0.4591,
+        "cache_write": 3.4087,
+        "cache_read": 0.64,
+        "total": 4.72
+      }
+    },
+    {
+      "session_id": "798f0848-ad11-452f-964a-096898937cd6",
+      "messages": 24,
+      "first_ts": "2026-03-06T22:13:34.520000+00:00",
+      "last_ts": "2026-03-06T22:14:39.107000+00:00",
+      "tokens": {
+        "input": 36,
+        "output": 2462,
+        "cache_write": 74982,
+        "cache_read": 483546,
+        "total": 561026
+      },
+      "api_equivalent_cost": {
+        "input": 0.0005,
+        "output": 0.1847,
+        "cache_write": 1.4059,
+        "cache_read": 0.7253,
+        "total": 2.32
+      }
+    },
+    {
+      "session_id": "7ada4c4f-ed88-481e-8b91-0f8029894b6e",
+      "messages": 54,
+      "first_ts": "2026-03-06T22:05:10.471000+00:00",
+      "last_ts": "2026-03-06T22:13:10.134000+00:00",
+      "tokens": {
+        "input": 30224,
+        "output": 25105,
+        "cache_write": 359152,
+        "cache_read": 2505895,
+        "total": 2920376
+      },
+      "api_equivalent_cost": {
+        "input": 0.4534,
+        "output": 1.8829,
+        "cache_write": 6.7341,
+        "cache_read": 3.7588,
+        "total": 12.83
+      }
+    },
+    {
+      "session_id": "83b72ea4-7927-46f6-94a6-c3b89b1c129a",
+      "messages": 32,
+      "first_ts": "2026-03-06T19:22:44.774000+00:00",
+      "last_ts": "2026-03-06T19:25:20.038000+00:00",
+      "tokens": {
+        "input": 46,
+        "output": 5686,
+        "cache_write": 110100,
+        "cache_read": 823770,
+        "total": 939602
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.4264,
+        "cache_write": 2.0644,
+        "cache_read": 1.2357,
+        "total": 3.73
+      }
+    },
+    {
+      "session_id": "8653b7a9-1350-4e4b-9f8e-1c1f45c6dc16",
+      "messages": 131,
+      "first_ts": "2026-03-06T19:31:31.119000+00:00",
+      "last_ts": "2026-03-06T19:38:03.847000+00:00",
+      "tokens": {
+        "input": 169,
+        "output": 23217,
+        "cache_write": 274435,
+        "cache_read": 7784705,
+        "total": 8082526
+      },
+      "api_equivalent_cost": {
+        "input": 0.0025,
+        "output": 1.7413,
+        "cache_write": 5.1457,
+        "cache_read": 11.6771,
+        "total": 18.57
+      }
+    },
+    {
+      "session_id": "8c7c7ed7-7954-4936-8f00-9cd520d42e79",
+      "messages": 34,
+      "first_ts": "2026-03-06T20:27:54.479000+00:00",
+      "last_ts": "2026-03-06T20:30:20.394000+00:00",
+      "tokens": {
+        "input": 50,
+        "output": 5542,
+        "cache_write": 127916,
+        "cache_read": 925907,
+        "total": 1059415
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.4157,
+        "cache_write": 2.3984,
+        "cache_read": 1.3889,
+        "total": 4.2
+      }
+    },
+    {
+      "session_id": "90f35998-8459-422b-83f4-2d8247c8c54d",
+      "messages": 47,
+      "first_ts": "2026-03-06T19:26:30.449000+00:00",
+      "last_ts": "2026-03-06T19:31:16.552000+00:00",
+      "tokens": {
+        "input": 1061,
+        "output": 15778,
+        "cache_write": 130196,
+        "cache_read": 1390317,
+        "total": 1537352
+      },
+      "api_equivalent_cost": {
+        "input": 0.0159,
+        "output": 1.1834,
+        "cache_write": 2.4412,
+        "cache_read": 2.0855,
+        "total": 5.73
+      }
+    },
+    {
+      "session_id": "962369f3-f1f3-4855-916b-cd9da99385f4",
+      "messages": 65,
+      "first_ts": "2026-03-06T20:09:35.351000+00:00",
+      "last_ts": "2026-03-06T20:12:52.727000+00:00",
+      "tokens": {
+        "input": 7703,
+        "output": 7721,
+        "cache_write": 174642,
+        "cache_read": 2064707,
+        "total": 2254773
+      },
+      "api_equivalent_cost": {
+        "input": 0.1155,
+        "output": 0.5791,
+        "cache_write": 3.2745,
+        "cache_read": 3.0971,
+        "total": 7.07
+      }
+    },
+    {
+      "session_id": "96ce1232-d778-45a3-9aa6-63fc2d1b6726",
+      "messages": 39,
+      "first_ts": "2026-03-06T21:57:39.715000+00:00",
+      "last_ts": "2026-03-06T22:02:10.409000+00:00",
+      "tokens": {
+        "input": 27343,
+        "output": 11674,
+        "cache_write": 242644,
+        "cache_read": 1171556,
+        "total": 1453217
+      },
+      "api_equivalent_cost": {
+        "input": 0.4101,
+        "output": 0.8756,
+        "cache_write": 4.5496,
+        "cache_read": 1.7573,
+        "total": 7.59
+      }
+    },
+    {
+      "session_id": "9cb21239-c78d-4315-ba7a-ed4bbdbd973e",
+      "messages": 49,
+      "first_ts": "2026-03-06T20:00:48.358000+00:00",
+      "last_ts": "2026-03-06T20:05:07.588000+00:00",
+      "tokens": {
+        "input": 59,
+        "output": 11229,
+        "cache_write": 179269,
+        "cache_read": 2000729,
+        "total": 2191286
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.8422,
+        "cache_write": 3.3613,
+        "cache_read": 3.0011,
+        "total": 7.21
+      }
+    },
+    {
+      "session_id": "9eb9bc50-58ec-4abb-a8f1-2b74c419305a",
+      "messages": 38,
+      "first_ts": "2026-03-06T22:13:19.073000+00:00",
+      "last_ts": "2026-03-06T22:15:11.130000+00:00",
+      "tokens": {
+        "input": 56,
+        "output": 3500,
+        "cache_write": 63875,
+        "cache_read": 878946,
+        "total": 946377
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.2625,
+        "cache_write": 1.1977,
+        "cache_read": 1.3184,
+        "total": 2.78
+      }
+    },
+    {
+      "session_id": "9f300966-fdf6-44f3-b6b2-fcdf3a5350eb",
+      "messages": 36,
+      "first_ts": "2026-03-06T20:05:30.893000+00:00",
+      "last_ts": "2026-03-06T20:06:57.009000+00:00",
+      "tokens": {
+        "input": 52,
+        "output": 4061,
+        "cache_write": 112608,
+        "cache_read": 1076720,
+        "total": 1193441
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.3046,
+        "cache_write": 2.1114,
+        "cache_read": 1.6151,
+        "total": 4.03
+      }
+    },
+    {
+      "session_id": "9f36b68d-dc8a-41f7-8424-78ca94cec304",
+      "messages": 78,
+      "first_ts": "2026-03-06T21:37:27.046000+00:00",
+      "last_ts": "2026-03-06T21:41:40.169000+00:00",
+      "tokens": {
+        "input": 94,
+        "output": 12629,
+        "cache_write": 167368,
+        "cache_read": 3388495,
+        "total": 3568586
+      },
+      "api_equivalent_cost": {
+        "input": 0.0014,
+        "output": 0.9472,
+        "cache_write": 3.1381,
+        "cache_read": 5.0827,
+        "total": 9.17
+      }
+    },
+    {
+      "session_id": "a2288cc1-0663-4d84-9965-683a35c2dc67",
+      "messages": 84,
+      "first_ts": "2026-03-06T20:57:12.892000+00:00",
+      "last_ts": "2026-03-06T21:02:13.291000+00:00",
+      "tokens": {
+        "input": 108,
+        "output": 10162,
+        "cache_write": 149097,
+        "cache_read": 3025824,
+        "total": 3185191
+      },
+      "api_equivalent_cost": {
+        "input": 0.0016,
+        "output": 0.7621,
+        "cache_write": 2.7956,
+        "cache_read": 4.5387,
+        "total": 8.1
+      }
+    },
+    {
+      "session_id": "a428a048-57ea-4f1d-a95a-e023a80bcedf",
+      "messages": 59,
+      "first_ts": "2026-03-06T20:00:17.432000+00:00",
+      "last_ts": "2026-03-06T20:03:15.652000+00:00",
+      "tokens": {
+        "input": 83,
+        "output": 6420,
+        "cache_write": 132775,
+        "cache_read": 2145827,
+        "total": 2285105
+      },
+      "api_equivalent_cost": {
+        "input": 0.0012,
+        "output": 0.4815,
+        "cache_write": 2.4895,
+        "cache_read": 3.2187,
+        "total": 6.19
+      }
+    },
+    {
+      "session_id": "a4c51e4e-7db0-4a48-9d69-f8972386c17e",
+      "messages": 48,
+      "first_ts": "2026-03-06T23:23:32.157000+00:00",
+      "last_ts": "2026-03-06T23:25:58.645000+00:00",
+      "tokens": {
+        "input": 64,
+        "output": 4809,
+        "cache_write": 133343,
+        "cache_read": 1523023,
+        "total": 1661239
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 0.3607,
+        "cache_write": 2.5002,
+        "cache_read": 2.2845,
+        "total": 5.15
+      }
+    },
+    {
+      "session_id": "a6087240-e727-43a7-8be0-8f10212fcc20",
+      "messages": 37,
+      "first_ts": "2026-03-06T20:15:43.548000+00:00",
+      "last_ts": "2026-03-06T20:18:32.841000+00:00",
+      "tokens": {
+        "input": 43,
+        "output": 5382,
+        "cache_write": 130223,
+        "cache_read": 843135,
+        "total": 978783
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.4036,
+        "cache_write": 2.4417,
+        "cache_read": 1.2647,
+        "total": 4.11
+      }
+    },
+    {
+      "session_id": "a6493376-c404-48ad-9ca9-527fd0e3ac25",
+      "messages": 81,
+      "first_ts": "2026-03-06T19:44:52.714000+00:00",
+      "last_ts": "2026-03-06T19:48:36.489000+00:00",
+      "tokens": {
+        "input": 862,
+        "output": 10118,
+        "cache_write": 264294,
+        "cache_read": 2682802,
+        "total": 2958076
+      },
+      "api_equivalent_cost": {
+        "input": 0.0129,
+        "output": 0.7589,
+        "cache_write": 4.9555,
+        "cache_read": 4.0242,
+        "total": 9.75
+      }
+    },
+    {
+      "session_id": "a68c60ea-bd12-4090-98b1-0196d649fff1",
+      "messages": 46,
+      "first_ts": "2026-03-06T19:54:54.027000+00:00",
+      "last_ts": "2026-03-06T20:00:07.902000+00:00",
+      "tokens": {
+        "input": 66,
+        "output": 17429,
+        "cache_write": 194029,
+        "cache_read": 1384092,
+        "total": 1595616
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 1.3072,
+        "cache_write": 3.638,
+        "cache_read": 2.0761,
+        "total": 7.02
+      }
+    },
+    {
+      "session_id": "a7be503f-fe27-4172-91b6-80a155956b4f",
+      "messages": 35,
+      "first_ts": "2026-03-06T20:13:06.175000+00:00",
+      "last_ts": "2026-03-06T20:15:37.807000+00:00",
+      "tokens": {
+        "input": 1616,
+        "output": 7595,
+        "cache_write": 197911,
+        "cache_read": 1393177,
+        "total": 1600299
+      },
+      "api_equivalent_cost": {
+        "input": 0.0242,
+        "output": 0.5696,
+        "cache_write": 3.7108,
+        "cache_read": 2.0898,
+        "total": 6.39
+      }
+    },
+    {
+      "session_id": "ab011adf-733b-4f76-b6a3-f1d80d85a8ad",
+      "messages": 38,
+      "first_ts": "2026-03-06T20:40:06.307000+00:00",
+      "last_ts": "2026-03-06T20:41:39.089000+00:00",
+      "tokens": {
+        "input": 44,
+        "output": 3680,
+        "cache_write": 113204,
+        "cache_read": 969460,
+        "total": 1086388
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.276,
+        "cache_write": 2.1226,
+        "cache_read": 1.4542,
+        "total": 3.85
+      }
+    },
+    {
+      "session_id": "ab2d7784-c4dd-476d-9e40-a88a785a7e55",
+      "messages": 75,
+      "first_ts": "2026-03-06T19:31:38.825000+00:00",
+      "last_ts": "2026-03-06T19:36:14.237000+00:00",
+      "tokens": {
+        "input": 949,
+        "output": 10578,
+        "cache_write": 271389,
+        "cache_read": 4297315,
+        "total": 4580231
+      },
+      "api_equivalent_cost": {
+        "input": 0.0142,
+        "output": 0.7933,
+        "cache_write": 5.0885,
+        "cache_read": 6.446,
+        "total": 12.34
+      }
+    },
+    {
+      "session_id": "ad270578-956b-492e-b95c-6bc38cea0dbb",
+      "messages": 67,
+      "first_ts": "2026-03-06T20:57:28.326000+00:00",
+      "last_ts": "2026-03-06T21:01:02.605000+00:00",
+      "tokens": {
+        "input": 87,
+        "output": 9029,
+        "cache_write": 115021,
+        "cache_read": 2204506,
+        "total": 2328643
+      },
+      "api_equivalent_cost": {
+        "input": 0.0013,
+        "output": 0.6772,
+        "cache_write": 2.1566,
+        "cache_read": 3.3068,
+        "total": 6.14
+      }
+    },
+    {
+      "session_id": "ae586c83-73b2-4b2f-83cb-434003f3c650",
+      "messages": 24,
+      "first_ts": "2026-03-06T19:53:37.092000+00:00",
+      "last_ts": "2026-03-06T19:54:49.662000+00:00",
+      "tokens": {
+        "input": 42,
+        "output": 3125,
+        "cache_write": 100072,
+        "cache_read": 486232,
+        "total": 589471
+      },
+      "api_equivalent_cost": {
+        "input": 0.0006,
+        "output": 0.2344,
+        "cache_write": 1.8763,
+        "cache_read": 0.7293,
+        "total": 2.84
+      }
+    },
+    {
+      "session_id": "b4ce261f-b964-47bc-87c2-d6fa7df7afab",
+      "messages": 108,
+      "first_ts": "2026-03-06T21:06:23.847000+00:00",
+      "last_ts": "2026-03-06T21:13:22.259000+00:00",
+      "tokens": {
+        "input": 1854,
+        "output": 20088,
+        "cache_write": 221271,
+        "cache_read": 5690442,
+        "total": 5933655
+      },
+      "api_equivalent_cost": {
+        "input": 0.0278,
+        "output": 1.5066,
+        "cache_write": 4.1488,
+        "cache_read": 8.5357,
+        "total": 14.22
+      }
+    },
+    {
+      "session_id": "b7200035-b3f1-495f-bf6f-bc9a78f947bf",
+      "messages": 74,
+      "first_ts": "2026-03-06T21:02:39.055000+00:00",
+      "last_ts": "2026-03-06T21:06:10.700000+00:00",
+      "tokens": {
+        "input": 1707,
+        "output": 10293,
+        "cache_write": 117384,
+        "cache_read": 2611621,
+        "total": 2741005
+      },
+      "api_equivalent_cost": {
+        "input": 0.0256,
+        "output": 0.772,
+        "cache_write": 2.201,
+        "cache_read": 3.9174,
+        "total": 6.92
+      }
+    },
+    {
+      "session_id": "b724b2a9-175c-48f5-bc2c-f3a93bba0882",
+      "messages": 79,
+      "first_ts": "2026-03-06T23:06:35.839000+00:00",
+      "last_ts": "2026-03-06T23:11:12.030000+00:00",
+      "tokens": {
+        "input": 89,
+        "output": 11683,
+        "cache_write": 219128,
+        "cache_read": 3151260,
+        "total": 3382160
+      },
+      "api_equivalent_cost": {
+        "input": 0.0013,
+        "output": 0.8762,
+        "cache_write": 4.1086,
+        "cache_read": 4.7269,
+        "total": 9.71
+      }
+    },
+    {
+      "session_id": "b850d25b-cac6-4c5c-8100-fd8694e587b0",
+      "messages": 59,
+      "first_ts": "2026-03-06T20:30:26.832000+00:00",
+      "last_ts": "2026-03-06T20:36:20.164000+00:00",
+      "tokens": {
+        "input": 77,
+        "output": 17687,
+        "cache_write": 232187,
+        "cache_read": 2117613,
+        "total": 2367564
+      },
+      "api_equivalent_cost": {
+        "input": 0.0012,
+        "output": 1.3265,
+        "cache_write": 4.3535,
+        "cache_read": 3.1764,
+        "total": 8.86
+      }
+    },
+    {
+      "session_id": "bcf1f9c8-2d32-4615-b081-bb62e314da03",
+      "messages": 45,
+      "first_ts": "2026-03-06T20:43:46.541000+00:00",
+      "last_ts": "2026-03-06T20:46:24.446000+00:00",
+      "tokens": {
+        "input": 57,
+        "output": 8703,
+        "cache_write": 210475,
+        "cache_read": 1755843,
+        "total": 1975078
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.6527,
+        "cache_write": 3.9464,
+        "cache_read": 2.6338,
+        "total": 7.23
+      }
+    },
+    {
+      "session_id": "c0ac9f4c-9526-468a-8edb-73ab40976687",
+      "messages": 41,
+      "first_ts": "2026-03-06T20:18:41.860000+00:00",
+      "last_ts": "2026-03-06T20:21:03.428000+00:00",
+      "tokens": {
+        "input": 24841,
+        "output": 5836,
+        "cache_write": 194975,
+        "cache_read": 1498563,
+        "total": 1724215
+      },
+      "api_equivalent_cost": {
+        "input": 0.3726,
+        "output": 0.4377,
+        "cache_write": 3.6558,
+        "cache_read": 2.2478,
+        "total": 6.71
+      }
+    },
+    {
+      "session_id": "c13695aa-a416-4b4e-8b25-f23e87f6f21c",
+      "messages": 11,
+      "first_ts": "2026-03-06T19:48:48.755000+00:00",
+      "last_ts": "2026-03-06T19:49:26.169000+00:00",
+      "tokens": {
+        "input": 23,
+        "output": 2262,
+        "cache_write": 27148,
+        "cache_read": 112485,
+        "total": 141918
+      },
+      "api_equivalent_cost": {
+        "input": 0.0003,
+        "output": 0.1697,
+        "cache_write": 0.509,
+        "cache_read": 0.1687,
+        "total": 0.85
+      }
+    },
+    {
+      "session_id": "c71f3f42-1741-491d-9345-059882a72fc5",
+      "messages": 71,
+      "first_ts": "2026-03-06T23:33:18.655000+00:00",
+      "last_ts": "2026-03-06T23:38:44.890000+00:00",
+      "tokens": {
+        "input": 85,
+        "output": 9654,
+        "cache_write": 183656,
+        "cache_read": 2686903,
+        "total": 2880298
+      },
+      "api_equivalent_cost": {
+        "input": 0.0013,
+        "output": 0.724,
+        "cache_write": 3.4436,
+        "cache_read": 4.0304,
+        "total": 8.2
+      }
+    },
+    {
+      "session_id": "c94b798a-d665-4eb6-8153-0b6a1b97beb6",
+      "messages": 100,
+      "first_ts": "2026-03-06T21:41:51.701000+00:00",
+      "last_ts": "2026-03-06T21:47:40.300000+00:00",
+      "tokens": {
+        "input": 2804,
+        "output": 15693,
+        "cache_write": 155128,
+        "cache_read": 3987341,
+        "total": 4160966
+      },
+      "api_equivalent_cost": {
+        "input": 0.0421,
+        "output": 1.177,
+        "cache_write": 2.9086,
+        "cache_read": 5.981,
+        "total": 10.11
+      }
+    },
+    {
+      "session_id": "cb6f3539-c60b-4889-9532-9011f103f389",
+      "messages": 42,
+      "first_ts": "2026-03-06T21:13:36.972000+00:00",
+      "last_ts": "2026-03-06T21:16:06.263000+00:00",
+      "tokens": {
+        "input": 2202,
+        "output": 5959,
+        "cache_write": 158315,
+        "cache_read": 1362667,
+        "total": 1529143
+      },
+      "api_equivalent_cost": {
+        "input": 0.033,
+        "output": 0.4469,
+        "cache_write": 2.9684,
+        "cache_read": 2.044,
+        "total": 5.49
+      }
+    },
+    {
+      "session_id": "d1725dcc-e480-4dd7-a71c-3fff2ffedce0",
+      "messages": 44,
+      "first_ts": "2026-03-06T20:36:25.135000+00:00",
+      "last_ts": "2026-03-06T20:38:25.318000+00:00",
+      "tokens": {
+        "input": 54,
+        "output": 7367,
+        "cache_write": 102015,
+        "cache_read": 1197577,
+        "total": 1307013
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.5525,
+        "cache_write": 1.9128,
+        "cache_read": 1.7964,
+        "total": 4.26
+      }
+    },
+    {
+      "session_id": "d394d6b3-48cc-470e-b155-3d9deb3d8b95",
+      "messages": 32,
+      "first_ts": "2026-03-06T22:13:50.205000+00:00",
+      "last_ts": "2026-03-06T22:15:27.941000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 4304,
+        "cache_write": 82616,
+        "cache_read": 808892,
+        "total": 895860
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.3228,
+        "cache_write": 1.549,
+        "cache_read": 1.2133,
+        "total": 3.09
+      }
+    },
+    {
+      "session_id": "d39a9415-4afc-4e16-9a69-59e435757384",
+      "messages": 25,
+      "first_ts": "2026-03-06T19:43:25.728000+00:00",
+      "last_ts": "2026-03-06T19:44:48.437000+00:00",
+      "tokens": {
+        "input": 689,
+        "output": 3021,
+        "cache_write": 157632,
+        "cache_read": 756123,
+        "total": 917465
+      },
+      "api_equivalent_cost": {
+        "input": 0.0103,
+        "output": 0.2266,
+        "cache_write": 2.9556,
+        "cache_read": 1.1342,
+        "total": 4.33
+      }
+    },
+    {
+      "session_id": "df0f62cc-3cc4-4046-a3b2-240cee73cd9d",
+      "messages": 51,
+      "first_ts": "2026-03-06T23:12:51.393000+00:00",
+      "last_ts": "2026-03-06T23:22:53.404000+00:00",
+      "tokens": {
+        "input": 67,
+        "output": 33104,
+        "cache_write": 385631,
+        "cache_read": 2770640,
+        "total": 3189442
+      },
+      "api_equivalent_cost": {
+        "input": 0.001,
+        "output": 2.4828,
+        "cache_write": 7.2306,
+        "cache_read": 4.156,
+        "total": 13.87
+      }
+    },
+    {
+      "session_id": "e0a6e7c6-1f6b-474d-999d-ba3be84505af",
+      "messages": 54,
+      "first_ts": "2026-03-06T21:53:22.374000+00:00",
+      "last_ts": "2026-03-06T21:57:33.133000+00:00",
+      "tokens": {
+        "input": 62,
+        "output": 8528,
+        "cache_write": 59669,
+        "cache_read": 1412963,
+        "total": 1481222
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.6396,
+        "cache_write": 1.1188,
+        "cache_read": 2.1194,
+        "total": 3.88
+      }
+    },
+    {
+      "session_id": "e125195c-801b-4b9a-9b71-f43807a9f204",
+      "messages": 50,
+      "first_ts": "2026-03-06T21:37:42.606000+00:00",
+      "last_ts": "2026-03-06T21:41:00.678000+00:00",
+      "tokens": {
+        "input": 74,
+        "output": 10363,
+        "cache_write": 108678,
+        "cache_read": 1372191,
+        "total": 1491306
+      },
+      "api_equivalent_cost": {
+        "input": 0.0011,
+        "output": 0.7772,
+        "cache_write": 2.0377,
+        "cache_read": 2.0583,
+        "total": 4.87
+      }
+    },
+    {
+      "session_id": "e332ec63-bcb4-42eb-a2c4-b4b85972717d",
+      "messages": 44,
+      "first_ts": "2026-03-06T22:38:29.475000+00:00",
+      "last_ts": "2026-03-06T22:40:15.799000+00:00",
+      "tokens": {
+        "input": 62,
+        "output": 4829,
+        "cache_write": 139334,
+        "cache_read": 1432733,
+        "total": 1576958
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.3622,
+        "cache_write": 2.6125,
+        "cache_read": 2.1491,
+        "total": 5.12
+      }
+    },
+    {
+      "session_id": "e4ad241d-7c06-425c-b6d6-e89e4a02ed1f",
+      "messages": 41,
+      "first_ts": "2026-03-06T20:21:08.896000+00:00",
+      "last_ts": "2026-03-06T20:25:04.845000+00:00",
+      "tokens": {
+        "input": 51,
+        "output": 10536,
+        "cache_write": 349759,
+        "cache_read": 1602597,
+        "total": 1962943
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.7902,
+        "cache_write": 6.558,
+        "cache_read": 2.4039,
+        "total": 9.75
+      }
+    },
+    {
+      "session_id": "ea4a0532-94bc-402c-bdce-9fde86564c70",
+      "messages": 38,
+      "first_ts": "2026-03-06T20:00:32.851000+00:00",
+      "last_ts": "2026-03-06T20:02:48.113000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 4478,
+        "cache_write": 110946,
+        "cache_read": 1083659,
+        "total": 1199131
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.3359,
+        "cache_write": 2.0802,
+        "cache_read": 1.6255,
+        "total": 4.04
+      }
+    },
+    {
+      "session_id": "eb87bb80-8a1f-4eca-8a4d-a82a68edf2b4",
+      "messages": 35,
+      "first_ts": "2026-03-06T23:31:21.584000+00:00",
+      "last_ts": "2026-03-06T23:33:10.548000+00:00",
+      "tokens": {
+        "input": 2073,
+        "output": 6343,
+        "cache_write": 184347,
+        "cache_read": 1175719,
+        "total": 1368482
+      },
+      "api_equivalent_cost": {
+        "input": 0.0311,
+        "output": 0.4757,
+        "cache_write": 3.4565,
+        "cache_read": 1.7636,
+        "total": 5.73
+      }
+    },
+    {
+      "session_id": "f084ec5e-d870-471b-be83-134b9d0f1391",
+      "messages": 74,
+      "first_ts": "2026-03-06T22:18:46.407000+00:00",
+      "last_ts": "2026-03-06T22:29:46.804000+00:00",
+      "tokens": {
+        "input": 102,
+        "output": 43668,
+        "cache_write": 716977,
+        "cache_read": 3660159,
+        "total": 4420906
+      },
+      "api_equivalent_cost": {
+        "input": 0.0015,
+        "output": 3.2751,
+        "cache_write": 13.4433,
+        "cache_read": 5.4902,
+        "total": 22.21
+      }
+    },
+    {
+      "session_id": "f1a403b3-942e-44bf-b37d-9e0ec25fe3cb",
+      "messages": 32,
+      "first_ts": "2026-03-06T21:37:50.480000+00:00",
+      "last_ts": "2026-03-06T21:39:32.753000+00:00",
+      "tokens": {
+        "input": 48,
+        "output": 5987,
+        "cache_write": 92257,
+        "cache_read": 864420,
+        "total": 962712
+      },
+      "api_equivalent_cost": {
+        "input": 0.0007,
+        "output": 0.449,
+        "cache_write": 1.7298,
+        "cache_read": 1.2966,
+        "total": 3.48
+      }
+    },
+    {
+      "session_id": "f205dd64-9038-43ac-8318-530db1b5ad47",
+      "messages": 58,
+      "first_ts": "2026-03-06T20:05:15.387000+00:00",
+      "last_ts": "2026-03-06T20:09:23.363000+00:00",
+      "tokens": {
+        "input": 76,
+        "output": 13123,
+        "cache_write": 214697,
+        "cache_read": 2602514,
+        "total": 2830410
+      },
+      "api_equivalent_cost": {
+        "input": 0.0011,
+        "output": 0.9842,
+        "cache_write": 4.0256,
+        "cache_read": 3.9038,
+        "total": 8.91
+      }
+    },
+    {
+      "session_id": "f4283b1b-62e3-4f71-a0d0-f319cd237b0e",
+      "messages": 72,
+      "first_ts": "2026-03-06T22:30:33.780000+00:00",
+      "last_ts": "2026-03-06T22:34:02.356000+00:00",
+      "tokens": {
+        "input": 9291,
+        "output": 8570,
+        "cache_write": 93572,
+        "cache_read": 2262680,
+        "total": 2374113
+      },
+      "api_equivalent_cost": {
+        "input": 0.1394,
+        "output": 0.6427,
+        "cache_write": 1.7545,
+        "cache_read": 3.394,
+        "total": 5.93
+      }
+    },
+    {
+      "session_id": "f7fb99dd-8295-4195-ada1-6a167dd8175d",
+      "messages": 39,
+      "first_ts": "2026-03-06T19:40:47.627000+00:00",
+      "last_ts": "2026-03-06T19:42:44.518000+00:00",
+      "tokens": {
+        "input": 55,
+        "output": 4491,
+        "cache_write": 89357,
+        "cache_read": 1002316,
+        "total": 1096219
+      },
+      "api_equivalent_cost": {
+        "input": 0.0008,
+        "output": 0.3368,
+        "cache_write": 1.6754,
+        "cache_read": 1.5035,
+        "total": 3.52
+      }
+    },
+    {
+      "session_id": "f8987044-0d47-41de-b88e-8c68db4a779a",
+      "messages": 38,
+      "first_ts": "2026-03-06T20:25:11.445000+00:00",
+      "last_ts": "2026-03-06T20:27:47.373000+00:00",
+      "tokens": {
+        "input": 60,
+        "output": 7222,
+        "cache_write": 174796,
+        "cache_read": 901521,
+        "total": 1083599
+      },
+      "api_equivalent_cost": {
+        "input": 0.0009,
+        "output": 0.5416,
+        "cache_write": 3.2774,
+        "cache_read": 1.3523,
+        "total": 5.17
+      }
+    }
+  ]
+}

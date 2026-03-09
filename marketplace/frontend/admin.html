@@ -928,6 +928,10 @@
                         <i class="fas fa-boxes"></i>
                         <span>Product Fulfillment</span>
                     </li>
+                    <li class="nav-item" data-section="fileVersioning">
+                        <i class="fas fa-history"></i>
+                        <span>File Versions</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1914,6 +1918,78 @@
                     </div>
                 </section>
 
+                <!-- File Versioning Section -->
+                <section id="fileVersioningSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>File Versions</h2>
+                        <p>Upload a new version of a digital product. All buyers with completed orders will receive an email with a fresh download link.</p>
+                    </div>
+
+                    <!-- Upload New Version -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-upload" style="color:var(--primary);margin-right:0.4rem;"></i> Upload New Version</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+                            <div class="form-group">
+                                <label>Product ID</label>
+                                <input type="text" id="versionProductId" placeholder="e.g. consciousness-revolution">
+                            </div>
+                            <div class="form-group">
+                                <label>Brand ID</label>
+                                <input type="text" id="versionBrandId" placeholder="teneo">
+                            </div>
+                            <div class="form-group">
+                                <label>Version Number</label>
+                                <input type="text" id="versionNumber" placeholder="e.g. 2.0">
+                            </div>
+                            <div class="form-group">
+                                <label>PDF File (optional — leave blank to log version only)</label>
+                                <input type="file" id="versionPdfFile" accept=".pdf" style="display:block;margin-top:0.25rem;">
+                            </div>
+                            <div class="form-group" style="grid-column:span 2;">
+                                <label>What's New (shown in buyer notification email)</label>
+                                <textarea id="versionNotes" rows="2" placeholder="Fixed chapter 3 formatting, added new appendix…" style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="uploadProductVersion()" id="btnUploadVersion">
+                            <i class="fas fa-upload"></i> Save Version &amp; Notify Buyers
+                        </button>
+                        <div id="versionUploadResult" style="margin-top:1rem;display:none;"></div>
+                    </div>
+
+                    <!-- Version History -->
+                    <div class="settings-section" style="margin-top:1.5rem;">
+                        <h3><i class="fas fa-history" style="color:var(--secondary);margin-right:0.4rem;"></i> Version History</h3>
+                        <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Product ID</label>
+                                <input type="text" id="versionHistoryProductId" placeholder="product-id" style="padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Brand ID</label>
+                                <input type="text" id="versionHistoryBrandId" placeholder="teneo" style="padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;">
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadVersionHistory()">
+                                <i class="fas fa-sync-alt"></i> Load History
+                            </button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Version</th>
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Notes</th>
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">File</th>
+                                        <th style="text-align:left;padding:0.6rem 0.5rem;">Uploaded</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="versionHistoryTableBody">
+                                    <tr><td colspan="4" style="padding:1.5rem;color:var(--text-muted);text-align:center;">Enter a product ID above and click "Load History".</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
             </main>
         </div>
     </div>
@@ -2225,6 +2301,9 @@
                     break;
                 case 'productFulfillment':
                     loadProductFulfillment();
+                    break;
+                case 'fileVersioning':
+                    // loaded on demand by user
                     break;
             }
         }
@@ -4428,6 +4507,104 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-upload"></i> Import Subscribers';
+            }
+        }
+
+        // ─── File Versioning ─────────────────────────────────────────────────────
+
+        async function uploadProductVersion() {
+            const productId = document.getElementById('versionProductId').value.trim();
+            const brand = document.getElementById('versionBrandId').value.trim() || 'teneo';
+            const version = document.getElementById('versionNumber').value.trim();
+            const notes = document.getElementById('versionNotes').value.trim();
+            const pdfFile = document.getElementById('versionPdfFile').files[0];
+            const resultDiv = document.getElementById('versionUploadResult');
+            const btn = document.getElementById('btnUploadVersion');
+
+            if (!productId || !version) {
+                resultDiv.innerHTML = '<div style="padding:0.75rem;background:#fee2e2;border-radius:6px;border:1px solid #fca5a5;">Product ID and Version are required.</div>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+            resultDiv.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('version', version);
+                formData.append('notes', notes);
+                formData.append('brand_id', brand);
+                if (pdfFile) formData.append('pdf', pdfFile);
+
+                // secureFetch with FormData — don't set Content-Type (browser sets multipart boundary)
+                const csrfRes = await fetch('/api/csrf-token');
+                const csrfData = await csrfRes.json();
+                const res = await fetch(`/api/admin/products/${encodeURIComponent(productId)}/version`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'x-csrf-token': csrfData.token },
+                    body: formData,
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    resultDiv.innerHTML = `<div style="padding:0.75rem;background:#d1fae5;border-radius:6px;border:1px solid #6ee7b7;">
+                        Version <strong>${escapeHtml(version)}</strong> saved. Notified <strong>${data.notifiedBuyers}</strong> of ${data.totalBuyers} buyer(s).
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div style="padding:0.75rem;background:#fee2e2;border-radius:6px;border:1px solid #fca5a5;">Error: ${escapeHtml(data.error || 'Upload failed')}</div>`;
+                }
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                resultDiv.innerHTML = `<div style="padding:0.75rem;background:#fee2e2;border-radius:6px;border:1px solid #fca5a5;">Error: ${escapeHtml(e.message)}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Save Version &amp; Notify Buyers';
+            }
+        }
+
+        async function loadVersionHistory() {
+            const productId = document.getElementById('versionHistoryProductId').value.trim();
+            const brand = document.getElementById('versionHistoryBrandId').value.trim() || 'teneo';
+            const tbody = document.getElementById('versionHistoryTableBody');
+
+            if (!productId) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--danger);text-align:center;">Enter a product ID.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text-muted);text-align:center;">Loading…</td></tr>';
+
+            try {
+                const res = await secureFetch(`/api/admin/products/${encodeURIComponent(productId)}/versions?brand_id=${encodeURIComponent(brand)}`);
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="padding:1rem;color:var(--danger);text-align:center;">${escapeHtml(data.error || 'Error loading versions')}</td></tr>`;
+                    return;
+                }
+
+                if (!data.versions || data.versions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text-muted);text-align:center;">No versions recorded for this product.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.versions.map((v, i) => `
+                    <tr style="border-bottom:1px solid var(--border);">
+                        <td style="padding:0.5rem;">
+                            <strong>v${escapeHtml(v.version)}</strong>
+                            ${i === 0 ? '<span style="margin-left:0.4rem;padding:0.1rem 0.4rem;background:#d1fae5;color:#065f46;border-radius:4px;font-size:0.7rem;">LATEST</span>' : ''}
+                        </td>
+                        <td style="padding:0.5rem;color:var(--text-muted);font-size:0.85rem;">${escapeHtml(v.notes || '—')}</td>
+                        <td style="padding:0.5rem;font-size:0.8rem;font-family:monospace;">${v.file_path ? '✓ file attached' : '—'}</td>
+                        <td style="padding:0.5rem;color:var(--text-muted);font-size:0.85rem;">${new Date(v.created_at).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding:1rem;color:var(--danger);text-align:center;">Error: ${escapeHtml(e.message)}</td></tr>`;
             }
         }
     </script>

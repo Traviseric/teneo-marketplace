@@ -106,8 +106,20 @@ router.get('/:token', async (req, res) => {
       });
     }
     
-    // Check if file exists
-    const pdfPath = path.join(__dirname, '../books', `${order.book_id}.pdf`);
+    // Check if a newer versioned file exists for this product
+    let pdfPath = path.join(__dirname, '../books', `${order.book_id}.pdf`);
+    try {
+      const latestVersion = await db.get(
+        `SELECT file_path FROM product_versions
+         WHERE product_id = ? AND file_path IS NOT NULL
+         ORDER BY created_at DESC LIMIT 1`,
+        [order.book_id]
+      );
+      if (latestVersion && latestVersion.file_path) {
+        pdfPath = latestVersion.file_path;
+      }
+    } catch (_) { /* version lookup failure — fall through to default path */ }
+
     try {
       await fs.access(pdfPath);
     } catch (error) {
@@ -119,7 +131,7 @@ router.get('/:token', async (req, res) => {
         'failed',
         'File not found'
       );
-      
+
       return res.status(404).json({
         success: false,
         error: 'Book file not found'

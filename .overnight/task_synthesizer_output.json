@@ -3,32 +3,93 @@
   "next_box": "CONDUCTOR",
   "context": {
     "task_files": [
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\001-P2-fix-magic-link-error-message-leak.md",
-      "C:\\code\\openbazaar-ai\\.overnight\\active\\002-P2-fix-csrf-exemption-storefront-routes.md"
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\001-P1-unified-design-system.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\002-P2-email-funnel-pipeline.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\003-P2-ai-funnel-builder.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\004-P2-file-versioning.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\005-P2-merchant-fulfillment-provider-ui.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\006-P2-gumroad-product-import.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\007-P2-email-list-csv-import.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\008-P2-nip98-http-auth.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\009-P2-nip99-product-listings.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\010-P2-cross-store-referral-system.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\011-P2-memberships-subscriptions.md",
+      "C:\\code\\openbazaar-ai\\.overnight\\active\\012-P2-machine-payable-endpoints.md"
     ],
-    "task_count": 2,
-    "tasks_by_priority": {"P0": 0, "P1": 0, "P2": 2, "P3": 0},
-    "sources": {
-      "security_audit": 1,
-      "review_audit_new_tasks": 1,
-      "project_declared": 0
+    "task_count": 12,
+    "tasks_by_priority": {
+      "P0": 0,
+      "P1": 1,
+      "P2": 11,
+      "P3": 0
     },
-    "rejected_count": 8,
-    "deferred_count": 9,
+    "sources": {
+      "project_declared": 12,
+      "security_audit": 0,
+      "ux_audit": 0,
+      "code_quality_audit": 0
+    },
+    "git_deduped_count": 29,
+    "human_tasks_logged": 19,
     "task_groups": {
-      "auth_hardening": {
-        "tasks": ["001-P2-fix-magic-link-error-message-leak.md"],
-        "execution_hint": "parallel",
-        "reason": "Single-line fix in auth.js:243; independent of task 002; matches existing pattern from prior fix at line 213"
-      },
-      "csrf_hardening": {
-        "tasks": ["002-P2-fix-csrf-exemption-storefront-routes.md"],
+      "email_funnel": {
+        "tasks": [
+          "002-P2-email-funnel-pipeline.md",
+          "003-P2-ai-funnel-builder.md"
+        ],
         "execution_hint": "sequential",
-        "reason": "Requires auditing storefront.js routes then editing server.js CSRF config — needs careful route-by-route analysis before making changes"
+        "reason": "Both touch funnels.js and emailMarketingService.js; task 003 builds on 002's pipeline wiring"
+      },
+      "nostr_auth": {
+        "tasks": [
+          "008-P2-nip98-http-auth.md",
+          "009-P2-nip99-product-listings.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "Both use nostr-tools; NIP-99 can reuse auth patterns from NIP-98 task"
+      },
+      "creator_migration": {
+        "tasks": [
+          "006-P2-gumroad-product-import.md",
+          "007-P2-email-list-csv-import.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "Both create/extend importService.js; task 007 should reuse service created in task 006"
+      },
+      "frontend_design": {
+        "tasks": [
+          "001-P1-unified-design-system.md"
+        ],
+        "execution_hint": "long_running",
+        "reason": "Large refactor spanning 33+ HTML files; needs sustained warm context and iterative validation"
+      },
+      "subscriptions": {
+        "tasks": [
+          "011-P2-memberships-subscriptions.md"
+        ],
+        "execution_hint": "long_running",
+        "reason": "Large feature \u2014 schema + Stripe recurring + webhooks + content gating + UI; multiple build-test-fix cycles needed"
+      },
+      "referral_system": {
+        "tasks": [
+          "010-P2-cross-store-referral-system.md"
+        ],
+        "execution_hint": "sequential",
+        "reason": "Touches checkout.js webhook handler and adds new schema tables"
+      },
+      "independent": {
+        "tasks": [
+          "004-P2-file-versioning.md",
+          "005-P2-merchant-fulfillment-provider-ui.md",
+          "012-P2-machine-payable-endpoints.md"
+        ],
+        "execution_hint": "parallel",
+        "reason": "No file overlap with each other or other groups \u2014 can run in any order"
       }
     },
-    "recommended_mode": "1:1",
-    "recommended_lanes": 2,
-    "synthesis_notes": "Round 8. All 10 prior session tasks verified completed by review_audit (score 94%). Only 2 new tasks created this round: (1) magic link error.message leak at auth.js:243 — trivial 1-line fix completing the partial fix from task 010; (2) CSRF exemption for /api/storefront — medium security finding that was previously deferred but remains unaddressed. P0 federation revenue share from OVERNIGHT_TASKS.md rejected: already implemented in orderService.js:92 (task 103 was complete). ArxMint L402 deferred: C:\\code\\arxmint source doesn't exist. Next after worker: FEATURE_AUDIT, UX_AUDIT, CODE_QUALITY_AUDIT per conductor."
-  }
+    "recommended_mode": "managed",
+    "recommended_lanes": 3,
+    "synthesis_notes": "Round 19. 29 items git-deduped (most P2 Creator Toolkit items completed in prior sessions). 12 new tasks focus on remaining Phase 2 features: email funnel automation, AI funnel builder, creator migration tools (Gumroad/CSV import), Nostr ecosystem (NIP-98/NIP-99), cross-store referrals, memberships/subscriptions, and machine-payable endpoints. Long-running tasks (design system, memberships) should run in managed mode. Creator migration tools (006+007) share importService.js and should run sequentially. Human tasks HT-018 and HT-019 added for production filesystem verification and SMTP config."
+  },
+  "_cache_key": "1ff2dadc29f3e527_df8b35ce1b48-dirty-39dbaa0f_290d3a0d2c14"
 }

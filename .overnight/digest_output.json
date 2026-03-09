@@ -3,75 +3,63 @@
   "next_box": "CONDUCTOR",
   "context": {
     "digest": {
-      "session_id": "run_20260306_021602",
-      "digest_round": 98,
-      "digest_final": true,
       "accomplishments": [
-        "Security audit completed: 17 findings identified (6 high, 6 medium, 5 low)",
-        "Task synthesizer created 12 tasks across 2 rounds (10 in round 4, 2 in round 9); workers completed all 12",
-        "Review audit verified 10/10 tasks at 100% verification score — no stubs, fakes, or incomplete implementations",
-        "fix: server-side price enforcement in crypto checkout — lookupBookPrice() replaces client-supplied amountUsd; getUsdPrice() throws on CoinGecko failure (503) instead of returning hardcoded $65K BTC/$150 XMR (CWE-602/CWE-330) — commit 1f43f84",
-        "fix: session ID removed from /api/admin/auth-status response body (CWE-200) — commit 3224e89",
-        "fix: PDF upload filename sanitized with path.basename + allowlist regex in downloadRoutes.js (CWE-22) — commit 8a41ece",
-        "fix: Content-Disposition header sanitized for book title downloads (CWE-116) — commit 8a41ece",
-        "fix: unsafe-inline CSP replaced with per-request crypto.randomBytes(16) nonces via sendNoncedHTML() helper (CWE-693) — commit 9e0dec2",
-        "fix: SSRF protection added to federation peers — isAllowedPeerEndpoint() blocks loopback, RFC-1918, RFC-3927, cloud metadata ranges (CWE-918) — commit ae63af1",
-        "fix: magic link verify error redirect no longer leaks error.message in URL (CWE-209) — commit 8d257ed",
-        "fix: OAuth callback error redirect no longer leaks error.message in URL (CWE-209) — commit 9ce08d3",
-        "fix: EXPOSE_ERRORS env var added to mask staging error details (CWE-209) — commit 62d36da",
-        "fix: npm deps upgraded — multer >=2.1.1 (DoS fix), tar path traversal (transitive) — commit ad5ee75",
-        "fix: CSRF exemption narrowed for /api/storefront and /api/apps to GET-only; POST /api/storefront/checkout requires X-Api-Key header via STOREFRONT_API_KEY env var (CWE-352) — commit 0082c43",
-        "Federation revenue share persistence confirmed already implemented (orderService.js:92 INSERTs to network_revenue_shares) — prior-session P0 task correctly rejected as already done",
-        "Test suite: 147/158 passing (11 pre-existing failures in cryptoCheckout.test.js and appStore.test.js)"
+        "ROADMAP_SYNC synced 22 completed tasks from previous session (2026-03-06)",
+        "Round 4 WORKER completed 12 tasks from first synthesizer batch of 17",
+        "Round 6 WORKER completed 6 tasks from second synthesizer batch of 9",
+        "Built 3-stage cart abandonment recovery + post-purchase upsells (9cb9b86)",
+        "Added email marketing UI with sequences, broadcasts, and analytics (98147ee)",
+        "Wired ArxMint webhook alias, sat pricing in catalog, BIP21 QR checkout (020cc86)",
+        "Built AI course builder \u2014 generate full course outline from natural language brief (60114b5)",
+        "Implemented full license key system: DB table, service, validate/activate API, admin revoke UI, Stripe webhook integration (df8b35c)"
       ],
       "blockers": [
-        "DIGEST plateau loop: conductor routed to DIGEST at round 13 and looped 85 times (rounds 13-98) — FEATURE_AUDIT, CODE_QUALITY_AUDIT, and UX_AUDIT were never triggered",
-        "11 pre-existing test failures in cryptoCheckout.test.js — need mock updates since server-side price enforcement changed API contract",
-        "ArxMint L402 implementation blocked: C:\\code\\arxmint source not present on this machine"
+        "14 P0 production tasks all blocked on human credentials (Supabase env vars, Vercel secrets, live URL verification)",
+        "Chrome/CDP not available on test runner \u2014 browser tests still skipped",
+        "d922de6 (checkout unification) broke some tests per review audit 1f4935d \u2014 needs investigation"
       ],
       "next_steps": [
-        "Fix 11 test failures in cryptoCheckout.test.js — mock lookupBookPrice() from checkoutOfferService (P0)",
-        "Run FEATURE_AUDIT to identify partial/stub/missing marketplace features (skipped this session due to DIGEST loop)",
-        "Run CODE_QUALITY_AUDIT for dead code, SQL injection risks, technical debt (skipped this session)",
-        "Run UX_AUDIT for accessibility and frontend usability gaps (skipped this session)",
-        "Replace deprecated csurf package with csrf-csrf or reliance on sameSite=strict (CWE-1188, medium, deferred)",
-        "Remove admin UI Stripe key runtime mutation from adminRoutes.js:510 (CWE-798, medium, deferred)",
-        "Persist download rate-limit counters to DB instead of in-memory Map lost on restart (CWE-404, low, deferred)",
-        "Upgrade @nomicfoundation/hardhat-toolbox to >=7.0.0 for devDep vuln chain (CWE-96/CWE-1321, low, deferred)",
-        "Implement real ArxMint L402 payments — createL402Invoice/verifyL402Payment/acceptCashuToken still throw 'not yet implemented'",
-        "Add STOREFRONT_API_KEY to production .env (new env var added this session)",
-        "Set EXPOSE_ERRORS=false on any externally-accessible staging (new flag added this session)"
+        "Run 12 pending active task files through WORKER (001-P1-unified-design-system through 012-P2-machine-payable-endpoints)",
+        "Sequential groups: 002+003 (email funnel), 008+009 (Nostr auth), 006+007 (creator import)",
+        "Long-running: 011-P2-memberships-subscriptions (schema \u2192 Stripe \u2192 webhooks \u2192 gating \u2192 UI)",
+        "Independent/parallel: 004-file-versioning, 005-fulfillment-ui, 012-machine-payable",
+        "P1 store renderer and Supabase persistence for stores still pending",
+        "Human action needed: add Supabase/Stripe/SMTP env vars to Vercel deployment"
       ],
       "key_decisions": [
-        "Crypto checkout: 503 on CoinGecko failure instead of hardcoded fallback — forces user retry, prevents stale-price exploitation",
-        "CSRF: GET-only exemption for storefront/apps; POST /storefront/checkout uses API key auth (appropriate for server-to-server calls without cookies)",
-        "CSP nonces: per-request via middleware + sendNoncedHTML() regex injection — avoids modifying each HTML file individually",
-        "Error masking: EXPOSE_ERRORS=true opt-in rather than NODE_ENV check — staging can mask errors without faking production mode",
-        "SSRF guard: RFC-1918/3927/loopback/cloud-metadata blocklist — allows legitimate external federation peers without requiring allowlist config"
+        "AI course builder and license key service both use lazy-require pattern for @anthropic-ai/sdk (matching aiStoreBuilderService.js)",
+        "License key generation is non-fatal: license failure never blocks order completion",
+        "License key format: XXXX-XXXX-XXXX-XXXX (UUID-based), stored in DB with max_activations support",
+        "Task Synthesizer created 12 new task files in round 7 (session ended before WORKER processed them \u2014 ready for next session)",
+        "29 items were git-deduped in synthesizer \u2014 most P2 Creator Toolkit items from prior sessions already completed"
       ],
-      "time_spent_minutes": 310,
+      "time_spent_minutes": 117,
       "remaining_work": {
         "incomplete_features": [
-          "FEATURE_AUDIT (never ran this session)",
-          "CODE_QUALITY_AUDIT (never ran this session)",
-          "UX_AUDIT (never ran this session)",
-          "ArxMint L402 paywalls — createL402Invoice/verifyL402Payment/acceptCashuToken all throw 'not yet implemented' in arxmintService.js",
-          "BTCPay automated crypto verification — cryptoCheckout.js still requires manual email proof for payment",
-          "IPFS auto-pinning — nftService.js Pinata integration needs verification (real vs stub)"
+          "Unified design system across 33 HTML pages (001-P1 \u2014 pending)",
+          "Email funnel pipeline to Supabase (002-P2 \u2014 pending)",
+          "AI funnel builder (003-P2 \u2014 pending)",
+          "File versioning for digital products (004-P2 \u2014 pending)",
+          "Merchant fulfillment provider UI (005-P2 \u2014 pending)",
+          "Gumroad product import (006-P2 \u2014 pending)",
+          "Email list CSV import (007-P2 \u2014 pending)",
+          "NIP-98 HTTP auth (008-P2 \u2014 pending)",
+          "NIP-99 product listings (009-P2 \u2014 pending)",
+          "Cross-store referral system (010-P2 \u2014 pending)",
+          "Memberships & subscriptions (011-P2 \u2014 pending, long_running)",
+          "Machine-payable endpoints for AI agents (012-P2 \u2014 pending)",
+          "Store renderer (P1 \u2014 not yet tasked this session)",
+          "Store persistence to Supabase (P1 \u2014 not yet tasked this session)"
         ],
-        "deferred_findings": 4,
-        "deferred_details": [
-          "adminRoutes.js:510 — admin UI allows runtime Stripe key mutation via process.env (medium, CWE-798)",
-          "package.json:46 — csurf deprecated/unmaintained CSRF package (medium, CWE-1188); replace with csrf-csrf",
-          "downloadRoutes.js:17 — download abuse tracking uses in-memory Map lost on restart (low, CWE-404)",
-          "@nomicfoundation/hardhat-toolbox devDep vuln chain: serialize-javascript RCE + immutable prototype pollution (low, CWE-96/CWE-1321)"
+        "deferred_findings": 3,
+        "last_mile_failures": [
+          "Browser tests skipped (Chrome/CDP not available on test runner)",
+          "d922de6 checkout unification may have broken some test cases \u2014 verify with npm test"
         ],
-        "last_mile_failures": [],
-        "pending_tasks": 0,
-        "test_failures": 11,
-        "audits_not_run": ["FEATURE_AUDIT", "CODE_QUALITY_AUDIT", "UX_AUDIT"]
+        "pending_tasks": 12
       }
     },
-    "for_human": "Security hardening session complete (run_20260306, ~310 min, 98 rounds). 12 verified security fixes: crypto checkout price bypass closed, session ID leak fixed, PDF upload path traversal patched, CSP unsafe-inline replaced with nonces, SSRF protection on federation peers, OAuth + magic link error message leaks patched, staging error masking added, npm vulns patched, CSRF scope narrowed. Review audit: 10/10 verified, 100% score, no stubs. Tests: 147/158 (11 pre-existing failures need mock updates after pricing change). Session plateaued into DIGEST loop from round 13 — FEATURE_AUDIT, CODE_QUALITY_AUDIT, UX_AUDIT never ran. Next session: run those 3 audits, fix 11 cryptoCheckout test failures, address 4 deferred findings (csurf deprecation, Stripe runtime key mutation, download tracking persistence, hardhat devDep chain)."
-  }
+    "for_human": "Good overnight session. 5 new features shipped: cart abandonment recovery (3-stage email sequences), post-purchase upsells, email marketing admin UI, ArxMint+BIP21 QR checkout, AI course builder, and license key system. The task synthesizer queued 12 more features for next session covering email funnels, Nostr auth (NIP-98/NIP-99), creator migration tools (Gumroad/CSV import), cross-store referrals, memberships/subscriptions, and machine-payable endpoints for AI agents. The 14 P0 production deployment tasks are all blocked on you adding credentials (Supabase env vars, Stripe keys, SMTP config) to Vercel \u2014 no agent can proceed on those without your action."
+  },
+  "_cache_key": "8d5e1dc8071c13e7_df8b35ce1b48-dirty-05247b3f_48ed8c1aefd3"
 }

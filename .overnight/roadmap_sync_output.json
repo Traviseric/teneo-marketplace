@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "next_box": "CONDUCTOR",
+  "context": {
+    "sync_status": "synced",
+    "roadmap_files_found": [
+      "docs/ROADMAP.md",
+      "docs/development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md",
+      "docs/features/AMAZON_FEATURES_ROADMAP.md",
+      "docs/features/BRAND_AUTOMATION_ROADMAP.md"
+    ],
+    "tasks_added": 1,
+    "tasks_removed": 3,
+    "tasks_preserved": 55,
+    "non_roadmap_tasks_preserved": 2,
+    "tasks_completed": 22,
+    "total_tasks": 58,
+    "roadmap_content_hash": "297a9b9e0eccc42de61096cc57e8c264ba824f06075dbd1c396baba2298b3389",
+    "recommendation": "58 tasks aligned with roadmap. 14 P0 items remain (all Phase 0 production deployment/verification). 22 tasks completed since last sync \u2014 major progress on auth UI unification, store builder managed-service pipeline (intake API, store_builds CRUD, intake form), security hardening (csurf replacement, COEP, rate limiting), accessibility, testing (federation tests, ESLint), and checkout unification. Phase 1 AI Store Builder core is ~70% complete (renderer and Supabase persistence remain). Phase 1A managed-service intake is now functional. Next priority: Phase 0 production verification (Supabase env vars, live site testing) to unblock paid delivery."
+  },
+  "_cache_key": "048556712acba86d_1f4935d0f314-dirty-bb7fa671_057d6083c099"
+}

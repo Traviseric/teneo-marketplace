@@ -266,6 +266,593 @@
       "rejected_at": "2026-03-06T00:00:00Z"
     }
   ],
+  "rejected_findings_round12": [
+    {
+      "source": "security_audit",
+      "finding": "Path traversal in server.js:305, network.js:50, network.js:156, network.js:231 (CWE-22)",
+      "reason": "ALREADY FIXED — task 014 VERIFIED by review_audit (commit a0a65c1). All 4 endpoints patched with path.basename + resolve+startsWith guard.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "Customer email in GET /api/crypto/order-status/:orderId (CWE-200)",
+      "reason": "ALREADY FIXED — task 015 VERIFIED by review_audit (commit 7e64254). customer_email removed from SELECT and response.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": ".env file committed with real SESSION_SECRET",
+      "reason": "FALSE POSITIVE — .env is in .gitignore, working-tree only dev placeholder. Not committed. Git history check is human task.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "AI Store Builder 0% implemented",
+      "reason": "STALE — task 013 completed (commit 97d14e2). store-config.schema.json + aiStoreBuilderService.js + storeBuilder.js route implemented.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "Course checkout → enrollment integration incomplete",
+      "reason": "STALE — task 010 completed (commit a3b5017). Stripe webhook → course enrollment wired.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "Nostr Auth Frontend has no sign-in button (NIP-07)",
+      "reason": "STALE — task 011 completed. Nostr sign-in button added to login.html.",
+      "rejected_at": "2026-03-06T12:00:00Z"
+    }
+  ],
+  "verified_facts_round12": [
+    {
+      "fact": "orderService.failOrder() uses json_patch() with JSONPath arg — wrong SQLite function; should be json_set()",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Grep for json_patch in orderService.js confirmed line 270"
+    },
+    {
+      "fact": "checkoutProduction.js has no rate limiter on POST /create-session — grep for rateLimit/checkoutLimiter returned no matches",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Grep for checkoutLimiter in checkoutProduction.js returned no matches"
+    },
+    {
+      "fact": "checkout.js:269 makes HTTP self-call via axios.post to localhost:3001/api/download/generate-token",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Grep for axios.*localhost in checkout.js confirmed line 269"
+    },
+    {
+      "fact": "storefront.js:411-412 only checks webhook signature when body is Buffer AND webhookSecret is set — dual condition allows bypass",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Read storefront.js lines 408-415 confirmed conditional structure"
+    },
+    {
+      "fact": "webhooks.js orchestrator endpoints /orchestrator/book-generated and /orchestrator/seo-generated have no auth middleware",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Read webhooks.js confirmed no verifyOrchestratorSecret or similar before handlers"
+    },
+    {
+      "fact": "server.js:118 styleSrc CSP still includes unsafe-inline",
+      "verified_at": "2026-03-06T12:00:00Z",
+      "method": "Grep for styleSrc in server.js confirmed unsafe-inline at line 118"
+    }
+  ],
+  "rejected_findings_round13": [
+    {
+      "source": "security_audit",
+      "finding": "Session fixation in auth.js OAuth/magic-link/Nostr callbacks — req.session.regenerate() not called (CWE-384)",
+      "reason": "ALREADY FIXED — task 019 VERIFIED by review_audit. auth.js L199/L232/L315 all have session.regenerate() wrapped in Promise.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "Storefront fulfill webhook signature bypass — only checked when body is Buffer AND webhookSecret set (CWE-306)",
+      "reason": "ALREADY FIXED — task 016 VERIFIED by review_audit. storefront.js L411-435 always verifies signature when secret set.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "Orchestrator webhooks /orchestrator/book-generated and /orchestrator/seo-generated have no auth (CWE-306)",
+      "reason": "ALREADY FIXED — task 019 VERIFIED. verifyOrchestratorSecret middleware at webhooks.js L16-31.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "Storefront POST endpoints open when STOREFRONT_API_KEY not set (CWE-306)",
+      "reason": "ALREADY FIXED — task 022 VERIFIED. requireStorefrontApiKey() fails closed in production at storefront.js L189-205.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "NFT routes stub (nft.js + nftService.js) still in active codebase",
+      "reason": "ALREADY FIXED — task 012 archived NFT routes with NOT IMPLEMENTED header, unmounted from server (commit 5f7e721).",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "checkoutProduction.js POST /create-session has no rate limiter",
+      "reason": "ALREADY FIXED — task 018 VERIFIED. checkoutLimiter at checkoutProduction.js L18-23 applied to POST /create-session.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "checkout.js and cryptoCheckout.js make HTTP self-calls (axios.post to localhost) for download token generation",
+      "reason": "ALREADY FIXED — task 023 VERIFIED. downloadService.js created, direct service calls replace axios self-calls in both files.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "adminRoutes.js has 'teneo' hardcoded in 8+ places",
+      "reason": "ALREADY FIXED — task 024 VERIFIED. BRAND = process.env.DEFAULT_BRAND || 'teneo' at adminRoutes.js L12.",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "nft.js and nftService.js are dead code — should be deleted",
+      "reason": "ALREADY ARCHIVED — task 012 added NOT IMPLEMENTED header and unmounted from server. Full deletion deferred (git archive pattern).",
+      "rejected_at": "2026-03-06T14:00:00Z"
+    }
+  ],
+  "verified_facts_round13": [
+    {
+      "fact": "All 26 active tasks (001-026) are status:completed as of 2026-03-06T14:00:00Z",
+      "verified_at": "2026-03-06T14:00:00Z",
+      "method": "Read frontmatter of each active task file; review_audit_output.json confirmed 100% verification score for latest 10 tasks"
+    },
+    {
+      "fact": "UX audit is new this cycle (not seen before round 13). 4 UX task areas identified: XSS in store.html, prompt()+alert() in crypto-checkout, book card keyboard access, email capture form a11y",
+      "verified_at": "2026-03-06T14:00:00Z",
+      "method": "Read ux_audit_output.json — new file this cycle. Cross-referenced with lessons.json — no prior rejections for these findings."
+    },
+    {
+      "fact": "store.html uses innerHTML with unescaped book.title/author/description/id — XSS vector confirmed in ux_audit",
+      "verified_at": "2026-03-06T14:00:00Z",
+      "method": "ux_audit_output.json finding at store.html:488; not rejected by any prior lessons entry"
+    },
+    {
+      "fact": "adminRoutes.js:508 POST /admin/save-all mutates process.env.STRIPE_SECRET_KEY — NOT fixed in prior tasks",
+      "verified_at": "2026-03-06T14:00:00Z",
+      "method": "code_quality_audit confirmed; cross-referenced all 26 completed tasks — none address runtime env mutation. Task 024 only fixed hardcoded 'teneo' brand string."
+    }
+  ],
+  "rejected_findings_round14": [
+    {
+      "source": "security_audit",
+      "finding": "CSP unsafe-inline in styleSrc server.js:119 (CWE-693)",
+      "reason": "ALREADY FIXED — task 021 VERIFIED. server.js:118 confirmed by grep: now uses nonce function `(req, res) => '\"nonce-${res.locals.cspNonce}\"'`, no unsafe-inline.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "store.html innerHTML XSS unescaped book data (critical)",
+      "reason": "ALREADY FIXED — task 027 VERIFIED (commit 2dc42e8). encodeHTML() applied to all dynamic book card content.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "crypto-checkout.html prompt() for email collection (critical)",
+      "reason": "ALREADY FIXED — task 033 VERIFIED (commit 231e4e8). Replaced with inline form.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "store.html book cards not keyboard accessible (critical)",
+      "reason": "ALREADY FIXED — task 034 VERIFIED (commit 2dc42e8). Wrapped in <a> tags.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "email-capture form no label + no focus indicator + no aria-live (high x3)",
+      "reason": "ALREADY FIXED — task 035 VERIFIED (commit 2dc42e8). sr-only label, outline, role=alert, autocomplete=email all added.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "adminRoutes.js process.env Stripe key mutation at runtime (high)",
+      "reason": "ALREADY FIXED — task 031 VERIFIED (commit ca81a73). getStripe() reads settings.json dynamically.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "Swallowed fulfillment errors checkout.js:313 (low)",
+      "reason": "ALREADY FIXED — task 032 VERIFIED (commit 2dc42e8). Structured logging + failOrder() added.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "No test file for adminRoutes.js (medium)",
+      "reason": "ALREADY FIXED — task 036 VERIFIED (commit e24cbda). 14 Jest tests: auth-status, login, refund gates, settings.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "No test file for storefront.js (medium)",
+      "reason": "ALREADY FIXED — task 037 VERIFIED (commit fd5c7ae). 224-line storefront test suite.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "No test file for emailService.js (medium)",
+      "reason": "ALREADY FIXED — task 038 VERIFIED (commit fd5c7ae). 166-line emailService test suite.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "AI Store Builder 0% implemented (critical)",
+      "reason": "STALE — tasks 013/025-030 completed. Schema, pipeline, renderer, persistence, natural language editing, preview/publish all done.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    }
+  ],
+  "verified_facts_round14": [
+    {
+      "fact": "server.js:118 styleSrc uses nonce function, no unsafe-inline: `styleSrc: [\"'self'\", (req, res) => \\`'nonce-${res.locals.cspNonce}'\\`, \"https://fonts.googleapis.com\"]`",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Grep for styleSrc/unsafe-inline in server.js — confirmed nonce function, line 118 + line 639 comment 'CWE-693'"
+    },
+    {
+      "fact": "checkout.js:211 has `const session = event.data.object` inside `case 'checkout.session.completed':` without block braces — no-case-declarations violation",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Grep for `case.*checkout.session.completed` + const in checkout.js — confirmed line 210-211"
+    },
+    {
+      "fact": "downloadRoutes.js:145 logs `order.customer_email` via console.log on every download",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Grep for customer_email/email.*log in downloadRoutes.js — confirmed line 145"
+    },
+    {
+      "fact": "All 38 active tasks (001-038) are status:completed as of 2026-03-06T00:00:00Z",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Read frontmatter of task files 033, 035, 021 — all show status: completed. Lessons round13 confirmed 001-026. Commits 2dc42e8/231e4e8/ca81a73/e24cbda/fd5c7ae confirm 027-038."
+    },
+    {
+      "fact": "README.md lines 31/60/83 still prominently market gig platform as live ('The Upwork killer', 'Post jobs, bid on work') with zero implementation",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Grep for 'gig|Upwork' in README.md — confirmed lines 31, 60, 83"
+    }
+  ],
+  "rejected_findings_round15": [
+    {
+      "source": "security_audit",
+      "finding": "CSP unsafe-inline styleSrc server.js:119 (CWE-693)",
+      "reason": "ALREADY FIXED — task 021 VERIFIED (commit 9e0dec2). server.js:118 uses nonce function, no unsafe-inline. First logged in lessons_round14.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "Customer email PII in download logs downloadRoutes.js:145 (CWE-359)",
+      "reason": "ALREADY FIXED — task 040 VERIFIED (commit 9b53c42). Pseudonymized identifier used in logs now.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "feature_audit",
+      "finding": "AI Discovery/AI Page Builder OPENAI_API_KEY not documented",
+      "reason": "ALREADY FIXED — task 041 (commit dd8ea3b) updated README with OPENAI_API_KEY note and AI feature disclaimer.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "const in switch/case checkout.js:209 (no-case-declarations)",
+      "reason": "ALREADY FIXED — task 039 VERIFIED (commit 0dd56a0). Wrapped in block scope.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "json_patch vs json_set orderService.js:270 (data corruption)",
+      "reason": "ALREADY FIXED — task 017 status:completed. json_set now used correctly.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "form-email-capture.html no autocomplete=email (low)",
+      "reason": "ALREADY FIXED — task 035 VERIFIED (commit 2dc42e8). autocomplete=email added per lessons_round14.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    }
+  ],
+  "verified_facts_round15": [
+    {
+      "fact": "All 41 active tasks (001-041) are status:completed as of 2026-03-06",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "Read frontmatter of tasks 001-007, 017, 025-026, 039-041 — all show status: completed. Commits 0dd56a0/9b53c42/dd8ea3b confirm 039-041."
+    },
+    {
+      "fact": "store.html 'Purchase Now' button nested in div onclick='viewBook()' — label says Purchase Now but action navigates to book-detail.html (not checkout)",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "ux_audit finding at store.html:502 — not rejected in any prior lessons entry"
+    },
+    {
+      "fact": "crypto-checkout.html:391 has separate alert() for error display in createOrder() catch block (distinct from prompt() at :351 which was fixed by task 033)",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "ux_audit finding at crypto-checkout.html:391 — task 033 only fixed prompt() at line 351"
+    },
+    {
+      "fact": "store.html has no hamburger menu for viewports < 640px — nav links overflow on small screens",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "ux_audit finding at store.html:341 — not in any prior lessons entry"
+    },
+    {
+      "fact": "master-templates/index.html mobile menu toggle, announcement dismiss, testimonial dots, and social links all lack ARIA attributes",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "ux_audit findings at master-templates/index.html lines 59, 82, 227, 276"
+    }
+  ],
+  "rejected_findings_round16": [
+    {
+      "source": "security_audit",
+      "finding": "In-memory download rate limit resets on server restart (CWE-770, medium)",
+      "reason": "ALREADY FIXED — commit 64cf144 replaces in-memory Map with DB-backed query.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "security_audit",
+      "finding": "csurf deprecated package (CWE-1104, low)",
+      "reason": "ALREADY FIXED — task 051 VERIFIED (commit 69bbba2). Replaced with csrf-csrf double-submit cookie pattern.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "sanitizeMetadataValue duplicated in checkout.js and checkoutProduction.js (medium)",
+      "reason": "ALREADY FIXED — commit 7b54571 deduplicates into marketplace/backend/utils/validate.js.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "No ESLint config (.eslintrc.js / eslint.config.js) in project (low)",
+      "reason": "ALREADY FIXED — commit a8fe712 adds ESLint config and fixes 28 lint errors.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "code_quality_audit",
+      "finding": "arxmintService.js stubs (createL402Invoice, verifyL402Payment, acceptCashuToken) throw 'not yet implemented' (medium)",
+      "reason": "ALREADY FIXED — task 056 VERIFIED (commit bf9aa9e). Methods return { success: false, code: 'NOT_IMPLEMENTED' } instead of throwing.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "store.html Purchase Now button misleading CTA — navigates to detail not checkout (high)",
+      "reason": "ALREADY FIXED — task 046 status:completed. Button label/behavior updated.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "master-templates mobile menu toggle, dismiss button, testimonial dots, social links lack ARIA attributes (medium x4)",
+      "reason": "ALREADY FIXED — task 048 VERIFIED (commit f79ce23). aria-label, aria-expanded, aria-controls, role='group' added.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "openbazaar-site comparison table no scope attrs, network stats no aria-live, copy button no feedback (medium x3)",
+      "reason": "ALREADY FIXED — task 050 VERIFIED (commit d456b7e). scope='col'/'row', aria-live='polite', aria-label feedback added.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "store.html no hamburger nav for mobile viewports < 640px (medium)",
+      "reason": "ALREADY FIXED — commit 7b7f275 adds hamburger toggle for mobile.",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    },
+    {
+      "source": "ux_audit",
+      "finding": "crypto-checkout.html error in createOrder() catch shown via alert() (medium)",
+      "reason": "ALREADY FIXED — commit 7b7f275 replaces alert() with inline error region (role='alert').",
+      "rejected_at": "2026-03-06T00:00:00Z"
+    }
+  ],
+  "verified_facts_round16": [
+    {
+      "fact": "storeBuilder.js line 6 imports emailService as class ('const EmailService = require(...)') and line 21 calls 'new EmailService()' — but emailService.js exports a singleton instance. Crashes with 'TypeError: EmailService is not a constructor'. All storeBuilder routes fail at load time.",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "review_audit_output.json BROKEN verdict for task 043 with exact line numbers, error message, and fix guidance"
+    },
+    {
+      "fact": "marketplace/backend/__tests__/network.test.js (21 tests, 253 lines, commit cb0b1b4) may not be discovered by npm test — Jest testMatch or roots config needs verification",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "review_audit_output.json PARTIAL verdict for task 054 — tests exist but discovery path uncertain"
+    },
+    {
+      "fact": "All 56 active tasks (001-056) are status:completed or VERIFIED as of 2026-03-06, except: task 043 is BROKEN (EmailService crash), task 054 is PARTIAL (Jest discovery uncertain)",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "review_audit_output.json verified 11 VERIFIED, 1 BROKEN, 1 PARTIAL across 16 commits (9b53c42..bf9aa9e). 149/149 tests pass but server module load fails."
+    },
+    {
+      "fact": "Tasks 048 (master-templates ARIA), 050 (openbazaar-site a11y), 051 (csrf-csrf), 042 (store_builds), 044 (intake form), 045 (auth UI), 039 (const switch), 040 (PII logs), 041 (README) all VERIFIED in this review cycle",
+      "verified_at": "2026-03-06T00:00:00Z",
+      "method": "review_audit_output.json findings list — all show verdict: VERIFIED with commit evidence"
+    }
+  ],
+  "rejected_findings_round18": [
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Fix checkout unification test failures (d922de6 broke tests)",
+      "reason": "ALREADY DONE — done/001-P1-fix-checkout-unification-test-failures.md status:completed in round 17.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P0 — Map code expecting 'users' table onto Supabase 'profiles'",
+      "reason": "ALREADY DONE — done/002-P0-map-users-to-supabase-profiles.md status:completed in round 17.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P0 — Add parity test/script proving adapter can read/write critical checkout and auth paths",
+      "reason": "ALREADY DONE — done/003-P0-add-adapter-parity-tests.md status:completed in round 17. Also commit f39e435.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Build store renderer — config JSON to static store pages using component library",
+      "reason": "ALREADY DONE — done/004-P1-build-store-renderer.md status:completed. storeRendererService.js exists with 38 tests (commit 04783a0).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Store persistence to Supabase (stores table, products, subscribers)",
+      "reason": "ALREADY DONE — done/005-P1-store-persistence-to-supabase.md status:completed. storeBuilderService with persistence (e78b129).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Standardize operator build command via orchestrator run_boxes.py",
+      "reason": "ALREADY DONE — done/006-P1-standardize-operator-build-command.md status:completed (commit 851d4da managed-service operator build runner).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Create delivery checklist for managed builds",
+      "reason": "ALREADY DONE — done/007-P1-create-delivery-checklist.md status:completed (commit 851d4da delivery checker).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P1 — Add example brief and example output on AI Store Builder sales page",
+      "reason": "ALREADY DONE — done/008-P1-add-example-brief-output-intake-page.md status:completed (commit 851d4da example store page).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Coupons, percentage/fixed discounts, expiry, usage limits",
+      "reason": "ALREADY DONE — done/009-P2-implement-coupons-backend.md status:completed. Commit d2d5fb0.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Order bumps, add this for $X on checkout",
+      "reason": "ALREADY DONE — done/010-P2-order-bumps-on-checkout.md status:completed. Commit d2d5fb0.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Wire funnel builder to Supabase",
+      "reason": "ALREADY DONE — done/011-P2-wire-funnel-builder-supabase.md status:completed. Commit f4b0050.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Wire email marketing routes to Supabase",
+      "reason": "ALREADY DONE — done/012-P2-wire-email-marketing-supabase.md status:completed. Commit f4b0050.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Wire course routes to Supabase",
+      "reason": "ALREADY DONE — done/013-P2-wire-course-routes-supabase.md status:completed. Commit f4b0050.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Dual checkout UI (Stripe + ArxMint as parallel options)",
+      "reason": "ALREADY DONE — done/014-P2-dual-checkout-ui.md status:completed. Commit 47c89d9.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — NIP-07 browser auth (Alby, nos2x)",
+      "reason": "ALREADY DONE — done/015-P2-nip07-browser-auth.md status:completed. Commit 47c89d9.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — PDF stamping with buyer email/name watermark",
+      "reason": "ALREADY DONE — done/016-P2-pdf-stamping-watermark.md status:completed. Commit 5c81056.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P2 — Printful catalog/variant sync — merchants browse valid variant_ids in UI",
+      "reason": "ALREADY DONE — done/017-P2-printful-catalog-sync.md status:completed. Commit 8983ce9.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P0 — Wire login flow end-to-end (login.html to auth to session to dashboard)",
+      "reason": "ALREADY DONE — done/004-P0-wire-login-flow-end-to-end.md status:completed. Auth routes confirmed mounted at server.js:248 (app.use('/api/auth', authRoutes)).",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P0 — Unify nav links (landing page CTAs point to working pages)",
+      "reason": "ALREADY DONE — done/006-P0-unify-landing-page-nav-links.md status:completed.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "P0 — Verify and document local dev fallback (SQLite vs Supabase)",
+      "reason": "ALREADY DONE — done/007-P0-document-local-dev-fallback.md status:completed.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    }
+  ],
+  "verified_facts_round18": [
+    {
+      "fact": "All round-17 tasks (001-017) are status:completed in .overnight/done/ directory. Round 18 has no P0/P1 remaining — all P2.",
+      "verified_at": "2026-03-09T00:00:00Z",
+      "method": "Glob of .overnight/done/*.md returned 77 files including done/001-017. Read frontmatter confirmed status:completed on all round-17 tasks."
+    },
+    {
+      "fact": "storeRendererService.js exists in marketplace/backend/services/ with full implementation (loads components from COMPONENTS_DIR, works without API key). 38-test suite in __tests__/storeRenderer.test.js.",
+      "verified_at": "2026-03-09T00:00:00Z",
+      "method": "Read storeRendererService.js lines 1-29; Glob for __tests__/storeRenderer.test.js confirmed."
+    },
+    {
+      "fact": "Auth routes ARE mounted in server.js at line 248: app.use('/api/auth', authRoutes). Previous lesson about auth routes not mounted is STALE (pre-round-17).",
+      "verified_at": "2026-03-09T00:00:00Z",
+      "method": "Grep for authRoutes in server.js confirmed line 95 (require) and line 248 (app.use)."
+    }
+  ],
+  "rejected_findings_round19": [
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Coupons, order bumps, post-purchase upsells, cart abandonment recovery",
+      "reason": "ALL DONE — done/ files 001-002/009-010 confirmed. Commits d2d5fb0 + 9cb9b86.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Wire funnel/email-marketing/course routes to Supabase",
+      "reason": "ALL DONE — done/ files 011-013 confirmed. Commit f4b0050.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Email sequence builder UI and analytics dashboard",
+      "reason": "DONE — done/006-P2-email-sequence-builder-ui.md. Commit 98147ee.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "AI course builder, License key generation",
+      "reason": "DONE this session — done/007 + done/008. Commits 60114b5 + df8b35c.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "PDF stamping, Printful catalog sync, Shipping rate estimation, Fulfillment status dashboard",
+      "reason": "ALL DONE — done/ files 016-017 + 003-004. Commits 5c81056 + 8983ce9 + 925b81f.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Dual checkout UI, BIP21 unified QR, ArxMint Bazaar integration, NIP-07 browser auth",
+      "reason": "ALL DONE — done/ files 014-015 + 005 + 009. Commits 47c89d9 + 020cc86.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    },
+    {
+      "source": "AGENT_TASKS.md",
+      "finding": "Build store renderer, Store persistence to Supabase, Standardize operator build command, Create delivery checklist, Add example brief on sales page",
+      "reason": "ALL DONE — done/ files 004-008 in round-17 set. Commits 04783a0 + e78b129 + 851d4da.",
+      "rejected_at": "2026-03-09T00:00:00Z"
+    }
+  ],
+  "verified_facts_round19": [
+    {
+      "fact": "All 80+ tasks through round 18 are status:completed in .overnight/done/ directory. Current done/ has files from multiple numbering sequences (original 001-060 set + round-17/18 001-017 set + recent 001-009 set).",
+      "verified_at": "2026-03-09T00:00:00Z",
+      "method": "Glob of .overnight/done/*.md returned 80+ files with status:completed. Worker outputs confirmed task 007 (AI course builder) and 008 (license keys) completed this session."
+    },
+    {
+      "fact": "Active directory is empty as of round 19 start — workers completed all prior tasks. 12 new tasks created for round 19.",
+      "verified_at": "2026-03-09T00:00:00Z",
+      "method": "Glob of .overnight/active/*.md returned no files. Conductor_output.json confirmed active/ was empty."
+    }
+  ],
   "false_positive_patterns": [
     {
       "pattern": "Audit says 'service was cut off during analysis' or 'suggesting'",

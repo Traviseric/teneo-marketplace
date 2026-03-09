@@ -632,3 +632,17 @@ CREATE TABLE IF NOT EXISTS referrals (
 CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
 CREATE INDEX IF NOT EXISTS idx_referrals_order ON referrals(referred_order_id);
 CREATE INDEX IF NOT EXISTS idx_referrals_status ON referrals(status);
+
+-- Product versions table — tracks file updates for digital products
+CREATE TABLE IF NOT EXISTS product_versions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id TEXT NOT NULL,
+  brand_id TEXT NOT NULL,
+  version TEXT NOT NULL,
+  file_path TEXT,
+  notes TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(product_id, brand_id);
+CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at);

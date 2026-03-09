@@ -1,0 +1,17 @@
+{
+  "synced_at": "2026-03-09T00:00:00Z",
+  "status": "ok",
+  "roadmap_files": [
+    "docs/ROADMAP.md",
+    "docs/development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md",
+    "docs/features/AMAZON_FEATURES_ROADMAP.md",
+    "docs/features/BRAND_AUTOMATION_ROADMAP.md"
+  ],
+  "roadmap_content_hash": "297a9b9e0eccc42de61096cc57e8c264ba824f06075dbd1c396baba2298b3389",
+  "tasks_added": 1,
+  "tasks_removed": 3,
+  "tasks_preserved": 55,
+  "non_roadmap_tasks_preserved": 2,
+  "tasks_completed": 22,
+  "total_tasks": 58
+}

@@ -20,48 +20,51 @@ PATH: C:\code\openbazaar-ai
 RELAY DIR: C:\code\openbazaar-ai\.overnight
 STAGE: unknown (0%)
 SCORE VALIDATION: completion_pct (0%) is SELF-REPORTED and has NEVER been validated. Run `reality_check` workflow before trusting this number.
+STACK: Node.js, Express, SQLite, Stripe, Nodemailer
+FOCUS AREA: core_marketplace — This is what this project needs work on RIGHT NOW.
+CONTEXT: OpenBazaar AI marketplace (formerly teneo-marketplace). Express backend + vanilla frontend. Has course module, funnel module, app store, setup wizard, Docker support. GitHub: Traviseric/openbazaar-ai
 
-## SITUATION: Worker Done, All Tasks Complete
+## ROADMAP SYNC NEEDED
+Roadmap files have changed or sync state is invalid. Task list may contain stale priorities.
+**Recommended:** Route to ROADMAP_SYNC to realign tasks with roadmap.
 
-WORKER completed all tasks. 
-No features tracked yet.
+## SITUATION: Continuing Pipeline
 
-**Your options:**
-1. **WORKFLOW "quality_gate"** — REVIEW_AUDIT → LAST_MILE_TEST (verify claims + test features)
-2. **LAST_MILE_TEST** — Verify features work in Chrome (recommended if not recently tested)
-3. **REVIEW_AUDIT** — Verify worker claims match actual code
-4. **Fresh audit** for current stage (unknown) — Find new issues from code changes
-5. **ROADMAP_PLANNER** — Analyze project for unbuilt features from docs, specs, README, code structure
+Last box: DIGEST. Stage: unknown (0%).
+
+Pending tasks: 12
+
+**Read the state files below and follow the standard pipeline.**
 
 
 ## Previous Run Summary
-- Status: plateaued
-- Rounds: 1 | Workers completed: 1
-- Findings: 4 total, 1 fixed
-- Audits run: review
-- Ended: 2026-02-28T21:10:47.993902
+- Status: in_progress
+- Rounds: 1 | Workers completed: 4
+- Findings: 13 total, 4 fixed
+- Audits run: review, feature, security, code_quality, ux
+- Ended: 2026-03-06T16:33:15.812191
 
 ## This Session's Decision History
-  Round 49: DIGEST → unproductive (findings=0, tasks=0)
-  Round 50: DIGEST → unproductive (findings=0, tasks=0)
-  Round 51: DIGEST → unproductive (findings=0, tasks=0)
-  Round 52: DIGEST → unproductive (findings=0, tasks=0)
-  Round 53: DIGEST → unproductive (findings=0, tasks=0)
-  Round 54: DIGEST → unproductive (findings=0, tasks=0)
-  Round 55: DIGEST → unproductive (findings=0, tasks=0)
-  Round 56: DIGEST → unproductive (findings=0, tasks=0)
-  Round 57: DIGEST → unproductive (findings=0, tasks=0)
-  Round 58: DIGEST → unproductive (findings=0, tasks=0)
-  Round 1: CONDUCTOR → unproductive (findings=0, tasks=0)
-  Round 2: SECURITY_AUDIT → unproductive (findings=0, tasks=0)
-  Round 3: CONDUCTOR → unproductive (findings=0, tasks=0)
-  Round 4: TASK_SYNTHESIZER → productive (findings=0, tasks=10)
-  Round 5: WORKER → productive (findings=0, tasks=10)
-  Round 6: CONDUCTOR → unproductive (findings=0, tasks=0)
-  Round 7: REVIEW_AUDIT → unproductive (findings=0, tasks=0)
-  Round 8: CONDUCTOR → unproductive (findings=0, tasks=0)
-  Round 9: TASK_SYNTHESIZER → productive (findings=0, tasks=2)
-  Round 10: WORKER → productive (findings=0, tasks=2)
+  Round 36: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 37: TASK_SYNTHESIZER → productive (findings=0, tasks=3)
+  Round 38: WORKER → productive (findings=0, tasks=3)
+  Round 39: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 40: TASK_SYNTHESIZER → productive (findings=0, tasks=15)
+  Round 41: WORKER → productive (findings=0, tasks=15)
+  Round 42: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 43: REVIEW_AUDIT → unproductive (findings=0, tasks=0)
+  Round 44: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 45: TASK_SYNTHESIZER → productive (findings=0, tasks=4)
+  Round 46: WORKER → productive (findings=0, tasks=4)
+  Round 47: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 1: ROADMAP_SYNC → productive (findings=0, tasks=0)
+  Round 2: CONDUCTOR → unproductive (findings=0, tasks=0)
+  Round 3: TASK_SYNTHESIZER → productive (findings=0, tasks=17)
+  Round 4: WORKER → productive (findings=0, tasks=17)
+  Round 5: TASK_SYNTHESIZER → productive (findings=0, tasks=9)
+  Round 6: WORKER → productive (findings=0, tasks=9)
+  Round 7: TASK_SYNTHESIZER → productive (findings=0, tasks=12)
+  Round 8: DIGEST → unproductive (findings=0, tasks=0)
 
 **Don't repeat unproductive boxes.** If a box returned 0 findings, try a different one.
 
@@ -87,6 +90,7 @@ No features tracked yet.
 - **Audit Type**: production (determines audit depth and focus)
 - **Project Stage**: unknown (setup/building/finishing/shipping)
 - **Completion**: 0%
+- **Focus Mode**: harden (build=features first, ship=deploy first, harden=audit first)
 
 ## Project Stage Awareness
 
@@ -98,7 +102,7 @@ Your audit choices should match the project stage:
 
 **Current stage is unknown** - choose audits accordingly.
 
-## Product Completion Priority (MANDATORY)
+## Focus Mode: HARDEN (Audit-First) — Default
 
 Treat findings as unequal. Route work in this strict order:
 1. **Core flow breakages first** - login/auth/signup/checkout/dashboard or equivalent critical user path is broken.
@@ -223,6 +227,11 @@ This is how you know what works and what doesn't. READ IT.
    - What workers accomplished
    - Any blockers or failures
 
+## Prior Worker Summaries
+
+- **worker_001_output**: summary: Built AI Course Builder: aiCourseBuilderService.js, POST /api/courses/generate + /generate-and-save routes, and admin panel UI with Generate Preview + Save Course flow | commits: 60114b5
+- **worker_002_output**: summary: Implemented full license key system: DB table, licenseKeyService, validate/activate public API, admin revoke UI, and Stripe webhook integration for license_required products. | commits: df8b35c
+
 ### 6. Session Memory (CRITICAL for intelligence)
 
 **C:\code\openbazaar-ai\.overnight/HANDOFF.md** — Previous session's summary: what was accomplished, what remains,
@@ -234,11 +243,13 @@ Shows what you already tried and whether it was productive. **Don't repeat unpro
 **C:\code\openbazaar-ai\.overnight/lessons.json** — Accumulated lessons: rejected false-positive findings, fake worker
 verdicts, unproductive box routes. **Avoid known false positives and known failure patterns.**
 
-### 7. Project Task Declarations (if any): C:\code\openbazaar-ai/OVERNIGHT_TASKS.md
-   - Project's own priority list (checkbox format)
+### 7. Project Task Declarations (if any): C:\code\openbazaar-ai/AGENT_TASKS.md
+   - Project's own priority list (checkbox format) — synced from ROADMAP.md by ROADMAP_SYNC
    - TASK_SYNTHESIZER will read and merge these with audit findings
    - You don't need to act on these directly — just know they exist
    - If this file exists and has unchecked items, TASK_SYNTHESIZER will handle them
+   - If ROADMAP_SYNC has not run recently (check roadmap_sync_state.json), consider routing there first
+   - **Fallback:** If AGENT_TASKS.md doesn't exist, also check for legacy OVERNIGHT_TASKS.md
 
 ## First Run Logic
 

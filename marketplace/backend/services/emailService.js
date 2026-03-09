@@ -1081,6 +1081,53 @@ Questions about your order? Reply to this email or visit our support page.
       return { success: false, error: error.message };
     }
   }
+
+  async sendProductUpdateEmail({ userEmail, customerName, productTitle, version, notes, downloadUrl, orderId }) {
+    if (!this.transporter) {
+      console.error('Email service not configured');
+      return { success: false, error: 'Email service not configured' };
+    }
+    try {
+      const safeTitle = escapeHtml(productTitle);
+      const safeVersion = escapeHtml(version);
+      const safeNotes = escapeHtml(notes || '');
+      const safeName = escapeHtml(customerName || 'there');
+      const safeOrderId = escapeHtml(orderId);
+
+      const html = `
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;max-width:600px;margin:0 auto;padding:20px;background:#f9fafb;">
+  <div style="background:#fff;padding:40px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.1);">
+    <h2 style="color:#7C3AED;">📦 Updated file available: ${safeTitle}</h2>
+    <p>Hi ${safeName},</p>
+    <p>Great news! <strong>${safeTitle}</strong> has been updated to <strong>version ${safeVersion}</strong> and your download link has been refreshed.</p>
+    ${safeNotes ? `<div style="background:#f4f4f8;border-left:4px solid #7C3AED;padding:12px 16px;border-radius:4px;margin:16px 0;"><strong>What's new:</strong> ${safeNotes}</div>` : ''}
+    <p style="margin:24px 0;">
+      <a href="${downloadUrl}" style="background:#7C3AED;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;">Download Latest Version</a>
+    </p>
+    <p style="font-size:0.85em;color:#888;">Order reference: ${safeOrderId}. Your existing download link still works — this email provides the same access.</p>
+  </div>
+</body>
+</html>`;
+
+      const text = `Updated file available: ${productTitle} (v${version})\n\nHi ${customerName || 'there'},\n\n${productTitle} has been updated to version ${version}.\n${notes ? `What's new: ${notes}\n\n` : '\n'}Download the latest version: ${downloadUrl}\n\nOrder: ${orderId}`;
+
+      const result = await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: `📦 Updated: ${productTitle} — version ${version} available`,
+        html,
+        text
+      });
+
+      console.log(`Product update email sent to ${userEmail} for ${productTitle} v${version}`);
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Error sending product update email:', error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 module.exports = new EmailService();

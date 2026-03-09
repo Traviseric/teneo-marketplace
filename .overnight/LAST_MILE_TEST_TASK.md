@@ -4,7 +4,7 @@ You are a QA engineer reviewing browser test evidence collected via CDP.
 Your job: analyze the evidence and produce a definitive go/no-go verdict.
 
 ## Target Application
-**URL:** http://localhost:3003
+**URL:** https://opensource.org/licenses/MIT
 
 ## Evidence File
 
@@ -33,25 +33,42 @@ For EACH scenario in the evidence:
 If `collection_error` is set at the top level, the CDP collector failed.
 Mark all scenarios as SKIP with reason "evidence_collection_failed".
 
+## SKIP Rules (STRICT)
+
+SKIP is ONLY valid in these cases:
+1. The top-level `collection_error` is set (CDP crashed — not your fault)
+2. The scenario is a duplicate of another scenario already evaluated
+3. The scenario is genuinely not applicable to this project type (e.g., testing e-commerce checkout on a blog)
+
+**Everything else must be PASS or FAIL. Specifically:**
+- Auth-gated pages that correctly show a login page or redirect → **PASS** (auth-gating works as designed)
+- Pages that load but show errors, missing data, broken elements → **FAIL** with specific issues
+- URLs that return 4xx/5xx or have network failures → **FAIL**, not SKIP
+- "Stale evidence" or "needs re-run" → NOT a valid SKIP reason — judge what you have
+- "Cannot fully verify" → Judge what the evidence shows. Partial evidence still produces a verdict.
+- "Insufficient data" → If you have page_text_snippet, console_errors, or network_failures, you have data. Use it.
+
+When in doubt between SKIP and FAIL, choose **FAIL**. False negatives (missing real issues) are far worse than false positives.
+
 ## Scenarios (10 total)
 
    1. [CRITICAL] auth_flow — Test authentication flow
       Steps:
-      1. Navigate to http://localhost:3003/login or auth page
+      1. Navigate to https://opensource.org/licenses/MIT/login or auth page
       2. Try logging in with test credentials
       3. Verify redirect after login
       Expected: Login works, user is redirected appropriately
 
    2. [HIGH] api_health — Test API endpoints respond
       Steps:
-      1. Navigate to http://localhost:3003/api/health or similar
+      1. Navigate to https://opensource.org/licenses/MIT/api/health or similar
       2. Check API returns valid JSON
       3. Verify no server errors
       Expected: API endpoints return valid responses
 
    3. [CRITICAL] cart_flow — Test shopping cart flow
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Add item to cart
       3. View cart
       4. Proceed to checkout (don't complete)
@@ -59,49 +76,49 @@ Mark all scenarios as SKIP with reason "evidence_collection_failed".
 
    4. [CRITICAL] page_loads — Verify the page loads successfully
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Wait for page to fully load (max 30 seconds)
       3. Check for any error messages
       Expected: Page loads without errors, no 500/404 errors
 
    5. [CRITICAL] console_errors — Check for JavaScript console errors
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Open browser console
       3. Look for any red error messages
       Expected: No critical JavaScript errors in console
 
    6. [HIGH] responsive_layout — Test responsive layout on mobile
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Resize viewport to mobile width (375px)
       3. Check layout doesn't break
       Expected: Layout adapts properly, no horizontal scroll
 
    7. [HIGH] navigation_works — Test main navigation links
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Click on main navigation links
       3. Verify each link works
       Expected: All navigation links work, no broken links
 
    8. [HIGH] forms_work — Test any forms on the page
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Find any forms on the page
       3. Try submitting with valid data
       Expected: Forms submit successfully, show appropriate feedback
 
    9. [MEDIUM] images_load — Verify all images load
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Check all images on the page
       3. Look for broken image icons
       Expected: All images load correctly, no broken images
 
    10. [MEDIUM] performance_check — Basic performance check
       Steps:
-      1. Navigate to http://localhost:3003
+      1. Navigate to https://opensource.org/licenses/MIT
       2. Note time to first content
       3. Check if page feels responsive
       Expected: Page loads in under 3 seconds, interactions are responsive
@@ -127,6 +144,7 @@ The JSON MUST have this exact structure:
       "status": "PASS|FAIL|SKIP",
       "actual": "what the evidence shows",
       "issues": [],
+      "fix_actions": ["Specific action to fix this issue, e.g. 'Check route handler at /api/health'"],
       "evidence": "key evidence snippet"
     }
   ],
@@ -140,6 +158,18 @@ The JSON MUST have this exact structure:
 - **GO**: All critical and high priority scenarios PASS -> set `next_box: "CONDUCTOR"`
 - **NO_GO**: ANY critical priority scenario FAILS -> set `next_box: "WORKER"`
 - **PARTIAL**: All critical pass but some medium/low fail -> set `next_box: "CONDUCTOR"`
+
+## fix_actions (Required for FAIL results)
+
+For every scenario with status FAIL, you MUST include `fix_actions` — a list of specific,
+actionable steps a developer can take to fix the issue. Examples:
+- "Check route handler for /api/health — returning 500"
+- "Verify Railway deployment has DATABASE_URL env var set"
+- "Fix the React component at src/components/Dashboard.tsx — rendering blank"
+- "Add CORS headers for API requests from the frontend domain"
+
+Generic advice like "fix the bug" or "investigate the issue" is NOT acceptable.
+Each fix_action should point to a specific file, route, config, or component when possible.
 
 ## After Writing Output
 

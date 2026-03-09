@@ -53,6 +53,24 @@ If `C:\code\openbazaar-ai\.overnight/progress.json` contains a `features` array,
 - Do NOT modify code for features marked as PASSING
 - After completing a fix, note which feature it addresses in your output
 
+## Previous Worker Context
+
+**Recent commits (last 5):**
+  - ff9369c feat(referrals): add cross-store referral system with commission tracking
+  - f50d40c feat(import): add Gumroad CSV product import + email list CSV import
+  - a4bade2 feat(nostr): add NIP-99 product listings — publish kind 30402 events to Nostr network
+  - 1456959 feat(funnels): wire email funnel pipeline + AI funnel builder
+  - fa02aa9 feat(auth): add standalone NIP-98 HTTP auth middleware + headless login endpoint
+
+**Previous worker handoffs:**
+**worker_002_output:**
+  Commits: ff9369c - feat(referrals): add cross-store referral system with commission tracking
+  Files modified: marketplace/backend/database/schema.sql, marketplace/backend/routes/referralRoutes.js, marketplace/backend/routes/checkout.js, marketplace/backend/server.js, marketplace/frontend/admin.html
+  Approach: Added referral_codes + referrals tables to schema.sql; created referralRoutes.js with GET /code (auto-generate) and GET /stats; sanitized + passed referralCode through Stripe session metadata; called trackReferral() (exported from referralRoutes) in handleCheckoutCompleted after order fulfillment; added nav item + full Referrals section to admin.html with copyReferralLink() and loadReferrals() functions.
+  What worked: Exporting trackReferral as a named function from the routes module keeps the checkout webhook handler clean. The new-vs-repeat customer check uses a simple prior-completed-order query against the orders table.
+  What didn't: Post-commit hook fires a permission error to stderr on every commit — cosmetic only, does not block commits.
+  Recommended next step: Next pending tasks from active/: 011-P2-memberships-subscriptions.md, 012-P2-machine-payable-endpoints.md, and other independent tasks. No blockers remaining from this session.
+
 ## Workflow
 
 1. **Read the task** - Understand the problem fully
@@ -99,6 +117,7 @@ Write to: C:\code\openbazaar-ai\.overnight\worker_001_output.json
 ```json
 {
   "success": true,
+  "summary": "One-sentence description of what this worker accomplished (used by CONDUCTOR)",
   "next_box": "CONDUCTOR",
   "context": {
     "completed": 1,
@@ -108,10 +127,24 @@ Write to: C:\code\openbazaar-ai\.overnight\worker_001_output.json
     "files_changed": ["file1.py", "file2.py"],
     "task_file": "001-P0-fix-issue.md",
     "blockers": [],
-    "follow_up_tasks": ["042-P2-fix-related-validation.md"]
+    "follow_up_tasks": ["042-P2-fix-related-validation.md"],
+    "context_for_next_worker": {
+    "context_for_next_worker": {
+      "commits_made": ["abc123 - Brief description"],
+      "files_modified": ["path/to/file.py"],
+      "approach_used": "One sentence: the key technical approach taken",
+      "what_worked": "What actually helped (optional)",
+      "what_didnt": "Approaches tried that failed — saves next worker from repeating (optional)",
+      "next_recommended_step": "What the next worker should tackle first (optional)"
+    }
+    }
   }
 }
 ```
+
+The `summary` field is used by CONDUCTOR to avoid duplicate task assignments.
+The `context_for_next_worker` field is **required** — fill it in even if brief.
+It's how you hand off to the next worker. Omitting it means the next worker starts blind.
 
 ## Discovering Follow-Up Work
 

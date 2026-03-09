@@ -1,3 +1,3 @@
 @echo off
-set "CLAUDE_CODE_OAUTH_TOKEN=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"
+set "CLAUDE_CODE_OAUTH_TOKEN=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"
 call "C:\code\openbazaar-ai\.overnight\security_audit_run.bat"

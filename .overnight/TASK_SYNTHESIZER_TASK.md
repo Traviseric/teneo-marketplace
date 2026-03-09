@@ -51,6 +51,78 @@ Treat PRAS "plan" type sources as highest-quality input — they've been through
 4-stage deliberation pipeline (verify → evaluate → challenge → plan) and have
 confidence scores. Prioritize these over raw findings.
 
+### Step 0c: Check Git History for Already-Completed Work
+
+The following 50 recent commits capture work already done in this project.
+**Before creating any task file**, check whether the task appears to be already completed.
+
+**Dedup rule:** If 2 or more meaningful keywords from a task title appear in the commit messages below,
+the task was likely already done. **SKIP it** and log the reason.
+
+**Keywords to ignore when matching:** implement, create, add, fix, the, for, with, and, that, this,
+from, into, task, issue, error, make, update, remove, change, ensure, handle, support (too generic).
+
+Recent commits:
+  df8b35c feat(license): add license key generation, validation, and admin management
+  60114b5 feat(courses): add AI course builder â€” generate full course outline from natural language brief
+  020cc86 feat(arxmint+bip21): wire ArxMint webhook alias, sat pricing in catalog, BIP21 QR checkout
+  98147ee feat(admin): add email marketing UI â€” sequences, broadcasts, analytics
+  9cb9b86 feat(checkout): add 3-stage cart abandonment recovery + post-purchase upsells
+  925b81f feat(pod): add shipping rate estimation API and fulfillment status dashboard
+  8983ce9 feat(printful): add catalog browser service, admin routes, and variant picker UI
+  5c81056 feat(downloads): add PDF stamping service to watermark PDFs with buyer identity
+  47c89d9 feat(checkout): add dual checkout UI (Stripe + Lightning) and NIP-07 tests
+  f4b0050 feat(supabase-wiring): wire funnels, email-marketing, and courses to shared DB adapter
+  d2d5fb0 feat(checkout): add server-side coupons (DB+expiry+usage limits) and order bumps
+  e78b129 feat(store-builder): add storeBuilderService with persistence + subscriber capture
+  851d4da feat(managed-service): add operator build runner, delivery checker, and example store page
+  04783a0 test(store-renderer): add 38-test suite for storeRendererService
+  f39e435 test(db-adapter): add parity test suite for checkout and auth DB paths
+  5b354fe fix(tests): update storeBuilder mock to match emailService singleton export
+  1f4935d chore(overnight): review audit â€” 4 tasks verified, 1 partial (checkout unification broke tests)
+  d922de6 refactor(checkout): unify checkout.js and checkoutProduction.js into single route
+  dc54606 fix(security): enable COEP credentialless mode to replace disabled crossOriginEmbedderPolicy
+  bd7d83f test(jest): add marketplace/backend/__tests__ to Jest roots
+  a861981 fix(storeBuilder): use emailService singleton instead of constructor
+  bf9aa9e fix(arxmint): replace throwing stubs with graceful NOT_IMPLEMENTED returns
+  64cf144 fix(security): replace in-memory download rate limit Map with DB-backed query
+  cb0b1b4 test(network): add 21 Jest tests for federation catalog + config routes
+  a8fe712 feat(tooling): add ESLint config to marketplace/backend; fix all 28 lint errors
+  7b54571 refactor: deduplicate sanitizeMetadataValue into shared utils/validate.js
+  69bbba2 fix(security): replace deprecated csurf with csrf-csrf (double-submit cookie pattern)
+  d456b7e fix(a11y): add accessibility to openbazaar-site comparison table, network stats, copy button
+  f79ce23 fix(a11y): add ARIA attributes to master-templates interactive controls
+  944d72d feat(frontend): add AI Store Builder intake form and landing page section (task 044)
+  1c26c2e feat(store-builder): add POST /intake route with validation + ack email (task 043)
+  7b7f275 fix(ux): store.html mobile hamburger nav + crypto-checkout inline error
+  7edda8c feat(store-builder): add store_builds table, service, and CRUD API (task 042)
+  27de6ce feat(auth): unify frontend auth UI with loading states and clear journey
+  dd8ea3b docs(readme): disclaim gig platform as planned; note OPENAI_API_KEY for AI features
+  0dd56a0 fix(checkout): wrap switch case body in block scope (no-case-declarations)
+  9b53c42 fix(security): remove customer email PII from download logs (CWE-359)
+  fd5c7ae test: add Jest test coverage for storefront routes and emailService
+  e24cbda fix(admin): remove process.env Stripe key mutation; add admin test suite
+  ca81a73 fix(checkout): structured logging and failOrder for swallowed fulfillment errors
+  2dc42e8 fix(security/a11y): XSS escaping + keyboard accessibility in store.html; fix WCAG failures in email capture form
+  231e4e8 feat(ai-builder): natural language editing, preview/publish flow, and test suite (tasks 028-030)
+  64186d0 fix(ux): replace prompt() and alert() with accessible inline UI in crypto checkout
+  308a724 feat(ai-builder): add store renderer + Supabase persistence (tasks 025, 026)
+  007c7e9 refactor: replace HTTP self-calls for download token generation with direct service
+  49bcd9f refactor(admin): replace hardcoded 'teneo' brand with DEFAULT_BRAND env var
+  b920a70 fix(security): replace unsafe-inline with nonce in CSP styleSrc (CWE-693)
+  63b1b8c fix(security): fail closed on storefront API when no key set in production (CWE-306)
+  bdd350d fix(security): add rate limiter to checkoutProduction POST /create-session
+  f55f477 fix(security): add HMAC auth to orchestrator webhooks + session regeneration on login
+
+**When skipping a git-deduped task**, log it in your review report under a `"git_deduped"` array:
+```json
+{"git_deduped": [{"task": "title", "reason": "git history shows likely completion", "matching_commits": ["abc1234 fix: ...", "def5678 ..."]}]}
+```
+
+**Important:** When in doubt, create the task. A false-positive skip (skipping something not done)
+is worse than a missed dedup. Only skip when you clearly see 2+ matching keywords.
+
+
 ### Step 1: Read ALL Audit Output Files
 
 Scan `C:\code\openbazaar-ai\.overnight` for ALL files matching `*_output.json` — these are audit results.
@@ -103,7 +175,7 @@ For EACH finding, check:
 
 Also check for project-declared priorities:
 
-1. **`C:\code\openbazaar-ai/OVERNIGHT_TASKS.md`** — Master task list (if exists)
+1. **`C:\code\openbazaar-ai/AGENT_TASKS.md`** (or legacy `OVERNIGHT_TASKS.md`) — Master task list (if exists)
    - Read checkbox items: `- [ ] [P0] FIX: description` format
    - Each unchecked item is a candidate task
    - Checked items (`- [x]`) are already done — skip
@@ -143,12 +215,16 @@ Write to: C:\code\openbazaar-ai\.overnight/reports/audit_review.json
   "deferrals": [
     {"finding": "description", "reason": "Nice-to-have, not blocking revenue"}
   ],
-  "project_declared": {"total": 0, "accepted": 0, "merged": 0, "rejected": 0, "deferred": 0}
+  "project_declared": {"total": 0, "accepted": 0, "merged": 0, "rejected": 0, "deferred": 0},
+  "git_deduped": [
+    {"task": "task title", "reason": "git history shows likely completion", "matching_commits": ["abc1234 fix: ..."]}
+  ]
 }
 ```
 
 In the review report, track project-declared tasks separately under the `"project_declared"` key.
-If no OVERNIGHT_TASKS.md or pre-existing active/ files were found, set all counts to 0.
+If no AGENT_TASKS.md (or legacy OVERNIGHT_TASKS.md) or pre-existing active/ files were found, set all counts to 0.
+Track git-deduped skips under `"git_deduped"` (empty array if none skipped or no git history was provided).
 
 ### Step 5b: Update Lessons (Cross-Session Memory)
 
@@ -334,7 +410,8 @@ Write to: C:\code\openbazaar-ai\.overnight\task_synthesizer_output.json
       }
     },
     "recommended_mode": "managed",
-    "recommended_lanes": 3
+    "recommended_lanes": 3,
+    "git_deduped_count": 0
   }
 }
 ```

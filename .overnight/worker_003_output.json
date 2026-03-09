@@ -1,9 +1,0 @@
-{
-  "success": true,
-  "completed": 1,
-  "blocked": 0,
-  "task": "010-P3-sanitize-oauth-error-redirect.md",
-  "status": "completed",
-  "commit": "9ce08d3",
-  "files_changed": ["marketplace/backend/routes/auth.js"]
-}

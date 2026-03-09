@@ -20,6 +20,7 @@
 - TASK_SYNTHESIZER — Create WORKER task files from audit findings
 - WORKER — Execute tasks, write code
 - ROADMAP_PLANNER — Find planned-but-unbuilt features from project docs
+- ROADMAP_SYNC — Reconcile AGENT_TASKS.md with ROADMAP.md (run at session start)
 
 ### Feature Testing
 - LAST_MILE_TEST — Test real user flows in Chrome. GO/NO_GO/PARTIAL verdict.
@@ -63,3 +64,5 @@
 - production_readiness — Full pipeline: truth → audit → plan → fix → verify → user test
 - portfolio_triage — CLAIMS_VALIDATOR (score + tier)
 - ship_or_kill — CLAIMS_VALIDATOR → USER_JOURNEY_TEST (binary go/no-go)
+- reconcile — ROADMAP_SYNC → CONDUCTOR (sync tasks with roadmap, then route)
+- reconcile_and_build — ROADMAP_SYNC → TASK_SYNTHESIZER → WORKER (sync + immediate execution)

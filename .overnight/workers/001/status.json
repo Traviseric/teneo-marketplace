@@ -1,12 +1,12 @@
 {
   "lane": 1,
-  "status": "done",
+  "status": "working",
   "task_file": "C:\\code\\openbazaar-ai\\.overnight\\active",
   "tasks_total": 0,
-  "tasks_completed": 1,
+  "tasks_completed": 0,
   "tasks_blocked": 0,
   "commits": [],
-  "started_at": "2026-03-06T02:50:36.673669",
-  "updated_at": "2026-03-06T02:51:32.596922",
+  "started_at": "2026-03-09T10:21:15.163411",
+  "updated_at": "2026-03-09T10:21:15.163641",
   "error": null
 }

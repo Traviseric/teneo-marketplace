@@ -1,4 +1,118 @@
 
+## Task: 005-P2-merchant-fulfillment-provider-ui.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/adminRoutes.js, marketplace/backend/routes/storefront.js, marketplace/frontend/admin.html
+- **Commit:** 49ba082
+- **Notes:** Added GET /api/admin/products/fulfillment and PATCH /api/admin/products/:id/fulfillment endpoints; "Product Fulfillment" nav item + section in admin.html with per-product provider dropdown and variant ID input; updated bookToProduct() in storefront.js to map explicit fulfillment_provider to the fulfillment type used by checkout routing.
+
+## Task: 010-P2-cross-store-referral-system.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/database/schema.sql, marketplace/backend/routes/referralRoutes.js, marketplace/backend/routes/checkout.js, marketplace/backend/server.js, marketplace/frontend/admin.html
+- **Commit:** ff9369c
+- **Notes:** Added referral_codes + referrals tables, GET /api/referral/code + /stats endpoints, referralCode tracking through Stripe checkout metadata, commission calculation (15% new / 2% repeat) in handleCheckoutCompleted, and Referrals admin dashboard section.
+
+## Task: 002-P2-email-funnel-pipeline.md
+- **Status:** COMPLETE
+- **Changes:** funnel-module/backend/routes/funnels.js, marketplace/backend/database/database.js, marketplace/frontend/admin.html
+- **Commit:** 1456959
+- **Notes:** Added POST /:id/subscribe (auto-enroll in linked sequence), PATCH /:id (set sequence_id), migration for funnels.sequence_id column, admin Funnels section with sequence link dropdown
+
+## Task: 003-P2-ai-funnel-builder.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/aiFunnelBuilderService.js, funnel-module/backend/routes/funnels.js, marketplace/frontend/admin.html
+- **Commit:** 1456959
+- **Notes:** Created aiFunnelBuilderService.js (lazy-require pattern); POST /generate and /generate-and-save routes; AI Funnel Builder admin section with Generate Preview + Save Funnel flow
+
+## Task: 008-P2-license-key-generation.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/licenseKeyService.js, marketplace/backend/routes/licenseRoutes.js, marketplace/backend/database/schema.sql, marketplace/backend/database/database.js, marketplace/backend/routes/checkout.js, marketplace/backend/services/emailService.js, marketplace/backend/server.js, marketplace/frontend/admin.html
+- **Commit:** df8b35c
+- **Notes:** license_keys table, full CRUD service, validate/activate public endpoints, admin list/revoke, wired into Stripe webhook for license_required products, sendLicenseKeyEmail added
+
+## Task: 007-P2-ai-course-builder.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/aiCourseBuilderService.js, marketplace/backend/routes/courseRoutes.js, marketplace/frontend/admin.html
+- **Commit:** 60114b5
+- **Notes:** Added generateCourse() service using Claude claude-sonnet-4-6; added POST /api/courses/generate and /generate-and-save routes (admin-only); added Courses nav item + AI Course Builder section in admin panel with Generate Preview + Save Course flow; graceful fallback when ANTHROPIC_API_KEY absent.
+
+## Task: 005-P2-arxmint-bazaar-integration.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/storefront.js, marketplace/backend/server.js, marketplace/backend/.env.example
+- **Commit:** 020cc86
+- **Notes:** Added getBtcUsdRate() + price_sats to catalog/product endpoints. Extracted handleFulfill as named export. Registered POST /api/arxmint/webhook as alias in server.js. Added ARXMINT_MERCHANT_ID + ARXMINT_URL to .env.example.
+
+## Task: 009-P2-bip21-unified-qr-code.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/cryptoCheckout.js, marketplace/frontend/crypto-checkout.html
+- **Commit:** 020cc86
+- **Notes:** Added bip21_uri to create-order response (bitcoin:ADDRESS?amount=X&lightning=LNURL). Wired live API call in crypto-checkout.html. Added qrcode.js CDN + BIP21 QR rendering with Copy Payment URI button and Lightning-aware label.
+
+## Task: 006-P2-email-sequence-builder-ui.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/admin.html
+- **Commit:** 98147ee
+- **Notes:** Replaced static Email Templates nav item with Email Marketing section featuring 4 sub-tabs: Templates (existing), Sequences (CRUD drip campaigns via /api/email-marketing/sequences), Broadcasts (compose/send/schedule via /api/email-marketing/broadcasts), Analytics (subscriber count, broadcast table, subscriber table with remove). All API routes already existed in server.js.
+
+## Task: 003-P2-shipping-rate-estimation.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/shippingService.js (new), marketplace/backend/routes/checkout.js
+- **Commit:** 925b81f
+- **Notes:** Created shippingService.js wrapping printfulFulfillmentProvider.estimateShippingRates(). Added POST /api/checkout/shipping-rates with rate limiting, physical-item filtering, and graceful fallback when Printful not configured.
+
+## Task: 004-P2-fulfillment-status-dashboard.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/printfulFulfillmentProvider.js, marketplace/backend/routes/adminRoutes.js, marketplace/frontend/admin.html
+- **Commit:** 925b81f
+- **Notes:** Added getOrderStatus() to Printful provider. Added GET /api/admin/fulfillment and POST /api/admin/fulfillment/:orderId/refresh endpoints. Added Fulfillment tab to admin.html with status badges, tracking links, per-row refresh button, and red row highlight for failed orders. Schema already had all needed columns; Printful webhook handler was already implemented.
+
+## Task: 017-P2-printful-catalog-sync.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/printfulCatalogService.js (new), marketplace/backend/routes/printfulAdmin.js (new), marketplace/backend/server.js, marketplace/backend/routes/storefront.js, marketplace/frontend/admin.html
+- **Commit:** 8983ce9
+- **Notes:** Created printfulCatalogService.js with 1-hour in-memory cache wrapping Printful /products and /products/:id API. Created printfulAdmin.js with GET /api/admin/printful/catalog, GET /api/admin/printful/catalog/:id/variants, POST /api/admin/printful/cache/clear — all gated by authenticateAdmin. Mounted in server.js. Added Printful Catalog Browser panel to admin.html settings section with product list, variant table (size/color/price), and clipboard copy button. Strengthened storefront.js fulfill: variantId must be Number.isInteger > 0 before Printful API call.
+
+## Task: 016-P2-pdf-stamping-watermark.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/pdfStampingService.js (new), marketplace/backend/routes/downloadRoutes.js, marketplace/backend/package.json
+- **Commit:** 5c81056
+- **Notes:** Created pdfStampingService.stampPDF() using pdf-lib — adds diagonal + footer watermark on every page with masked buyer email ("j***@gmail.com"). Integrated into downloadRoutes.js GET /:token handler: reads PDF to buffer, stamps it, sends stamped buffer with Content-Length; falls back to raw file if stamping fails. Added pdf-lib ^1.17.1 to package.json (was already installed in node_modules).
+
+## Task: 014-P2-dual-checkout-ui.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/routes/checkout.js, marketplace/frontend/checkout.html (new), marketplace/frontend/store.html
+- **Commit:** 47c89d9
+- **Notes:** Added POST /api/checkout/arxmint endpoint with ArxMint L402 → BTCPay → manual BTC fallback. Created checkout.html dual-payment page (Stripe + Lightning as parallel options, BIP21 QR for manual BTC). Updated store.html to link all brands to checkout.html instead of missing book-detail.html.
+
+## Task: 015-P2-nip07-browser-auth.md
+- **Status:** COMPLETE
+- **Changes:** __tests__/nostr-auth-verify.test.js (new)
+- **Commit:** 47c89d9
+- **Notes:** Full NIP-07 + NIP-98 implementation was already in place (frontend auth.js, backend NostrAuthProvider with Schnorr verification, /api/auth/nostr/verify route, login.html button). Added 10-test comprehensive suite covering validation, structure checks, wrong signature, tampered ID, valid Schnorr signature (new user + existing user). All 10 pass. Pre-existing checkout-price-validation failures (SQLITE_CONSTRAINT from test DB state) are unrelated to these changes.
+
+## Task: 011-P2-wire-funnel-builder-supabase.md
+- **Status:** COMPLETE
+- **Changes:** database.js (funnel_events table init, config_json/conversion_rate migrations), funnel-module/backend/routes/funnels.js (conversion_rate update on purchase, DB delete)
+- **Commit:** f4b0050
+- **Notes:** Routes already used shared DB adapter; added missing funnel_events table and analytics update
+
+## Task: 012-P2-wire-email-marketing-supabase.md
+- **Status:** COMPLETE
+- **Changes:** schema-email-marketing.sql (IF NOT EXISTS on all CREATE INDEX), database.js (auto-load email marketing schema), marketplace/backend/routes/emailMarketing.js (new), server.js (register /api/email-marketing)
+- **Commit:** f4b0050
+- **Notes:** emailMarketingService already takes db param; added API routes and schema initialization
+
+## Task: 013-P2-wire-course-routes-supabase.md
+- **Status:** COMPLETE
+- **Changes:** database.js (auto-load schema-courses.sql for quiz/cert tables)
+- **Commit:** f4b0050
+- **Notes:** courseRoutes.js already used shared adapter with session auth; added quiz/cert table initialization
+
+## Task: 005-P1-store-persistence-to-supabase.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/services/storeBuilderService.js (new), marketplace/backend/__tests__/storeBuilderService.test.js (new), marketplace/backend/database/schema-stores.sql, marketplace/backend/database/supabase-migration.sql, marketplace/backend/routes/storeBuilder.js
+- **Commit:** e78b129
+- **Notes:** Created storeBuilderService with saveStore, saveProducts, getStoreBySlug, addSubscriber, listSubscribers. Added store_subscribers table to both SQLite and Supabase schemas. Refactored /save route to use service. Added subscribe/subscribers endpoints. 28 tests passing.
+
 ## Task: 060-P3-unify-checkout-checkoutproduction-routes.md
 - **Status:** COMPLETE
 - **Changes:** marketplace/backend/routes/checkout.js, marketplace/backend/routes/checkoutProduction.js (deleted), marketplace/backend/server.js
@@ -454,3 +568,21 @@
 - **Changes:** marketplace/backend/server.js
 - **Commit:** dc54606
 - **Notes:** Helmet 8.1.0 installed at root node_modules supports credentialless. Changed `crossOriginEmbedderPolicy: false` to `{ policy: 'credentialless' }`. 4/5 test suites pass; 3 pre-existing emailService failures unrelated to this change.
+
+## Task: 006-P1-standardize-operator-build-command.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/scripts/run-store-build.js, docs/OPERATOR_GUIDE.md
+- **Commit:** 851d4da
+- **Notes:** Full end-to-end operator script: intake→planning→building→qa→delivered. Reads .env, calls Claude API, renders HTML, saves store, runs static QA checks.
+
+## Task: 007-P1-create-delivery-checklist.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/backend/scripts/delivery-check.js
+- **Commit:** 851d4da
+- **Notes:** CLI script + importable module. Checks HTTP 200, title, description, viewport, checkout CTA, email form, og:image, no oversized inline widths.
+
+## Task: 008-P1-add-example-brief-output-intake-page.md
+- **Status:** COMPLETE
+- **Changes:** marketplace/frontend/store-builder-intake.html, marketplace/frontend/store-example.html
+- **Commit:** 851d4da
+- **Notes:** Added example brief section with sample soy candle business description above intake form. Created full static example store (Earthy Candle Co.) with products, hero, values, email capture. Link from intake page.
