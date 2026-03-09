@@ -259,6 +259,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/license', licenseRoutes);
 app.use('/api/referral', require('./routes/referralRoutes'));
+
+// Referral attribution — capture ?ref= query param into session so checkout can pick it up
+// Runs after session middleware, before route handlers
+app.use((req, res, next) => {
+    const ref = req.query.ref;
+    if (ref && typeof ref === 'string' && ref.length <= 20 && !req.session.referralCode) {
+        // Uppercase + strip non-alphanumeric chars to match referral code format
+        req.session.referralCode = ref.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 20);
+    }
+    next();
+});
+
 app.use('/api/email', emailTrackingRoutes);
 app.use('/api/email-marketing', emailMarketingRoutes);
 

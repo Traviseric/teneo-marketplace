@@ -149,5 +149,99 @@ async function trackReferral({ referralCode, orderId, customerEmail, orderAmount
   }
 }
 
+/**
+ * GET /api/referral/commissions
+ * Admin-only. Returns all referral commissions with optional status filter.
+ * Query: ?status=pending|paid|cancelled&limit=50&offset=0
+ */
+router.get('/commissions', async (req, res) => {
+  try {
+    const status = req.query.status || null;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 200);
+    const offset = parseInt(req.query.offset, 10) || 0;
+
+    const params = [];
+    let whereClause = '';
+    if (status) {
+      whereClause = 'WHERE r.status = ?';
+      params.push(status);
+    }
+
+    const rows = await db.all(
+      `SELECT r.id, r.referral_code, r.referred_order_id, r.referred_email,
+              r.is_new_customer, r.commission_amount, r.status, r.created_at,
+              rc.referrer_brand_id
+       FROM referrals r
+       LEFT JOIN referral_codes rc ON rc.code = r.referral_code
+       ${whereClause}
+       ORDER BY r.created_at DESC
+       LIMIT ? OFFSET ?`,
+      [...params, limit, offset]
+    );
+
+    const totals = await db.get(
+      `SELECT COUNT(*) as total,
+              SUM(commission_amount) as total_commission,
+              SUM(CASE WHEN status = 'pending' THEN commission_amount ELSE 0 END) as pending_commission
+       FROM referrals ${whereClause}`,
+      params
+    );
+
+    res.json({
+      success: true,
+      commissions: rows,
+      totals: {
+        count: totals.total || 0,
+        total_commission: Number((totals.total_commission || 0).toFixed(2)),
+        pending_commission: Number((totals.pending_commission || 0).toFixed(2)),
+      },
+      pagination: { limit, offset },
+    });
+  } catch (error) {
+    console.error('[referral/commissions] Error:', error);
+    res.status(500).json({ success: false, error: safeMessage(error) });
+  }
+});
+
+/**
+ * POST /api/referral/commissions/:id/mark-paid
+ * Admin-only. Marks a referral commission as paid.
+ * Body: { payout_note?: string }
+ */
+router.post('/commissions/:id/mark-paid', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ success: false, error: 'Invalid commission ID' });
+    }
+
+    const row = await db.get('SELECT * FROM referrals WHERE id = ?', [id]);
+    if (!row) {
+      return res.status(404).json({ success: false, error: 'Commission not found' });
+    }
+    if (row.status === 'paid') {
+      return res.status(409).json({ success: false, error: 'Commission already marked as paid' });
+    }
+
+    await db.run(
+      `UPDATE referrals SET status = 'paid' WHERE id = ?`,
+      [id]
+    );
+
+    console.log(`[referral] Commission ${id} marked as paid (was: ${row.status})`);
+    res.json({
+      success: true,
+      id,
+      previous_status: row.status,
+      status: 'paid',
+      commission_amount: row.commission_amount,
+      referral_code: row.referral_code,
+    });
+  } catch (error) {
+    console.error('[referral/commissions/mark-paid] Error:', error);
+    res.status(500).json({ success: false, error: safeMessage(error) });
+  }
+});
+
 module.exports = router;
 module.exports.trackReferral = trackReferral;

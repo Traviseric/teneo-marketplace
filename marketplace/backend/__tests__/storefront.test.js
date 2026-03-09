@@ -222,3 +222,81 @@ describe('POST /api/storefront/fulfill — HMAC signature verification', () => {
     expect(arxmintProvider.verifyWebhook).toHaveBeenCalledTimes(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// POST /api/storefront/fulfill — digital fulfillment happy path
+// Uses a known product from teneo brand catalog (consciousness-revolution).
+// ---------------------------------------------------------------------------
+
+describe('POST /api/storefront/fulfill — digital fulfillment happy path', () => {
+  const OrderService = require('../services/orderService');
+  const emailService = require('../services/emailService');
+
+  beforeEach(() => {
+    arxmintProvider.webhookSecret = 'test-secret';
+    arxmintProvider.verifyWebhook.mockReset();
+    arxmintProvider.verifyWebhook.mockReturnValue(true);
+    // Reset order service mock state
+    const instance = OrderService.mock.results[0]?.value;
+    if (instance) {
+      instance.completeOrder.mockClear().mockResolvedValue({ downloadToken: 'tok-digital-789' });
+      instance.updateOrderStatus.mockClear().mockResolvedValue({});
+      instance.createOrder.mockClear().mockResolvedValue({});
+      instance.getOrder.mockClear().mockResolvedValue(null);
+      instance.getOrderBySessionId.mockClear().mockResolvedValue(null);
+    }
+    emailService.sendDownloadEmail.mockClear();
+  });
+
+  afterEach(() => {
+    arxmintProvider.webhookSecret = null;
+  });
+
+  it('returns 200 and triggers download email for a known digital product', async () => {
+    const app = buildApp();
+    const res = await request(app)
+      .post('/api/storefront/fulfill')
+      .set('Content-Type', 'application/json')
+      .set('x-arxmint-signature', 'valid-sig')
+      .send({
+        paymentProvider: 'arxmint',
+        productId: 'teneo:consciousness-revolution',
+        customerEmail: 'buyer@test.com',
+        status: 'paid',
+      });
+
+    // Product exists and is digital — should succeed
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.fulfillment).toBe('digital');
+  });
+
+  it('marks order as paid in DB and sends download link', async () => {
+    const OrderService = require('../services/orderService');
+    const instance = OrderService.mock.results[0]?.value;
+    const app = buildApp();
+
+    await request(app)
+      .post('/api/storefront/fulfill')
+      .set('Content-Type', 'application/json')
+      .set('x-arxmint-signature', 'valid-sig')
+      .send({
+        paymentProvider: 'arxmint',
+        productId: 'teneo:consciousness-revolution',
+        customerEmail: 'buyer@test.com',
+        status: 'paid',
+      });
+
+    expect(emailService.sendDownloadEmail).toHaveBeenCalledTimes(1);
+    expect(emailService.sendDownloadEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userEmail: 'buyer@test.com',
+        downloadUrl: expect.stringContaining('tok-digital-789'),
+      })
+    );
+
+    if (instance) {
+      expect(instance.completeOrder).toHaveBeenCalledTimes(1);
+    }
+  });
+});

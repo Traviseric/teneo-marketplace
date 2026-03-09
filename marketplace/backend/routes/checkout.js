@@ -58,7 +58,9 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       referralCode: rawReferralCode
     } = req.body;
     const brandId = sanitizeBrandId(rawBrandId);
-    const referralCode = rawReferralCode ? sanitizeMetadataValue(String(rawReferralCode).toUpperCase(), 20) : null;
+    const referralCode = rawReferralCode
+      ? sanitizeMetadataValue(String(rawReferralCode).toUpperCase(), 20)
+      : (req.session?.referralCode || null);
     const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
     const funnelSessionId = sanitizeMetadataValue(req.body.funnelSessionId, 120);
     const courseSlug = sanitizeMetadataValue(req.body.courseSlug, 120);
