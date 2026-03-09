@@ -45,6 +45,11 @@ function nextVerifyIp() {
 beforeEach(() => {
     jest.clearAllMocks();
 
+    // Set payment address env vars so getPaymentAddress() doesn't throw
+    process.env.BTC_ADDRESS = 'bc1qtest000000000000000000000000000000000000';
+    process.env.LIGHTNING_ADDRESS = 'test@lightning.example.com';
+    process.env.XMR_ADDRESS = '4test000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+
     // Default db.run: simulate successful INSERT
     mockDbRun.mockImplementation((sql, params, callback) => {
         callback(null);

@@ -93,14 +93,19 @@ function dbGet(sql, params) {
     });
 }
 
-// Get payment address helper
+// Get payment address helper — throws if the required env var is not set
 function getPaymentAddress(method) {
     const addresses = {
-        bitcoin: process.env.BTC_ADDRESS || 'CONFIGURE_BTC_ADDRESS_IN_ENV',
-        lightning: process.env.LIGHTNING_ADDRESS || 'CONFIGURE_LIGHTNING_ADDRESS_IN_ENV',
-        monero: process.env.XMR_ADDRESS || 'CONFIGURE_XMR_ADDRESS_IN_ENV'
+        bitcoin: process.env.BTC_ADDRESS,
+        lightning: process.env.LIGHTNING_ADDRESS,
+        monero: process.env.XMR_ADDRESS
     };
-    return addresses[method] || addresses.bitcoin;
+    const addr = addresses[method] || addresses.bitcoin;
+    if (!addr) {
+        const envVar = method === 'monero' ? 'XMR_ADDRESS' : 'BTC_ADDRESS';
+        throw new Error(`Payment address for ${method} not configured. Set ${envVar} env var.`);
+    }
+    return addr;
 }
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -190,11 +195,11 @@ router.post('/create-order', async (req, res) => {
         if (paymentMethod === 'bitcoin' || paymentMethod === 'lightning') {
             const btcAddress = process.env.BTC_ADDRESS || '';
             const lightningAddress = process.env.LIGHTNING_ADDRESS || '';
-            if (btcAddress && btcAddress !== 'CONFIGURE_BTC_ADDRESS_IN_ENV') {
+            if (btcAddress) {
                 const label = encodeURIComponent(`Order #${orderId}`);
                 bip21Uri = `bitcoin:${btcAddress}?amount=${cryptoAmount}&label=${label}`;
                 // If a Lightning address (LNURL or bolt12) is configured, include it
-                if (lightningAddress && lightningAddress !== 'CONFIGURE_LIGHTNING_ADDRESS_IN_ENV') {
+                if (lightningAddress) {
                     bip21Uri += `&lightning=${encodeURIComponent(lightningAddress)}`;
                 }
             }
