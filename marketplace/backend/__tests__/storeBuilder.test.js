@@ -40,11 +40,9 @@ jest.mock('../services/storeRendererService', () => ({
   renderStorePage: jest.fn().mockReturnValue('<html>store</html>'),
 }));
 
-jest.mock('../services/emailService', () =>
-  jest.fn().mockImplementation(() => ({
-    sendEmail: jest.fn().mockResolvedValue({ success: true }),
-  }))
-);
+jest.mock('../services/emailService', () => ({
+  sendEmail: jest.fn().mockResolvedValue({ success: true }),
+}));
 
 jest.mock('../database/database', () => ({
   run: jest.fn().mockResolvedValue({}),
