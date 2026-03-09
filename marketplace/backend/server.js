@@ -106,6 +106,7 @@ const emailMarketingRoutes = require('./routes/emailMarketing');
 const storefrontRoutes = require('./routes/storefront');
 const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
 const machineRoutes = require('./routes/machine');
+const agentRoutes = require('./routes/agentRoutes');
 const l402Routes = require('./routes/l402Routes');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
@@ -215,6 +216,7 @@ const csrfExcludePaths = [
     '/api/hosting/webhook',       // Stripe hosting subscription webhook
     '/api/storefront/zap-unlock', // NIP-57 zap receipt — self-authenticated via Schnorr sig
     '/api/l402',                  // L402 Lightning auth — self-authenticated via preimage, not session
+    '/api/agent',                 // Agent API — authenticated via NIP-98 or API key, not session cookies
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
@@ -329,6 +331,9 @@ app.use('/api/l402', l402Routes);
 
 // Machine-payable endpoints — AI agent commerce (Lightning invoices, NIP-98 auth)
 app.use('/api/machine', machineRoutes);
+
+// Agent API — structured catalog, quoting, and purchasing for AI agents
+app.use('/api/agent', agentRoutes);
 
 // Storefront API (standardized catalog + fulfillment for ArxMint bazaar integration)
 app.use('/api/storefront', storefrontRoutes);
