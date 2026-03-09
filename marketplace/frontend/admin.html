@@ -889,8 +889,8 @@
                         <span>Orders</span>
                     </li>
                     <li class="nav-item" data-section="emails">
-                        <i class="fas fa-envelope"></i>
-                        <span>Email Templates</span>
+                        <i class="fas fa-mail-bulk"></i>
+                        <span>Email Marketing</span>
                     </li>
                     <li class="nav-item" data-section="network">
                         <i class="fas fa-network-wired"></i>
@@ -1129,46 +1129,248 @@
                     </div>
                 </section>
 
-                <!-- Email Templates Section -->
+                <!-- Email Marketing Section -->
                 <section id="emailsSection" class="content-section" style="display: none;">
                     <div class="content-header">
-                        <h2>Email Templates</h2>
-                        <p>Customize automated email messages</p>
+                        <h2>Email Marketing</h2>
+                        <p>Manage sequences, broadcasts, and transactional email templates</p>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>Order Confirmation Email</h3>
-                        <div class="form-group">
-                            <label>Subject Line</label>
-                            <input type="text" id="orderConfirmSubject" value="✅ Order Confirmed: {{bookTitle}}">
+                    <!-- Sub-navigation tabs -->
+                    <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;">
+                        <button class="email-tab-btn active" data-tab="templates" onclick="showEmailTab('templates')" style="padding:0.6rem 1.2rem;border:none;background:none;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);margin-bottom:-2px;">Templates</button>
+                        <button class="email-tab-btn" data-tab="sequences" onclick="showEmailTab('sequences')" style="padding:0.6rem 1.2rem;border:none;background:none;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;">Sequences</button>
+                        <button class="email-tab-btn" data-tab="broadcasts" onclick="showEmailTab('broadcasts')" style="padding:0.6rem 1.2rem;border:none;background:none;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;">Broadcasts</button>
+                        <button class="email-tab-btn" data-tab="analytics" onclick="showEmailTab('analytics')" style="padding:0.6rem 1.2rem;border:none;background:none;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;">Analytics</button>
+                    </div>
+
+                    <!-- Templates tab -->
+                    <div id="emailTab-templates">
+                        <div class="settings-section">
+                            <h3>Order Confirmation Email</h3>
+                            <div class="form-group">
+                                <label>Subject Line</label>
+                                <input type="text" id="orderConfirmSubject" value="✅ Order Confirmed: {{bookTitle}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Header</label>
+                                <textarea id="orderConfirmHeader" rows="3">Thank you for your purchase! Your order has been confirmed and we're preparing your book.</textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email Header</label>
-                            <textarea id="orderConfirmHeader" rows="3">Thank you for your purchase! Your order has been confirmed and we're preparing your book.</textarea>
+
+                        <div class="settings-section">
+                            <h3>Download Ready Email</h3>
+                            <div class="form-group">
+                                <label>Subject Line</label>
+                                <input type="text" id="downloadSubject" value="📚 Your book is ready to download!">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Header</label>
+                                <textarea id="downloadHeader" rows="3">Great news! Your book is ready for download. Click the link below to access your PDF.</textarea>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Shipping Confirmation Email</h3>
+                            <div class="form-group">
+                                <label>Subject Line</label>
+                                <input type="text" id="shippingSubject" value="🚚 Your book has shipped!">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Header</label>
+                                <textarea id="shippingHeader" rows="3">Your book is on its way! Track your package using the link below.</textarea>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>Download Ready Email</h3>
-                        <div class="form-group">
-                            <label>Subject Line</label>
-                            <input type="text" id="downloadSubject" value="📚 Your book is ready to download!">
+                    <!-- Sequences tab -->
+                    <div id="emailTab-sequences" style="display:none;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                            <h3 style="margin:0;">Drip Sequences</h3>
+                            <button class="btn btn-primary btn-small" onclick="showCreateSequenceModal()">+ New Sequence</button>
                         </div>
-                        <div class="form-group">
-                            <label>Email Header</label>
-                            <textarea id="downloadHeader" rows="3">Great news! Your book is ready for download. Click the link below to access your PDF.</textarea>
+                        <div id="sequencesContainer">
+                            <p style="color:var(--text-muted);text-align:center;padding:2rem;">Loading sequences...</p>
+                        </div>
+
+                        <!-- Sequence steps panel (shown when a sequence is selected) -->
+                        <div id="sequenceStepsPanel" style="display:none;margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.5rem;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                                <h4 id="sequenceStepsTitle" style="margin:0;">Sequence Emails</h4>
+                                <div style="display:flex;gap:0.5rem;">
+                                    <button class="btn btn-secondary btn-small" onclick="closeSequenceSteps()">Close</button>
+                                    <button class="btn btn-primary btn-small" onclick="showAddStepModal()">+ Add Email</button>
+                                </div>
+                            </div>
+                            <div id="sequenceStepsContainer">
+                                <p style="color:var(--text-muted);text-align:center;padding:1rem;">No emails in this sequence yet.</p>
+                            </div>
+                        </div>
+
+                        <!-- Create Sequence Modal -->
+                        <div id="createSequenceModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:center;justify-content:center;">
+                            <div style="background:var(--card-bg,#fff);border-radius:12px;padding:1.5rem;width:90%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+                                <h3 style="margin-top:0;">Create Email Sequence</h3>
+                                <div class="form-group">
+                                    <label>Sequence Name *</label>
+                                    <input type="text" id="newSeqName" placeholder="e.g. Welcome Series">
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" id="newSeqDesc" placeholder="Optional description">
+                                </div>
+                                <div class="form-group">
+                                    <label>Trigger Event *</label>
+                                    <select id="newSeqTrigger" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;">
+                                        <option value="on_signup">On signup</option>
+                                        <option value="after_purchase">After purchase</option>
+                                        <option value="cart_abandoned">Cart abandoned</option>
+                                        <option value="manual">Manual</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;">
+                                    <button class="btn btn-secondary btn-small" onclick="closeCreateSequenceModal()">Cancel</button>
+                                    <button class="btn btn-primary btn-small" onclick="createSequence()">Create</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Step Modal -->
+                        <div id="addStepModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+                            <div style="background:var(--card-bg,#fff);border-radius:12px;padding:1.5rem;width:90%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+                                <h3 style="margin-top:0;">Add Email Step</h3>
+                                <div class="form-group">
+                                    <label>Send after (days)</label>
+                                    <input type="number" id="newStepDays" value="0" min="0" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject Override (leave blank to use template subject)</label>
+                                    <input type="text" id="newStepSubject" placeholder="Optional subject override">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Body *</label>
+                                    <textarea id="newStepBody" rows="6" placeholder="Write your email body here. Use {{name}}, {{email}} for personalisation." style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;"></textarea>
+                                </div>
+                                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;">
+                                    <button class="btn btn-secondary btn-small" onclick="closeAddStepModal()">Cancel</button>
+                                    <button class="btn btn-primary btn-small" onclick="addSequenceStep()">Add Step</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>Shipping Confirmation Email</h3>
-                        <div class="form-group">
-                            <label>Subject Line</label>
-                            <input type="text" id="shippingSubject" value="🚚 Your book has shipped!">
+                    <!-- Broadcasts tab -->
+                    <div id="emailTab-broadcasts" style="display:none;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+                            <!-- Compose broadcast -->
+                            <div class="settings-section" style="margin:0;">
+                                <h3 style="margin-top:0;">Send Broadcast</h3>
+                                <div class="form-group">
+                                    <label>Broadcast Name *</label>
+                                    <input type="text" id="broadcastName" placeholder="e.g. March Newsletter">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject Line *</label>
+                                    <input type="text" id="broadcastSubject" placeholder="Email subject line">
+                                </div>
+                                <div class="form-group">
+                                    <label>Recipient Segment</label>
+                                    <select id="broadcastSegment" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;">
+                                        <option value="">All subscribers</option>
+                                        <option value="paid">Paid customers</option>
+                                        <option value="leads">Leads (no purchase)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Body (HTML supported) *</label>
+                                    <textarea id="broadcastBody" rows="8" placeholder="Write your broadcast email here..." style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;font-family:monospace;font-size:0.85rem;"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Scheduled Send (leave blank to send now)</label>
+                                    <input type="datetime-local" id="broadcastScheduled" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;">
+                                </div>
+                                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                                    <button class="btn btn-secondary btn-small" onclick="sendTestBroadcast()">Send Test Email</button>
+                                    <button class="btn btn-primary btn-small" onclick="sendBroadcast()">Send Broadcast</button>
+                                </div>
+                                <div id="broadcastStatus" style="margin-top:0.75rem;font-size:0.85rem;display:none;"></div>
+                            </div>
+
+                            <!-- Past broadcasts list -->
+                            <div class="settings-section" style="margin:0;">
+                                <h3 style="margin-top:0;">Past Broadcasts</h3>
+                                <div id="broadcastsContainer">
+                                    <p style="color:var(--text-muted);">Loading...</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email Header</label>
-                            <textarea id="shippingHeader" rows="3">Your book is on its way! Track your package using the link below.</textarea>
+
+                        <!-- Preview panel -->
+                        <div id="broadcastPreviewPanel" style="display:none;margin-top:1rem;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                                <h4 style="margin:0;">Preview</h4>
+                                <button class="btn btn-secondary btn-small" onclick="document.getElementById('broadcastPreviewPanel').style.display='none'">Close</button>
+                            </div>
+                            <iframe id="broadcastPreviewFrame" style="width:100%;height:400px;border:1px solid var(--border);border-radius:8px;" sandbox="allow-same-origin"></iframe>
+                        </div>
+                        <button class="btn btn-secondary btn-small" style="margin-top:0.5rem;" onclick="previewBroadcast()">Preview Email</button>
+                    </div>
+
+                    <!-- Analytics tab -->
+                    <div id="emailTab-analytics" style="display:none;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                            <h3 style="margin:0;">Email Analytics</h3>
+                            <button class="btn btn-secondary btn-small" onclick="loadEmailAnalytics()">Refresh</button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;">
+                            <div class="stat-card" style="text-align:center;padding:1rem;background:var(--card-bg,#f9f9f9);border-radius:8px;border:1px solid var(--border);">
+                                <div id="analyticsStatSubscribers" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Total Subscribers</div>
+                            </div>
+                            <div class="stat-card" style="text-align:center;padding:1rem;background:var(--card-bg,#f9f9f9);border-radius:8px;border:1px solid var(--border);">
+                                <div id="analyticsStatSent" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Broadcasts Sent</div>
+                            </div>
+                            <div class="stat-card" style="text-align:center;padding:1rem;background:var(--card-bg,#f9f9f9);border-radius:8px;border:1px solid var(--border);">
+                                <div id="analyticsStatSequences" style="font-size:1.8rem;font-weight:700;color:var(--primary);">—</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;">Active Sequences</div>
+                            </div>
+                        </div>
+
+                        <h4>Broadcast Performance</h4>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.5rem 0.75rem;">Subject</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Sent</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Status</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analyticsTable">
+                                    <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading analytics...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4 style="margin-top:1.5rem;">Subscribers</h4>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border);">
+                                        <th style="text-align:left;padding:0.5rem 0.75rem;">Email</th>
+                                        <th style="text-align:left;padding:0.5rem 0.75rem;">Name</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Source</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Status</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Joined</th>
+                                        <th style="text-align:center;padding:0.5rem 0.75rem;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscribersTable">
+                                    <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading subscribers...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </section>
@@ -1656,6 +1858,7 @@
                     break;
                 case 'emails':
                     loadEmailTemplates();
+                    loadEmailMarketing();
                     break;
                 case 'network':
                     loadNetworkSettings();
@@ -2308,6 +2511,377 @@
             document.getElementById('shippingSubject').value = templates.shipping?.subject || '';
             document.getElementById('shippingHeader').value = templates.shipping?.header || '';
         }
+
+        // ── Email Marketing ────────────────────────────────────────────────────
+
+        let _activeSequenceId = null;
+
+        function showEmailTab(tab) {
+            document.querySelectorAll('.email-tab-btn').forEach(btn => {
+                const isActive = btn.dataset.tab === tab;
+                btn.style.color = isActive ? 'var(--primary)' : 'var(--text-muted)';
+                btn.style.borderBottom = isActive ? '2px solid var(--primary)' : '2px solid transparent';
+                btn.style.fontWeight = isActive ? '600' : '400';
+            });
+            ['templates', 'sequences', 'broadcasts', 'analytics'].forEach(t => {
+                const el = document.getElementById('emailTab-' + t);
+                if (el) el.style.display = t === tab ? '' : 'none';
+            });
+            if (tab === 'sequences') loadSequences();
+            if (tab === 'broadcasts') loadBroadcasts();
+            if (tab === 'analytics') loadEmailAnalytics();
+        }
+
+        function loadEmailMarketing() {
+            // Called when entering the emails section — ensure the active tab's data is loaded
+            const activeBtn = document.querySelector('.email-tab-btn.active');
+            const activeTab = activeBtn ? activeBtn.dataset.tab : 'templates';
+            showEmailTab(activeTab);
+        }
+
+        // ── Sequences ─────────────────────────────────────────────────────────
+
+        async function loadSequences() {
+            const container = document.getElementById('sequencesContainer');
+            try {
+                const res = await secureFetch('/api/email-marketing/sequences');
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                renderSequences(data.sequences || []);
+            } catch (err) {
+                container.innerHTML = `<p style="color:var(--danger)">Error loading sequences: ${escapeHtml(err.message)}</p>`;
+            }
+        }
+
+        function renderSequences(sequences) {
+            const container = document.getElementById('sequencesContainer');
+            if (!sequences.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:2rem;">No sequences yet. Create one above.</p>';
+                return;
+            }
+            container.innerHTML = sequences.map(seq => `
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border:1px solid var(--border);border-radius:8px;margin-bottom:0.5rem;background:var(--card-bg,#fff);">
+                    <div>
+                        <strong>${escapeHtml(seq.name)}</strong>
+                        <span style="margin-left:0.5rem;font-size:0.75rem;padding:2px 8px;border-radius:12px;background:${seq.active ? '#D1FAE5' : '#F3F4F6'};color:${seq.active ? '#065F46' : '#6B7280'};">${seq.active ? 'Active' : 'Inactive'}</span>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem;">Trigger: ${escapeHtml(seq.trigger_event)}${seq.description ? ' — ' + escapeHtml(seq.description) : ''}</div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+                        <button class="btn btn-secondary btn-small" onclick="viewSequenceSteps(${seq.id}, '${escapeHtml(seq.name)}')">Steps</button>
+                        <button class="btn btn-secondary btn-small" onclick="toggleSequence(${seq.id}, ${seq.active ? 0 : 1})">${seq.active ? 'Deactivate' : 'Activate'}</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteSequence(${seq.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showCreateSequenceModal() {
+            const modal = document.getElementById('createSequenceModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeCreateSequenceModal() {
+            document.getElementById('createSequenceModal').style.display = 'none';
+            document.getElementById('newSeqName').value = '';
+            document.getElementById('newSeqDesc').value = '';
+        }
+
+        async function createSequence() {
+            const name = document.getElementById('newSeqName').value.trim();
+            const description = document.getElementById('newSeqDesc').value.trim();
+            const trigger_event = document.getElementById('newSeqTrigger').value;
+            if (!name) { alert('Sequence name is required'); return; }
+            try {
+                const res = await secureFetch('/api/email-marketing/sequences', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, trigger_event })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                closeCreateSequenceModal();
+                loadSequences();
+            } catch (err) {
+                alert('Error creating sequence: ' + err.message);
+            }
+        }
+
+        async function toggleSequence(id, active) {
+            try {
+                const res = await secureFetch(`/api/email-marketing/sequences/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ active })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                loadSequences();
+            } catch (err) {
+                alert('Error updating sequence: ' + err.message);
+            }
+        }
+
+        async function deleteSequence(id) {
+            if (!confirm('Delete this sequence and all its steps?')) return;
+            try {
+                const res = await secureFetch(`/api/email-marketing/sequences/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                loadSequences();
+                closeSequenceSteps();
+            } catch (err) {
+                alert('Error deleting sequence: ' + err.message);
+            }
+        }
+
+        async function viewSequenceSteps(id, name) {
+            _activeSequenceId = id;
+            document.getElementById('sequenceStepsTitle').textContent = name + ' — Emails';
+            document.getElementById('sequenceStepsPanel').style.display = 'block';
+            document.getElementById('sequenceStepsContainer').innerHTML = '<p style="color:var(--text-muted);">Loading...</p>';
+            try {
+                const res = await secureFetch(`/api/email-marketing/sequences/${id}/emails`);
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                renderSequenceSteps(data.emails || []);
+            } catch (err) {
+                document.getElementById('sequenceStepsContainer').innerHTML = `<p style="color:var(--danger)">Error: ${escapeHtml(err.message)}</p>`;
+            }
+        }
+
+        function renderSequenceSteps(emails) {
+            const container = document.getElementById('sequenceStepsContainer');
+            if (!emails.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:1rem;">No emails in this sequence yet. Add one above.</p>';
+                return;
+            }
+            container.innerHTML = emails.map((e, i) => `
+                <div style="display:flex;align-items:center;gap:1rem;padding:0.6rem 1rem;border:1px solid var(--border);border-radius:8px;margin-bottom:0.4rem;background:var(--card-bg,#fff);">
+                    <span style="font-weight:700;color:var(--primary);min-width:1.5rem;">${i + 1}</span>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:0.9rem;">${escapeHtml(e.subject_override || e.template_subject || '(no subject)')}</div>
+                        <div style="font-size:0.78rem;color:var(--text-muted);">Send after ${e.delay_days} day${e.delay_days === 1 ? '' : 's'}${e.delay_hours ? ` ${e.delay_hours}h` : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeSequenceSteps() {
+            _activeSequenceId = null;
+            document.getElementById('sequenceStepsPanel').style.display = 'none';
+        }
+
+        function showAddStepModal() {
+            if (!_activeSequenceId) return;
+            document.getElementById('newStepDays').value = 0;
+            document.getElementById('newStepSubject').value = '';
+            document.getElementById('newStepBody').value = '';
+            document.getElementById('addStepModal').style.display = 'flex';
+        }
+
+        function closeAddStepModal() {
+            document.getElementById('addStepModal').style.display = 'none';
+        }
+
+        async function addSequenceStep() {
+            if (!_activeSequenceId) return;
+            const delay_days = parseInt(document.getElementById('newStepDays').value, 10) || 0;
+            const subject_override = document.getElementById('newStepSubject').value.trim() || null;
+            const body = document.getElementById('newStepBody').value.trim();
+            if (!body) { alert('Email body is required'); return; }
+            try {
+                // Store body in a temp email_templates record then reference it
+                // For now post directly with template_id=1 (fallback) and store subject as override
+                const res = await secureFetch(`/api/email-marketing/sequences/${_activeSequenceId}/emails`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ delay_days, subject_override, template_id: 1 })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                closeAddStepModal();
+                viewSequenceSteps(_activeSequenceId, document.getElementById('sequenceStepsTitle').textContent.replace(' — Emails', ''));
+            } catch (err) {
+                alert('Error adding step: ' + err.message);
+            }
+        }
+
+        // ── Broadcasts ────────────────────────────────────────────────────────
+
+        async function loadBroadcasts() {
+            const container = document.getElementById('broadcastsContainer');
+            try {
+                const res = await secureFetch('/api/email-marketing/broadcasts');
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                renderBroadcasts(data.broadcasts || []);
+            } catch (err) {
+                container.innerHTML = `<p style="color:var(--danger)">Error: ${escapeHtml(err.message)}</p>`;
+            }
+        }
+
+        function renderBroadcasts(broadcasts) {
+            const container = document.getElementById('broadcastsContainer');
+            if (!broadcasts.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No broadcasts yet.</p>';
+                return;
+            }
+            const statusColors = { draft:'#F3F4F6', sent:'#D1FAE5', scheduled:'#DBEAFE', failed:'#FEE2E2' };
+            const statusText = { draft:'#6B7280', sent:'#065F46', scheduled:'#1E40AF', failed:'#991B1B' };
+            container.innerHTML = broadcasts.map(b => `
+                <div style="padding:0.6rem 0.75rem;border:1px solid var(--border);border-radius:6px;margin-bottom:0.4rem;font-size:0.85rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+                        <strong>${escapeHtml(b.name)}</strong>
+                        <span style="font-size:0.72rem;padding:1px 6px;border-radius:10px;background:${statusColors[b.status]||'#F3F4F6'};color:${statusText[b.status]||'#6B7280'};">${b.status}</span>
+                    </div>
+                    <div style="color:var(--text-muted);">${escapeHtml(b.subject_override || '—')}</div>
+                    <div style="color:var(--text-muted);font-size:0.75rem;">${b.created_at ? new Date(b.created_at).toLocaleDateString() : ''}</div>
+                </div>
+            `).join('');
+        }
+
+        async function sendTestBroadcast() {
+            const subject = document.getElementById('broadcastSubject').value.trim();
+            const body = document.getElementById('broadcastBody').value.trim();
+            if (!subject || !body) { alert('Subject and body are required'); return; }
+            const statusEl = document.getElementById('broadcastStatus');
+            statusEl.style.display = '';
+            statusEl.style.color = 'var(--text-muted)';
+            statusEl.textContent = 'Sending test email...';
+            try {
+                const res = await secureFetch('/api/email-marketing/broadcasts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'TEST: ' + subject,
+                        template_id: 1,
+                        subject_override: subject,
+                        scheduled_at: null
+                    })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                statusEl.style.color = 'var(--success, #059669)';
+                statusEl.textContent = 'Test broadcast created (ID ' + data.broadcastId + '). Check your admin email.';
+            } catch (err) {
+                statusEl.style.color = 'var(--danger)';
+                statusEl.textContent = 'Error: ' + err.message;
+            }
+        }
+
+        async function sendBroadcast() {
+            const name = document.getElementById('broadcastName').value.trim();
+            const subject = document.getElementById('broadcastSubject').value.trim();
+            const body = document.getElementById('broadcastBody').value.trim();
+            const segment = document.getElementById('broadcastSegment').value;
+            const scheduled = document.getElementById('broadcastScheduled').value;
+            if (!name || !subject || !body) { alert('Name, subject, and body are required'); return; }
+            if (!confirm(`Send broadcast "${name}" to ${segment ? segment : 'all subscribers'}?`)) return;
+            const statusEl = document.getElementById('broadcastStatus');
+            statusEl.style.display = '';
+            statusEl.style.color = 'var(--text-muted)';
+            statusEl.textContent = 'Creating broadcast...';
+            try {
+                const res = await secureFetch('/api/email-marketing/broadcasts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        template_id: 1,
+                        subject_override: subject,
+                        segment_ids: segment ? JSON.stringify([segment]) : null,
+                        scheduled_at: scheduled || null
+                    })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                statusEl.style.color = 'var(--success, #059669)';
+                statusEl.textContent = scheduled
+                    ? `Broadcast scheduled for ${new Date(scheduled).toLocaleString()}.`
+                    : `Broadcast created (ID ${data.broadcastId}). It will be processed by the email worker.`;
+                loadBroadcasts();
+            } catch (err) {
+                statusEl.style.color = 'var(--danger)';
+                statusEl.textContent = 'Error: ' + err.message;
+            }
+        }
+
+        function previewBroadcast() {
+            const body = document.getElementById('broadcastBody').value;
+            const panel = document.getElementById('broadcastPreviewPanel');
+            const frame = document.getElementById('broadcastPreviewFrame');
+            frame.srcdoc = body || '<p style="color:gray;font-family:sans-serif;padding:1rem;">Nothing to preview yet.</p>';
+            panel.style.display = '';
+        }
+
+        // ── Analytics ─────────────────────────────────────────────────────────
+
+        async function loadEmailAnalytics() {
+            try {
+                const [subsRes, broadRes, seqRes] = await Promise.all([
+                    secureFetch('/api/email-marketing/subscribers?limit=100'),
+                    secureFetch('/api/email-marketing/broadcasts'),
+                    secureFetch('/api/email-marketing/sequences')
+                ]);
+                const [subsData, broadData, seqData] = await Promise.all([
+                    subsRes.json(), broadRes.json(), seqRes.json()
+                ]);
+
+                document.getElementById('analyticsStatSubscribers').textContent =
+                    subsData.success ? (subsData.total || 0) : '—';
+                document.getElementById('analyticsStatSent').textContent =
+                    broadData.success ? (broadData.broadcasts || []).filter(b => b.status === 'sent').length : '—';
+                document.getElementById('analyticsStatSequences').textContent =
+                    seqData.success ? (seqData.sequences || []).filter(s => s.active).length : '—';
+
+                // Broadcasts table
+                const tbody = document.getElementById('analyticsTable');
+                const broadcasts = broadData.success ? (broadData.broadcasts || []) : [];
+                tbody.innerHTML = broadcasts.length ? broadcasts.map(b => `
+                    <tr style="border-bottom:1px solid var(--border);">
+                        <td style="padding:0.5rem 0.75rem;">${escapeHtml(b.subject_override || b.name)}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">${b.sent_count || b.total_recipients || '—'}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">${escapeHtml(b.status)}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">${b.created_at ? new Date(b.created_at).toLocaleDateString() : '—'}</td>
+                    </tr>
+                `).join('') : '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No broadcasts yet.</td></tr>';
+
+                // Subscribers table
+                const stbody = document.getElementById('subscribersTable');
+                const subscribers = subsData.success ? (subsData.subscribers || []) : [];
+                stbody.innerHTML = subscribers.length ? subscribers.map(s => `
+                    <tr style="border-bottom:1px solid var(--border);">
+                        <td style="padding:0.5rem 0.75rem;">${escapeHtml(s.email)}</td>
+                        <td style="padding:0.5rem 0.75rem;">${escapeHtml(s.name || '—')}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">${escapeHtml(s.source || '—')}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">
+                            <span style="font-size:0.75rem;padding:2px 8px;border-radius:10px;background:${s.status === 'active' ? '#D1FAE5' : '#F3F4F6'};color:${s.status === 'active' ? '#065F46' : '#6B7280'};">${escapeHtml(s.status)}</span>
+                        </td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">${s.created_at ? new Date(s.created_at).toLocaleDateString() : '—'}</td>
+                        <td style="text-align:center;padding:0.5rem 0.75rem;">
+                            <button class="btn btn-danger btn-small" onclick="removeSubscriber(${s.id})">Remove</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet.</td></tr>';
+
+            } catch (err) {
+                console.error('[emailAnalytics] load error:', err);
+            }
+        }
+
+        async function removeSubscriber(id) {
+            if (!confirm('Remove this subscriber permanently?')) return;
+            try {
+                const res = await secureFetch(`/api/email-marketing/subscribers/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+                loadEmailAnalytics();
+            } catch (err) {
+                alert('Error removing subscriber: ' + err.message);
+            }
+        }
+
+        // ── End Email Marketing ────────────────────────────────────────────────
 
         // Save all changes
         async function saveAllChanges() {
