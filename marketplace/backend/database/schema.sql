@@ -49,6 +49,9 @@ CREATE TABLE IF NOT EXISTS orders (
     tracking_url TEXT,
     metadata TEXT,
     abandonment_email_sent_at DATETIME,
+    abandonment_email_stage INTEGER DEFAULT 0, -- 0=none, 1=1h sent, 2=24h sent, 3=72h sent
+    stripe_customer_id TEXT,
+    stripe_payment_method_id TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     completed_at DATETIME,
@@ -544,6 +547,22 @@ CREATE TABLE IF NOT EXISTS order_bumps (
 
 CREATE INDEX IF NOT EXISTS idx_order_bumps_active ON order_bumps(active);
 CREATE INDEX IF NOT EXISTS idx_order_bumps_trigger ON order_bumps(trigger_product_id);
+
+-- Upsells table — post-purchase one-click upsell offers
+CREATE TABLE IF NOT EXISTS upsells (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id TEXT,              -- trigger: product_id that was purchased (NULL = all products)
+  upsell_product_id TEXT NOT NULL,
+  upsell_product_name TEXT NOT NULL,
+  headline TEXT NOT NULL,
+  description TEXT,
+  upsell_price_cents INTEGER NOT NULL,
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_upsells_product ON upsells(product_id);
+CREATE INDEX IF NOT EXISTS idx_upsells_active ON upsells(active);
 
 -- Federation network revenue shares table
 -- Records the originating peer node that should receive a revenue share for each federated order

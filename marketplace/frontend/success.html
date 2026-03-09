@@ -136,6 +136,88 @@
             font-size: 0.9rem;
         }
 
+        /* ─── Post-purchase upsell widget ─────────────────────────────── */
+        .upsell-widget {
+            display: none;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(239, 68, 68, 0.06));
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .upsell-badge {
+            display: inline-block;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.6rem;
+        }
+
+        .upsell-headline {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0.4rem 0;
+        }
+
+        .upsell-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0.8rem 0;
+        }
+
+        .upsell-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 0.8rem;
+        }
+
+        .upsell-countdown {
+            font-size: 0.85rem;
+            color: #ef4444;
+            margin-bottom: 0.9rem;
+            font-weight: 600;
+        }
+
+        .upsell-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .btn-upsell-yes {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-upsell-yes:hover { opacity: 0.9; }
+        .btn-upsell-yes:disabled { opacity: 0.5; cursor: default; }
+
+        .btn-upsell-no {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+            text-align: center;
+        }
+
         .next-read-offer {
             display: none;
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.08));
@@ -264,6 +346,19 @@
                     </a>
                 </div>
 
+                <!-- Post-purchase upsell widget (shown after order loads) -->
+                <div class="upsell-widget" id="upsell-widget">
+                    <span class="upsell-badge">Special One-Time Offer</span>
+                    <div class="upsell-headline" id="upsell-headline"></div>
+                    <div class="upsell-description" id="upsell-description"></div>
+                    <div class="upsell-price" id="upsell-price"></div>
+                    <div class="upsell-countdown" id="upsell-countdown"></div>
+                    <div class="upsell-actions">
+                        <button class="btn-upsell-yes" id="upsell-yes-btn">Yes! Add This to My Order</button>
+                        <button class="btn-upsell-no" id="upsell-no-btn">No thanks, I'll pass on this offer</button>
+                    </div>
+                </div>
+
                 <div class="next-read-offer" id="next-read-offer"></div>
             </div>
         </div>
@@ -340,6 +435,7 @@
                 }
 
                 renderNextReadOffer(orderData);
+                await loadUpsellOffer(orderId);
 
                 // Fire analytics only once per session
                 if (!alreadyFired) {
@@ -466,6 +562,94 @@
                 alert('Could not start the next-read checkout. Please try again.');
             }
         }
+
+        // ─── Post-purchase upsell logic ───────────────────────────────────
+
+        let _upsellData = null;
+        let _upsellTimerInterval = null;
+        const UPSELL_EXPIRY_MS = 15 * 60 * 1000; // 15 minutes
+
+        async function loadUpsellOffer(orderId) {
+            try {
+                const resp = await fetch('/api/checkout/upsell-offer?orderId=' + encodeURIComponent(orderId));
+                if (!resp.ok) return;
+                const data = await resp.json();
+                if (!data.upsell) return;
+
+                _upsellData = data.upsell;
+                _upsellData._orderId = orderId;
+
+                document.getElementById('upsell-headline').textContent = data.upsell.headline;
+                document.getElementById('upsell-description').textContent = data.upsell.description || '';
+                document.getElementById('upsell-price').textContent = '$' + data.upsell.priceUsd;
+
+                const widget = document.getElementById('upsell-widget');
+                widget.style.display = 'block';
+
+                // Start 15-minute countdown
+                const expiresAt = Date.now() + UPSELL_EXPIRY_MS;
+                _upsellTimerInterval = setInterval(function() {
+                    const remaining = expiresAt - Date.now();
+                    if (remaining <= 0) {
+                        clearInterval(_upsellTimerInterval);
+                        widget.style.display = 'none';
+                        return;
+                    }
+                    const mins = Math.floor(remaining / 60000);
+                    const secs = Math.floor((remaining % 60000) / 1000);
+                    document.getElementById('upsell-countdown').textContent =
+                        `⏰ This offer expires in ${mins}:${String(secs).padStart(2, '0')}`;
+                }, 1000);
+
+                document.getElementById('upsell-yes-btn').addEventListener('click', handleUpsellAccept);
+                document.getElementById('upsell-no-btn').addEventListener('click', function() {
+                    clearInterval(_upsellTimerInterval);
+                    document.getElementById('upsell-widget').style.display = 'none';
+                });
+            } catch (err) {
+                console.warn('Upsell offer load failed (non-fatal):', err.message);
+            }
+        }
+
+        async function handleUpsellAccept() {
+            const btn = document.getElementById('upsell-yes-btn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            try {
+                const resp = await fetch('/api/checkout/upsell', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: _upsellData._orderId,
+                        upsellId: _upsellData.id
+                    })
+                });
+
+                const result = await resp.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Upsell failed');
+                }
+
+                clearInterval(_upsellTimerInterval);
+
+                if (result.method === 'one_click') {
+                    // Charged successfully — show confirmation
+                    const widget = document.getElementById('upsell-widget');
+                    widget.innerHTML = '<div style="text-align:center;padding:1rem"><span style="font-size:2rem">✅</span><p style="font-weight:700;margin-top:0.5rem">Added to your order!</p><p style="color:var(--text-secondary);font-size:0.9rem">You\'ll receive a separate download email shortly.</p></div>';
+                } else if (result.checkoutUrl) {
+                    // Fallback: redirect to new Stripe session
+                    window.location.href = result.checkoutUrl;
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Yes! Add This to My Order';
+                alert('Could not process the upsell: ' + err.message);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
 
         function showError(message) {
             const container = document.querySelector('.success-container');

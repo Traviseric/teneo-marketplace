@@ -40,8 +40,11 @@ class CronJobService {
         this.cartAbandonmentRunning = false;
     }
 
-    start() {
+    async start() {
         console.log('🕒 Starting cron job service...');
+
+        // Safe migration: add abandonment_email_stage column if missing
+        await this.ensureAbandonmentStageColumn();
         
         cron.schedule('0 2 * * *', async () => {
             console.log('🔄 Starting daily book data update...');
@@ -60,8 +63,8 @@ class CronJobService {
             await this.updateLeaderboards();
         });
 
-        // Cart abandonment recovery — runs every 2 hours
-        cron.schedule('0 */2 * * *', async () => {
+        // Cart abandonment recovery — runs every 15 minutes
+        cron.schedule('*/15 * * * *', async () => {
             console.log('🛒 Starting cart abandonment check...');
             await this.processAbandonedCarts();
         }, { timezone: 'UTC' });
@@ -334,10 +337,24 @@ class CronJobService {
     }
 
     /**
-     * Process abandoned carts and send recovery emails.
-     * An abandoned cart is an order with status='pending' created 2–24 hours ago
-     * where the customer has NOT completed a purchase for the same book, and
-     * no abandonment email has been sent yet.
+     * Ensure the abandonment_email_stage column exists (safe migration for existing DBs).
+     * Called once from start(). Silently swallowed if the column already exists.
+     */
+    async ensureAbandonmentStageColumn() {
+        try {
+            await dbRun(`ALTER TABLE orders ADD COLUMN abandonment_email_stage INTEGER DEFAULT 0`, []);
+        } catch (_) {
+            // Column already exists — OK
+        }
+    }
+
+    /**
+     * Process abandoned carts and send 3-stage recovery emails.
+     * Stage timing (checked every 15 min):
+     *   Stage 1 (1h email):  created >= 45min ago, stage = 0
+     *   Stage 2 (24h email): created >= 23h ago,   stage = 1
+     *   Stage 3 (72h email): created >= 71h ago,   stage = 2
+     * Skips orders with status != 'pending' (completed/expired/refunded).
      */
     async processAbandonedCarts() {
         if (this.cartAbandonmentRunning) {
@@ -349,67 +366,97 @@ class CronJobService {
         let processed = 0;
         let errors = 0;
 
+        const baseUrl = process.env.BASE_URL || process.env.PUBLIC_URL || 'http://localhost:3001';
+
+        // Stage definitions: [stage_value_needed, min_age, max_age, next_stage, subject_suffix]
+        const stages = [
+            { stage: 0, minAge: '-45 minutes', maxAge: '-7 days',  nextStage: 1, label: '1h' },
+            { stage: 1, minAge: '-23 hours',   maxAge: '-7 days',  nextStage: 2, label: '24h' },
+            { stage: 2, minAge: '-71 hours',   maxAge: '-7 days',  nextStage: 3, label: '72h' },
+        ];
+
         try {
-            const abandoned = await dbAll(
-                `SELECT o.order_id, o.customer_email, o.customer_name,
-                        o.book_title, o.book_id
-                 FROM orders o
-                 WHERE o.status = 'pending'
-                   AND o.abandonment_email_sent_at IS NULL
-                   AND o.created_at <= datetime('now', '-2 hours')
-                   AND o.created_at >= datetime('now', '-24 hours')
-                   AND NOT EXISTS (
-                     SELECT 1 FROM orders c
-                     WHERE c.customer_email = o.customer_email
-                       AND c.book_id = o.book_id
-                       AND c.status = 'completed'
-                   )`,
-                []
-            );
+            for (const { stage, minAge, maxAge, nextStage, label } of stages) {
+                const rows = await dbAll(
+                    `SELECT o.order_id, o.customer_email, o.customer_name,
+                            o.book_title, o.book_id
+                     FROM orders o
+                     WHERE o.status = 'pending'
+                       AND (o.abandonment_email_stage IS NULL OR o.abandonment_email_stage = ?)
+                       AND o.created_at <= datetime('now', ?)
+                       AND o.created_at >= datetime('now', ?)
+                       AND NOT EXISTS (
+                         SELECT 1 FROM orders c
+                         WHERE c.customer_email = o.customer_email
+                           AND c.book_id = o.book_id
+                           AND c.status = 'completed'
+                       )`,
+                    [stage, minAge, maxAge]
+                );
 
-            console.log(`🛒 Found ${abandoned.length} abandoned cart(s) to recover`);
+                if (rows.length > 0) {
+                    console.log(`🛒 Stage ${label}: ${rows.length} cart(s) to recover`);
+                }
 
-            const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+                for (const order of rows) {
+                    try {
+                        const checkoutUrl = `${baseUrl}/checkout?book=${encodeURIComponent(order.book_id)}`;
+                        const name = escapeHtmlCron(order.customer_name || 'there');
+                        const title = escapeHtmlCron(order.book_title);
+                        const ref = escapeHtmlCron(order.order_id);
+                        const safeUrl = escapeHtmlCron(checkoutUrl);
 
-            for (const order of abandoned) {
-                try {
-                    const checkoutUrl = `${baseUrl}/checkout?book=${encodeURIComponent(order.book_id)}`;
-                    const name = order.customer_name || 'there';
+                        const subjects = {
+                            '1h':  `You left something behind — ${order.book_title}`,
+                            '24h': `Still thinking it over? "${order.book_title}" is waiting`,
+                            '72h': `Last chance — your cart for "${order.book_title}" expires soon`,
+                        };
 
-                    const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
-<h2>You left something in your cart 📚</h2>
-<p>Hi ${escapeHtmlCron(name)},</p>
-<p>We noticed you were interested in <strong>${escapeHtmlCron(order.book_title)}</strong> but didn't complete your purchase.</p>
-<p>Your cart is still waiting. Complete your order now while it's available:</p>
+                        const urgencyLines = {
+                            '1h':  'Your cart is still saved. Complete your order now:',
+                            '24h': 'We held your spot — but not for much longer. Grab it now:',
+                            '72h': 'This is your final reminder. After today your cart will be cleared:',
+                        };
+
+                        const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+<h2>📚 You left something in your cart</h2>
+<p>Hi ${name},</p>
+<p>You were interested in <strong>${title}</strong> but didn't complete your purchase.</p>
+<p>${urgencyLines[label]}</p>
 <p style="text-align:center;margin:30px 0">
-  <a href="${escapeHtmlCron(checkoutUrl)}" style="background:#1a56db;color:#fff;padding:14px 28px;text-decoration:none;border-radius:6px;font-weight:bold">Complete My Order</a>
+  <a href="${safeUrl}" style="background:#1a56db;color:#fff;padding:14px 28px;text-decoration:none;border-radius:6px;font-weight:bold">Complete My Order</a>
 </p>
-<p style="color:#6b7280;font-size:12px">Order reference: ${escapeHtmlCron(order.order_id)}</p>
+<p style="color:#6b7280;font-size:12px">Order reference: ${ref}</p>
+<p style="color:#6b7280;font-size:11px">If you no longer want these reminders, simply ignore this email — no further follow-ups after 72 hours.</p>
 </body></html>`;
 
-                    const text = `Hi ${name},\n\nYou left "${order.book_title}" in your cart.\n\nComplete your order: ${checkoutUrl}\n\nOrder: ${order.order_id}`;
+                        const text = `Hi ${order.customer_name || 'there'},\n\nYou left "${order.book_title}" in your cart.\n\n${urgencyLines[label]}\n${checkoutUrl}\n\nOrder: ${order.order_id}`;
 
-                    const result = await emailService.sendEmail({
-                        to: order.customer_email,
-                        subject: `You left something behind — ${order.book_title}`,
-                        html,
-                        text
-                    });
+                        const result = await emailService.sendEmail({
+                            to: order.customer_email,
+                            subject: subjects[label],
+                            html,
+                            text
+                        });
 
-                    if (result.success) {
-                        await dbRun(
-                            `UPDATE orders SET abandonment_email_sent_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
-                            [order.order_id]
-                        );
-                        processed++;
-                        console.log(`✉️  Cart abandonment email sent to ${order.customer_email} (order ${order.order_id})`);
-                    } else {
+                        if (result.success) {
+                            await dbRun(
+                                `UPDATE orders
+                                 SET abandonment_email_sent_at = CURRENT_TIMESTAMP,
+                                     abandonment_email_stage = ?
+                                 WHERE order_id = ?`,
+                                [nextStage, order.order_id]
+                            );
+                            processed++;
+                            console.log(`✉️  [${label}] Abandonment email → ${order.customer_email} (order ${order.order_id})`);
+                        } else {
+                            errors++;
+                            console.error(`❌ [${label}] Email failed for order ${order.order_id}: ${result.error}`);
+                        }
+                    } catch (err) {
                         errors++;
-                        console.error(`❌ Failed to send cart abandonment email for order ${order.order_id}: ${result.error}`);
+                        console.error(`❌ Error in cart abandonment stage ${label} for ${order.order_id}:`, err.message);
                     }
-                } catch (err) {
-                    errors++;
-                    console.error(`❌ Error processing abandoned cart ${order.order_id}:`, err.message);
                 }
             }
 
