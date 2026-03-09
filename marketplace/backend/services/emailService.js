@@ -1035,6 +1035,52 @@ Questions about your order? Reply to this email or visit our support page.
       return { success: false, error: error.message };
     }
   }
+
+  async sendLicenseKeyEmail({ userEmail, bookTitle, orderId, licenseKey, maxActivations = 3 }) {
+    if (!this.transporter) {
+      console.error('Email service not configured');
+      return { success: false, error: 'Email service not configured' };
+    }
+    try {
+      const safeTitle = escapeHtml(bookTitle);
+      const safeKey = escapeHtml(licenseKey);
+      const safeOrderId = escapeHtml(orderId);
+
+      const htmlContent = `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;max-width:600px;margin:0 auto;padding:20px;background:#f9fafb;">
+  <div style="background:#fff;padding:40px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.1);">
+    <h2 style="color:#1a1a2e;">Your License Key</h2>
+    <p>Thank you for purchasing <strong>${safeTitle}</strong>!</p>
+    <p>Your license key is:</p>
+    <div style="background:#f4f4f8;border:2px dashed #6366f1;border-radius:8px;padding:20px;text-align:center;margin:20px 0;">
+      <code style="font-size:1.4em;font-weight:700;letter-spacing:2px;color:#6366f1;">${safeKey}</code>
+    </div>
+    <ul style="color:#555;">
+      <li>Valid for up to <strong>${maxActivations} device activations</strong></li>
+      <li>Tied to this email address — non-transferable</li>
+      <li>Order reference: <code>${safeOrderId}</code></li>
+    </ul>
+    <p style="font-size:0.9em;color:#888;">Keep this email safe. If you need to revoke and reissue your key, contact support with your order ID.</p>
+  </div>
+</body>
+</html>`;
+
+      const result = await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: `Your license key for "${bookTitle}"`,
+        html: htmlContent,
+        text: `Your license key for "${bookTitle}"\n\nKey: ${licenseKey}\nActivations allowed: ${maxActivations}\nOrder: ${orderId}\n\nKeep this email safe.`,
+      });
+      console.log(`License key email sent to ${userEmail} for order ${orderId}`);
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Error sending license key email:', error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 module.exports = new EmailService();

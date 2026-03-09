@@ -100,6 +100,7 @@ const storefrontRoutes = require('./routes/storefront');
 const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
+const licenseRoutes = require('./routes/licenseRoutes');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -249,6 +250,7 @@ app.use('/api/censorship', censorshipTrackerRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
+app.use('/api/license', licenseRoutes);
 app.use('/api/email', emailTrackingRoutes);
 app.use('/api/email-marketing', emailMarketingRoutes);
 

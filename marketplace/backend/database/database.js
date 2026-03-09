@@ -702,6 +702,27 @@ function initializeSqliteDatabase(db) {
             if (err) console.error('Error creating extended course tables:', err.message);
         });
     }
+
+    // License keys table (content protection for software products)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS license_keys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT UNIQUE NOT NULL,
+            order_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
+            customer_email TEXT NOT NULL,
+            max_activations INTEGER DEFAULT 3,
+            activations INTEGER DEFAULT 0,
+            active INTEGER DEFAULT 1,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            revoked_at DATETIME
+        );
+        CREATE INDEX IF NOT EXISTS idx_license_keys_key ON license_keys(key);
+        CREATE INDEX IF NOT EXISTS idx_license_keys_order ON license_keys(order_id);
+        CREATE INDEX IF NOT EXISTS idx_license_keys_email ON license_keys(customer_email);
+    `, (err) => {
+        if (err) console.error('Error creating license_keys table:', err.message);
+    });
 }
 
 const db = SQLITE_MODE ? createSqliteAdapter() : createPostgresAdapter();

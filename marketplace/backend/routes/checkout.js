@@ -12,7 +12,8 @@ const {
   sanitizeBrandId,
   lookupBookPrice,
   applyCouponToPrice,
-  getNextReadOffer
+  getNextReadOffer,
+  resolveCatalogItem
 } = require('../services/checkoutOfferService');
 const couponService = require('../services/couponService');
 const orderBumpService = require('../services/orderBumpService');
@@ -24,6 +25,7 @@ const nftService = require('../services/nftService');
 const shippingService = require('../services/shippingService');
 const db = require('../database/database');
 const { enrollUserInCourse } = require('./courseRoutes');
+const licenseKeyService = require('../services/licenseKeyService');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -462,6 +464,24 @@ async function handleCheckoutCompleted(session) {
     await orderService.fulfillOrder(orderId);
 
     console.log(`Download link sent to ${userEmail} for order ${orderId}`);
+
+    // Generate license key if product requires it (non-fatal)
+    try {
+      const brandId = session.metadata?.brandId || null;
+      const resolved = resolveCatalogItem(bookId, brandId);
+      const item = resolved?.item;
+      if (item && item.license_required) {
+        const maxActivations = item.license_max_activations || 3;
+        const { key } = await licenseKeyService.createLicenseKey(orderId, bookId, userEmail, maxActivations);
+        console.log(`[license] Key generated for order ${orderId}: ${key}`);
+        // Send license key email
+        await emailService.sendLicenseKeyEmail({ userEmail, bookTitle, orderId, licenseKey: key, maxActivations }).catch(
+          err => console.warn('[license] License email failed (non-fatal):', err.message)
+        );
+      }
+    } catch (licenseErr) {
+      console.error('[license] License key generation failed (non-fatal):', licenseErr.message);
+    }
 
     // Pin purchased book to IPFS for censorship-resistant delivery (non-fatal)
     if (process.env.PINATA_JWT && bookId) {
