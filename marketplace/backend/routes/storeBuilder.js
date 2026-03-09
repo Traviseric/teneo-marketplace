@@ -9,6 +9,7 @@ const { isValidEmail } = require('../utils/validate');
 const db = require('../database/database');
 const { requireAuth } = require('./auth');
 const { authenticateAdmin } = require('../middleware/auth');
+const { requireNip98Auth } = require('../auth/nip98');
 
 /*
  * Managed-store intake schema
@@ -22,7 +23,18 @@ const BRIEF_MIN_LENGTH = 50;
 // POST /api/store-builder/generate
 // Body: { "brief": "I sell soy candles online, earthy aesthetic" }
 // Returns: { success: true, config: <StoreConfig> }
+// Accepts NIP-98 HTTP auth for headless/agent clients (Authorization: Nostr <base64-event>)
+// Falls through to session auth if NIP-98 header absent (public endpoint, no auth required)
 router.post('/generate', async (req, res) => {
+  // If a NIP-98 Authorization header is present, verify it and attach pubkey to req
+  if (req.headers['authorization'] && req.headers['authorization'].startsWith('Nostr ')) {
+    const { verifyNip98Auth } = require('../auth/nip98');
+    const result = verifyNip98Auth(req);
+    if (!result.valid) {
+      return res.status(401).json({ error: 'NIP-98 authentication failed', message: result.error });
+    }
+    req.nostrPubkey = result.pubkey;
+  }
   const { brief } = req.body;
   if (!brief || brief.length < 20) {
     return res.status(400).json({ error: 'Brief too short. Describe your business in at least 20 characters.' });

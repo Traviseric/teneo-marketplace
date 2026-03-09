@@ -341,6 +341,100 @@ router.post('/nostr/verify', nostrVerifyLimiter, async (req, res) => {
     }
 });
 
+/**
+ * POST /api/auth/nostr/nip98-login
+ * Alias for /api/auth/nostr/verify — accepts NIP-98 event via Authorization header
+ * or request body for headless/agent clients.
+ *
+ * Header form: Authorization: Nostr <base64-event>
+ * Body form:   { event: "<base64-event>" }
+ */
+router.post('/nostr/nip98-login', nostrVerifyLimiter, async (req, res) => {
+    try {
+        // Accept token from Authorization header OR request body
+        let eventToken;
+        const authHeader = req.headers['authorization'];
+        if (authHeader && authHeader.startsWith('Nostr ')) {
+            eventToken = authHeader.slice(6);
+        } else {
+            eventToken = req.body && req.body.event;
+        }
+
+        if (!eventToken || typeof eventToken !== 'string') {
+            return res.status(400).json({
+                error: 'Missing event',
+                message: 'Provide a base64-encoded NIP-98 event via Authorization: Nostr <token> header or { event } body',
+            });
+        }
+
+        const protocol = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        const expectedUrl = host ? `${protocol}://${host}/api/auth/nostr/nip98-login` : null;
+
+        const nostrProvider = getNostrProvider();
+        const user = await nostrProvider.verifyNostrToken(eventToken, expectedUrl, 'POST');
+
+        // Regenerate session to prevent fixation (CWE-384)
+        await new Promise((resolve, reject) => req.session.regenerate(err => err ? reject(err) : resolve()));
+
+        req.session.userId = user.id;
+        req.session.email = user.email;
+        req.session.name = user.name;
+        req.session.isAuthenticated = true;
+        req.session.authProvider = 'nostr';
+        req.session.nostrPubkey = user.pubkey;
+
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                pubkey: user.pubkey,
+                email: user.email,
+            },
+        });
+    } catch (error) {
+        console.error('[Auth] NIP-98 login error:', error.message);
+        res.status(401).json({
+            error: 'NIP-98 authentication failed',
+            message: safeMessage(error),
+        });
+    }
+});
+
+/**
+ * GET /api/auth/capabilities
+ * Documents supported authentication methods for API consumers.
+ */
+router.get('/capabilities', (req, res) => {
+    res.json({
+        methods: [
+            {
+                type: 'magic_link',
+                description: 'Email magic link — POST /api/auth/login, follow emailed link',
+                endpoints: ['POST /api/auth/register', 'POST /api/auth/login', 'GET /api/auth/verify-magic-link'],
+            },
+            {
+                type: 'oauth_sso',
+                description: 'OAuth 2.0 SSO via Teneo Auth (PKCE flow)',
+                endpoints: ['POST /api/auth/login', 'GET /api/auth/callback'],
+            },
+            {
+                type: 'nip07',
+                description: 'NIP-07 browser extension auth (Alby, nos2x) — sign a NIP-98 event in the browser',
+                endpoints: ['POST /api/auth/nostr/verify'],
+            },
+            {
+                type: 'nip98',
+                description: 'NIP-98 HTTP auth — sign a kind-27235 event, send as Authorization: Nostr <base64>',
+                endpoints: ['POST /api/auth/nostr/nip98-login'],
+                spec: 'https://github.com/nostr-protocol/nips/blob/master/98.md',
+                notes: 'Events must be signed within 60 seconds. Include u (URL) and method tags.',
+            },
+        ],
+    });
+});
+
 // =====================================
 // Protected Routes (Auth Required)
 // =====================================
