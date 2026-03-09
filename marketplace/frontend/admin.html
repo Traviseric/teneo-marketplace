@@ -900,6 +900,10 @@
                         <i class="fas fa-truck"></i>
                         <span>Fulfillment</span>
                     </li>
+                    <li class="nav-item" data-section="courses">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Courses</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1568,6 +1572,45 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </section>
+
+                <!-- AI Course Builder Section -->
+                <section id="coursesSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>AI Course Builder</h2>
+                        <p>Generate a complete course outline from a single sentence using AI</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Generate a New Course</h3>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label for="courseBrief">Course Brief</label>
+                            <textarea id="courseBrief" rows="3" placeholder="e.g. Create a 5-module course on email marketing for small businesses" style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;resize:vertical;"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label for="courseBrandId">Brand ID</label>
+                            <input type="text" id="courseBrandId" placeholder="e.g. default" value="default" style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;">
+                        </div>
+                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                            <button class="btn btn-secondary" onclick="generateCoursePreview()" id="btnGeneratePreview">
+                                <i class="fas fa-magic"></i> Generate Preview
+                            </button>
+                            <button class="btn btn-primary" onclick="generateAndSaveCourse()" id="btnGenerateSave" style="display:none;">
+                                <i class="fas fa-save"></i> Save Course
+                            </button>
+                        </div>
+                        <p id="courseBuilderStatus" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);"></p>
+                    </div>
+
+                    <!-- Preview Panel -->
+                    <div id="coursePreviewPanel" style="display:none;">
+                        <div class="settings-section">
+                            <h3 id="coursePreviewTitle" style="font-size:1.2rem;margin-bottom:0.25rem;"></h3>
+                            <p id="coursePreviewDescription" style="color:var(--text-muted);margin-bottom:0.75rem;font-size:0.9rem;"></p>
+                            <p id="coursePreviewPrice" style="font-weight:600;margin-bottom:1rem;"></p>
+                            <div id="coursePreviewModules"></div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -3383,6 +3426,107 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
+        }
+
+        // ─── AI Course Builder ────────────────────────────────────────────────
+
+        let _generatedCourse = null;
+
+        function setStatus(msg, isError) {
+            const el = document.getElementById('courseBuilderStatus');
+            el.textContent = msg;
+            el.style.color = isError ? '#e53e3e' : 'var(--text-muted)';
+        }
+
+        async function generateCoursePreview() {
+            const brief = document.getElementById('courseBrief').value.trim();
+            if (brief.length < 10) {
+                return setStatus('Please enter a brief of at least 10 characters.', true);
+            }
+            const btn = document.getElementById('btnGeneratePreview');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+            setStatus('Calling AI — this may take 15-30 seconds…', false);
+            document.getElementById('coursePreviewPanel').style.display = 'none';
+            document.getElementById('btnGenerateSave').style.display = 'none';
+            _generatedCourse = null;
+
+            try {
+                const res = await fetch('/api/courses/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Generation failed');
+
+                _generatedCourse = data.course;
+                renderCoursePreview(data.course);
+                document.getElementById('btnGenerateSave').style.display = '';
+                setStatus('Preview generated. Review the outline and click "Save Course" to persist it.', false);
+            } catch (e) {
+                setStatus('Error: ' + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> Generate Preview';
+            }
+        }
+
+        function renderCoursePreview(course) {
+            document.getElementById('coursePreviewTitle').textContent = course.title || '(Untitled)';
+            document.getElementById('coursePreviewDescription').textContent = course.description || '';
+            document.getElementById('coursePreviewPrice').textContent =
+                course.price_cents ? '$' + (course.price_cents / 100).toFixed(2) : '';
+
+            const container = document.getElementById('coursePreviewModules');
+            container.innerHTML = (course.modules || []).map((mod, mi) => `
+                <div style="margin-bottom:1.25rem;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+                    <div style="background:var(--bg-secondary,#f7f7f7);padding:0.6rem 1rem;font-weight:600;font-size:0.95rem;">
+                        Module ${mi + 1}: ${escapeHtml(mod.title)}
+                    </div>
+                    <ul style="margin:0;padding:0.5rem 1rem 0.75rem;list-style:none;">
+                        ${(mod.lessons || []).map((l, li) => `
+                            <li style="padding:0.35rem 0;font-size:0.88rem;border-bottom:1px solid var(--border);display:flex;gap:0.5rem;align-items:flex-start;">
+                                <span style="color:var(--text-muted);min-width:1.5rem;">${li + 1}.</span>
+                                <span>
+                                    <strong>${escapeHtml(l.title)}</strong>
+                                    ${l.duration_minutes ? `<span style="color:var(--text-muted);margin-left:0.4rem;">(${l.duration_minutes} min)</span>` : ''}
+                                    ${l.content ? `<br><span style="color:var(--text-muted);font-size:0.82rem;">${escapeHtml(l.content)}</span>` : ''}
+                                </span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            document.getElementById('coursePreviewPanel').style.display = '';
+        }
+
+        async function generateAndSaveCourse() {
+            if (!_generatedCourse) return;
+            const brief = document.getElementById('courseBrief').value.trim();
+            const brand_id = document.getElementById('courseBrandId').value.trim() || 'default';
+            const btn = document.getElementById('btnGenerateSave');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            setStatus('Saving course to database…', false);
+
+            try {
+                const res = await fetch('/api/courses/generate-and-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief, brand_id })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Save failed');
+                setStatus(`Course saved! ID: ${data.courseId}, slug: ${data.slug}`, false);
+                document.getElementById('btnGenerateSave').style.display = 'none';
+            } catch (e) {
+                setStatus('Error saving: ' + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Save Course';
+            }
         }
     </script>
 </body>

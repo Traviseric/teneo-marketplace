@@ -12,6 +12,10 @@
  *   POST /api/courses/:slug/progress/:id   - mark lesson complete
  *   GET  /api/courses/:slug/progress       - user progress
  *
+ * AI Builder (admin):
+ *   POST /api/courses/generate          - generate course JSON from natural-language brief (no DB write)
+ *   POST /api/courses/generate-and-save - generate + immediately save course to DB
+ *
  * Admin:
  *   POST /api/courses/admin/courses              - create course
  *   PUT  /api/courses/admin/courses/:id          - update course
@@ -25,6 +29,7 @@ const router = express.Router();
 const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const certificateService = require('../services/certificateService');
+const aiCourseBuilderService = require('../services/aiCourseBuilderService');
 
 // Helper: promisified db.get
 function dbGet(sql, params) {
@@ -319,6 +324,81 @@ router.post('/:slug/quiz/:quizId/submit', requireEnrollment, async (req, res) =>
     } catch (error) {
         console.error('Submit quiz error:', error);
         res.status(500).json({ success: false, error: 'Failed to submit quiz' });
+    }
+});
+
+// ─── AI Course Builder Routes ─────────────────────────────────────────────────
+
+// POST /api/courses/generate — generate course outline from a natural-language brief (admin only, no DB write)
+router.post('/generate', authenticateAdmin, async (req, res) => {
+    try {
+        const { brief } = req.body;
+        if (!brief || brief.trim().length < 10) {
+            return res.status(400).json({ success: false, error: 'brief must be at least 10 characters' });
+        }
+        const course = await aiCourseBuilderService.generateCourse(brief.trim());
+        res.json({ success: true, course });
+    } catch (error) {
+        if (error.message && error.message.includes('ANTHROPIC_API_KEY')) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
+        console.error('AI course generate error:', error);
+        res.status(500).json({ success: false, error: 'Failed to generate course' });
+    }
+});
+
+// POST /api/courses/generate-and-save — generate course outline and immediately save to DB (admin only)
+router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
+    try {
+        const { brief, brand_id } = req.body;
+        if (!brief || brief.trim().length < 10) {
+            return res.status(400).json({ success: false, error: 'brief must be at least 10 characters' });
+        }
+        if (!brand_id) {
+            return res.status(400).json({ success: false, error: 'brand_id is required' });
+        }
+
+        const generated = await aiCourseBuilderService.generateCourse(brief.trim());
+
+        // Derive a unique slug from the title
+        const baseSlug = generated.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+            .slice(0, 60);
+        const slug = `${baseSlug}-${Date.now()}`;
+
+        // Insert course
+        const courseResult = await dbRun(
+            'INSERT INTO courses (brand_id, title, slug, description, price_cents) VALUES (?, ?, ?, ?, ?)',
+            [brand_id, generated.title, slug, generated.description || '', generated.price_cents || 0]
+        );
+        const courseId = courseResult.lastID;
+
+        // Insert modules + lessons
+        for (const mod of (generated.modules || [])) {
+            const modResult = await dbRun(
+                'INSERT INTO course_modules (course_id, title, order_index) VALUES (?, ?, ?)',
+                [courseId, mod.title, mod.order || 0]
+            );
+            const moduleId = modResult.lastID;
+
+            for (const lesson of (mod.lessons || [])) {
+                await dbRun(
+                    `INSERT INTO course_lessons (module_id, title, content_type, content_body, order_index, is_free_preview)
+                     VALUES (?, ?, 'text', ?, ?, 0)`,
+                    [moduleId, lesson.title, lesson.content || '', lesson.order || 0]
+                );
+            }
+        }
+
+        res.json({ success: true, courseId, slug, course: generated });
+    } catch (error) {
+        if (error.message && error.message.includes('ANTHROPIC_API_KEY')) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
+        console.error('AI course generate-and-save error:', error);
+        res.status(500).json({ success: false, error: 'Failed to generate and save course' });
     }
 });
 
