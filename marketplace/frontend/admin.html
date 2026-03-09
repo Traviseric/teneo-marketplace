@@ -2830,6 +2830,9 @@
         }
 
         function populateSettings() {
+            // Expose store slug and ID globally for Nostr/NIP-05 and other features
+            if (settings.storeSlug) window._adminStoreSlug = settings.storeSlug;
+            if (settings.storeId)   window._adminStoreId   = settings.storeId;
             document.getElementById('storeName').value = settings.storeName || 'Teneo Books';
             document.getElementById('storeTagline').value = settings.storeTagline || 'Knowledge Beyond Boundaries™';
             document.getElementById('storeDescription').value = settings.storeDescription || '';

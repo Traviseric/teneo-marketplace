@@ -887,5 +887,46 @@ router.post('/zap-unlock', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/zap/receipt
+ *
+ * Poll a Nostr relay for a kind 9735 zap receipt matching a zap request event ID.
+ * The frontend calls this after paying a Lightning invoice, polling every 3 seconds.
+ *
+ * Query params:
+ *   zap_request_id {string} - Event ID of the kind 9734 zap request (required)
+ *   relay           {string} - wss:// relay URL (optional, defaults to env ZAP_RELAY)
+ *
+ * Responses:
+ *   { status: "found",   receipt: {...} }  — kind 9735 event found
+ *   { status: "pending" }                  — not found yet (poll again)
+ *   { status: "timeout" }                  — relay did not respond in time
+ */
+router.get('/zap/receipt', async (req, res) => {
+  const { zap_request_id: zapRequestId, relay } = req.query;
+
+  if (!zapRequestId || typeof zapRequestId !== 'string' || !/^[0-9a-f]{64}$/i.test(zapRequestId)) {
+    return res.status(400).json({ error: 'zap_request_id must be a 64-character hex string' });
+  }
+
+  const relayUrl = (relay && relay.startsWith('wss://'))
+    ? relay
+    : (process.env.ZAP_RELAY || 'wss://relay.damus.io');
+
+  try {
+    // Short timeout: client will poll again; keeps connections short-lived
+    const receipt = await zapService.pollForZapReceipt(relayUrl, zapRequestId, 8000);
+
+    if (!receipt) {
+      return res.json({ status: 'pending' });
+    }
+
+    return res.json({ status: 'found', receipt });
+  } catch (err) {
+    console.error('[zap/receipt] Poll error:', err.message);
+    return res.json({ status: 'timeout' });
+  }
+});
+
 module.exports = router;
 module.exports.handleFulfill = handleFulfill;

@@ -8,6 +8,7 @@
  *   - verifyEventSignature: valid, tampered, missing fields
  *   - verifyZapReceipt: valid receipt, wrong kind, invalid sig, wrong amount,
  *                       missing description, bad JSON in description
+ *   - pollForZapReceipt: found, pending (timeout), invalid params
  *   - extractMsatsFromZapRequest: present, absent, zero
  */
 
@@ -265,4 +266,73 @@ describe('verifyZapReceipt', () => {
     const result = verifyZapReceipt(null, 1);
     expect(result.valid).toBe(false);
   });
+});
+
+// ─── pollForZapReceipt ─────────────────────────────────────────────────────────
+
+const { pollForZapReceipt } = require('../services/zapService');
+
+describe('pollForZapReceipt', () => {
+  it('returns null for missing params', async () => {
+    const result = await pollForZapReceipt(null, null, 1000);
+    expect(result).toBeNull();
+  });
+
+  it('returns null on connection error (bad relay URL)', async () => {
+    // Invalid scheme — ws constructor throws synchronously or emits error quickly
+    const result = await pollForZapReceipt('wss://invalid.nonexistent.relay.example', 'a'.repeat(64), 2000);
+    expect(result).toBeNull();
+  }, 5000);
+
+  it('resolves with receipt event when relay sends matching kind 9735', async () => {
+    const { WebSocketServer } = require('ws');
+    const zapRequestId = '0'.repeat(64);
+
+    // Spin up a local test relay
+    const wss = new WebSocketServer({ port: 0 });
+    const port = wss.address().port;
+
+    const receipt = {
+      kind: 9735,
+      id: '1'.repeat(64),
+      pubkey: '2'.repeat(64),
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [['e', zapRequestId]],
+      content: '',
+      sig: '3'.repeat(128),
+    };
+
+    wss.on('connection', (ws) => {
+      ws.on('message', (data) => {
+        const msg = JSON.parse(data.toString());
+        if (msg[0] === 'REQ') {
+          const subId = msg[1];
+          ws.send(JSON.stringify(['EVENT', subId, receipt]));
+        }
+      });
+    });
+
+    const result = await pollForZapReceipt(`ws://localhost:${port}`, zapRequestId, 5000);
+    wss.close();
+
+    expect(result).not.toBeNull();
+    expect(result.kind).toBe(9735);
+    expect(result.tags).toEqual(expect.arrayContaining([['e', zapRequestId]]));
+  }, 10000);
+
+  it('returns null (timeout) when relay sends no matching event', async () => {
+    const { WebSocketServer } = require('ws');
+    const zapRequestId = 'a'.repeat(64);
+
+    const wss = new WebSocketServer({ port: 0 });
+    const port = wss.address().port;
+
+    // Relay that sends nothing
+    wss.on('connection', () => {});
+
+    const result = await pollForZapReceipt(`ws://localhost:${port}`, zapRequestId, 1500);
+    wss.close();
+
+    expect(result).toBeNull();
+  }, 5000);
 });

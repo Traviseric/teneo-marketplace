@@ -201,9 +201,83 @@ async function generateZapInvoice(productId, amountSats) {
   };
 }
 
+/**
+ * pollForZapReceipt — Subscribe to a Nostr relay and wait for a kind 9735
+ * zap receipt matching the given zapRequestEventId.
+ *
+ * Uses WebSocket (ws package) with NIP-01 REQ subscription.
+ * Filter: { kinds: [9735], "#e": [zapRequestEventId], since: <now - 5min> }
+ *
+ * @param {string} relayUrl          - wss:// relay URL
+ * @param {string} zapRequestEventId - Event ID of the kind 9734 zap request
+ * @param {number} [timeoutMs=30000] - How long to wait before returning null
+ * @returns {Promise<object|null>}   - The kind 9735 receipt event, or null on timeout
+ */
+async function pollForZapReceipt(relayUrl, zapRequestEventId, timeoutMs = 30000) {
+  if (!relayUrl || !zapRequestEventId) return null;
+
+  const WebSocket = require('ws');
+
+  return new Promise((resolve) => {
+    let settled = false;
+    let ws;
+
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      try { if (ws && ws.readyState === WebSocket.OPEN) ws.close(); } catch (_) {}
+      resolve(result);
+    };
+
+    const timer = setTimeout(() => finish(null), timeoutMs);
+
+    try {
+      ws = new WebSocket(relayUrl, [], { handshakeTimeout: 5000 });
+    } catch (err) {
+      clearTimeout(timer);
+      return resolve(null);
+    }
+
+    ws.on('error', () => {
+      clearTimeout(timer);
+      finish(null);
+    });
+
+    ws.on('open', () => {
+      const subId = 'zap_' + Date.now();
+      const since = Math.floor(Date.now() / 1000) - 300; // look back 5 minutes
+      const req = JSON.stringify(['REQ', subId, {
+        kinds: [NIP57_ZAP_RECEIPT_KIND],
+        '#e': [zapRequestEventId],
+        since,
+      }]);
+      try { ws.send(req); } catch (_) {}
+    });
+
+    ws.on('message', (data) => {
+      try {
+        const msg = JSON.parse(data.toString());
+        if (!Array.isArray(msg)) return;
+        const [type, , event] = msg;
+        if (type === 'EVENT' && event && event.kind === NIP57_ZAP_RECEIPT_KIND) {
+          // Verify it references our zap request
+          const eTag = Array.isArray(event.tags)
+            ? event.tags.find(t => t[0] === 'e' && t[1] === zapRequestEventId)
+            : null;
+          if (eTag) {
+            clearTimeout(timer);
+            finish(event);
+          }
+        }
+      } catch (_) {}
+    });
+  });
+}
+
 module.exports = {
   verifyZapReceipt,
   generateZapInvoice,
+  pollForZapReceipt,
   // Exported for testing
   verifyEventSignature,
   computeEventId,

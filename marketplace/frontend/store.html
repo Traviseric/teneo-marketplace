@@ -730,7 +730,7 @@
 
         function setStatus(msg, color) {
             var el = document.getElementById('zap-modal-status');
-            if (el) { el.textContent = msg; el.style.color = color || '#7C3AED'; }
+            if (el) { el.innerHTML = msg; el.style.color = color || '#7C3AED'; }
         }
 
         window.openZapModal = async function(bookId, bookTitle, priceUsd) {
@@ -811,13 +811,52 @@
 
                 setStatus('Payment sent! Waiting for zap receipt\u2026');
 
-                // Poll for kind 9735 receipt via relay (simplified: wait 3s then try relays)
-                await new Promise(function(r) { setTimeout(r, 3000); });
+                // Poll backend relay subscription for kind 9735 receipt
+                var receipt = null;
+                var zapRequestEventId = signedZapRequest.id;
+                var pollStart = Date.now();
+                var pollTimeout = 60000; // 60s total polling window
+                while (!receipt && (Date.now() - pollStart) < pollTimeout) {
+                    await new Promise(function(r) { setTimeout(r, 3000); });
+                    try {
+                        var pollResp = await fetch(
+                            '/api/zap/receipt?zap_request_id=' + encodeURIComponent(zapRequestEventId)
+                        );
+                        if (pollResp.ok) {
+                            var pollData = await pollResp.json();
+                            if (pollData.status === 'found' && pollData.receipt) {
+                                receipt = pollData.receipt;
+                            }
+                        }
+                    } catch (_) { /* network blip — keep polling */ }
+                }
 
-                // Try to fetch the receipt from a relay (simplified implementation)
-                // In production, subscribe to relay with REQ filter { kinds: [9735], '#p': [pubkey] }
-                // For now, prompt the user to paste the receipt or try to get it from Alby
-                setStatus('Lightning payment confirmed! If your wallet published a zap receipt, it will unlock automatically. Otherwise contact support with payment hash: ' + (payResult.preimage ? payResult.preimage.slice(0, 16) + '\u2026' : 'n/a'), '#059669');
+                if (!receipt) {
+                    setStatus('Payment confirmed! Zap receipt not yet published by relay — your download will unlock once the receipt appears. Payment: ' + (payResult.preimage ? payResult.preimage.slice(0, 16) + '\u2026' : 'n/a'), '#D97706');
+                } else {
+                    // Receipt found — auto-unlock by submitting to zap-unlock endpoint
+                    setStatus('Payment detected! Unlocking\u2026', '#059669');
+                    var unlockResp = await fetch('/api/storefront/zap-unlock', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            storeSlug: window.BRAND_ID || null,
+                            productId: productId,
+                            kind9735Event: receipt,
+                        }),
+                    });
+                    if (unlockResp.ok) {
+                        var unlockData = await unlockResp.json();
+                        if (unlockData.downloadUrl || unlockData.downloadToken) {
+                            var dlUrl = unlockData.downloadUrl || ('/api/download/' + unlockData.downloadToken);
+                            setStatus('Unlocked! <a href="' + dlUrl + '" style="color:#059669;font-weight:600;">Download now \u2192</a>', '#059669');
+                        } else {
+                            setStatus('Unlocked! Check your email for the download link.', '#059669');
+                        }
+                    } else {
+                        setStatus('Payment confirmed! Contact support if your download doesn\'t arrive shortly.', '#D97706');
+                    }
+                }
 
             } catch (err) {
                 setStatus('Error: ' + (err.message || 'Unknown error'), '#DC2626');

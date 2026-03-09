@@ -305,7 +305,7 @@ router.get('/settings', authenticateAdmin, async (req, res) => {
             // Use defaults if file doesn't exist
         }
         
-        res.json(settings);
+        res.json({ ...settings, storeSlug: BRAND });
     } catch (error) {
         console.error('Error loading settings:', error);
         res.status(500).json({ error: 'Failed to load settings' });
