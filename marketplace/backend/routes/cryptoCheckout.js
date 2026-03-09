@@ -395,7 +395,8 @@ router.post('/btcpay/webhook', express.raw({ type: 'application/json' }), async 
                 error: fulfillErr.message,
                 stack: fulfillErr.stack
             });
-            await orderService.failOrder(order.order_id, fulfillErr.message).catch(() => {});
+            await orderService.failOrder(order.order_id, fulfillErr.message)
+                .catch(err => console.error('[btcpay-webhook] Failed to mark order failed:', order.order_id, err));
         }
     } catch (err) {
         console.error('BTCPay webhook processing error:', err);

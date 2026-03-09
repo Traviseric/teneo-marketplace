@@ -556,11 +556,12 @@ async function handleCheckoutCompleted(session) {
       stack: error.stack
     });
     if (orderId) {
-      await orderService.failOrder(orderId, error.message).catch(() => {});
+      await orderService.failOrder(orderId, error.message)
+        .catch(err => console.error('[checkout] Failed to mark order failed:', orderId, err));
       await orderService.updateOrderState(orderId, 'failed', {
         reason: error.message,
         provider: 'stripe',
-      }).catch(() => {});
+      }).catch(err => console.error('[checkout] Failed to update order state to failed:', orderId, err));
     }
     throw error;
   }
