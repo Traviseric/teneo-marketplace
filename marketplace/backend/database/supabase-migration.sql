@@ -799,5 +799,25 @@ CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(prod
 CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at DESC);
 
 -- =====================================================
--- DONE. 44 tables created. "profiles" = app users.
+-- 10. SCHEMA MIGRATIONS (idempotent column additions)
+-- Run these after initial table creation to sync with
+-- columns added to the SQLite schema since first deploy.
+-- =====================================================
+
+-- Orders: state machine columns (added with payment-agnostic order state machine)
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS state TEXT DEFAULT 'pending';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS state_transitions JSONB DEFAULT '[]';
+
+-- Orders: Stripe customer tracking columns
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_payment_method_id TEXT;
+
+-- Orders: abandonment email stage tracking (0=none, 1=1h sent, 2=24h sent, 3=72h sent)
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS abandonment_email_stage INTEGER DEFAULT 0;
+
+-- Stores: NIP-05 Nostr identity column (merchant's hex pubkey for NIP-05 DNS verification)
+ALTER TABLE stores ADD COLUMN IF NOT EXISTS nostr_pubkey TEXT;
+
+-- =====================================================
+-- DONE. 44 tables + migrations. "profiles" = app users.
 -- =====================================================
