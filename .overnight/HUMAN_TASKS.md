@@ -53,3 +53,21 @@ These cannot be completed autonomously.
 - [ ] [HT-018] CONFIRM READ-ONLY FILESYSTEM IN PRODUCTION — Verify that the deployed backend no longer attempts to write to read-only filesystem paths (e.g., SQLite .db files in a Vercel/serverless environment). Check Render/Vercel logs for EROFS errors after deployment. — Reason: requires access to production deployment logs and filesystem configuration.
 
 - [ ] [HT-019] CONFIGURE SMTP FOR PRODUCTION — Set `EMAIL_HOST`, `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_PORT` in Vercel/Render project settings for transactional emails (magic links, order confirmations, license keys). Recommended: Resend or SendGrid (100 free emails/day). — Reason: requires external email provider account and deployment platform access.
+
+- [ ] [HT-020] TEST STRIPE PURCHASE FLOW IN PRODUCTION — After Supabase env vars and migration are done: complete a real Stripe checkout (test mode) end-to-end: add to cart → checkout → payment → order in Supabase → download link delivered via email. — Reason: requires live deployment access and manual checkout testing.
+
+- [ ] [HT-021] TEST POD PURCHASE FLOW IN PRODUCTION — After Printful API key is set in deployment: complete a POD storefront checkout end-to-end: browse → checkout → `/api/storefront/fulfill` called → Printful order submitted → webhook updates order status. — Reason: requires live deployment access, Printful sandbox account, and physical order flow testing.
+
+- [ ] [HT-022] CREATE STRIPE PRICES FOR MANAGED HOSTING TIERS — Create 3 recurring Stripe Products + Prices in the Stripe dashboard for managed hosting tiers ($29/mo Starter, $79/mo Pro, $149/mo White-label), then set `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_WHITELABEL` env vars in .env and deployment. Also create 2 webhook endpoints for subscription events and set `STRIPE_WEBHOOK_SECRET_HOSTING` and `STRIPE_WEBHOOK_SECRET_SUBSCRIPTIONS`. Without these, `/api/hosting/subscribe` and `/api/subscriptions/create-session` return 422. — **What I tried:** Implemented all code-side infrastructure (routes, webhook handlers, tier config, tests). Only the Stripe dashboard step is human-required.
+- **Urgency:** MEDIUM
+- **Blocks:** Managed hosting and membership subscription checkout flows
+- **Added:** 2026-03-09 by WORKER_002
+- **Prep status:** NOT_PREPPED
+- **Steps:**
+  1. Go to https://dashboard.stripe.com/products and create 3 products: "Starter Hosting", "Pro Hosting", "White-label Hosting"
+  2. For each, add a recurring Price: $29/mo, $79/mo, $149/mo (billing period: monthly)
+  3. Copy each price_id (format: price_XXXX) and set in .env: STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO, STRIPE_PRICE_WHITELABEL
+  4. Go to https://dashboard.stripe.com/webhooks, add 2 endpoints:
+     - /api/hosting/webhook (events: customer.subscription.created/updated/deleted)
+     - /api/subscriptions/webhook (events: customer.subscription.created/updated/deleted, invoice.payment_failed)
+  5. Copy signing secrets and set STRIPE_WEBHOOK_SECRET_HOSTING and STRIPE_WEBHOOK_SECRET_SUBSCRIPTIONS in .env

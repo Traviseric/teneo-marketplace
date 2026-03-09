@@ -108,6 +108,8 @@ const { handleFulfill: handleArxMintWebhook } = require('./routes/storefront');
 const printfulWebhookRoutes = require('./routes/printfulWebhooks');
 const printfulAdminRoutes = require('./routes/printfulAdmin');
 const licenseRoutes = require('./routes/licenseRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
+const hostingRoutes = require('./routes/hostingRoutes');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -205,6 +207,8 @@ const csrfExcludePaths = [
     '/api/auth/register',         // Magic link initiator — session created via GET verify
     '/api/auth/logout',           // Session destroy — protected by requireAuth, low CSRF risk
     '/api/auth/nostr/verify',     // Nostr NIP-98 signed event — self-authenticated
+    '/api/subscriptions/webhook', // Stripe subscription webhook
+    '/api/hosting/webhook',       // Stripe hosting subscription webhook
 ]; // Webhook endpoints need to be excluded
 
 app.use((req, res, next) => {
@@ -259,6 +263,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/license', licenseRoutes);
 app.use('/api/referral', require('./routes/referralRoutes'));
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/hosting', hostingRoutes);
 
 // Referral attribution — capture ?ref= query param into session so checkout can pick it up
 // Runs after session middleware, before route handlers

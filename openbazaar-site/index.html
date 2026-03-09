@@ -35,6 +35,7 @@
         <a href="#marketplace">Marketplace</a>
         <a href="#gigs">Gigs</a>
         <a href="#how-it-works">How It Works</a>
+        <a href="#hosting-pricing">Hosting</a>
         <a href="#network">Network</a>
         <a href="https://github.com/traviseric/openbazaar-ai" target="_blank" rel="noopener">GitHub</a>
       </div>
@@ -538,6 +539,61 @@
               aria-label="Copy install command"
               onclick="copyInstall()">Copy</button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Managed Hosting Pricing ─── -->
+    <section class="section" id="hosting-pricing">
+      <div class="container">
+        <div class="section-header" style="text-align:center; margin-bottom: 3rem;">
+          <h2 class="section-title">Managed Hosting</h2>
+          <p class="section-subtitle">We run your store — you focus on selling. Recurring plans with zero setup hassle.</p>
+        </div>
+        <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
+
+          <!-- Starter -->
+          <div class="pricing-card" style="border: 1px solid var(--border, #e2e8f0); border-radius: 12px; padding: 2rem; background: var(--card-bg, #fff);">
+            <div class="pricing-tier-name" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">Starter</div>
+            <div class="pricing-price" style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">$29<span style="font-size: 1rem; font-weight: 400;">/mo</span></div>
+            <ul style="list-style: none; padding: 0; margin: 1rem 0 1.5rem; line-height: 2;">
+              <li>✓ 1 store</li>
+              <li>✓ 100 products</li>
+              <li>✓ Email support</li>
+              <li>✓ Custom domain</li>
+            </ul>
+            <a href="/api/hosting/subscribe?tier=starter" class="btn btn-primary" style="display: block; text-align: center;">Get Started</a>
+          </div>
+
+          <!-- Pro -->
+          <div class="pricing-card" style="border: 2px solid var(--accent, #6366f1); border-radius: 12px; padding: 2rem; background: var(--card-bg, #fff); position: relative;">
+            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent, #6366f1); color: #fff; padding: 2px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Most Popular</div>
+            <div class="pricing-tier-name" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">Pro</div>
+            <div class="pricing-price" style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">$79<span style="font-size: 1rem; font-weight: 400;">/mo</span></div>
+            <ul style="list-style: none; padding: 0; margin: 1rem 0 1.5rem; line-height: 2;">
+              <li>✓ 3 stores</li>
+              <li>✓ Unlimited products</li>
+              <li>✓ Priority support</li>
+              <li>✓ Custom domain</li>
+              <li>✓ Advanced analytics</li>
+            </ul>
+            <a href="/api/hosting/subscribe?tier=pro" class="btn btn-primary" style="display: block; text-align: center;">Get Started</a>
+          </div>
+
+          <!-- White-label -->
+          <div class="pricing-card" style="border: 1px solid var(--border, #e2e8f0); border-radius: 12px; padding: 2rem; background: var(--card-bg, #fff);">
+            <div class="pricing-tier-name" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">White-label</div>
+            <div class="pricing-price" style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">$149<span style="font-size: 1rem; font-weight: 400;">/mo</span></div>
+            <ul style="list-style: none; padding: 0; margin: 1rem 0 1.5rem; line-height: 2;">
+              <li>✓ Unlimited stores</li>
+              <li>✓ Remove OpenBazaar branding</li>
+              <li>✓ Dedicated support</li>
+              <li>✓ SLA guarantee</li>
+              <li>✓ White-label dashboard</li>
+            </ul>
+            <a href="/api/hosting/subscribe?tier=whitelabel" class="btn btn-primary" style="display: block; text-align: center;">Get Started</a>
+          </div>
+
         </div>
       </div>
     </section>
