@@ -908,6 +908,14 @@
                         <i class="fas fa-key"></i>
                         <span>License Keys</span>
                     </li>
+                    <li class="nav-item" data-section="funnels">
+                        <i class="fas fa-filter"></i>
+                        <span>Funnels</span>
+                    </li>
+                    <li class="nav-item" data-section="aiFunnel">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Funnel Builder</span>
+                    </li>
                 </ul>
             </nav>
 
@@ -1662,6 +1670,63 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Funnels Section -->
+                <section id="funnelsSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>Funnels</h2>
+                        <p>View deployed funnels and link each to an email sequence for automatic subscriber enrollment</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <div style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1rem;">
+                            <button class="btn btn-secondary" onclick="loadFunnels()" style="padding:0.5rem 1rem;">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <p id="funnelsStatus" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;"></p>
+                        <div id="funnelsList"></div>
+                    </div>
+                </section>
+
+                <!-- AI Funnel Builder Section -->
+                <section id="aiFunnelSection" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2>AI Funnel Builder</h2>
+                        <p>Generate a complete funnel config — landing page copy + email sequence — from a single brief using AI</p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Generate a New Funnel</h3>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label for="funnelBrief">Funnel Brief</label>
+                            <textarea id="funnelBrief" rows="3" placeholder="e.g. Create a lead magnet funnel for my copywriting course — offer a free 5-day email course in exchange for email opt-in, then pitch the paid course on day 5" style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;resize:vertical;"></textarea>
+                        </div>
+                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                            <button class="btn btn-secondary" onclick="generateFunnelPreview()" id="btnGenerateFunnelPreview">
+                                <i class="fas fa-magic"></i> Generate Preview
+                            </button>
+                            <button class="btn btn-primary" onclick="generateAndSaveFunnel()" id="btnGenerateFunnelSave" style="display:none;">
+                                <i class="fas fa-save"></i> Save Funnel
+                            </button>
+                        </div>
+                        <p id="funnelBuilderStatus" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);"></p>
+                    </div>
+
+                    <!-- Preview Panel -->
+                    <div id="funnelPreviewPanel" style="display:none;">
+                        <div class="settings-section">
+                            <h3 id="funnelPreviewHeadline" style="font-size:1.2rem;margin-bottom:0.25rem;"></h3>
+                            <p id="funnelPreviewSubheadline" style="color:var(--text-muted);margin-bottom:0.5rem;font-size:0.9rem;"></p>
+                            <p style="margin-bottom:0.5rem;font-size:0.9rem;"><strong>CTA:</strong> <span id="funnelPreviewCta" style="color:var(--primary);"></span></p>
+                            <p style="margin-bottom:0.5rem;font-size:0.9rem;"><strong>Lead Magnet:</strong> <span id="funnelPreviewLeadMagnet"></span></p>
+                            <p id="funnelPreviewLeadMagnetDesc" style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem;"></p>
+                            <h4 style="margin-bottom:0.5rem;font-size:0.95rem;">Email Sequence</h4>
+                            <div id="funnelPreviewSequence"></div>
+                            <p id="funnelPreviewUpsell" style="margin-top:0.75rem;font-size:0.9rem;"></p>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -1962,6 +2027,11 @@
                     break;
                 case 'licenseKeys':
                     loadLicenseKeys();
+                    break;
+                case 'funnels':
+                    loadFunnels();
+                    break;
+                case 'aiFunnel':
                     break;
             }
         }
@@ -3641,6 +3711,194 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-save"></i> Save Course';
+            }
+        }
+
+        // ─── Funnels ──────────────────────────────────────────────────────────────
+
+        async function loadFunnels() {
+            const status = document.getElementById('funnelsStatus');
+            const list = document.getElementById('funnelsList');
+            status.textContent = 'Loading…';
+            list.innerHTML = '';
+
+            // Also load sequences for the dropdown
+            let sequences = [];
+            try {
+                const seqRes = await secureFetch('/api/email-marketing/sequences');
+                if (seqRes.ok) {
+                    const seqData = await seqRes.json();
+                    sequences = seqData.sequences || [];
+                }
+            } catch (e) { /* non-fatal */ }
+
+            try {
+                const res = await secureFetch('/api/funnels/list?userId=admin');
+                const data = await res.json();
+                const funnels = data.funnels || [];
+                status.textContent = `${funnels.length} funnel(s) found`;
+
+                if (funnels.length === 0) {
+                    list.innerHTML = '<p style="color:var(--text-muted)">No funnels deployed yet. Use the Funnel Builder or AI Funnel Builder to create one.</p>';
+                    return;
+                }
+
+                const seqOptions = sequences.map(s =>
+                    `<option value="${s.id}">${escapeHtml(s.name)}</option>`
+                ).join('');
+
+                list.innerHTML = `
+                    <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+                        <thead>
+                            <tr style="background:var(--background);">
+                                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Name</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Slug</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Conversions</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:2px solid var(--border);">Email Sequence</th>
+                                <th style="padding:0.6rem 0.75rem;text-align:center;border-bottom:2px solid var(--border);">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${funnels.map(f => `
+                                <tr style="border-bottom:1px solid var(--border);">
+                                    <td style="padding:0.6rem 0.75rem;">${escapeHtml(f.name || '—')}</td>
+                                    <td style="padding:0.6rem 0.75rem;font-family:monospace;font-size:0.8rem;">${escapeHtml(f.slug)}</td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">${f.stats ? f.stats.conversion_rate + '%' : '—'}</td>
+                                    <td style="padding:0.6rem 0.75rem;">
+                                        <select id="seq_${f.id}" style="padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:4px;font-size:0.85rem;max-width:200px;">
+                                            <option value="">— None —</option>
+                                            ${seqOptions}
+                                        </select>
+                                    </td>
+                                    <td style="padding:0.6rem 0.75rem;text-align:center;">
+                                        <button class="btn btn-secondary btn-small" onclick="linkFunnelSequence(${f.id})" style="font-size:0.8rem;padding:0.3rem 0.6rem;">
+                                            <i class="fas fa-link"></i> Link
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+            }
+        }
+
+        async function linkFunnelSequence(funnelId) {
+            const select = document.getElementById('seq_' + funnelId);
+            const sequenceId = select.value ? parseInt(select.value, 10) : null;
+            try {
+                const res = await secureFetch('/api/funnels/' + funnelId, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sequence_id: sequenceId })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Failed');
+                const msg = sequenceId
+                    ? 'Sequence linked — subscribers will auto-enroll on opt-in.'
+                    : 'Sequence unlinked.';
+                document.getElementById('funnelsStatus').textContent = msg;
+            } catch (e) {
+                document.getElementById('funnelsStatus').textContent = 'Error: ' + e.message;
+            }
+        }
+
+        // ─── AI Funnel Builder ────────────────────────────────────────────────────
+
+        let _generatedFunnel = null;
+
+        function setFunnelStatus(msg, isError) {
+            const el = document.getElementById('funnelBuilderStatus');
+            el.textContent = msg;
+            el.style.color = isError ? '#e53e3e' : 'var(--text-muted)';
+        }
+
+        async function generateFunnelPreview() {
+            const brief = document.getElementById('funnelBrief').value.trim();
+            if (brief.length < 10) {
+                return setFunnelStatus('Please enter a brief of at least 10 characters.', true);
+            }
+            const btn = document.getElementById('btnGenerateFunnelPreview');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+            setFunnelStatus('Calling AI — this may take 15-30 seconds…', false);
+            document.getElementById('funnelPreviewPanel').style.display = 'none';
+            document.getElementById('btnGenerateFunnelSave').style.display = 'none';
+            _generatedFunnel = null;
+
+            try {
+                const res = await secureFetch('/api/funnels/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Generation failed');
+
+                _generatedFunnel = data.funnel;
+                renderFunnelPreview(data.funnel);
+                document.getElementById('btnGenerateFunnelSave').style.display = '';
+                setFunnelStatus('Preview generated. Review the config and click "Save Funnel" to persist it.', false);
+            } catch (e) {
+                setFunnelStatus('Error: ' + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> Generate Preview';
+            }
+        }
+
+        function renderFunnelPreview(funnel) {
+            document.getElementById('funnelPreviewHeadline').textContent = funnel.headline || '(Untitled)';
+            document.getElementById('funnelPreviewSubheadline').textContent = funnel.subheadline || '';
+            document.getElementById('funnelPreviewCta').textContent = funnel.cta_text || '';
+            document.getElementById('funnelPreviewLeadMagnet').textContent = funnel.lead_magnet_title || '';
+            document.getElementById('funnelPreviewLeadMagnetDesc').textContent = funnel.lead_magnet_description || '';
+
+            const seqEl = document.getElementById('funnelPreviewSequence');
+            seqEl.innerHTML = (funnel.email_sequence || []).map((email, i) => `
+                <div style="margin-bottom:0.75rem;padding:0.75rem;border:1px solid var(--border);border-radius:6px;font-size:0.875rem;">
+                    <strong>Day ${email.day}: ${escapeHtml(email.subject)}</strong>
+                    <span style="color:var(--text-muted);margin-left:0.5rem;font-size:0.8rem;">${escapeHtml(email.preview_text || '')}</span>
+                    <p style="color:var(--text-muted);margin:0.4rem 0 0;font-size:0.82rem;white-space:pre-line;">${escapeHtml(email.body_outline || '')}</p>
+                </div>
+            `).join('');
+
+            const upsellEl = document.getElementById('funnelPreviewUpsell');
+            upsellEl.textContent = funnel.upsell_product
+                ? `Upsell offer: ${funnel.upsell_product}`
+                : '';
+
+            document.getElementById('funnelPreviewPanel').style.display = '';
+        }
+
+        async function generateAndSaveFunnel() {
+            if (!_generatedFunnel) return;
+            const brief = document.getElementById('funnelBrief').value.trim();
+            const btn = document.getElementById('btnGenerateFunnelSave');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            setFunnelStatus('Saving funnel to database…', false);
+
+            try {
+                const res = await secureFetch('/api/funnels/generate-and-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Save failed');
+                setFunnelStatus(
+                    `Funnel saved! ID: ${data.funnelId}, slug: ${data.slug}${data.sequenceId ? ', sequence ID: ' + data.sequenceId : ''}`,
+                    false
+                );
+                document.getElementById('btnGenerateFunnelSave').style.display = 'none';
+            } catch (e) {
+                setFunnelStatus('Error saving: ' + e.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Save Funnel';
             }
         }
     </script>

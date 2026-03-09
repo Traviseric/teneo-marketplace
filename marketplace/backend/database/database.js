@@ -684,6 +684,11 @@ function initializeSqliteDatabase(db) {
             console.error('Error adding funnels.conversion_rate:', err);
         }
     });
+    db.run('ALTER TABLE funnels ADD COLUMN sequence_id INTEGER', (err) => {
+        if (err && !err.message.includes('duplicate column name')) {
+            console.error('Error adding funnels.sequence_id:', err);
+        }
+    });
 
     // Email marketing tables (schema-email-marketing.sql)
     const emailMktSqlPath = path.join(__dirname, 'schema-email-marketing.sql');

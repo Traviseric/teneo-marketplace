@@ -436,6 +436,199 @@ router.delete('/:slug', async (req, res) => {
   }
 });
 
+/**
+ * Subscribe to a funnel (email opt-in) — auto-enrolls into linked email sequence
+ * POST /api/funnels/:id/subscribe
+ * Body: { email, name }
+ * Public endpoint
+ */
+router.post('/:id/subscribe', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+    if (!email) return res.status(400).json({ error: 'email is required' });
+
+    const funnel = await dbGet('SELECT * FROM funnels WHERE id = ?', [req.params.id]);
+    if (!funnel) return res.status(404).json({ error: 'Funnel not found' });
+
+    const crypto = require('crypto');
+    const confirmToken = crypto.randomBytes(32).toString('hex');
+    const unsubscribeToken = crypto.randomBytes(32).toString('hex');
+
+    // Upsert subscriber
+    let subscriberId;
+    const existing = await dbGet('SELECT id FROM subscribers WHERE email = ?', [email]);
+    if (existing) {
+      subscriberId = existing.id;
+    } else {
+      const result = await dbRun(
+        `INSERT INTO subscribers (email, name, source, confirm_token, unsubscribe_token, status)
+         VALUES (?, ?, ?, ?, ?, 'active')`,
+        [email, name || null, `funnel:${funnel.slug || funnel.id}`, confirmToken, unsubscribeToken]
+      );
+      subscriberId = result.lastID;
+      // Initialize activity record (non-fatal)
+      dbRun(
+        `INSERT OR IGNORE INTO subscriber_activity (subscriber_id) VALUES (?)`,
+        [subscriberId]
+      ).catch(() => {});
+    }
+
+    // Auto-enroll in linked email sequence if configured
+    let sequenceEnrolled = false;
+    if (funnel.sequence_id) {
+      try {
+        const seq = await dbGet(
+          `SELECT id FROM email_sequences WHERE id = ? AND active = 1`,
+          [funnel.sequence_id]
+        );
+        if (seq) {
+          const alreadyIn = await dbGet(
+            `SELECT id FROM subscriber_sequences
+             WHERE subscriber_id = ? AND sequence_id = ? AND status = 'active'`,
+            [subscriberId, funnel.sequence_id]
+          );
+          if (!alreadyIn) {
+            await dbRun(
+              `INSERT INTO subscriber_sequences (subscriber_id, sequence_id, status)
+               VALUES (?, ?, 'active')`,
+              [subscriberId, funnel.sequence_id]
+            );
+          }
+          sequenceEnrolled = true;
+        }
+      } catch (seqErr) {
+        console.warn('[funnels] sequence enrollment failed:', seqErr.message);
+      }
+    }
+
+    // Track opt-in as a funnel event
+    await dbRun(
+      `INSERT INTO funnel_events (funnel_id, page_slug, event_type, session_id, metadata)
+       VALUES (?, ?, 'opt_in', NULL, ?)`,
+      [funnel.slug || String(funnel.id), funnel.slug || String(funnel.id), JSON.stringify({ email })]
+    );
+
+    res.json({ success: true, subscriberId, sequenceEnrolled });
+  } catch (error) {
+    console.error('[funnels] subscribe error:', error);
+    res.status(500).json({ error: 'Failed to subscribe' });
+  }
+});
+
+/**
+ * Update funnel settings (sequence_id, name, status)
+ * PATCH /api/funnels/:id
+ * Body: { sequence_id?, name?, status? }
+ * Auth: admin required
+ */
+router.patch('/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const updates = [];
+    const params = [];
+
+    if (req.body.sequence_id !== undefined) {
+      updates.push('sequence_id = ?');
+      params.push(req.body.sequence_id);
+    }
+    if (req.body.name !== undefined) {
+      updates.push('name = ?');
+      params.push(req.body.name);
+    }
+    if (req.body.status !== undefined) {
+      updates.push('status = ?');
+      params.push(req.body.status);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    updates.push('updated_at = CURRENT_TIMESTAMP');
+    params.push(req.params.id);
+
+    await dbRun(
+      `UPDATE funnels SET ${updates.join(', ')} WHERE id = ?`,
+      params
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[funnels] patch error:', error);
+    res.status(500).json({ error: 'Failed to update funnel' });
+  }
+});
+
+/**
+ * Generate a funnel config from a natural-language brief (AI)
+ * POST /api/funnels/generate
+ * Body: { brief }
+ * Auth: admin required
+ */
+router.post('/generate', authenticateAdmin, async (req, res) => {
+  try {
+    const { brief } = req.body;
+    if (!brief || brief.trim().length < 10) {
+      return res.status(400).json({ error: 'brief must be at least 10 characters' });
+    }
+    const { generateFunnel } = require('../../../marketplace/backend/services/aiFunnelBuilderService');
+    const funnel = await generateFunnel(brief.trim());
+    res.json({ success: true, funnel });
+  } catch (error) {
+    console.error('[funnels] generate error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Generate funnel from brief AND persist to DB (creates funnel + email sequence)
+ * POST /api/funnels/generate-and-save
+ * Body: { brief, userId? }
+ * Auth: admin required
+ */
+router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
+  try {
+    const { brief, userId = 'admin' } = req.body;
+    if (!brief || brief.trim().length < 10) {
+      return res.status(400).json({ error: 'brief must be at least 10 characters' });
+    }
+
+    const { generateFunnel } = require('../../../marketplace/backend/services/aiFunnelBuilderService');
+    const config = await generateFunnel(brief.trim());
+
+    // Persist funnel record
+    const slug = sanitizeSlug(config.headline || 'ai-funnel-' + Date.now());
+    const funnelResult = await dbRun(
+      `INSERT INTO funnels (brand_id, name, slug, status, user_id, config_json)
+       VALUES (?, ?, ?, 'draft', ?, ?)`,
+      ['default', config.headline || 'AI Funnel', slug, userId, JSON.stringify(config)]
+    );
+    const funnelId = funnelResult.lastID;
+
+    // Persist email sequence if provided
+    let sequenceId = null;
+    if (config.email_sequence && config.email_sequence.length > 0) {
+      try {
+        const seqName = `${config.headline} Sequence (${funnelId})`;
+        const seqResult = await dbRun(
+          `INSERT INTO email_sequences (name, description, trigger_event, active)
+           VALUES (?, ?, 'funnel_optin', 1)`,
+          [seqName, config.lead_magnet_description || brief.trim().slice(0, 120)]
+        );
+        sequenceId = seqResult.lastID;
+
+        // Link sequence to funnel
+        await dbRun('UPDATE funnels SET sequence_id = ? WHERE id = ?', [sequenceId, funnelId]);
+      } catch (seqErr) {
+        console.warn('[funnels] sequence persist failed:', seqErr.message);
+      }
+    }
+
+    res.status(201).json({ success: true, funnelId, slug, sequenceId, config });
+  } catch (error) {
+    console.error('[funnels] generate-and-save error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Helper: Safe JSON parse (returns original value on failure)
 function safeParseJson(str) {
   if (!str || typeof str !== 'string') return str;
