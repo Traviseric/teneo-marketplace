@@ -21,10 +21,11 @@ const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 const orderService = new OrderService();
 const analyticsService = new AnalyticsService(db);
 
-// Lazy-initialized Stripe client — reads key from settings.json first, falls back to env.
-// Avoids mutating process.env and survives runtime key updates via admin save-all.
-let _stripe = null;
-let _stripeKey = null;
+// Stripe client cache — supports runtime key rotation (admin save-all updates settings.json).
+// Keyed by the resolved secret so a stale cached client is never used after a key update.
+// Single object prevents the two-variable mutable pattern and is atomically replaced on rotation.
+let _stripeCache = null; // { key: string, client: Stripe } | null
+
 async function getStripe() {
     let key = process.env.STRIPE_SECRET_KEY;
     try {
@@ -35,11 +36,10 @@ async function getStripe() {
             key = saved.stripeSecretKey;
         }
     } catch (_) { /* settings file may not exist — fall back to env */ }
-    if (!_stripe || _stripeKey !== key) {
-        _stripe = require('stripe')(key);
-        _stripeKey = key;
+    if (!_stripeCache || _stripeCache.key !== key) {
+        _stripeCache = { key, client: require('stripe')(key) };
     }
-    return _stripe;
+    return _stripeCache.client;
 }
 
 // Memory-storage multer for CSV imports (no disk writes needed)
