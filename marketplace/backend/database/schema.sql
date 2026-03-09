@@ -514,6 +514,37 @@ VALUES
 ('default', '250', 'books_published', 250, '50 free book generations', 'rocket'),
 ('default', '500', 'books_published', 500, '100 free book generations', 'star');
 
+-- Coupons table — server-side coupon codes with expiry and usage limits
+CREATE TABLE IF NOT EXISTS coupons (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT UNIQUE NOT NULL,
+  type TEXT NOT NULL,         -- 'percentage' | 'fixed'
+  amount REAL NOT NULL,       -- percentage (0-100) or fixed USD
+  expires_at TEXT,            -- ISO datetime or NULL = never expires
+  max_uses INTEGER,           -- NULL = unlimited
+  used_count INTEGER DEFAULT 0,
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_code ON coupons(code);
+CREATE INDEX IF NOT EXISTS idx_coupons_active ON coupons(active);
+
+-- Order bumps table — "add this for $X" upsell on checkout
+CREATE TABLE IF NOT EXISTS order_bumps (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trigger_product_id TEXT,    -- NULL = show on all checkouts
+  bump_product_name TEXT NOT NULL,
+  bump_description TEXT,
+  bump_price REAL NOT NULL,
+  bump_stripe_price_id TEXT,  -- optional, for Stripe line items
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_order_bumps_active ON order_bumps(active);
+CREATE INDEX IF NOT EXISTS idx_order_bumps_trigger ON order_bumps(trigger_product_id);
+
 -- Federation network revenue shares table
 -- Records the originating peer node that should receive a revenue share for each federated order
 CREATE TABLE IF NOT EXISTS network_revenue_shares (

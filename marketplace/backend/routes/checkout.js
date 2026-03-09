@@ -11,6 +11,8 @@ const {
   applyCouponToPrice,
   getNextReadOffer
 } = require('../services/checkoutOfferService');
+const couponService = require('../services/couponService');
+const orderBumpService = require('../services/orderBumpService');
 const OrderService = require('../services/orderService');
 const orderService = new OrderService();
 const emailService = require('../services/emailService');
@@ -43,7 +45,9 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       bookTitle,
       bookAuthor,
       userEmail,
-      couponCode
+      couponCode,
+      bumpAccepted,
+      bumpId
     } = req.body;
     const brandId = sanitizeBrandId(rawBrandId);
     const funnelId = sanitizeMetadataValue(req.body.funnelId, 80);
@@ -75,10 +79,47 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Book not found in catalog' });
     }
 
-    const pricing = applyCouponToPrice(catalogPrice, couponCode);
+    // Validate coupon server-side via couponService (DB + static fallback)
+    let pricing;
+    if (couponCode) {
+      const couponResult = await couponService.validateCoupon(couponCode, catalogPrice);
+      if (couponResult.valid) {
+        const discountAmount = Math.round(couponResult.discountAmount * 100) / 100;
+        const finalPrice = Math.max(0.5, Math.round((catalogPrice - discountAmount) * 100) / 100);
+        pricing = {
+          basePrice: catalogPrice,
+          finalPrice,
+          discountAmount,
+          couponCode: couponResult.code,
+          applied: discountAmount > 0,
+        };
+      } else {
+        pricing = { basePrice: catalogPrice, finalPrice: catalogPrice, discountAmount: 0, couponCode: null, applied: false };
+      }
+    } else {
+      pricing = applyCouponToPrice(catalogPrice, null);
+    }
     const unitPrice = pricing.finalPrice;
     const orderId = `order_${Date.now()}_${bookId}`;
     const nextReadOffer = getNextReadOffer(bookId, brandId);
+
+    // Validate order bump server-side — never trust client-supplied bump price
+    let bumpLineItem = null;
+    if (bumpAccepted) {
+      const bump = bumpId
+        ? await orderBumpService.getBumpById(bumpId)
+        : await orderBumpService.getBumpForProduct(bookId);
+      if (bump) {
+        bumpLineItem = {
+          price_data: {
+            currency: 'usd',
+            product_data: { name: bump.bump_product_name, description: bump.bump_description || undefined },
+            unit_amount: Math.round(bump.bump_price * 100),
+          },
+          quantity: 1,
+        };
+      }
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -102,6 +143,7 @@ router.post('/create-session', checkoutLimiter, async (req, res) => {
           },
           quantity: 1,
         },
+        ...(bumpLineItem ? [bumpLineItem] : []),
       ],
       mode: 'payment',
       success_url: `${process.env.PUBLIC_URL || process.env.FRONTEND_URL || 'http://localhost:3001'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
@@ -340,6 +382,13 @@ async function handleCheckoutCompleted(session) {
       );
     }
 
+    // Increment coupon used_count for DB-backed coupons (no-op for static coupons)
+    if (session.metadata?.couponCode) {
+      await couponService.applyCoupon(session.metadata.couponCode).catch(err =>
+        console.warn('[checkout] applyCoupon failed (non-fatal):', err.message)
+      );
+    }
+
     // Mark order complete and get download token
     const { downloadToken } = await orderService.completeOrder(
       orderId,
@@ -568,6 +617,28 @@ router.post('/refund/:orderId', async (req, res) => {
       error: 'Failed to process refund',
       message: safeMessage(error)
     });
+  }
+});
+
+// Order bump offer endpoint — returns the active bump for a given product
+router.get('/bump', async (req, res) => {
+  try {
+    const { productId } = req.query;
+    const bump = await orderBumpService.getBumpForProduct(productId || null);
+    if (!bump) {
+      return res.json({ bump: null });
+    }
+    res.json({
+      bump: {
+        id: bump.id,
+        name: bump.bump_product_name,
+        description: bump.bump_description,
+        price: bump.bump_price,
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching order bump:', error);
+    res.status(500).json({ error: 'Failed to fetch order bump' });
   }
 });
 

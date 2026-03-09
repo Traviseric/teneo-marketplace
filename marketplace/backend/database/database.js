@@ -596,6 +596,36 @@ function initializeSqliteDatabase(db) {
         }
     });
 
+    // Coupons (server-side, with expiry + usage limits)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS coupons (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT UNIQUE NOT NULL,
+            type TEXT NOT NULL,
+            amount REAL NOT NULL,
+            expires_at TEXT,
+            max_uses INTEGER,
+            used_count INTEGER DEFAULT 0,
+            active INTEGER DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_coupons_code ON coupons(code);
+        CREATE INDEX IF NOT EXISTS idx_coupons_active ON coupons(active);
+        CREATE TABLE IF NOT EXISTS order_bumps (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            trigger_product_id TEXT,
+            bump_product_name TEXT NOT NULL,
+            bump_description TEXT,
+            bump_price REAL NOT NULL,
+            bump_stripe_price_id TEXT,
+            active INTEGER DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_order_bumps_active ON order_bumps(active);
+    `, (err) => {
+        if (err) console.error('Error creating coupons/order_bumps tables:', err);
+    });
+
     // Agent App Store schema (schema-appstore.sql)
     const appStoreSqlPath = path.join(__dirname, 'schema-appstore.sql');
     if (fs.existsSync(appStoreSqlPath)) {

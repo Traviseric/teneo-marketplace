@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const couponService = require('../services/couponService');
 
-// Coupon definitions stored server-side only.
+// Static coupon definitions (backward-compat; used by checkoutOfferService via getCoupons()).
 // Override via COUPONS_JSON env var: '{"SAVE10":{"type":"percent","value":10}}'
 function getCoupons() {
     if (process.env.COUPONS_JSON) {
@@ -13,9 +14,9 @@ function getCoupons() {
     }
     // Default coupons — set COUPONS_JSON in production to override
     return {
-        'SAVE10':    { type: 'percent', value: 10 },
-        '10OFF':     { type: 'fixed',   value: 10 },
-        'WELCOME20': { type: 'percent', value: 20 },
+        'SAVE10':     { type: 'percent', value: 10 },
+        '10OFF':      { type: 'fixed',   value: 10 },
+        'WELCOME20':  { type: 'percent', value: 20 },
         'NEXTREAD15': { type: 'percent', value: 15 }
     };
 }
@@ -29,7 +30,7 @@ function calculateDiscount(coupon, cartTotal) {
 }
 
 // POST /api/coupons/validate
-// Public endpoint — validates coupon code server-side and returns discount amount.
+// Public endpoint — validates coupon code server-side (DB first, then static fallback).
 // Never exposes the full coupon list; only confirms validity for a specific code.
 router.post('/validate', async (req, res) => {
     try {
@@ -39,24 +40,18 @@ router.post('/validate', async (req, res) => {
             return res.status(400).json({ valid: false, error: 'Coupon code is required' });
         }
 
-        const normalizedCode = code.trim().toUpperCase();
         const cartAmount = parseFloat(cartTotal) || 0;
+        const result = await couponService.validateCoupon(code, cartAmount);
 
-        const coupons = getCoupons();
-        const coupon = coupons[normalizedCode];
-
-        if (!coupon) {
-            return res.json({ valid: false });
+        if (!result.valid) {
+            return res.json({ valid: false, message: result.message });
         }
-
-        const discount = calculateDiscount(coupon, cartAmount);
 
         res.json({
             valid: true,
-            code: normalizedCode,
-            couponType: coupon.type,
-            couponValue: coupon.value,
-            discount
+            code: result.code,
+            couponType: result.discountType,
+            discount: result.discountAmount,
         });
     } catch (error) {
         console.error('Coupon validation error:', error);
@@ -64,7 +59,7 @@ router.post('/validate', async (req, res) => {
     }
 });
 
-// Export the discount calculator so checkout routes can re-verify server-side
+// Export the discount calculator so checkoutOfferService can re-verify server-side (static coupons)
 module.exports = router;
 module.exports.calculateDiscount = calculateDiscount;
 module.exports.getCoupons = getCoupons;

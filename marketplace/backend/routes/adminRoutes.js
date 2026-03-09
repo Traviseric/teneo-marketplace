@@ -8,6 +8,8 @@ const OrderService = require('../services/orderService');
 const AnalyticsService = require('../services/analyticsService');
 const db = require('../database/database');
 const auditService = require('../services/auditService');
+const couponService = require('../services/couponService');
+const orderBumpService = require('../services/orderBumpService');
 
 const BRAND = process.env.DEFAULT_BRAND || 'teneo';
 
@@ -524,6 +526,79 @@ router.post('/save-all', authenticateAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error saving settings:', error);
         res.status(500).json({ error: 'Failed to save settings' });
+    }
+});
+
+// ─── Coupon management (admin) ───────────────────────────────────────────────
+
+// List all coupons
+router.get('/coupons', authenticateAdmin, async (req, res) => {
+    try {
+        const coupons = await couponService.listCoupons();
+        res.json({ success: true, coupons });
+    } catch (error) {
+        console.error('Error listing coupons:', error);
+        res.status(500).json({ error: 'Failed to list coupons' });
+    }
+});
+
+// Create a coupon
+router.post('/coupons', authenticateAdmin, async (req, res) => {
+    try {
+        const { code, type, amount, expires_at, max_uses } = req.body;
+        const coupon = await couponService.createCoupon({ code, type, amount, expires_at, max_uses });
+        res.status(201).json({ success: true, coupon });
+    } catch (error) {
+        console.error('Error creating coupon:', error);
+        const status = error.message.includes('required') || error.message.includes('must be') ? 400 : 500;
+        res.status(status).json({ error: error.message });
+    }
+});
+
+// Deactivate a coupon
+router.delete('/coupons/:id', authenticateAdmin, async (req, res) => {
+    try {
+        await couponService.deactivateCoupon(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deactivating coupon:', error);
+        res.status(500).json({ error: 'Failed to deactivate coupon' });
+    }
+});
+
+// ─── Order bump management (admin) ───────────────────────────────────────────
+
+// List all order bumps
+router.get('/order-bumps', authenticateAdmin, async (req, res) => {
+    try {
+        const bumps = await orderBumpService.listBumps();
+        res.json({ success: true, bumps });
+    } catch (error) {
+        console.error('Error listing order bumps:', error);
+        res.status(500).json({ error: 'Failed to list order bumps' });
+    }
+});
+
+// Create an order bump
+router.post('/order-bumps', authenticateAdmin, async (req, res) => {
+    try {
+        const bump = await orderBumpService.createBump(req.body);
+        res.status(201).json({ success: true, bump });
+    } catch (error) {
+        console.error('Error creating order bump:', error);
+        const status = error.message.includes('required') ? 400 : 500;
+        res.status(status).json({ error: error.message });
+    }
+});
+
+// Deactivate an order bump
+router.delete('/order-bumps/:id', authenticateAdmin, async (req, res) => {
+    try {
+        await orderBumpService.deactivateBump(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deactivating order bump:', error);
+        res.status(500).json({ error: 'Failed to deactivate order bump' });
     }
 });
 

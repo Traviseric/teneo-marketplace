@@ -344,15 +344,15 @@
                 <!-- Dynamic cart items will be loaded here -->
             </div>
 
-            <!-- Order Bump -->
-            <div class="order-bump">
+            <!-- Order Bump — dynamically loaded from /api/checkout/bump -->
+            <div class="order-bump" id="orderBumpContainer" style="display: none;">
                 <div class="order-bump-checkbox">
                     <input type="checkbox" id="orderBump" onchange="updateTotal()">
                     <div class="order-bump-content">
                         <span class="badge">🔥 One-Time Offer</span>
-                        <h4>Add "Complete Book Bundle" for just $10 more!</h4>
-                        <p>Get the hardcover edition + audiobook + workbook (normally $49)</p>
-                        <div class="order-bump-price">+$10.00 (Save $39!)</div>
+                        <h4 id="orderBumpName"></h4>
+                        <p id="orderBumpDescription"></p>
+                        <div class="order-bump-price" id="orderBumpPriceLabel"></div>
                     </div>
                 </div>
             </div>
@@ -494,12 +494,33 @@ let cart = {
         };
     }),
     orderBump: {
-        price: 10.00,
+        id: null,
+        price: 0,
         included: false
     },
     discount: 0,
     coupon: null
 };
+
+// Fetch active order bump from server and populate UI
+async function loadOrderBump() {
+    try {
+        const productId = cart.items.length > 0 ? cart.items[0].id : '';
+        const resp = await fetch(`/api/checkout/bump?productId=${encodeURIComponent(productId)}`);
+        const data = await resp.json();
+        if (data.bump) {
+            cart.orderBump.id = data.bump.id;
+            cart.orderBump.price = data.bump.price;
+            document.getElementById('orderBumpName').textContent =
+                `Add "${data.bump.name}" for just $${data.bump.price.toFixed(2)} more!`;
+            document.getElementById('orderBumpDescription').textContent = data.bump.description || '';
+            document.getElementById('orderBumpPriceLabel').textContent = `+$${data.bump.price.toFixed(2)}`;
+            document.getElementById('orderBumpContainer').style.display = '';
+        }
+    } catch (err) {
+        // Non-fatal — hide bump if unavailable
+    }
+}
 
 // Load cart items
 function loadCart() {
@@ -624,7 +645,8 @@ document.getElementById('payment-form').addEventListener('submit', async (e) => 
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 items: cart.items,
-                orderBump: cart.orderBump.included,
+                bumpAccepted: cart.orderBump.included,
+                bumpId: cart.orderBump.included ? cart.orderBump.id : undefined,
                 coupon: cart.coupon,
                 email: document.getElementById('email').value
             })
@@ -664,6 +686,7 @@ document.getElementById('payment-form').addEventListener('submit', async (e) => 
 
 // Initialize
 loadCart();
+loadOrderBump();
 </script>
 
 </body>
