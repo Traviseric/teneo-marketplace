@@ -3,8 +3,8 @@ const router = express.Router();
 const crypto = require('crypto');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
-const db = require('../database/database');
 const { isValidEmail } = require('../utils/validate');
+const { dbRun, dbGet } = require('../services/databaseHelper');
 const OrderService = require('../services/orderService');
 const orderService = new OrderService();
 const btcpayService = require('../services/btcpayService');
@@ -73,24 +73,6 @@ async function getCryptoAmount(method, usdAmount) {
     const coinId = COIN_IDS[method] || 'bitcoin';
     const usdPerCoin = await getUsdPrice(coinId);
     return (usdAmount / usdPerCoin).toFixed(8);
-}
-
-// ─── DB Helpers ───────────────────────────────────────────────────────────────
-
-function dbRun(sql, params) {
-    return new Promise((resolve, reject) => {
-        db.run(sql, params, function(err) {
-            if (err) reject(err); else resolve(this);
-        });
-    });
-}
-
-function dbGet(sql, params) {
-    return new Promise((resolve, reject) => {
-        db.get(sql, params, (err, row) => {
-            if (err) reject(err); else resolve(row);
-        });
-    });
 }
 
 // Get payment address helper — throws if the required env var is not set

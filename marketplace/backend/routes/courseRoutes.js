@@ -26,37 +26,10 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
 const certificateService = require('../services/certificateService');
 const aiCourseBuilderService = require('../services/aiCourseBuilderService');
-
-// Helper: promisified db.get
-function dbGet(sql, params) {
-    return new Promise((resolve, reject) => {
-        db.get(sql, params, (err, row) => {
-            if (err) reject(err); else resolve(row);
-        });
-    });
-}
-
-// Helper: promisified db.all
-function dbAll(sql, params) {
-    return new Promise((resolve, reject) => {
-        db.all(sql, params, (err, rows) => {
-            if (err) reject(err); else resolve(rows);
-        });
-    });
-}
-
-// Helper: promisified db.run
-function dbRun(sql, params) {
-    return new Promise((resolve, reject) => {
-        db.run(sql, params, function(err) {
-            if (err) reject(err); else resolve(this);
-        });
-    });
-}
+const { dbRun, dbGet, dbAll } = require('../services/databaseHelper');
 
 // ─── Public Routes ────────────────────────────────────────────────────────────
 

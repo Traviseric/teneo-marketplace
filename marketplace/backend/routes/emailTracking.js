@@ -10,33 +10,14 @@
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
-const db = require('../database/database');
 const { authenticateAdmin } = require('../middleware/auth');
+const { dbRun, dbGet, dbAll } = require('../services/databaseHelper');
 
 // 1×1 transparent GIF (standard email tracking pixel)
 const TRACKING_PIXEL = Buffer.from(
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
   'base64'
 );
-
-// Promise wrappers for raw sqlite3 (matches pattern in courseRoutes.js)
-function dbGet(sql, params) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => { if (err) reject(err); else resolve(row); });
-  });
-}
-
-function dbRun(sql, params) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function(err) { if (err) reject(err); else resolve(this); });
-  });
-}
-
-function dbAll(sql, params) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => { if (err) reject(err); else resolve(rows || []); });
-  });
-}
 
 /**
  * POST /api/email/subscribe
