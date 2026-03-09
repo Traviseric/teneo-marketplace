@@ -30,13 +30,19 @@ const { trackReferral } = require('./referralRoutes');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Rate limiter configuration constants
+const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const CHECKOUT_RATE_LIMIT_MAX = 10;
+const WEBHOOK_RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const WEBHOOK_RATE_LIMIT_MAX = 30;
+
 // Checkout session rate limiter — 10 per hour per IP (CWE-770)
 // Disabled in test environment to allow test suites to run freely
 const checkoutLimiter = process.env.NODE_ENV === 'test'
   ? (req, res, next) => next()
   : rateLimit({
-      windowMs: 60 * 60 * 1000,
-      max: 10,
+      windowMs: CHECKOUT_RATE_LIMIT_WINDOW_MS,
+      max: CHECKOUT_RATE_LIMIT_MAX,
       message: { success: false, error: 'Too many checkout attempts. Please try again later.' },
       standardHeaders: true,
       legacyHeaders: false,
@@ -919,7 +925,12 @@ router.post('/arxmint', checkoutLimiter, async (req, res) => {
     // 1. Try ArxMint L402 Lightning invoice (graceful degradation when stub)
     let invoice = null;
     let macaroon = null;
-    const amountSats = Math.round((usdAmount / 60000) * 1e8); // rough sats estimate for ArxMint
+    const btcFallbackPrice = parseInt(process.env.BTC_FALLBACK_PRICE_USD || '0', 10);
+    if (!btcFallbackPrice) {
+      console.error('[checkout] BTC_FALLBACK_PRICE_USD not set — cannot calculate sats amount accurately');
+      return res.status(503).json({ success: false, error: 'Lightning payment temporarily unavailable' });
+    }
+    const amountSats = Math.round((usdAmount / btcFallbackPrice) * 1e8);
     const arxmintAttempt = await arxmintService.createL402Invoice(
       amountSats,
       bookId,
@@ -1020,7 +1031,7 @@ router.post('/arxmint', checkoutLimiter, async (req, res) => {
 // Digital-only carts (no variantId) return an empty rates array immediately.
 const shippingRatesLimiter = process.env.NODE_ENV === 'test'
   ? (req, res, next) => next()
-  : rateLimit({ windowMs: 60 * 1000, max: 30, standardHeaders: true, legacyHeaders: false });
+  : rateLimit({ windowMs: WEBHOOK_RATE_LIMIT_WINDOW_MS, max: WEBHOOK_RATE_LIMIT_MAX, standardHeaders: true, legacyHeaders: false });
 
 router.post('/shipping-rates', shippingRatesLimiter, async (req, res) => {
   try {
