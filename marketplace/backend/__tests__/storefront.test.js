@@ -25,6 +25,8 @@ jest.mock('../services/orderService', () =>
     getOrderBySessionId: jest.fn().mockResolvedValue(null),
     completeOrder: jest.fn().mockResolvedValue({ downloadToken: 'tok-test-123' }),
     updateOrderStatus: jest.fn().mockResolvedValue({}),
+    // updateOrderState added: checkout unification introduced state-machine transitions
+    updateOrderState: jest.fn().mockResolvedValue({}),
   }))
 );
 
@@ -241,6 +243,7 @@ describe('POST /api/storefront/fulfill — digital fulfillment happy path', () =
     if (instance) {
       instance.completeOrder.mockClear().mockResolvedValue({ downloadToken: 'tok-digital-789' });
       instance.updateOrderStatus.mockClear().mockResolvedValue({});
+      instance.updateOrderState.mockClear().mockResolvedValue({});
       instance.createOrder.mockClear().mockResolvedValue({});
       instance.getOrder.mockClear().mockResolvedValue(null);
       instance.getOrderBySessionId.mockClear().mockResolvedValue(null);
