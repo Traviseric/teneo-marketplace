@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Component Library - OpenBazaar AI</title>
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/base.css">
     <style>
         /* ================================================
            OPENBAZAAR AI THEME SYSTEM
@@ -17,7 +19,7 @@
             box-sizing: border-box;
         }
 
-        /* Theme Variables */
+        /* Theme Variables — page-specific; globals in styles/variables.css */
         :root {
             /* Colors - Gray Scale Only */
             --color-bg-primary: #FFFFFF;
@@ -45,18 +47,10 @@
             --font-weight-semibold: 600;
             --font-weight-bold: 700;
 
-            /* Font Sizes */
-            --text-xs: 0.75rem;      /* 12px */
-            --text-sm: 0.875rem;     /* 14px */
-            --text-base: 1rem;       /* 16px */
-            --text-lg: 1.125rem;     /* 18px */
-            --text-xl: 1.25rem;      /* 20px */
-            --text-2xl: 1.5rem;      /* 24px */
-            --text-3xl: 1.875rem;    /* 30px */
-            --text-4xl: 2.25rem;     /* 36px */
-            --text-5xl: 3rem;        /* 48px */
+            /* Font Sizes — --text-xs through --text-4xl match variables.css */
+            --text-5xl: 3rem;        /* 48px — extra size not in variables.css */
 
-            /* Spacing */
+            /* Spacing — uses --spacing-* prefix distinct from variables.css --space-* */
             --spacing-xs: 0.25rem;   /* 4px */
             --spacing-sm: 0.5rem;    /* 8px */
             --spacing-md: 1rem;      /* 16px */
@@ -65,19 +59,19 @@
             --spacing-2xl: 3rem;     /* 48px */
             --spacing-3xl: 4rem;     /* 64px */
 
-            /* Border Radius */
+            /* Border Radius — rem-unit variants (variables.css uses px) */
             --radius-sm: 0.25rem;    /* 4px */
             --radius-md: 0.5rem;     /* 8px */
             --radius-lg: 0.75rem;    /* 12px */
             --radius-xl: 1rem;       /* 16px */
 
-            /* Shadows */
+            /* Shadows — slightly different values from variables.css */
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
             --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08);
             --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
 
-            /* Transitions */
+            /* Transitions — ease-in-out variant */
             --transition-fast: 150ms ease-in-out;
             --transition-base: 200ms ease-in-out;
             --transition-slow: 300ms ease-in-out;
