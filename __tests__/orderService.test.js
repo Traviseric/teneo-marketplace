@@ -225,6 +225,7 @@ describe('OrderService.createOrder() — federation revenue share persistence', 
         });
 
         const orderId = uniqueOrderId();
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         // Should resolve without throwing — INSERT failure is non-fatal
         await expect(
             service.createOrder({
@@ -233,6 +234,8 @@ describe('OrderService.createOrder() — federation revenue share persistence', 
                 metadata: { sourceNode: 'peer-node-abc', revenueSharePct: 5 }
             })
         ).resolves.toMatchObject({ orderId });
+        await new Promise(r => setTimeout(r, 0));
+        consoleErrorSpy.mockRestore();
     });
 });
 

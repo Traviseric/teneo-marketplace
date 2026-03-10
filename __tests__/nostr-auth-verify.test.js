@@ -26,6 +26,9 @@ jest.mock('../marketplace/backend/database/db', () => ({
     isPostgres: false,
 }));
 
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -106,6 +109,11 @@ beforeEach(() => {
         if (callback) callback(null);
         return Promise.resolve({ lastID: 1, changes: 1 });
     });
+});
+
+afterAll(() => {
+    consoleWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
 });
 
 describe('POST /api/auth/nostr/verify — input validation', () => {

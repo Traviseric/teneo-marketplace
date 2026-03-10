@@ -35,9 +35,8 @@
     ],
     "moduleNameMapper": {
       "^stripe$": "<rootDir>/marketplace/backend/node_modules/stripe",
-      "^axios$": "<rootDir>/marketplace/backend/node_modules/axios"
-    },
-    "forceExit": true
+      "^axios$": "<rootDir>/node_modules/axios/dist/node/axios.cjs"
+    }
   },
   "keywords": [
     "marketplace",

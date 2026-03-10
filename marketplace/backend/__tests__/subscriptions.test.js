@@ -8,6 +8,8 @@
 const express = require('express');
 const request = require('supertest');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
 // ---------------------------------------------------------------------------
 // Mock stripe before importing routes
 // ---------------------------------------------------------------------------
@@ -219,4 +221,8 @@ describe('Admin tier CRUD', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
   });
+});
+
+afterAll(() => {
+  consoleLogSpy.mockRestore();
 });

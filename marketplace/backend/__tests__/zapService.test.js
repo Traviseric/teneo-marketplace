@@ -52,6 +52,12 @@ function signEvent(unsigned, privKey) {
   return { ...withPubkey, id, sig };
 }
 
+function flipHexChar(value) {
+  const first = value[0];
+  const replacement = first === 'a' ? 'b' : 'a';
+  return replacement + value.slice(1);
+}
+
 /**
  * Build a valid NIP-57 kind 9734 zap request event.
  */
@@ -129,7 +135,7 @@ describe('verifyEventSignature', () => {
     const privKey = schnorr.utils.randomPrivateKey();
     const unsigned = { kind: 1, pubkey: '', created_at: 0, tags: [], content: '' };
     const signed = signEvent(unsigned, privKey);
-    const tampered = { ...signed, id: signed.id.replace('a', 'b') };
+    const tampered = { ...signed, id: flipHexChar(signed.id) };
     expect(verifyEventSignature(tampered)).toBe(false);
   });
 

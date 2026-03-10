@@ -1,31 +1,52 @@
-# 📚 OpenBazaar AI Documentation
+# OpenBazaar AI Documentation
 
-**Complete documentation for deploying, configuring, and extending the OpenBazaar AI.**
+**Complete documentation for deploying, configuring, and extending OpenBazaar AI.**
 
 ---
 
-## 🚀 Quick Navigation
+## Current Reality
+
+**Updated:** March 9, 2026
+
+This docs index keeps the richer original structure, but the current truth is:
+
+- the repo has a broad implemented feature surface
+- the automated suite is not fully green yet
+- several high-value flows are implemented but still need production validation
+
+Canonical truth sources:
+
+- [reference/MARKETPLACE_STATUS_AND_TODO.md](reference/MARKETPLACE_STATUS_AND_TODO.md)
+- [ROADMAP.md](ROADMAP.md)
+- [../CHANGELOG.md](../CHANGELOG.md)
+
+Use those first when a feature doc and the code appear to disagree.
+
+---
+
+## Quick Navigation
 
 ### New to OpenBazaar AI?
 1. **[Quick Start Guide](quick-start/MVP_48_HOUR_LAUNCH.md)** - Deploy your first node in 48 hours
 2. **[Core Architecture](core/DUAL_MODE_ARCHITECTURE.md)** - Understand the dual-mode system
 3. **[Quick Deploy](quick-start/QUICK_DEPLOY.md)** - Fastest deployment path
+4. **[Current Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - What is working, partial, blocked, and next
 
 ### Setting Up Your Node
 - **[Deployment Overview](deployment/DEPLOYMENT.md)** - Production deployment guide
 - **[Production Setup](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Detailed production checklist
 - **[Docker Deployment](deployment/DOCKER_DEPLOYMENT.md)** - Containerized deployment
-- **[Censorship-Resistant Setup](deployment/CENSORSHIP_RESISTANT_MVP.md)** - Offshore & failover configuration
+- **[Censorship-Resistant Setup](deployment/CENSORSHIP_RESISTANT_MVP.md)** - Offshore and failover configuration
 
 ### Configuring Features
 - **[Authentication Setup](integration/AUTH_SETUP.md)** - Local auth or TENEO Auth SSO
 - **[Stripe Integration](deployment/STRIPE_SETUP.md)** - Payment processing setup
 - **[Security Hardening](reference/SECURITY_SETUP_GUIDE.md)** - Complete security checklist
-- **[TENEO Auth OAuth](integration/TENEO_AUTH_OAUTH_CLIENT_SETUP.md)** - SSO integration
+- **[Operator Guide](OPERATOR_GUIDE.md)** - Managed AI store-build workflow
 
 ---
 
-## 📂 Documentation Structure
+## Documentation Structure
 
 ### [quick-start/](quick-start/)
 Fast-track guides for getting started quickly
@@ -35,7 +56,7 @@ Fast-track guides for getting started quickly
 
 ### [core/](core/)
 Core architecture and design principles
-- **[Dual-Mode Architecture](core/DUAL_MODE_ARCHITECTURE.md)** ⭐ - Primary + fallback modes
+- **[Dual-Mode Architecture](core/DUAL_MODE_ARCHITECTURE.md)** - Primary + fallback modes
 - **[Implementation Map](core/IMPLEMENTATION_MAP.md)** - System component overview
 - **[Interface Specification](core/INTERFACE_SPECIFICATION.md)** - API contracts
 
@@ -49,24 +70,24 @@ Feature guides and implementation details
 - **[Funnel Integration Plan](features/FUNNEL_BUILDER_INTEGRATION_PLAN.md)** - Integration strategy
 - **[Email Marketing](features/EMAIL_MARKETING_IMPLEMENTATION.md)** - Marketing automation
 - **[Podia Feature Parity](features/PODIA_FEATURE_PARITY.md)** - Competitive analysis
-- Information Asymmetry brand (backend books)
-- Amazon integration & published books tracking
+- Information Asymmetry brand notes
+- Amazon integration and published books tracking
 - Multi-channel sales strategies
 - Brand automation roadmap
 
 ### [deployment/](deployment/)
 Production deployment and infrastructure
-- **[Production Setup](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)** ⭐
+- **[Production Setup](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)**
 - **[Production Deployment](deployment/PRODUCTION_DEPLOYMENT.md)** - Production guide
-- **[Censorship-Resistant MVP](deployment/CENSORSHIP_RESISTANT_MVP.md)** ⭐
+- **[Censorship-Resistant MVP](deployment/CENSORSHIP_RESISTANT_MVP.md)**
 - **[Render Deployment](deployment/RENDER_DEPLOYMENT.md)** - Deploy to Render
 - Docker deployment
 - Stripe production configuration
-- Deployment status & checklists
+- Deployment status and checklists
 
 ### [integration/](integration/)
 Third-party integrations and OAuth setup
-- **[Authentication Setup](integration/AUTH_SETUP.md)** ⭐ - Local vs TENEO Auth
+- **[Authentication Setup](integration/AUTH_SETUP.md)** - Local vs TENEO Auth
 - **[TENEO Auth Integration](integration/TENEO_AUTH_INTEGRATION_STRATEGY.md)** - SSO strategy
 - Orchestrator integration
 - Webhook configuration
@@ -76,29 +97,25 @@ Third-party integrations and OAuth setup
 Contributing and extending the platform
 - **[Contributing Guide](development/CONTRIBUTING.md)**
 - **[AI Builder Strategy](development/AI_BUILDER_STRATEGY.md)** - Build with Claude Code
+- **[AI Store Builder Checklist](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)** - Execution companion
 
 ### [legal/](legal/)
 Brand protection and legal operations
 - **[Trademark Filing Automation](legal/TRADEMARK_AUTOMATION.md)** - Filing packets and docket workflow
 
-### [operations/](operations/)
-Day-to-day operations and maintenance
-- Health monitoring
-- Failover procedures
-- Backup strategies
-
 ### [reference/](reference/)
 Technical reference and specifications
-- **[Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)** ⭐ - 4-6 hour hardening
-- **[Security Audit Report](reference/SECURITY_AUDIT_REPORT.md)** - Recent security audit
+- **[Marketplace Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - Canonical current state
+- **[Best Practices Audit](reference/BEST_PRACTICES_AUDIT.md)** - Repo-wide compliance audit against TE Code guidance
+- **[Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)** - Deployment hardening
+- **[Security Audit Report](reference/SECURITY_AUDIT_REPORT.md)** - Security review
 - **[Open Source Assessment](reference/OPEN_SOURCE_ASSESSMENT.md)** - Project evaluation
 - **[Documentation Map](reference/DOCUMENTATION_MAP.md)** - Complete doc navigation
-- **[Marketplace Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - Current status
 - **[Auth Integration Complete](reference/AUTH_INTEGRATION_COMPLETE.md)** - Auth system docs
 - **[Course Module Cleanup](reference/COURSE_MODULE_CLEANUP_SUMMARY.md)** - Cleanup summary
 - **[Course Migration Guide](reference/COURSE_MODULE_MIGRATION_GUIDE.md)** - Migration docs
 - **[Funnel Infrastructure Audit](reference/FUNNEL_INFRASTRUCTURE_AUDIT.md)** - Funnel audit
-- **[Implementation Plan](reference/IMPLEMENTATION_PLAN.md)** - Overall plan
+- **[Implementation Plan](reference/IMPLEMENTATION_PLAN.md)** - Historical planning context
 - **[Marketplace vs Production Strategy](reference/MARKETPLACE_VS_PRODUCTION_STRATEGY.md)** - Repo strategy
 - Cost tracking architecture
 - Public vs private strategy
@@ -106,76 +123,76 @@ Technical reference and specifications
 
 ---
 
-## 🎯 Role-Based Reading Paths
+## Role-Based Reading Paths
 
 ### For Node Operators
 **Goal: Deploy and run a marketplace node**
 
-1. [Quick Start Guide](quick-start/MVP_48_HOUR_LAUNCH.md) - Fastest path to deployment
-2. [Authentication Setup](integration/AUTH_SETUP.md) - Choose local or SSO
-3. [Security Hardening](reference/SECURITY_SETUP_GUIDE.md) - Secure your deployment
-4. [Production Deployment](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md) - Production best practices
+1. [Current Status](reference/MARKETPLACE_STATUS_AND_TODO.md)
+2. [Quick Start Guide](quick-start/MVP_48_HOUR_LAUNCH.md)
+3. [Authentication Setup](integration/AUTH_SETUP.md)
+4. [Security Hardening](reference/SECURITY_SETUP_GUIDE.md)
+5. [Production Deployment](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)
 
 ### For Developers
 **Goal: Contribute code or build custom features**
 
-1. [Core Architecture](core/DUAL_MODE_ARCHITECTURE.md) - Understand the system
-2. [Implementation Map](core/IMPLEMENTATION_MAP.md) - Navigate the codebase
-3. [Contributing Guide](development/CONTRIBUTING.md) - Contribution workflow
-4. [AI Builder Strategy](development/AI_BUILDER_STRATEGY.md) - Build with Claude
+1. [Current Status](reference/MARKETPLACE_STATUS_AND_TODO.md)
+2. [Roadmap](ROADMAP.md)
+3. [Core Architecture](core/DUAL_MODE_ARCHITECTURE.md)
+4. [Implementation Map](core/IMPLEMENTATION_MAP.md)
+5. [Contributing Guide](development/CONTRIBUTING.md)
+6. [AI Builder Strategy](development/AI_BUILDER_STRATEGY.md)
 
-### For Publishers
-**Goal: Use the platform to sell books**
+### For Operators of the AI Store Builder
+**Goal: Run paid or internal store builds cleanly**
 
-1. [Information Asymmetry Guide](features/INFORMATION_ASYMMETRY_IMPLEMENTATION.md) - Backend book strategy
-2. [Published Books Tracking](features/PUBLISHED_PAGE_GUIDE.md) - Amazon integration
-3. [Multi-Channel Sales](features/MULTI_CHANNEL_SALES_STRATEGY.md) - Diversify revenue
+1. [Operator Guide](OPERATOR_GUIDE.md)
+2. [AI Store Builder Checklist](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
+3. [Roadmap](ROADMAP.md)
 
 ### For Security Auditors
 **Goal: Assess platform security**
 
-1. [Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md) - Complete security checklist
-2. [Authentication Architecture](integration/TENEO_AUTH_INTEGRATION_STRATEGY.md) - Auth design
-3. [Deployment Security](deployment/DEPLOYMENT.md) - Infrastructure security
+1. [Current Status](reference/MARKETPLACE_STATUS_AND_TODO.md)
+2. [Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)
+3. [Authentication Architecture](integration/TENEO_AUTH_INTEGRATION_STRATEGY.md)
+4. [Deployment Security](deployment/DEPLOYMENT.md)
 
 ---
 
-## 🔥 Priority Documentation (Start Here)
+## Priority Documentation
 
-### ⭐⭐⭐ Essential (Read First)
+### Essential
+- **[Marketplace Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - Current truth source
+- **[Roadmap](ROADMAP.md)** - Canonical phased plan
 - **[Dual-Mode Architecture](core/DUAL_MODE_ARCHITECTURE.md)** - Core system design
-- **[Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)** - Critical for deployment
 - **[Authentication Setup](integration/AUTH_SETUP.md)** - User authentication
 
-### ⭐⭐ Important (Read for Production)
+### Important
 - **[Production Deployment](deployment/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Production setup
-- **[Censorship-Resistant MVP](deployment/CENSORSHIP_RESISTANT_MVP.md)** - Failover setup
-- **[Marketplace Status](reference/MARKETPLACE_STATUS_AND_TODO.md)** - What's built, what's pending
+- **[Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md)** - Deployment hardening
+- **[Operator Guide](OPERATOR_GUIDE.md)** - Managed store-build execution
 
-### ⭐ Helpful (Read as Needed)
+### Helpful
 - **[Quick Deploy](quick-start/QUICK_DEPLOY.md)** - Fastest deployment
 - **[Implementation Map](core/IMPLEMENTATION_MAP.md)** - Code navigation
 - **[TENEO Auth Integration](integration/TENEO_AUTH_INTEGRATION_STRATEGY.md)** - SSO details
 
 ---
 
-## 📞 Quick Reference Cards
-
-### Emergency Procedures
-```bash
-# If primary mode goes down (Stripe blocked, hosting seized):
-# 1. Automatic failover activates crypto mode
-# 2. DNS switches to offshore VPS
-# 3. Tor .onion address continues service
-# 4. Network nodes notified of failover
-
-# See: deployment/CENSORSHIP_RESISTANT_MVP.md for details
-```
+## Quick Reference Cards
 
 ### Common Commands
 ```bash
 # Start marketplace
 npm start
+
+# Dev server
+npm run dev
+
+# Full test run
+npm test -- --runInBand
 
 # Initialize database
 node marketplace/backend/database/init.js
@@ -183,60 +200,39 @@ node marketplace/backend/database/init.js
 # Generate admin password
 node marketplace/backend/scripts/generate-password-hash.js "YourPassword"
 
-# Test Stripe integration
-node test-stripe-key.js
-
 # Deploy with Docker
 docker-compose up -d
 ```
 
 ### Configuration Files
-- `.env` - Environment configuration (NEVER commit to git)
+- `.env` - Environment configuration (never commit to git)
 - `.env.example` - Template for environment variables
 - `marketplace/backend/database/schema.sql` - Database structure
 - `marketplace/frontend/brands/*/config.json` - Brand configurations
 
 ---
 
-## 🔐 Security Reminders
+## Documentation Governance
 
-### Before Deploying to Production
+This repo now follows the documentation-related parts of `C:\code\.claude\BEST_PRACTICES.md` more explicitly:
 
-✅ **Generate strong secrets** (see [Security Setup Guide](reference/SECURITY_SETUP_GUIDE.md))
-```bash
-openssl rand -hex 32  # SESSION_SECRET
-openssl rand -hex 32  # JWT_SECRET
-```
+- canonical roadmap: [ROADMAP.md](ROADMAP.md)
+- canonical current-state doc: [reference/MARKETPLACE_STATUS_AND_TODO.md](reference/MARKETPLACE_STATUS_AND_TODO.md)
+- best-practices audit: [reference/BEST_PRACTICES_AUDIT.md](reference/BEST_PRACTICES_AUDIT.md)
+- changelog at repo root: [../CHANGELOG.md](../CHANGELOG.md)
+- docs index acts as a stable discovery layer instead of competing with the truth docs
 
-✅ **Configure HTTPS** (Cloudflare or Let's Encrypt)
+When project state changes, keep these files aligned:
 
-✅ **Set up email security** (SPF, DKIM, DMARC)
-
-✅ **Enable rate limiting** (included by default)
-
-✅ **Audit logs enabled** (check database/audit_logs table)
-
-✅ **Review .gitignore** (no secrets in git history)
+- `README.md`
+- `docs/README.md`
+- `docs/ROADMAP.md`
+- `docs/reference/MARKETPLACE_STATUS_AND_TODO.md`
+- `CHANGELOG.md`
 
 ---
 
-## 🌐 Federation Network
-
-The marketplace is designed for federation - anyone can deploy a node and join the network.
-
-**Benefits of running a node:**
-- 10-20% referral fees on network sales
-- Build your own brand and community
-- Censorship insurance (distributed network)
-- Cross-node discovery of books
-
-**Learn more:**
-- [Dual-Mode Architecture](core/DUAL_MODE_ARCHITECTURE.md#federation-network)
-- [Quick Deploy](quick-start/QUICK_DEPLOY.md)
-
----
-
-## 📖 Additional Resources
+## Additional Resources
 
 ### Official Documentation
 - **[Main README](../README.md)** - Project overview
@@ -253,20 +249,19 @@ The marketplace is designed for federation - anyone can deploy a node and join t
 
 ---
 
-## 🎯 Documentation Standards
+## Documentation Standards
 
-All documentation in this repository follows these standards:
+All documentation in this repository should follow these standards:
 
-- **Markdown format** with GitHub-flavored syntax
-- **Clear headings** for easy navigation
-- **Code examples** with syntax highlighting
-- **Step-by-step instructions** where applicable
-- **Cross-references** to related documentation
-- **Priority indicators** (⭐⭐⭐ Essential, ⭐⭐ Important, ⭐ Helpful)
+- Markdown with clear headings
+- Accurate status labeling: implemented, partial, beta, planned, blocked
+- Evidence-backed roadmap updates
+- No content loss when trimming or reorganizing docs
+- Cross-links to the canonical truth docs
 
 ---
 
-## 📝 Contributing to Documentation
+## Contributing to Documentation
 
 Found an error or want to improve the docs? See [Contributing Guide](development/CONTRIBUTING.md).
 
@@ -274,15 +269,11 @@ Found an error or want to improve the docs? See [Contributing Guide](development
 - Fix typos and errors
 - Add missing examples
 - Improve clarity
-- Translate to other languages
 - Add diagrams and visuals
+- Keep docs aligned with the actual code and verification state
 
 ---
 
-**Last Updated:** November 22, 2025
+**Last Updated:** March 9, 2026
 
-**Documentation Version:** 2.1 (Reorganized - Clean Root)
-
----
-
-*Need help? Check the appropriate guide above or open a GitHub issue.*
+*Need help? Start with the current status doc and roadmap, then branch into the feature or deployment guide you need.*

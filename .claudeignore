@@ -1,5 +1,8 @@
-# Binary/large files — never read directly
+# Binary/large files - never read directly
 **/*.pdf
+**/*.docx
+**/*.xlsx
+**/*.pptx
 **/*.epub
 **/*.mobi
 **/*.db

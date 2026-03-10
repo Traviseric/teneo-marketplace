@@ -33,6 +33,10 @@ jest.mock('resend', () => ({
   })),
 }));
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 const emailService = require('../services/emailService');
 
 // ---------------------------------------------------------------------------
@@ -53,6 +57,12 @@ afterEach(() => {
   emailService.transporter = null;
   emailService._provider = null;
   emailService._resend = null;
+});
+
+afterAll(() => {
+  consoleLogSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
 });
 
 // ---------------------------------------------------------------------------

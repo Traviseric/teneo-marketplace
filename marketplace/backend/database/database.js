@@ -437,7 +437,60 @@ function createSqliteAdapter() {
     return rawDb;
 }
 
+function readSchemaFile(fileName) {
+    const filePath = path.join(__dirname, fileName);
+    if (!fs.existsSync(filePath)) {
+        return '';
+    }
+    return fs.readFileSync(filePath, 'utf8');
+}
+
+function logSqliteInitError(label, err, options = {}) {
+    if (!err) {
+        return;
+    }
+
+    const message = err.message || String(err);
+    const ignorePatterns = options.ignorePatterns || [];
+
+    if (ignorePatterns.some((pattern) => pattern.test(message))) {
+        return;
+    }
+
+    if (options.messageOnly) {
+        console.error(label, message);
+        return;
+    }
+
+    console.error(label, err);
+}
+
 function initializeSqliteDatabase(db) {
+    const baseSchemaSql = readSchemaFile('schema.sql');
+    const funnelSchemaSql = readSchemaFile('schema-funnels.sql');
+    const emailMktSql = readSchemaFile('schema-email-marketing.sql');
+    const coursesSql = readSchemaFile('schema-courses.sql');
+    const appStoreSql = readSchemaFile('schema-appstore.sql');
+
+    db.serialize(() => {
+    if (baseSchemaSql) {
+        db.exec(baseSchemaSql, (err) => {
+            logSqliteInitError('Error creating base schema:', err, {
+                messageOnly: true,
+                ignorePatterns: [/already exists/i],
+            });
+        });
+    }
+
+    if (funnelSchemaSql) {
+        db.exec(funnelSchemaSql, (err) => {
+            logSqliteInitError('Error creating funnel schema:', err, {
+                messageOnly: true,
+                ignorePatterns: [/already exists/i],
+            });
+        });
+    }
+
     // Ensure books table exists
     db.run(`
         CREATE TABLE IF NOT EXISTS books (
@@ -453,9 +506,7 @@ function initializeSqliteDatabase(db) {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
-        if (err) {
-            console.error('Error creating books table:', err);
-        }
+        logSqliteInitError('Error creating books table:', err);
     });
 
     // Ensure book_formats table exists (from schema-lulu.sql)
@@ -478,9 +529,7 @@ function initializeSqliteDatabase(db) {
             UNIQUE(book_id, format_type)
         )
     `, (err) => {
-        if (err) {
-            console.error('Error creating book_formats table:', err);
-        }
+        logSqliteInitError('Error creating book_formats table:', err);
     });
 
     // Course platform tables
@@ -528,54 +577,50 @@ function initializeSqliteDatabase(db) {
             PRIMARY KEY (enrollment_id, lesson_id)
         );
     `, (err) => {
-        if (err) console.error('Error creating course tables:', err);
+        logSqliteInitError('Error creating course tables:', err);
     });
 
     // Migration: add abandonment_email_sent_at to orders (idempotent)
     db.run('ALTER TABLE orders ADD COLUMN abandonment_email_sent_at DATETIME', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding abandonment_email_sent_at column:', err);
-        }
+        logSqliteInitError('Error adding abandonment_email_sent_at column:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
 
     // Printful migration: add POD tracking columns (idempotent)
     const ensurePrintfulOrderIndex = () => {
         db.run('CREATE INDEX IF NOT EXISTS idx_orders_printful_order_id ON orders(printful_order_id)', (err) => {
-            if (err) {
-                console.error('Error creating idx_orders_printful_order_id:', err);
-            }
+            logSqliteInitError('Error creating idx_orders_printful_order_id:', err);
         });
     };
 
     const ensureLuluOrderIndex = () => {
         db.run('CREATE INDEX IF NOT EXISTS idx_orders_lulu_print_job_id ON orders(lulu_print_job_id)', (err) => {
-            if (err) {
-                console.error('Error creating idx_orders_lulu_print_job_id:', err);
-            }
+            logSqliteInitError('Error creating idx_orders_lulu_print_job_id:', err);
         });
     };
 
     db.run('ALTER TABLE orders ADD COLUMN lulu_print_job_id TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding lulu_print_job_id column:', err);
-        }
+        logSqliteInitError('Error adding lulu_print_job_id column:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
         ensureLuluOrderIndex();
     });
     db.run('ALTER TABLE orders ADD COLUMN printful_order_id TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding printful_order_id column:', err);
-        }
+        logSqliteInitError('Error adding printful_order_id column:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
         ensurePrintfulOrderIndex();
     });
     db.run('ALTER TABLE orders ADD COLUMN tracking_number TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding tracking_number column:', err);
-        }
+        logSqliteInitError('Error adding tracking_number column:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
     db.run('ALTER TABLE orders ADD COLUMN tracking_url TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding tracking_url column:', err);
-        }
+        logSqliteInitError('Error adding tracking_url column:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
     db.run(`
         CREATE TABLE IF NOT EXISTS printful_webhook_events (
@@ -591,9 +636,7 @@ function initializeSqliteDatabase(db) {
             processed_at DATETIME
         )
     `, (err) => {
-        if (err) {
-            console.error('Error creating printful_webhook_events table:', err);
-        }
+        logSqliteInitError('Error creating printful_webhook_events table:', err);
     });
 
     // Coupons (server-side, with expiry + usage limits)
@@ -623,15 +666,13 @@ function initializeSqliteDatabase(db) {
         );
         CREATE INDEX IF NOT EXISTS idx_order_bumps_active ON order_bumps(active);
     `, (err) => {
-        if (err) console.error('Error creating coupons/order_bumps tables:', err);
+        logSqliteInitError('Error creating coupons/order_bumps tables:', err);
     });
 
     // Agent App Store schema (schema-appstore.sql)
-    const appStoreSqlPath = path.join(__dirname, 'schema-appstore.sql');
-    if (fs.existsSync(appStoreSqlPath)) {
-        const appStoreSql = fs.readFileSync(appStoreSqlPath, 'utf8');
+    if (appStoreSql) {
         db.exec(appStoreSql, (err) => {
-            if (err) console.error('Error creating app store tables:', err);
+            logSqliteInitError('Error creating app store tables:', err);
         });
     }
 
@@ -670,49 +711,61 @@ function initializeSqliteDatabase(db) {
         CREATE INDEX IF NOT EXISTS idx_funnel_events_funnel ON funnel_events(funnel_id);
         CREATE INDEX IF NOT EXISTS idx_funnel_events_type ON funnel_events(funnel_id, event_type);
     `, (err) => {
-        if (err) console.error('Error creating funnel tables:', err);
+        logSqliteInitError('Error creating funnel tables:', err);
+    });
+
+    // Funnel schema compatibility for email-marketing bootstrap.
+    db.run('ALTER TABLE funnels ADD COLUMN description TEXT', (err) => {
+        logSqliteInitError('Error adding funnels.description:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
+    });
+    db.run('ALTER TABLE funnels ADD COLUMN steps TEXT', (err) => {
+        logSqliteInitError('Error adding funnels.steps:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
 
     // Funnel schema migrations (idempotent)
     db.run('ALTER TABLE funnels ADD COLUMN config_json TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding funnels.config_json:', err);
-        }
+        logSqliteInitError('Error adding funnels.config_json:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
     db.run('ALTER TABLE funnels ADD COLUMN conversion_rate REAL DEFAULT 0', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding funnels.conversion_rate:', err);
-        }
+        logSqliteInitError('Error adding funnels.conversion_rate:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
     db.run('ALTER TABLE funnels ADD COLUMN sequence_id INTEGER', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding funnels.sequence_id:', err);
-        }
+        logSqliteInitError('Error adding funnels.sequence_id:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
 
     // Email marketing tables (schema-email-marketing.sql)
-    const emailMktSqlPath = path.join(__dirname, 'schema-email-marketing.sql');
-    if (fs.existsSync(emailMktSqlPath)) {
-        const emailMktSql = fs.readFileSync(emailMktSqlPath, 'utf8');
+    if (emailMktSql) {
         db.exec(emailMktSql, (err) => {
-            if (err) console.error('Error creating email marketing tables:', err.message);
+            logSqliteInitError('Error creating email marketing tables:', err, {
+                messageOnly: true,
+            });
         });
     }
 
     // Course quiz/certificate tables (schema-courses.sql)
-    const coursesSqlPath = path.join(__dirname, 'schema-courses.sql');
-    if (fs.existsSync(coursesSqlPath)) {
-        const coursesSql = fs.readFileSync(coursesSqlPath, 'utf8');
+    if (coursesSql) {
         db.exec(coursesSql, (err) => {
-            if (err) console.error('Error creating extended course tables:', err.message);
+            logSqliteInitError('Error creating extended course tables:', err, {
+                messageOnly: true,
+            });
         });
     }
 
     // Store builds migration: add payment_session_id for Stripe checkout tracking (idempotent)
     db.run('ALTER TABLE store_builds ADD COLUMN payment_session_id TEXT', (err) => {
-        if (err && !err.message.includes('duplicate column name')) {
-            console.error('Error adding store_builds.payment_session_id:', err);
-        }
+        logSqliteInitError('Error adding store_builds.payment_session_id:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
     });
 
     // License keys table (content protection for software products)
@@ -733,7 +786,10 @@ function initializeSqliteDatabase(db) {
         CREATE INDEX IF NOT EXISTS idx_license_keys_order ON license_keys(order_id);
         CREATE INDEX IF NOT EXISTS idx_license_keys_email ON license_keys(customer_email);
     `, (err) => {
-        if (err) console.error('Error creating license_keys table:', err.message);
+        logSqliteInitError('Error creating license_keys table:', err, {
+            messageOnly: true,
+        });
+    });
     });
 }
 

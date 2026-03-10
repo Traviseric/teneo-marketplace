@@ -8,6 +8,8 @@
 const express = require('express');
 const request = require('supertest');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
 // ---------------------------------------------------------------------------
 // Mock stripe
 // ---------------------------------------------------------------------------
@@ -204,4 +206,8 @@ describe('POST /api/hosting/webhook', () => {
     const insertCalls = mockDb.run.mock.calls.filter((c) => c[0].includes('INSERT INTO store_builds'));
     expect(insertCalls).toHaveLength(0);
   });
+});
+
+afterAll(() => {
+  consoleLogSpy.mockRestore();
 });

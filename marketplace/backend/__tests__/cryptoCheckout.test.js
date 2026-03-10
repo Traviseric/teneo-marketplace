@@ -22,6 +22,10 @@
 const express = require('express');
 const request = require('supertest');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 // ─── Mock dependencies before requiring the router ───────────────────────────
 
 jest.mock('axios');
@@ -91,6 +95,9 @@ beforeAll(() => {
 
 afterAll(() => {
   Object.assign(process.env, savedEnv);
+  consoleLogSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
 });
 
 beforeEach(() => {

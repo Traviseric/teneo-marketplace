@@ -1,53 +1,76 @@
-# OpenBazaar AI — Roadmap
+# OpenBazaar AI - Roadmap
 
-**Updated:** 2026-03-06
-**Informed by:** Gemini Deep Research outputs 1-9, current implementation audit
+**Updated:** 2026-03-09
+**Informed by:** Gemini Deep Research outputs 1-9, current implementation audit, current test and route inventory
 **Supersedes:** `IMPLEMENTATION_PLAN.md`, `REVOLUTIONARY_FEATURES_ROADMAP.md`, `IMPLEMENTATION_MAP.md`
-**Execution companion:** [development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md) - Concrete execution sequence for Phase 0, AI builder delivery, and managed-service commercialization
+**Execution companion:** [development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
 
 ---
 
 ## Mission
 
-**The free, open source alternative to ClickFunnels, Gumroad, Teachable, and Kajabi.** Landing pages, email marketing, courses, funnels, and digital product sales — all free, self-hostable, with an AI store builder that eliminates the grunt work.
+**The free, open source alternative to ClickFunnels, Gumroad, Teachable, and Kajabi.** Landing pages, email marketing, courses, funnels, subscriptions, and digital product sales, with an AI store builder meant to remove the grunt work.
 
-Dual-mode payments: Stripe (fiat) + ArxMint (Lightning/ecash). Zero platform fees. Your data, your customers, your keys.
+Dual-mode payments: Stripe (fiat) + ArxMint-oriented crypto flows. Zero platform fees. Your data, your customers, your keys.
 
 ---
 
 ## What Makes This Different
 
-Every incumbent makes you drag-and-drop elements, configure settings, and wire up email sequences manually. They charge $97-399/month for the privilege.
+Every incumbent makes users drag-and-drop elements, configure settings, and wire up email sequences manually.
 
-OpenBazaar AI's differentiator: **describe your business, get a working store.** The AI store builder generates your landing page, product listings, email capture, and checkout flow from a natural language description. No drag-and-drop. No design skills. No monthly fee.
-
-This is what makes the project worth using over everything else — not the crypto payments, not the federation network, not the Nostr identity. Those are unique value-adds, but the AI builder is the reason someone switches.
+OpenBazaar AI's differentiator is still: **describe your business, get a working store.** That remains the strongest product wedge. The crypto, federation, and Nostr layers matter, but they are not allowed to outrank platform stability or baseline creator usability.
 
 ---
 
-## Infrastructure (Current — March 2026)
+## Roadmap Operating Model
+
+This roadmap now follows the `BEST_PRACTICES.md` direction more explicitly.
+
+### Status Model
+
+- **Working** = implemented in code and usable now
+- **Partial** = implemented in code but not yet production-proven
+- **Planned** = not yet implemented
+- **Blocked** = cannot reasonably ship until a dependency or proof gate closes
+
+### Gate Model
+
+No later phase should outrun Phase 0. If the verification baseline is red, new feature expansion is secondary.
+
+### Evidence Model
+
+A roadmap item should move forward only when supported by one or more of:
+
+- automated tests
+- route/service/schema existence
+- live environment proof
+- operator runbook proof
+
+---
+
+## Infrastructure (Current - March 2026)
 
 | Component | Technology | Status |
 |-----------|-----------|--------|
 | Runtime | Node.js 18+ / Express.js | Working |
-| Database | SQLite + Supabase Postgres runtime adapter | Runtime adapter shipped (`DATABASE_URL` / `SUPABASE_DB_URL`), production validation ongoing |
-| Payments | Stripe + ArxMint Lightning | Stripe working, ArxMint provider built |
-| Auth | Magic links + OAuth SSO + Nostr (backend) | Backend done, frontend partial |
-| Email | Nodemailer (SMTP + Resend) | Working |
-| Print/POD | Lulu API + Printful API | Lulu working; Printful order + webhook backend integrated |
+| Database | SQLite + Supabase/Postgres runtime adapter | Partial - adapter shipped, full production proof still needed |
+| Payments | Stripe + ArxMint-oriented crypto paths | Partial - Stripe working, ArxMint deeper flow still partial |
+| Auth | Magic links + OAuth SSO + Nostr backend surfaces | Partial - backend strong, frontend journey incomplete |
+| Email | Nodemailer (SMTP + Resend) | Partial - code present, production delivery still needs proof |
+| Print/POD | Lulu API + Printful API | Partial - provider surfaces present, live production validation still needed |
 | Frontend | Vanilla HTML/CSS/JS | Working |
-| Deploy | Vercel (frontend + serverless API) | Live at openbazaar.ai |
-| File storage | Supabase Storage (planned) | Not wired |
+| Deploy | Vercel + container/self-host options | Partial - deployment exists, key flows still need live proof |
+| File storage | Supabase Storage | Planned |
 
 ### Supabase Details
 
 - **Project:** `ncddvxglmnnfagyyupeu`
 - **Dashboard:** https://supabase.com/dashboard/project/ncddvxglmnnfagyyupeu
 - **API URL:** `https://ncddvxglmnnfagyyupeu.supabase.co`
-- **Schema:** 40+ tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs, webhooks
 - **Migration file:** `marketplace/backend/database/supabase-migration.sql`
-- **Runtime note (March 6, 2026):** backend DB adapter supports SQLite fallback + Postgres/Supabase runtime via `DATABASE_URL` / `SUPABASE_DB_URL`
-- **Note:** App users table is `profiles` (not `users` — Supabase reserves that for `auth.users`)
+- **Runtime note:** backend adapter supports SQLite fallback plus `DATABASE_URL` / `SUPABASE_DB_URL`
+- **Note:** app users table is `profiles`, not `users`
 
 ### Deployment
 
@@ -55,328 +78,252 @@ This is what makes the project worth using over everything else — not the cryp
 |-----|------|
 | `openbazaar.ai/` | Landing page (`openbazaar-site/`) |
 | `openbazaar.ai/store/` | Marketplace app (`marketplace/frontend/`) |
-| `openbazaar.ai/api/*` | Express backend (serverless on Vercel) |
-| `openbazaar.ai/api/storefront/catalog` | Standardized product catalog for external consumers |
+| `openbazaar.ai/api/*` | Express backend |
+| `openbazaar.ai/api/storefront/catalog` | Product catalog for external consumers |
 
-Vercel project: `openbazaar-site` (connected to `github.com/Traviseric/openbazaar-ai`, root directory)
+---
+
+## Current Verification Baseline
+
+- Route files in `marketplace/backend/routes/`: `42`
+- Service files in `marketplace/backend/services/`: `51`
+- Test suites in repo: `40`
+- Active brand catalogs: `6`
+
+Latest local verification:
+
+- Command: `npm test -- --runInBand`
+- Result: `40` passing suites, `0` failing suites
+- Totals: `517` passing, `0` failing, `2` skipped
+
+Implication:
+
+- the codebase is broad and real
+- the verification baseline is green
+- Phase 0 now centers on production proof and cleanup, not red-suite recovery
 
 ---
 
 ## What's Built (Inventory)
 
-### Working (27+ routes, 30+ services, 17 test suites passing)
+### Working
 
-- [x] Express.js backend with SQLite fallback + Postgres/Supabase runtime adapter
-- [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
-- [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero — manual verification)
-- [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE + Nostr backend)
-- [x] Email service (SMTP + Resend, order confirmations, magic links)
-- [x] Email marketing (sequences, segmentation, engagement tracking, cart recovery emails)
-- [x] Admin dashboard (orders, analytics, refunds, audit logging)
-- [x] Multi-brand catalog and theming (9 brands configured)
-- [x] Course platform (CRUD, enrollment, quizzes, certificates, progress tracking)
-- [x] Funnel builder module (4 templates, save/load/deploy)
-- [x] AI discovery engine (semantic search via OpenAI + keyword fallback)
-- [x] Print-on-demand (Lulu + Printful provider integration wired into storefront fulfillment)
-- [x] Publisher features (Amazon book tracking, leaderboards, badges, digests)
-- [x] Component library (12/50 — heroes, CTAs, base system)
-- [x] Network/federation registry and cross-node search (RSA-signed)
+- [x] Express backend with security middleware, CSRF/session handling, health endpoints
+- [x] Stripe payment integration (checkout, mixed checkout, webhooks, refunds)
+- [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero manual flow)
+- [x] Auth abstraction layer (magic links, Teneo Auth OAuth 2.0 + PKCE, Nostr backend surfaces)
+- [x] Email service code (SMTP + Resend support)
+- [x] Admin dashboard and audit logging surfaces
+- [x] Multi-brand catalog and theming pattern
+- [x] Course backend routes and quiz routes
+- [x] Funnel module
+- [x] AI discovery engine
+- [x] Publisher analytics features
 - [x] Secure download system with token validation and rate limiting
-- [x] Rate limiting, CSRF protection, Helmet headers, session management
 - [x] Storefront API (`/api/storefront/catalog`, `/api/storefront/checkout`, `/api/storefront/fulfill`)
-- [x] Printful webhook endpoint (`/api/webhooks/printful`) with signature verification and idempotent event logging
-- [x] Payment provider interface + ArxMint provider (redirect to arxmint.com/pay)
-- [x] Landing page with Persian bazaar design system (Cinzel, gold/teal/lapis palette)
-- [x] Vercel deployment config (landing page + store + API routing)
+- [x] Printful webhook endpoint with signature verification and idempotent event logging
+- [x] AI store-builder route surface (`generate`, `render`, `save`, `preview`, `publish`, `intake`, build tracking)
+- [x] Referral routes plus checkout commission tracking
+- [x] Subscription routes and membership schema
+- [x] Hosting tier billing routes
+- [x] Machine-payable endpoints
+- [x] Agent-facing catalog, quote, purchase, and order-status endpoints
 
-### Needs Wiring
+### Partial / Needs Validation
 
-- [ ] Supabase production validation + query hardening (run full checkout/auth/POD flows against Postgres)
-- [ ] Frontend auth UI (backend done, login/register pages exist but not unified)
-- [ ] Course checkout flow (components exist, not integrated into marketplace checkout)
-- [ ] Email service production config (code done, needs SMTP credentials on Vercel)
-- [ ] Printful production wiring (set `PRINTFUL_*` env vars, register webhook, validate first live POD order)
-- [ ] Lulu production wiring (set `LULU_*` env vars, verify webhook signature config, validate first live print order)
-- [ ] Unified design system across 33 HTML pages (each has different styling)
-- [ ] Federation revenue sharing (schema exists, not wired to checkout flow)
+- [ ] Supabase production validation across checkout, auth, subscriptions, and fulfillment
+- [ ] Frontend auth/account flow unification
+- [ ] Course checkout flow fully proven
+- [ ] Email delivery in production
+- [ ] Printful live production order validation
+- [ ] Lulu live production order validation
+- [ ] Unified design system across the broader HTML surface
+- [ ] AI store-builder managed delivery proof loop
+- [ ] ArxMint deeper Lightning/Cashu/L402 validation
+- [ ] Referral payout economics proven in live checkout, not just wired in code
+- [ ] Hosting provisioning and operations beyond billing checkout
 
-### Not Built
+### Planned / Not Built Yet
 
-- [ ] **AI Store Builder** (the differentiator — Phase 1)
-- [ ] Checkout conversion stack (coupons, bumps, upsells, cart recovery)
-- [ ] Content protection (PDF stamping, watermarks, license keys)
+- [ ] Checkout conversion stack (coupons, bumps, upsells, cart recovery) finished end-to-end
+- [ ] Content protection (PDF stamping, watermarks, file versioning) finished end-to-end
 - [ ] Affiliate program
-- [ ] Gig platform (0% built — jobs, proposals, contracts, escrow)
-- [ ] Agent marketplace (scaffold only — no L402 payments)
-- [ ] ArxMint L402/Cashu deep integration (provider redirect works, L402 paywalls stubbed)
-- [ ] Nostr auth frontend (backend provider exists)
-- [ ] Federated discovery via Nostr (NIP-99)
-- [ ] Migration tooling (import from Gumroad/Teachable)
-- [ ] Tax calculation/workflow
-- [ ] Managed hosting infrastructure
+- [ ] Gig platform (jobs, proposals, contracts, escrow)
+- [ ] Full agent marketplace product
+- [ ] Nostr frontend auth UX
+- [ ] Federated discovery via NIP-99
+- [ ] Migration tooling (Gumroad/Teachable/import bridge)
+- [ ] Tax calculation and workflow
+- [ ] Full managed hosting operating system
 
 ---
 
-## Phase 0: Make It Work (Current)
+## Phase 0: Stabilize What Already Exists (Current Gate)
 
-**Goal:** The deployed site at openbazaar.ai actually functions end-to-end. A visitor can browse, sign up, and buy something.
+**Goal:** The deployed site works end-to-end, the verification baseline is green, and the docs can make strong claims without hand-waving.
 
-**Why first:** Nothing else matters if the production site is broken. The runtime adapter is now in place, so Phase 0 is focused on production env wiring and full Postgres validation on live infrastructure.
+### Why first
+
+Nothing else matters if the production site is broken or the verification baseline is unreliable.
 
 ### Tasks
 
-- [x] **Build Supabase/Postgres database adapter** — runtime now supports `DATABASE_URL` / `SUPABASE_DB_URL` with SQLite fallback and shared `run/get/all/exec` interface
-- [ ] **Add Supabase env vars to Vercel** — `DATABASE_URL` (or `SUPABASE_DB_URL`), plus `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] **Verify landing page loads** at openbazaar.ai/
-- [ ] **Verify API responds** at openbazaar.ai/api/storefront/catalog
-- [ ] **Wire login flow** — login.html and account-dashboard.html work with auth backend
-- [ ] **Test purchase flow** — Stripe test checkout → order created in Supabase → download delivered
-- [ ] **Test POD purchase flow** — storefront checkout → `/api/storefront/fulfill` → Printful order created → webhook updates order status/tracking
-- [ ] **Unify nav links** — landing page CTAs ("Start Selling", "Browse Marketplace") go to working pages
+- [x] Fix the failing Jest suites and re-run `npm test -- --runInBand` until green
+- [x] Resolve Jest `axios` compatibility and stale test-reference issues
+- [ ] Reduce noisy database initialization and schema-migration logging during tests
+- [ ] Review whether database bootstrapping should be quieter or more isolated in test mode
+- [ ] Validate landing page and API on production
+- [ ] Validate the Postgres/Supabase runtime path end-to-end
+- [ ] Prove one real Stripe digital purchase on the deployed stack
+- [ ] Prove one real POD purchase on the deployed stack
+- [ ] Finish the public auth/account flow
+- [ ] Verify production email delivery
+- [ ] Unify main nav links so they point only to supported flows
 
 ### Success Criteria
 
-- openbazaar.ai/ loads the designed landing page
-- openbazaar.ai/api/health returns 200
-- A test user can sign up, browse products, and complete a Stripe test purchase
-- Order appears in Supabase `orders` table
-- A POD test order reaches `pod_submitted` and receives shipping/tracking updates via webhook
+- full test suite green
+- test output reasonably clean and not dominated by avoidable schema warnings
+- `openbazaar.ai/api/health` returns 200
+- a test user can sign up and complete a Stripe purchase
+- one POD order is proven on the live stack
+- docs can honestly say the core purchase flow is proven
 
 ---
 
-## Phase 1: AI Store Builder (The Differentiator)
+## Phase 1: Creator Baseline
 
-**Goal:** "Describe your business" → get a working store with landing page, product listings, email capture, and checkout.
+**Goal:** Make OpenBazaar AI feel coherent to a creator using the platform, not just to a developer reading the codebase.
 
-**Why this is Phase 1:** This is the feature that gets GitHub stars, press, and users. Every other feature (courses, email, funnels) already exists in some form — the AI builder is what makes OpenBazaar AI worth choosing over cloning a WordPress theme.
+### 1.1 Auth and Account Flow
 
-**The research said "AI features are NOT a differentiator."** That's true for bolt-on AI (Teachable's AI quiz generator, Kajabi's AI copywriter). Those are features. The AI store builder is the **product** — it replaces the entire setup process. That's different.
+- [ ] Finish login, account, and subscription-management UX
+- [ ] Confirm session state and account pages work reliably
+- [ ] Remove dead or misleading auth entry points
 
-### How It Works
+### 1.2 Email and Lifecycle Flows
 
-```
-Creator: "I sell handmade soy candles. $18-35 range.
-          I have 6 scents. I want email capture and a
-          buy button that goes to Stripe."
+- [ ] Validate production email marketing and transactional mail
+- [ ] Harden sequence and tracking behavior
+- [ ] Prove cart, signup, and purchase-triggered messaging where already implemented
 
-AI Builder:
-  1. Generates landing page using component library templates
-  2. Creates product catalog (6 products with placeholder images)
-  3. Sets up email capture form → subscriber added to Supabase
-  4. Wires Stripe checkout for each product
-  5. Deploys to openbazaar.ai/store/{slug} or custom domain
+### 1.3 Courses, Funnels, and Store Management
 
-Creator gets: a working store in 60 seconds
-```
+- [ ] Prove course purchase-to-enrollment flow
+- [ ] Prove funnel save/load/deploy flow
+- [ ] Improve operator and creator UX around storefront management
 
-### Tasks
+### 1.4 Fulfillment Operations
 
-- [ ] **Store configuration schema** — what the AI generates:
-  - Store name, tagline, description
-  - Color palette and font selections (from design system presets)
-  - Product list (title, description, price, image placeholder, fulfillment type)
-  - POD metadata (provider, variant/product IDs, shipping requirements) for physical goods
-  - Email capture enabled/disabled
-  - Payment provider (Stripe / ArxMint / both)
-- [ ] **AI prompt pipeline** — takes natural language input, outputs store config JSON:
-  - Claude API call with structured output (JSON mode)
-  - Validates against schema
-  - Handles edge cases ("I want to sell courses" → enables course module)
-- [ ] **Store renderer** — takes config JSON, generates static store pages:
-  - Uses existing component library (heroes, CTAs, product cards)
-  - Injects brand colors, fonts, content
-  - Generates index.html, products.html, checkout integration
-- [ ] **Store persistence** — save generated store to Supabase:
-  - `stores` table (owner, config, slug, status)
-  - Products saved to `products` table
-  - Email capture wired to `subscribers` table
-- [ ] **Store editing** — natural language updates:
-  - "Change the hero text to 'Luxury Candles for Your Home'"
-  - "Add a new product: Lavender Fields, $24"
-  - "Enable the course module"
-- [ ] **Store preview and publish** — preview before going live, one-click publish
-
-### What Already Exists (Reuse)
-
-| Component | Location | Reuse |
-|-----------|----------|-------|
-| Component library | `marketplace/frontend/components-library/` | 12 components ready |
-| Funnel templates | `funnel-module/` | 4 landing page templates |
-| Brand theming | `marketplace/frontend/brands/` | Config + catalog JSON pattern |
-| Checkout | `marketplace/backend/routes/checkout.js` | Stripe integration |
-| Email capture | `marketplace/backend/routes/emailMarketing.js` | Subscriber management |
-| Course platform | `marketplace/backend/routes/courses.js` | Full CRUD |
+- [ ] Finish fulfillment-provider admin UX
+- [ ] Validate real provider mappings and status tracking
 
 ### Success Criteria
 
-- A user describes their business in plain English → gets a working store page
-- Store has: landing page, product listings, email capture, checkout
-- Store is live at a URL and can process a test payment
-- User can update the store with natural language commands
+- a creator can sign in, buy, subscribe, and manage key flows without undocumented manual intervention
 
 ---
 
-## Phase 2: Creator Toolkit (The Kajabi Killer Features)
+## Phase 2: AI Store Builder From Beta To Reliable Product
 
-**Goal:** Funnels, email marketing, courses, and checkout conversion features that work end-to-end — the stuff people currently pay $99-399/month for.
+**Goal:** Turn the existing builder beta and managed intake flow into a repeatable, evidence-backed delivery engine.
 
-**Why after AI builder:** The builder gets people in the door. This phase keeps them. These are the features that make creators say "I can cancel my Kajabi subscription."
+### Already exists
 
-### 2.1 Funnels That Work
+- `store_builds` schema
+- intake endpoint
+- generate/render/save/preview/publish surface
+- operator guide
+- managed build status model
 
-The funnel builder module exists (4 templates) but isn't integrated into the live site.
+### Remaining work
 
-- [ ] Wire funnel builder to Supabase (save/load funnels)
-- [ ] Landing page → email capture → email sequence → sale pipeline
-- [ ] Funnel analytics (views, conversions, revenue per funnel)
-- [ ] AI funnel builder integration ("build me a webinar funnel for my course")
-
-### 2.2 Email Marketing That Works
-
-Email marketing backend is built (sequences, segmentation, broadcasts, engagement tracking). Needs production wiring.
-
-- [ ] Wire email marketing routes to Supabase
-- [ ] Configure SMTP for production (Resend or SendGrid on Vercel)
-- [ ] Email sequence builder UI (create/edit sequences, preview emails)
-- [ ] Broadcast sending UI (select segment, compose, schedule, send)
-- [ ] Analytics dashboard (open rates, click rates, engagement scores)
-
-### 2.3 Course Platform That Works
-
-Course backend is built (CRUD, enrollment, quizzes, certificates, progress tracking). Needs checkout integration.
-
-- [ ] Wire course routes to Supabase
-- [ ] Course → Stripe checkout → enrollment flow
-- [ ] Course player UI improvements (the player exists but needs polish)
-- [ ] AI course builder ("create a 5-module course on candle making")
-
-### 2.4 Checkout Conversion Stack
-
-These features don't exist yet. Research #3 says they BLOCK switching — creators doing $10k/mo won't move without them.
-
-- [ ] **Coupons** — percentage/fixed discounts, expiry dates, usage limits, analytics
-- [ ] **Order bumps** — "add this for $X" on checkout page, per-product config
-- [ ] **Post-purchase upsells** — one-click purchase after payment, upsell sequences
-- [ ] **Cart abandonment recovery** — track abandoned carts, automated email sequences (1h, 24h, 72h)
-
-### 2.5 Content Protection
-
-- [ ] PDF stamping (buyer email/name watermarked on download)
-- [ ] License key generation and validation
-- [ ] File versioning (update products, buyers get latest)
-
-### 2.6 Physical & POD Operations
-
-- [ ] Printful catalog/variant sync so merchants can choose valid `variant_id`s in UI
-- [ ] Shipping rate estimation wiring in checkout for physical/POD products
-- [ ] Merchant UI for mapping products to fulfillment providers and variants
-- [ ] Fulfillment status dashboard (submitted, in production, shipped, failed/canceled)
+- [ ] prove repeated successful managed builds
+- [ ] tighten schema validation for generated configs
+- [ ] improve natural-language edit reliability
+- [ ] capture delivery artifacts and QA evidence for every run
+- [ ] create case studies from successful builds
+- [ ] keep managed delivery ahead of self-serve ambition
 
 ### Success Criteria
 
-- A creator can build a funnel: landing page → email capture → sequence → sale
-- Email sequences send automatically on triggers (signup, purchase, cart abandonment)
-- Courses can be purchased and consumed end-to-end
-- Coupons and order bumps work on checkout
+- multiple successful internal or paid builds
+- documented operator workflow with evidence
+- clear boundary between beta self-serve and managed delivery
 
 ---
 
-## Phase 3: Payments & Identity
+## Phase 3: Payments, Identity, and Agent Differentiators
 
-**Goal:** Ship the features no incumbent offers — dual Stripe + Lightning checkout, Nostr identity, and ArxMint integration.
-
-**Why after Phase 2:** Research #3 — "The platform's crypto/Nostr differentiators should come AFTER the switching baseline is met." Creators won't switch for crypto alone.
+**Goal:** Finish the unique surfaces that no incumbent ships well, but only after baseline stability is real.
 
 ### 3.1 ArxMint Payment Integration
 
-Provider built (`services/arxmintProvider.js`), storefront API built (`routes/storefront.js`). Needs:
-
-- [ ] **Dual checkout UI** — Stripe (fiat) + ArxMint (crypto) as parallel options on one checkout page
-- [ ] **BIP21 unified QR** — on-chain URI with `lightning=` BOLT11 for frictionless crypto checkout
-- [ ] **Payment-agnostic order state machine** — `pending → confirmed → fulfilled → delivered`; order doesn't care how it was paid
-- [ ] **ArxMint Bazaar integration** — arxmint.com/bazaar fetches from openbazaar.ai/api/storefront/catalog
-- [ ] **ArxMint fulfillment webhook** — ArxMint POSTs to `/api/storefront/fulfill` after payment (Printful webhook pattern is already implemented at `/api/webhooks/printful`)
-- [ ] **Zap-to-unlock** — NIP-57 zap → content unlocked for items < $5 (no cart needed)
+- [ ] Dual checkout UX
+- [ ] BIP21 unified QR
+- [ ] Payment-agnostic order state machine fully proven across methods
+- [ ] ArxMint Bazaar integration proof
+- [ ] ArxMint fulfillment webhook proof
+- [ ] Zap-to-unlock proof for low-priced content
 
 ### 3.2 Nostr Authentication
 
-Backend provider exists. Needs frontend.
+- [ ] NIP-07 browser integration
+- [ ] NIP-98 API flow hardening
+- [ ] NIP-05 merchant credibility flow
 
-- [ ] NIP-07 `window.nostr` integration (sign in with Alby, nos2x)
-- [ ] NIP-98 HTTP auth for API requests
-- [ ] NIP-05 DNS verification for merchant credibility
-- [ ] Portable identity — creator's audience follows their keypair, not the platform
+### 3.3 L402 and Machine-Payable Commerce
 
-### 3.3 L402 Paywalls
+- [ ] Harden L402 paywall behavior
+- [ ] Document machine-payable order flows
+- [ ] Prove at least one real machine or agent purchase path
 
-- [ ] HTTP 402 response with macaroon + Lightning invoice
-- [ ] Pay-per-article, pay-per-lesson, pay-per-API-call
-- [ ] Machine-payable endpoints (AI agents can pay autonomously)
+### 3.4 Dispute and Refund Direction
 
-### 3.4 Dispute Resolution
-
-- [ ] Three-mode checkout: instant-final (Lightning), escrowed (Cashu P2PK), card (Stripe)
-- [ ] Split settlement: 80-90% instant, 10-20% escrowed with locktime auto-release
-- [ ] Signed purchase receipts as Nostr events
-- [ ] Receipt-referenced reviews (only verified buyers can review)
+- [ ] Define the first shippable dispute mode
+- [ ] Keep receipts and refunds realistic before multi-party escrow ambition
 
 ---
 
-## Phase 4: Network & Scale
+## Phase 4: Network, Migration, and Distribution
 
-**Goal:** Federated marketplace — independent stores that discover each other, share audiences, and transact in a circular economy.
+**Goal:** Grow the platform through discovery and migration only after the core commerce loop is trustworthy.
 
 ### 4.1 Federation
 
-- [ ] NIP-99 product listings (kind 30402) replace JSON registry
-- [ ] Centralized discovery index first → multiple competing indexes later
-- [ ] Cross-store referral system (15-20% for new customers, 0-5% repeat)
-- [ ] Revenue sharing wired to checkout flow
+- [ ] NIP-99 product listing migration path
+- [ ] Discovery index evolution
+- [x] Referral capture and commission tracking wired in code
+- [ ] Validate live referral economics and payout behavior
 
 ### 4.2 Migration Tooling
 
-- [ ] Gumroad product import (CSV + API)
+- [ ] Gumroad product import
 - [ ] Teachable course import
-- [ ] Email list import (CSV)
-- [ ] "Switch from [Competitor]" comparison pages for SEO
+- [ ] Email list import
+- [ ] Amazon/KDP-to-storefront bridge
 
-### 4.3 Managed Hosting (Revenue)
+### 4.3 Managed Hosting
 
-Research #2: managed hosting is the proven revenue stream for open source (Ghost model: $9.89M ARR).
+- [x] Hosting tier billing routes and tier config
+- [ ] Provisioning, activation, suspension, and operator workflows beyond billing
+- [ ] Revenue and operations model proof
 
-| Tier | Price | Competes with |
-|------|-------|---------------|
-| Starter | $29/mo | Below Podia ($89), above Ghost ($18) |
-| Creator | $79/mo | Matches Podia ($89), below Teachable Pro |
-| Pro | $149/mo | Below Kajabi Basic ($179) |
+### 4.4 Memberships and Subscriptions
 
-### 4.4 Cold-Start: Teneo Production Funnel
-
-```
-Ads → teneo.io ($49-599/mo book generation)
-  → Generate books + brands for customers
-  → Customer publishes on Amazon
-  → One-click import from Amazon → deploy own storefront
-  → Store auto-joins discovery network
-  → Network grows
-```
-
-### 4.5 Memberships & Subscriptions
-
-- [ ] Recurring payments (monthly/annual)
-- [ ] Membership tiers with content gating
-- [ ] Subscriber management dashboard
+- [x] Membership tiers, subscription schema, webhook support, admin endpoints
+- [ ] Better UI, gating proof, and customer self-service polish
 
 ---
 
-## Phase 5: Polish & Ecosystem
+## Phase 5: Scale and Polish
 
-- Premium themes marketplace ($79-149 each, 30% platform share)
-- PWA with push notifications
-- Public REST API (documented, versioned)
-- Zapier triggers/actions
-- Community features (Nostr-aligned)
-- Network intelligence (transformation-based ranking, community validation)
+- Premium themes marketplace
+- PWA and push behavior
+- Public API polish and versioning
+- Integrations and automation
+- Ranking and discovery refinement
+- Community-facing features after baseline stability
 
 ---
 
@@ -384,11 +331,11 @@ Ads → teneo.io ($49-599/mo book generation)
 
 | Stream | Revenue | Phase | Priority |
 |--------|---------|-------|----------|
-| Managed hosting ($29-149/mo) | 100 customers at $79/mo = $7,900 MRR | Phase 4 | FIRST |
-| Paid onboarding ($299/setup) | 10 setups/mo = $2,990/mo | Phase 2 | BRIDGE |
-| Crypto processing fee (0.75%) | $200k/mo GMV = $1,500/mo | Phase 3 | SECOND |
-| Premium themes ($79-149) | 50 sales/mo at 20% share = $990/mo | Phase 5 | THIRD |
-| Network referrals (10-20%) | Grows with network | Phase 4+ | GROWS |
+| Managed hosting ($29-149/mo) | Recurring revenue | Phase 4 | First durable platform revenue |
+| Paid onboarding / managed builds | Service revenue | Phase 2 | Bridge revenue |
+| Crypto processing fee | Transaction revenue | Phase 3 | Secondary |
+| Premium themes | Marketplace revenue | Phase 5 | Later |
+| Network referrals | Grows with network | Phase 4+ | Long-term |
 
 ---
 
@@ -396,90 +343,62 @@ Ads → teneo.io ($49-599/mo book generation)
 
 | Removed | Why |
 |---------|-----|
-| Proof-of-Read NFTs | No proven demand |
-| IPFS hosting / ENS domains | Not aligned with Lightning/Nostr direction |
-| Monero payments | Focus on Bitcoin/Lightning/ecash via ArxMint |
-| PayPal integration | ArxMint covers crypto; Stripe covers fiat |
-| DAO governance | Nostr identity handles "no platform owns your account" |
-| Being a Merchant of Record | Hardest moat to replicate — don't try. Tax as workflow, not MoR |
+| Proof-of-Read NFTs as a primary strategy | No proven demand |
+| IPFS hosting / ENS domains as a priority | Not aligned with the current execution order |
+| DAO governance | Not helpful at this stage |
+| Merchant of Record ambitions | Tax workflow is more realistic |
 
 ---
 
 ## Architecture Decisions (Locked)
 
-| Decision | Answer | Source |
-|----------|--------|--------|
-| Database | Supabase Postgres (project `ncddvxglmnnfagyyupeu`) | Infrastructure decision |
-| Deploy | Vercel (serverless API + static frontend) | Infrastructure decision |
-| App users table | `profiles` (not `users` — Supabase reserves that) | Supabase convention |
-| Listing format | NIP-99 (kind 30402) for federation | Research #6 |
-| Identity | NIP-07 (browser), NIP-98 (HTTP), NIP-05 (DNS) | Research #6 |
-| Discovery | Centralized index first → multiple indexes later | Research #6 |
-| Settlement | Lightning for network; ecash for local micro-splits | Research #6 |
-| Messaging | "Own your audience + $0 fees" above fold; crypto below fold | Research #5 |
-| Competitor wedge | "Gumroad alternative" (fastest demo path) | Research #5 |
-| Checkout UX | BIP21 unified QR; crypto as parallel tender, not separate flow | Research #4 |
-| Order model | Payment-method-agnostic state machine | Research #4 |
-| Micro-content | Zap-to-unlock for items <$5; structured checkout otherwise | Research #4 |
-| Refunds | BTCPay Pull Payments + LNURL-withdraw; Cashu for store credit | Research #4, #7 |
-| Checkout modes | Three-mode: instant-final, escrowed (Cashu P2PK), card (Stripe) | Research #7 |
-| Escrow | Cashu 2-of-3 P2PK multisig; 80-90% instant, 10-20% held | Research #7 |
-| Mint compliance | Path B (licensed partner); no privacy/anonymity marketing | Research #8 |
-| Revenue first | Managed hosting subscriptions ($29-149/mo) | Research #2 |
-| Tax strategy | Tax workflow (calculation + export), NOT Merchant of Record | Research #3 |
+| Decision | Answer |
+|----------|--------|
+| Database direction | Supabase Postgres with SQLite fallback for local/dev compatibility |
+| Deploy direction | Vercel plus self-host/container support |
+| App users table | `profiles` |
+| Messaging | "Own your audience" and creator economics first |
+| Checkout strategy | payment-method-agnostic order handling |
+| Revenue-first posture | managed hosting + managed delivery before speculative decentralization |
 
 ---
 
-## Target Segments
+## Best-Practice Alignment Notes
 
-### Tier 1 (Strongest evidence)
-1. **Adult/NSFW creators** — most documented deplatforming
-2. **International creators** — blocked by Stripe's country limits
+This roadmap now acts as the canonical phased plan for the repo and is meant to satisfy the roadmap portion of `C:\code\.claude\BEST_PRACTICES.md`.
 
-### Tier 2 (Crypto-native fit)
-3. **Digital goods creators** — leading crypto adoption category
-4. **Nostr communities** — high-conviction early adopters
+Aligned now:
 
-### Tier 3 (Careful framing)
-5. **Regulated/restricted commerce** — cannabis education, alt health, firearms content
+- canonical roadmap exists
+- phases are gated
+- current state and next steps are explicit
+- evidence model is stated
+- roadmap is tied to a changelog and canonical status doc
 
----
+Still requiring repo work, not just doc work:
 
-## Go-To-Market
-
-1. **Primary message:** "Own your audience. Own your platform."
-2. **Secondary:** "$0 platform fees"
-3. **Segment wedge:** "Sell without deplatforming risk"
-4. **Competitor wedge:** "Gumroad alternative" (fastest demo path)
-
-### 90-Day Targets
-- 50 activated creators (store live + email capture + test purchase)
-- 10 creators processing real transactions weekly
-- AI store builder generating functional stores from descriptions
+- test baseline must stay green and cleaner than it is now
+- production proof must exist for the major commerce flows
+- docs and runtime behavior must stay aligned continuously
 
 ---
 
-## Cautionary Tales
+## Immediate Next 7 Tasks
 
-- **OpenBazaar (original)** — fully decentralized, discontinued. "No fees + meaningful infra costs" is not sustainable.
-- **Shopstr / Plebeian Market** — Nostr-native marketplaces with minimal traction. Protocol-native doesn't sell; UX sells.
-- **Bitcoin creator economy is tiny** — ~$65K/mo total. Stripe fiat must remain first-class alongside crypto.
-- **Tornado Cash / Samourai** — enforcement triggered by privacy marketing. Don't lead with "anonymity."
+1. Keep the Jest baseline green after the harness fixes.
+2. Clean up noisy DB initialization and schema-drift logging in test mode.
+3. Validate one real Stripe purchase on the deployed stack.
+4. Validate one real Printful or Lulu order on the deployed stack.
+5. Validate the Postgres/Supabase runtime path end-to-end.
+6. Finish the public auth/account journey.
+7. Record live proof in the status doc and changelog.
 
 ---
 
-## Research Status
+## Supporting Docs
 
-All 9 Gemini Deep Research prompts complete. Findings integrated into this roadmap.
-
-| # | Topic | Key Impact |
-|---|-------|-----------|
-| 1 | Product-Market Fit | TAM $11.57B; 5 early-adopter segments |
-| 2 | Monetization | Managed hosting first; Ghost model |
-| 3 | Feature Gaps | Checkout conversion stack blocks switching |
-| 4 | Crypto Payments UX | BIP21 unified QR; payment-agnostic orders |
-| 5 | Positioning & GTM | "Own your audience + $0 fees" messaging |
-| 6 | Federated Network | NIP-99; centralized index first; two-rate referral |
-| 7 | Dispute Resolution | Three-mode checkout; Cashu P2PK escrow |
-| 8 | Regulatory | Ecash mint = money transmitter; Path B for pilot |
-| 9 | Bitcoin Creator Ecosystem | ~$65K/mo market; manufacture liquidity |
+- [Current project status](./reference/MARKETPLACE_STATUS_AND_TODO.md)
+- [Docs index](./README.md)
+- [Operator guide](./OPERATOR_GUIDE.md)
+- [AI builder checklist](./development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
+- [Changelog](../CHANGELOG.md)

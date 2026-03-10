@@ -61,6 +61,22 @@ const request = require('supertest');
 const fs = require('fs');
 const db = require('../database/database');
 
+let consoleLogSpy;
+let consoleWarnSpy;
+let consoleErrorSpy;
+
+beforeAll(() => {
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+    consoleLogSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+});
+
 function buildApp() {
     const app = express();
     app.use(bodyParser.json());

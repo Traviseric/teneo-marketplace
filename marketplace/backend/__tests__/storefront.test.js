@@ -14,6 +14,10 @@
 const express = require('express');
 const request = require('supertest');
 
+let consoleLogSpy;
+let consoleWarnSpy;
+let consoleErrorSpy;
+
 // ---------------------------------------------------------------------------
 // Mock all heavy service dependencies before requiring the router
 // ---------------------------------------------------------------------------
@@ -49,6 +53,12 @@ jest.mock('../services/arxmintProvider', () => ({
 const storefrontRouter = require('../routes/storefront');
 const arxmintProvider = require('../services/arxmintProvider');
 
+beforeAll(() => {
+  consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
 // ---------------------------------------------------------------------------
 // Test app factory — rebuilding each suite avoids NODE_ENV side-effects
 // ---------------------------------------------------------------------------
@@ -63,7 +73,12 @@ function buildApp() {
 // Save and restore NODE_ENV around the whole file
 let savedNodeEnv;
 beforeAll(() => { savedNodeEnv = process.env.NODE_ENV; });
-afterAll(() => { process.env.NODE_ENV = savedNodeEnv; });
+afterAll(() => {
+  process.env.NODE_ENV = savedNodeEnv;
+  consoleLogSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
+});
 
 // ---------------------------------------------------------------------------
 // GET /api/storefront/catalog

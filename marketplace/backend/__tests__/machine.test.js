@@ -14,6 +14,9 @@ const express = require('express');
 const request = require('supertest');
 const crypto = require('crypto');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
 // ---------------------------------------------------------------------------
 // Mock dependencies before requiring the router
 // ---------------------------------------------------------------------------
@@ -364,4 +367,9 @@ describe('POST /api/machine/webhook', () => {
 
     arxmintProvider.webhookSecret = null; // restore
   });
+});
+
+afterAll(() => {
+  consoleLogSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
 });

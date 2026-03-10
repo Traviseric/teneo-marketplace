@@ -13,6 +13,9 @@ const express = require('express');
 const request = require('supertest');
 const crypto = require('crypto');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 // ─── Mock heavy dependencies before requiring the router ─────────────────────
 
 // Capture OrderService instance created at module load time (must be prefixed "mock" for jest hoist)
@@ -93,6 +96,7 @@ jest.mock('../services/orderService', () =>
 );
 
 jest.mock('../services/emailService', () => ({
+  sendOrderConfirmation: jest.fn().mockResolvedValue({ success: true }),
   sendDownloadEmail: jest.fn().mockResolvedValue({ success: true }),
 }));
 
@@ -193,6 +197,8 @@ beforeAll(() => {
 });
 afterAll(() => {
   process.env.NODE_ENV = savedNodeEnv;
+  consoleLogSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
 });
 
 // ─── POST /api/checkout/create-session ───────────────────────────────────────

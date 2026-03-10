@@ -9,20 +9,28 @@ const mockAxiosGet = jest.fn();
 jest.mock('axios', () => ({
     post: mockAxiosPost,
     get: mockAxiosGet,
+    patch: jest.fn(),
 }));
 
-// Mock sqlite3 — LuluService opens its own DB connection
-jest.mock('sqlite3', () => ({
-    verbose: () => ({
-        Database: jest.fn().mockImplementation(() => ({
-            get: jest.fn(),
-            run: jest.fn(),
-            close: jest.fn(),
-        })),
+jest.mock('../marketplace/backend/database/database', () => ({
+    get: jest.fn((sql, params, callback) => {
+        if (typeof callback === 'function') {
+            callback(null, null);
+        }
+        return Promise.resolve(null);
     }),
+    run: jest.fn((sql, params, callback) => {
+        if (typeof callback === 'function') {
+            callback(null);
+        }
+        return Promise.resolve({ changes: 1 });
+    }),
+    close: jest.fn(),
 }));
 
 const LuluService = require('../marketplace/backend/services/luluService');
+
+let consoleErrorSpy;
 
 // Shared valid token response
 const TOKEN_RESPONSE = {
@@ -68,8 +76,13 @@ const SAMPLE_SHIPPING_ADDRESS = {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     // Default: token auth always succeeds
     mockAxiosPost.mockResolvedValueOnce(TOKEN_RESPONSE);
+});
+
+afterEach(() => {
+    consoleErrorSpy.mockRestore();
 });
 
 describe('Lulu POD Sandbox — createPrintJob()', () => {

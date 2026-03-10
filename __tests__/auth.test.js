@@ -5,6 +5,19 @@
 const request = require('supertest');
 const app = require('./test-app');
 
+let consoleErrorSpy;
+let consoleLogSpy;
+
+beforeEach(() => {
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+});
+
 describe('POST /api/auth/login', () => {
     it('returns 400 when email is missing', async () => {
         const res = await request(app)

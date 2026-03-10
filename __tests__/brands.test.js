@@ -4,6 +4,16 @@
 const request = require('supertest');
 const app = require('./test-app');
 
+let consoleErrorSpy;
+
+beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+    consoleErrorSpy.mockRestore();
+});
+
 describe('GET /api/brands', () => {
     it('returns 200 with success:true and brands array', async () => {
         const res = await request(app).get('/api/brands');

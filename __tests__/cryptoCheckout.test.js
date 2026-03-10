@@ -23,6 +23,10 @@ jest.mock('axios', () => ({
     post: jest.fn().mockResolvedValue({ data: {} })
 }));
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -59,6 +63,12 @@ beforeEach(() => {
     mockDbGet.mockImplementation((sql, params, callback) => {
         callback(null, null);
     });
+});
+
+afterAll(() => {
+    consoleLogSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
 });
 
 describe('POST /api/crypto/create-order — input validation', () => {

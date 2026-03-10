@@ -18,6 +18,16 @@ jest.mock('../marketplace/backend/services/emailService', () => ({
 
 const EmailMarketingService = require('../marketplace/backend/services/emailMarketingService');
 
+let consoleWarnSpy;
+
+beforeAll(() => {
+    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+afterAll(() => {
+    consoleWarnSpy.mockRestore();
+});
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Create a fresh mock Promise-based db for each test */
@@ -126,14 +136,14 @@ describe('EmailMarketingService.injectTracking()', () => {
     it('appends a 1×1 tracking pixel to the email body', () => {
         const html = '<p>Hello</p></body>';
         const result = service.injectTracking(html, 123);
-        expect(result).toContain('api/email/track/open/123');
+        expect(result).toContain('api/email-marketing/track/open/123');
         expect(result).toContain('width="1" height="1"');
     });
 
     it('wraps absolute http links with click-tracking URLs', () => {
         const html = '<a href="https://example.com/buy">Buy Now</a></body>';
         const result = service.injectTracking(html, 456);
-        expect(result).toContain('api/email/track/click/456');
+        expect(result).toContain('api/email-marketing/track/click/456');
         expect(result).toContain(encodeURIComponent('https://example.com/buy'));
     });
 
@@ -141,6 +151,6 @@ describe('EmailMarketingService.injectTracking()', () => {
         const html = '<p>Plain HTML</p>';
         const result = service.injectTracking(html, 789);
         expect(result.endsWith('>')).toBe(true);
-        expect(result).toContain('api/email/track/open/789');
+        expect(result).toContain('api/email-marketing/track/open/789');
     });
 });

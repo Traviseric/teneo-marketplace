@@ -18,6 +18,8 @@
 const express = require('express');
 const request = require('supertest');
 
+const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
 // ---------------------------------------------------------------------------
 // Mock networkConfig — avoids hitting the filesystem and key generation
 // ---------------------------------------------------------------------------
@@ -250,4 +252,8 @@ describe('Admin-gated network config routes (401 without auth)', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
   });
+});
+
+afterAll(() => {
+  consoleLogSpy.mockRestore();
 });
