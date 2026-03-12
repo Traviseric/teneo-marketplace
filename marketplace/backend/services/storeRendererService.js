@@ -128,7 +128,7 @@ function renderProductCard(product, config) {
     </div>
     <h3 style="font-family:var(--heading-font);font-size:1.25rem;font-weight:700;color:var(--brand-text);margin:0;">${product.name}</h3>
     ${product.description ? `<p style="font-size:0.9rem;color:var(--brand-text-secondary);line-height:1.6;margin:0;">${product.description}</p>` : ''}
-    <a href="#checkout" style="margin-top:0.5rem;display:block;text-align:center;padding:0.75rem 1.5rem;background:${primary};color:#fff;border-radius:0.5rem;font-weight:600;text-decoration:none;font-size:0.95rem;">Add to Cart</a>
+    <button onclick="buyProduct('${product.id || ''}')" style="margin-top:0.5rem;display:block;width:100%;text-align:center;padding:0.75rem 1.5rem;background:${primary};color:#fff;border:none;border-radius:0.5rem;font-weight:600;font-size:0.95rem;cursor:pointer;">Add to Cart</button>
   </div>`;
 }
 
@@ -168,7 +168,7 @@ function renderCTASection(config) {
       HEADLINE: `Ready to explore ${config.name}?`,
       SUBHEADLINE: config.tagline || '',
       CTA_TEXT: 'Get Started',
-      CTA_LINK: '#checkout',
+      CTA_LINK: '#products',
     });
   }
 
@@ -288,6 +288,24 @@ function assembleHTML({ head, body, cssVars, fontsUrl }) {
     <a href="#products" style="padding:0.5rem 1.25rem;background:var(--brand-primary);color:#fff;border-radius:0.5rem;font-weight:600;text-decoration:none;font-size:0.875rem;">Shop Now</a>
   </nav>
   ${body}
+  <script>
+  function buyProduct(productId) {
+    if (!productId) { alert('Product not available for purchase yet.'); return; }
+    var email = prompt('Enter your email to checkout:');
+    if (!email) return;
+    fetch('/api/checkout/store-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: productId, userEmail: email })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.checkoutUrl) { window.location.href = data.checkoutUrl; }
+      else { alert(data.error || 'Checkout failed. Please try again.'); }
+    })
+    .catch(function() { alert('Checkout failed. Please try again.'); });
+  }
+  </script>
 </body>
 </html>`;
 }

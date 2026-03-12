@@ -27,6 +27,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateAdmin } = require('../middleware/auth');
+const { requireAuth } = require('./auth');
 const certificateService = require('../services/certificateService');
 const aiCourseBuilderService = require('../services/aiCourseBuilderService');
 const { dbRun, dbGet, dbAll } = require('../services/databaseHelper');
@@ -48,6 +49,21 @@ router.get('/', async (req, res) => {
         res.json({ success: true, courses });
     } catch (error) {
         console.error('List courses error:', error);
+        res.status(500).json({ success: false, error: 'Failed to list courses' });
+    }
+});
+
+// GET /api/courses/my-courses — list courses created by the authenticated user
+router.get('/my-courses', requireAuth, async (req, res) => {
+    try {
+        const userId = req.session.userId || req.session.user_id || null;
+        const courses = await dbAll(
+            'SELECT id, brand_id, title, slug, description, price_cents, is_published, created_at, updated_at FROM courses WHERE user_id = ? ORDER BY created_at DESC',
+            [userId]
+        );
+        res.json({ success: true, courses });
+    } catch (error) {
+        console.error('My courses error:', error);
         res.status(500).json({ success: false, error: 'Failed to list courses' });
     }
 });
@@ -320,8 +336,8 @@ router.post('/generate', authenticateAdmin, async (req, res) => {
     }
 });
 
-// POST /api/courses/generate-and-save — generate course outline and immediately save to DB (admin only)
-router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
+// POST /api/courses/generate-and-save — generate course outline and save to DB
+router.post('/generate-and-save', requireAuth, async (req, res) => {
     try {
         const { brief, brand_id } = req.body;
         if (!brief || brief.trim().length < 10) {
@@ -331,6 +347,7 @@ router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
             return res.status(400).json({ success: false, error: 'brand_id is required' });
         }
 
+        const userId = req.session.userId || req.session.user_id || null;
         const generated = await aiCourseBuilderService.generateCourse(brief.trim());
 
         // Derive a unique slug from the title
@@ -341,10 +358,10 @@ router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
             .slice(0, 60);
         const slug = `${baseSlug}-${Date.now()}`;
 
-        // Insert course
+        // Insert course with user_id
         const courseResult = await dbRun(
-            'INSERT INTO courses (brand_id, title, slug, description, price_cents) VALUES (?, ?, ?, ?, ?)',
-            [brand_id, generated.title, slug, generated.description || '', generated.price_cents || 0]
+            'INSERT INTO courses (brand_id, title, slug, description, price_cents, user_id) VALUES (?, ?, ?, ?, ?, ?)',
+            [brand_id, generated.title, slug, generated.description || '', generated.price_cents || 0, userId]
         );
         const courseId = courseResult.lastID;
 

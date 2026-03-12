@@ -386,6 +386,34 @@ async function handleCheckoutCompleted(session) {
     return await processMixedOrder(session);
   }
 
+  // Route store product orders — complete order + confirm email, skip book-specific download flow
+  if (session.metadata && session.metadata.productType === 'store_product') {
+    const { orderId: storeOrderId, userEmail: storeEmail } = session.metadata;
+    try {
+      await orderService.completeOrder(storeOrderId, session.payment_intent);
+      await emailService.sendOrderConfirmation({
+        userEmail: storeEmail,
+        bookTitle: session.metadata.productId,
+        bookAuthor: '',
+        price: session.amount_total / 100,
+        orderId: storeOrderId,
+        paymentMethod: session.payment_method_types?.[0] || 'card',
+      });
+      await orderService.fulfillOrder(storeOrderId);
+      await orderService.updateOrderState(storeOrderId, 'completed', {
+        provider: 'stripe', paymentIntent: session.payment_intent,
+      }).catch(err => console.warn('[state-machine] store-product completed failed (non-fatal):', err.message));
+      console.log(`[store-product] Order ${storeOrderId} fulfilled`);
+    } catch (err) {
+      console.error('[store-product] Fulfillment error:', err.message);
+      if (storeOrderId) {
+        await orderService.failOrder(storeOrderId, err.message).catch(() => {});
+      }
+      throw err;
+    }
+    return;
+  }
+
   const {
     bookId,
     bookTitle,
@@ -1074,6 +1102,110 @@ router.post('/shipping-rates', shippingRatesLimiter, async (req, res) => {
     console.error('[shipping-rates] Error:', error.message);
     // Non-fatal: return fallback so checkout can still proceed
     return res.json({ success: true, rates: [], fallback: true, message: 'Shipping calculated at checkout' });
+  }
+});
+
+// ─── Store product checkout (AI-generated stores) ────────────────────────────
+
+/**
+ * POST /api/checkout/store-product
+ * Creates a Stripe Checkout session for a product in an AI-generated store.
+ * Looks up price server-side from store_products — never trusts client.
+ * Body: { productId, userEmail }
+ */
+router.post('/store-product', checkoutLimiter, async (req, res) => {
+  try {
+    const { productId, userEmail } = req.body;
+
+    if (!productId || !userEmail) {
+      return res.status(400).json({ success: false, error: 'productId and userEmail are required' });
+    }
+    if (!isValidEmail(userEmail)) {
+      return res.status(400).json({ success: false, error: 'Valid email address required' });
+    }
+
+    // Look up product server-side — never trust client-supplied price
+    const product = await new Promise((resolve, reject) => {
+      db.get(
+        'SELECT sp.*, s.status AS store_status FROM store_products sp JOIN stores s ON sp.store_id = s.id WHERE sp.id = ?',
+        [productId],
+        (err, row) => (err ? reject(err) : resolve(row || null))
+      );
+    });
+
+    if (!product) {
+      return res.status(404).json({ success: false, error: 'Product not found' });
+    }
+    if (product.store_status !== 'published') {
+      return res.status(400).json({ success: false, error: 'Store is not published' });
+    }
+
+    const stripeHealth = await stripeHealthService.checkStripeHealth();
+    if (!stripeHealth.healthy) {
+      return res.status(503).json({
+        success: false,
+        stripeDown: true,
+        fallbackUrl: '/checkout/crypto',
+        message: 'Stripe payment temporarily unavailable',
+      });
+    }
+
+    const orderId = `store_${Date.now()}_${productId}`;
+    const unitAmountCents = Math.round(product.price * 100);
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer_email: userEmail,
+      client_reference_id: orderId,
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: product.name,
+            ...(product.description && { description: product.description }),
+          },
+          unit_amount: unitAmountCents,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.PUBLIC_URL || process.env.FRONTEND_URL || 'http://localhost:3001'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.PUBLIC_URL || process.env.FRONTEND_URL || 'http://localhost:3001'}/cancel.html`,
+      metadata: {
+        orderId,
+        productId,
+        productType: 'store_product',
+        storeId: product.store_id,
+        userEmail,
+      },
+    });
+
+    await orderService.createOrder({
+      orderId,
+      stripeSessionId: session.id,
+      customerEmail: userEmail,
+      bookId: productId,
+      bookTitle: product.name,
+      bookAuthor: '',
+      format: product.type || 'digital',
+      price: product.price,
+      currency: 'USD',
+      metadata: {
+        productType: 'store_product',
+        storeId: product.store_id,
+        createdAt: new Date().toISOString(),
+      },
+    });
+
+    res.json({
+      success: true,
+      checkoutUrl: session.url,
+      sessionId: session.id,
+      orderId,
+    });
+  } catch (error) {
+    console.error('[checkout/store-product] Error:', error);
+    res.status(500).json({ success: false, error: 'Failed to create checkout session', message: safeMessage(error) });
   }
 });
 

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Dashboard - OpenBazaar AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(255,255,255,0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.25rem; font-weight: 600; color: var(--text); text-decoration: none; }
+        .nav-auth { display: flex; gap: 1rem; align-items: center; font-size: 0.875rem; }
+        .nav-auth a { color: var(--text-muted); text-decoration: none; }
+        .nav-auth a:hover { color: var(--text); }
+        .btn-logout {
+            padding: 0.4rem 0.875rem; border-radius: 6px;
+            border: 1px solid var(--border); background: transparent;
+            color: var(--text); font-size: 0.875rem; cursor: pointer;
+        }
+        main { max-width: 900px; margin: 0 auto; padding: 2.5rem 24px; }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.375rem; }
+        .page-header p { color: var(--text-muted); font-size: 0.9375rem; }
+        .create-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .create-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 1.5rem;
+        }
+        .create-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .create-card h3 i { color: var(--accent); }
+        .create-card textarea {
+            width: 100%; min-height: 80px; border: 1px solid var(--border);
+            border-radius: 8px; padding: 0.75rem; font-size: 0.875rem;
+            resize: vertical; font-family: inherit;
+        }
+        .create-card button {
+            margin-top: 0.75rem; padding: 0.5rem 1.25rem;
+            background: var(--accent); color: #fff; border: none;
+            border-radius: 6px; font-weight: 500; cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .create-card button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .section {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden;
+        }
+        .section-header {
+            padding: 1.125rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.625rem;
+        }
+        .section-header h2 { font-size: 1rem; font-weight: 600; }
+        .section-header i { color: var(--accent); width: 18px; text-align: center; }
+        .section-body { padding: 1.5rem; }
+        .empty-state { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9375rem; }
+        .item-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.875rem 0; border-bottom: 1px solid var(--border); gap: 1rem;
+        }
+        .item-row:last-child { border-bottom: none; }
+        .item-title { font-weight: 500; font-size: 0.9375rem; }
+        .item-meta { color: var(--text-muted); font-size: 0.8125rem; margin-top: 0.125rem; }
+        .item-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+        .btn-sm {
+            padding: 0.3rem 0.625rem; border-radius: 4px;
+            font-size: 0.75rem; font-weight: 500; cursor: pointer;
+            border: 1px solid var(--border); background: transparent;
+            color: var(--text); text-decoration: none;
+        }
+        .btn-sm:hover { background: var(--background); }
+        .btn-sm.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .badge {
+            display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px;
+            font-size: 0.75rem; font-weight: 500;
+        }
+        .badge-draft { background: rgba(245,158,11,0.1); color: #92400e; }
+        .badge-published { background: rgba(16,185,129,0.1); color: #065f46; }
+        .status-msg { margin-top: 0.5rem; font-size: 0.8125rem; }
+        .status-msg.error { color: #dc2626; }
+        .status-msg.success { color: #059669; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">OpenBazaar AI</a>
+            <div class="nav-auth">
+                <a href="/">Browse</a>
+                <a href="/account-dashboard.html">My Account</a>
+                <button class="btn-logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Creator Dashboard</h1>
+            <p id="welcome-text">Create and manage your stores, courses, and funnels.</p>
+        </div>
+
+        <!-- Create Section -->
+        <div class="create-grid">
+            <div class="create-card">
+                <h3><i class="fas fa-store" aria-hidden="true"></i> Create Store</h3>
+                <textarea id="store-brief" placeholder="Describe your store... e.g. 'I sell handmade soy candles with an earthy aesthetic'"></textarea>
+                <button id="btn-create-store" onclick="createStore()">Generate Store</button>
+                <div id="store-status" class="status-msg"></div>
+            </div>
+            <div class="create-card">
+                <h3><i class="fas fa-graduation-cap" aria-hidden="true"></i> Create Course</h3>
+                <textarea id="course-brief" placeholder="Describe your course... e.g. 'A beginner course on watercolor painting techniques'"></textarea>
+                <button id="btn-create-course" onclick="createCourse()">Generate Course</button>
+                <div id="course-status" class="status-msg"></div>
+            </div>
+            <div class="create-card">
+                <h3><i class="fas fa-filter" aria-hidden="true"></i> Create Funnel</h3>
+                <textarea id="funnel-brief" placeholder="Describe your funnel... e.g. 'A lead magnet funnel for my fitness coaching program'"></textarea>
+                <button id="btn-create-funnel" onclick="createFunnel()">Generate Funnel</button>
+                <div id="funnel-status" class="status-msg"></div>
+            </div>
+        </div>
+
+        <!-- My Stores -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-store" aria-hidden="true"></i>
+                <h2>My Stores</h2>
+            </div>
+            <div class="section-body" id="stores-body">
+                <div class="empty-state">Loading...</div>
+            </div>
+        </div>
+
+        <!-- My Courses -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                <h2>My Courses</h2>
+            </div>
+            <div class="section-body" id="courses-body">
+                <div class="empty-state">Loading...</div>
+            </div>
+        </div>
+
+        <!-- My Funnels -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-filter" aria-hidden="true"></i>
+                <h2>My Funnels</h2>
+            </div>
+            <div class="section-body" id="funnels-body">
+                <div class="empty-state">Loading...</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function escHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function formatDate(str) {
+            if (!str) return '';
+            try { return new Date(str).toLocaleDateString(); } catch(_) { return str; }
+        }
+
+        let currentUser = null;
+
+        async function requireAuth() {
+            try {
+                const resp = await fetch('/api/auth/me');
+                if (!resp.ok) {
+                    window.location.href = '/login.html?error=session_expired&message=Please+sign+in+to+access+the+creator+dashboard';
+                    return null;
+                }
+                return await resp.json();
+            } catch (_) {
+                window.location.href = '/login.html';
+                return null;
+            }
+        }
+
+        // ── Stores ──────────────────────────────────────
+
+        async function loadStores() {
+            const body = document.getElementById('stores-body');
+            try {
+                const resp = await fetch('/api/store-builder/stores');
+                if (!resp.ok) throw new Error('failed');
+                const data = await resp.json();
+                const stores = data.stores || [];
+                if (!stores.length) {
+                    body.innerHTML = '<div class="empty-state">No stores yet. Create one above!</div>';
+                    return;
+                }
+                body.innerHTML = stores.map(s => `
+                    <div class="item-row">
+                        <div>
+                            <div class="item-title">${escHtml(s.slug)}</div>
+                            <div class="item-meta">Created ${formatDate(s.created_at)} <span class="badge badge-${s.status === 'published' ? 'published' : 'draft'}">${escHtml(s.status)}</span></div>
+                        </div>
+                        <div class="item-actions">
+                            <a href="/api/store-builder/stores/${encodeURIComponent(s.id)}/preview" target="_blank" class="btn-sm">Preview</a>
+                            ${s.status === 'published'
+                                ? `<button class="btn-sm" onclick="togglePublish('${s.id}', false)">Unpublish</button>`
+                                : `<button class="btn-sm primary" onclick="togglePublish('${s.id}', true)">Publish</button>`
+                            }
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                body.innerHTML = '<div class="empty-state">Unable to load stores.</div>';
+            }
+        }
+
+        async function togglePublish(storeId, publish) {
+            const endpoint = publish ? 'publish' : 'unpublish';
+            try {
+                await fetch(`/api/store-builder/stores/${storeId}/${endpoint}`, { method: 'POST' });
+                await loadStores();
+            } catch (_) {}
+        }
+
+        async function createStore() {
+            const brief = document.getElementById('store-brief').value.trim();
+            const status = document.getElementById('store-status');
+            const btn = document.getElementById('btn-create-store');
+            if (brief.length < 20) { status.textContent = 'Please enter at least 20 characters.'; status.className = 'status-msg error'; return; }
+
+            btn.disabled = true;
+            status.textContent = 'Generating store...';
+            status.className = 'status-msg';
+
+            try {
+                const genResp = await fetch('/api/store-builder/generate-and-render', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief })
+                });
+                const genData = await genResp.json();
+                if (!genResp.ok) throw new Error(genData.error || 'Generation failed');
+
+                const saveResp = await fetch('/api/store-builder/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ config: genData.config, html: genData.html })
+                });
+                const saveData = await saveResp.json();
+                if (!saveResp.ok) throw new Error(saveData.error || 'Save failed');
+
+                status.textContent = 'Store created!';
+                status.className = 'status-msg success';
+                document.getElementById('store-brief').value = '';
+                await loadStores();
+            } catch (err) {
+                status.textContent = err.message;
+                status.className = 'status-msg error';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ── Courses ─────────────────────────────────────
+
+        async function loadCourses() {
+            const body = document.getElementById('courses-body');
+            try {
+                const resp = await fetch('/api/courses/my-courses');
+                if (!resp.ok) throw new Error('failed');
+                const data = await resp.json();
+                const courses = data.courses || [];
+                if (!courses.length) {
+                    body.innerHTML = '<div class="empty-state">No courses yet. Create one above!</div>';
+                    return;
+                }
+                body.innerHTML = courses.map(c => `
+                    <div class="item-row">
+                        <div>
+                            <div class="item-title">${escHtml(c.title)}</div>
+                            <div class="item-meta">Created ${formatDate(c.created_at)} <span class="badge badge-${c.is_published ? 'published' : 'draft'}">${c.is_published ? 'Published' : 'Draft'}</span></div>
+                        </div>
+                        <div class="item-actions">
+                            <a href="/api/courses/${encodeURIComponent(c.slug)}" target="_blank" class="btn-sm">View</a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                body.innerHTML = '<div class="empty-state">Unable to load courses.</div>';
+            }
+        }
+
+        async function createCourse() {
+            const brief = document.getElementById('course-brief').value.trim();
+            const status = document.getElementById('course-status');
+            const btn = document.getElementById('btn-create-course');
+            if (brief.length < 10) { status.textContent = 'Please enter at least 10 characters.'; status.className = 'status-msg error'; return; }
+
+            btn.disabled = true;
+            status.textContent = 'Generating course...';
+            status.className = 'status-msg';
+
+            try {
+                const resp = await fetch('/api/courses/generate-and-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief, brand_id: 'default' })
+                });
+                const data = await resp.json();
+                if (!resp.ok) throw new Error(data.error || 'Generation failed');
+
+                status.textContent = 'Course created!';
+                status.className = 'status-msg success';
+                document.getElementById('course-brief').value = '';
+                await loadCourses();
+            } catch (err) {
+                status.textContent = err.message;
+                status.className = 'status-msg error';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ── Funnels ─────────────────────────────────────
+
+        async function loadFunnels() {
+            const body = document.getElementById('funnels-body');
+            try {
+                const userId = currentUser.userId || currentUser.id || '';
+                const resp = await fetch('/api/funnels/list?userId=' + encodeURIComponent(userId));
+                if (!resp.ok) throw new Error('failed');
+                const data = await resp.json();
+                const funnels = data.funnels || [];
+                if (!funnels.length) {
+                    body.innerHTML = '<div class="empty-state">No funnels yet. Create one above!</div>';
+                    return;
+                }
+                body.innerHTML = funnels.map(f => `
+                    <div class="item-row">
+                        <div>
+                            <div class="item-title">${escHtml(f.name)}</div>
+                            <div class="item-meta">Updated ${formatDate(f.updatedAt)} <span class="badge badge-${f.status === 'published' ? 'published' : 'draft'}">${escHtml(f.status)}</span></div>
+                        </div>
+                        <div class="item-actions">
+                            ${f.url ? `<a href="${escHtml(f.url)}" target="_blank" class="btn-sm">View</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                body.innerHTML = '<div class="empty-state">Unable to load funnels.</div>';
+            }
+        }
+
+        async function createFunnel() {
+            const brief = document.getElementById('funnel-brief').value.trim();
+            const status = document.getElementById('funnel-status');
+            const btn = document.getElementById('btn-create-funnel');
+            if (brief.length < 10) { status.textContent = 'Please enter at least 10 characters.'; status.className = 'status-msg error'; return; }
+
+            btn.disabled = true;
+            status.textContent = 'Generating funnel...';
+            status.className = 'status-msg';
+
+            try {
+                const resp = await fetch('/api/funnels/generate-and-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ brief })
+                });
+                const data = await resp.json();
+                if (!resp.ok) throw new Error(data.error || 'Generation failed');
+
+                status.textContent = 'Funnel created!';
+                status.className = 'status-msg success';
+                document.getElementById('funnel-brief').value = '';
+                await loadFunnels();
+            } catch (err) {
+                status.textContent = err.message;
+                status.className = 'status-msg error';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ── Logout ──────────────────────────────────────
+
+        document.getElementById('logout-btn').addEventListener('click', async function() {
+            try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(_) {}
+            window.location.href = '/login.html';
+        });
+
+        // ── Boot ────────────────────────────────────────
+
+        (async function boot() {
+            const user = await requireAuth();
+            if (!user) return;
+            currentUser = user;
+
+            const name = user.name || user.email || 'Creator';
+            document.getElementById('welcome-text').textContent = `Welcome back, ${name}. Create and manage your stores, courses, and funnels.`;
+
+            await Promise.all([loadStores(), loadCourses(), loadFunnels()]);
+        })();
+    </script>
+</body>
+</html>

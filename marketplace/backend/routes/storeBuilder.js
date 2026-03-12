@@ -110,6 +110,26 @@ router.post('/save', requireAuth, async (req, res) => {
     const products = (config.commerce && config.commerce.products) || [];
     await storeBuilderService.saveProducts(storeId, products);
 
+    // Query saved products with DB-assigned IDs, inject into config, and re-render HTML
+    const savedProducts = await db.all(
+      'SELECT * FROM store_products WHERE store_id = ? ORDER BY created_at ASC',
+      [storeId]
+    );
+    if (savedProducts && savedProducts.length > 0 && config.commerce) {
+      config.commerce.products = savedProducts.map(sp => ({
+        id: sp.id,
+        name: sp.name,
+        price: sp.price,
+        description: sp.description,
+        type: sp.type,
+      }));
+      const updatedHtml = renderStorePage(config);
+      await db.run(
+        'UPDATE stores SET config = ?, html = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [JSON.stringify(config), updatedHtml, storeId]
+      );
+    }
+
     res.json({ success: true, storeId, slug, url });
   } catch (err) {
     if (err.message && err.message.includes('UNIQUE constraint')) {

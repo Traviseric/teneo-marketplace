@@ -580,6 +580,13 @@ function initializeSqliteDatabase(db) {
         logSqliteInitError('Error creating course tables:', err);
     });
 
+    // Migration: add user_id to courses for creator dashboard (idempotent)
+    db.run('ALTER TABLE courses ADD COLUMN user_id TEXT', (err) => {
+        logSqliteInitError('Error adding courses.user_id:', err, {
+            ignorePatterns: [/duplicate column name/i],
+        });
+    });
+
     // Migration: add abandonment_email_sent_at to orders (idempotent)
     db.run('ALTER TABLE orders ADD COLUMN abandonment_email_sent_at DATETIME', (err) => {
         logSqliteInitError('Error adding abandonment_email_sent_at column:', err, {

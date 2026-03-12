@@ -9,6 +9,7 @@ const fs = require('fs').promises;
 // Shared database connection
 const db = require('../../../marketplace/backend/database/database');
 const { authenticateAdmin } = require('../../../marketplace/backend/middleware/auth');
+const { requireAuth } = require('../../../marketplace/backend/routes/auth');
 
 // DB helpers
 function dbRun(sql, params) {
@@ -561,9 +562,9 @@ router.patch('/:id', authenticateAdmin, async (req, res) => {
  * Generate a funnel config from a natural-language brief (AI)
  * POST /api/funnels/generate
  * Body: { brief }
- * Auth: admin required
+ * Auth: authenticated user required
  */
-router.post('/generate', authenticateAdmin, async (req, res) => {
+router.post('/generate', requireAuth, async (req, res) => {
   try {
     const { brief } = req.body;
     if (!brief || brief.trim().length < 10) {
@@ -581,12 +582,13 @@ router.post('/generate', authenticateAdmin, async (req, res) => {
 /**
  * Generate funnel from brief AND persist to DB (creates funnel + email sequence)
  * POST /api/funnels/generate-and-save
- * Body: { brief, userId? }
- * Auth: admin required
+ * Body: { brief }
+ * Auth: authenticated user required
  */
-router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
+router.post('/generate-and-save', requireAuth, async (req, res) => {
   try {
-    const { brief, userId = 'admin' } = req.body;
+    const { brief } = req.body;
+    const userId = req.session.userId || req.session.user_id || req.body.userId || 'anonymous';
     if (!brief || brief.trim().length < 10) {
       return res.status(400).json({ error: 'brief must be at least 10 characters' });
     }
@@ -614,6 +616,24 @@ router.post('/generate-and-save', authenticateAdmin, async (req, res) => {
           [seqName, config.lead_magnet_description || brief.trim().slice(0, 120)]
         );
         sequenceId = seqResult.lastID;
+
+        // Create email_templates + sequence_emails for each email in the sequence
+        for (let i = 0; i < config.email_sequence.length; i++) {
+          const email = config.email_sequence[i];
+          const tplName = `${seqName} - Email ${i + 1} (${Date.now()})`;
+          const tplResult = await dbRun(
+            `INSERT INTO email_templates (name, subject, body_html, preview_text, category)
+             VALUES (?, ?, ?, ?, 'sequence')`,
+            [tplName, email.subject || `Email ${i + 1}`, email.body || email.outline || '', email.preview_text || '']
+          );
+          const templateId = tplResult.lastID;
+
+          await dbRun(
+            `INSERT INTO sequence_emails (sequence_id, order_number, delay_days, template_id, active)
+             VALUES (?, ?, ?, ?, 1)`,
+            [sequenceId, i + 1, email.delay_days || i * 2, templateId]
+          );
+        }
 
         // Link sequence to funnel
         await dbRun('UPDATE funnels SET sequence_id = ? WHERE id = ?', [sequenceId, funnelId]);
