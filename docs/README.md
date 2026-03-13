@@ -6,12 +6,13 @@
 
 ## Current Reality
 
-**Updated:** March 9, 2026
+**Updated:** March 13, 2026
 
 This docs index keeps the richer original structure, but the current truth is:
 
 - the repo has a broad implemented feature surface
-- the automated suite is not fully green yet
+- the automated suite is green (40 suites, 517 tests passing)
+- the prompt-to-working-store gap is now closed: creator dashboard, store product checkout, live buttons in rendered stores, course/funnel generation open to users
 - several high-value flows are implemented but still need production validation
 
 Canonical truth sources:
@@ -98,6 +99,7 @@ Contributing and extending the platform
 - **[Contributing Guide](development/CONTRIBUTING.md)**
 - **[AI Builder Strategy](development/AI_BUILDER_STRATEGY.md)** - Build with Claude Code
 - **[AI Store Builder Checklist](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)** - Execution companion
+- **[Self-Serve Store + Funnel Beta Checklist](development/SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md)** - Concrete launch checklist for normal users
 
 ### [legal/](legal/)
 Brand protection and legal operations
@@ -150,6 +152,14 @@ Technical reference and specifications
 1. [Operator Guide](OPERATOR_GUIDE.md)
 2. [AI Store Builder Checklist](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
 3. [Roadmap](ROADMAP.md)
+
+### For Shipping Self-Serve Store Beta
+**Goal: Let normal users create hosted stores and funnels without manual intervention**
+
+1. [Current Status](reference/MARKETPLACE_STATUS_AND_TODO.md)
+2. [Roadmap](ROADMAP.md)
+3. [Self-Serve Store + Funnel Beta Checklist](development/SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md)
+4. [AI Store Builder Checklist](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
 
 ### For Security Auditors
 **Goal: Assess platform security**
@@ -274,6 +284,6 @@ Found an error or want to improve the docs? See [Contributing Guide](development
 
 ---
 
-**Last Updated:** March 9, 2026
+**Last Updated:** March 13, 2026
 
 *Need help? Start with the current status doc and roadmap, then branch into the feature or deployment guide you need.*

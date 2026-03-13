@@ -1,6 +1,6 @@
 # OpenBazaar AI - Roadmap
 
-**Updated:** 2026-03-09
+**Updated:** 2026-03-13
 **Informed by:** Gemini Deep Research outputs 1-9, current implementation audit, current test and route inventory
 **Supersedes:** `IMPLEMENTATION_PLAN.md`, `REVOLUTIONARY_FEATURES_ROADMAP.md`, `IMPLEMENTATION_MAP.md`
 **Execution companion:** [development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
@@ -123,6 +123,10 @@ Implication:
 - [x] Storefront API (`/api/storefront/catalog`, `/api/storefront/checkout`, `/api/storefront/fulfill`)
 - [x] Printful webhook endpoint with signature verification and idempotent event logging
 - [x] AI store-builder route surface (`generate`, `render`, `save`, `preview`, `publish`, `intake`, build tracking)
+- [x] Store product checkout endpoint (`POST /api/checkout/store-product`) with server-side price lookup
+- [x] Creator dashboard (`/creator-dashboard.html`) — create/manage stores, courses, funnels from one UI
+- [x] Course/funnel generation open to authenticated users (not admin-only)
+- [x] Funnel email sequence wiring (email_templates + sequence_emails persisted on generate-and-save)
 - [x] Referral routes plus checkout commission tracking
 - [x] Subscription routes and membership schema
 - [x] Hosting tier billing routes
@@ -142,6 +146,9 @@ Implication:
 - [ ] ArxMint deeper Lightning/Cashu/L402 validation
 - [ ] Referral payout economics proven in live checkout, not just wired in code
 - [ ] Hosting provisioning and operations beyond billing checkout
+- [ ] Creator dashboard end-to-end proof on production (store/course/funnel create → publish → purchase)
+- [ ] Store product checkout proven with real Stripe payment on a published AI-generated store
+- [ ] Email sequence delivery proven after funnel generate-and-save
 
 ### Planned / Not Built Yet
 
@@ -209,9 +216,17 @@ Nothing else matters if the production site is broken or the verification baseli
 
 ### 1.3 Courses, Funnels, and Store Management
 
-- [ ] Prove course purchase-to-enrollment flow
-- [ ] Prove funnel save/load/deploy flow
-- [ ] Improve operator and creator UX around storefront management
+- [x] Creator dashboard for store/course/funnel creation and management (`/creator-dashboard.html`)
+- [x] Store product checkout endpoint with webhook fulfillment
+- [x] Course and funnel generation open to regular authenticated users
+- [x] Funnel email sequences persisted to email_templates + sequence_emails on generate
+- [x] Store renderer produces live checkout buttons (not dead links)
+- [x] Nav wiring: account dashboard links to creator dashboard
+- [ ] Prove course purchase-to-enrollment flow on production
+- [ ] Prove funnel save/load/deploy flow on production
+- [ ] Prove store product checkout with real Stripe payment on a published store
+- [ ] Product editing UI (price, description, type changes without regenerating)
+- [ ] Store subscriber list visible in creator dashboard
 
 ### 1.4 Fulfillment Operations
 
@@ -385,13 +400,13 @@ Still requiring repo work, not just doc work:
 
 ## Immediate Next 7 Tasks
 
-1. Keep the Jest baseline green after the harness fixes.
-2. Clean up noisy DB initialization and schema-drift logging in test mode.
-3. Validate one real Stripe purchase on the deployed stack.
-4. Validate one real Printful or Lulu order on the deployed stack.
-5. Validate the Postgres/Supabase runtime path end-to-end.
-6. Finish the public auth/account journey.
-7. Record live proof in the status doc and changelog.
+1. **Prove store product checkout end-to-end**: deploy, create a store via creator dashboard, publish it, complete a real Stripe purchase at `/store/{slug}`.
+2. **Prove funnel email sequence delivery**: generate-and-save a funnel, subscribe to it, verify email_templates and sequence_emails records exist, trigger at least one email send.
+3. **Product editing UI**: add inline edit for product name/price/description in the creator dashboard (currently requires regeneration).
+4. **Store subscriber visibility**: show captured subscribers in creator dashboard for each store.
+5. **Validate Postgres/Supabase runtime path** with the new store/course/funnel flows (not just legacy checkout).
+6. **Prove course purchase-to-enrollment** on a published course created via creator dashboard.
+7. **Clean up noisy DB initialization** and schema-drift logging in test mode.
 
 ---
 
@@ -401,4 +416,5 @@ Still requiring repo work, not just doc work:
 - [Docs index](./README.md)
 - [Operator guide](./OPERATOR_GUIDE.md)
 - [AI builder checklist](./development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
+- [Self-serve store + funnel beta checklist](./development/SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md)
 - [Changelog](../CHANGELOG.md)

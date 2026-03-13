@@ -3,6 +3,7 @@
 **Status:** ACTIVE
 **Created:** 2026-03-06
 **Companion to:** [../ROADMAP.md](../ROADMAP.md)
+**Self-serve beta companion:** [SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md](SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md)
 **Related commercialization strategy:** [C:/code/orchestrator/docs/reference/revenue/COMMERCIALIZATION_STRATEGY.md](C:/code/orchestrator/docs/reference/revenue/COMMERCIALIZATION_STRATEGY.md)
 
 ---
@@ -18,6 +19,8 @@ It exists to keep three planning layers separate so nothing gets lost:
 3. **Broader orchestrator revenue plan** = consulting, PRAS, Flux, FitLabs, and other revenue lanes outside this repo
 
 This checklist does **not** replace any of those. It turns the OpenBazaar AI builder lane into a concrete sequence of implementation work.
+
+If the question is specifically "what is still missing before regular users can use OpenBazaar AI to build stores and funnels on their own websites?", use [SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md](SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md) alongside this file.
 
 ---
 
@@ -112,24 +115,28 @@ This lane is successful when all of the following are true:
 
 ### Store renderer
 
-- [ ] Build renderer logic that turns `store_config` into a working storefront
-- [ ] Reuse component library templates instead of generating raw pages ad hoc
-- [ ] Generate product listings, hero, CTA, checkout hooks, and email capture wiring
-- [ ] Decide where generated stores live: `openbazaar.ai/store/{slug}`, brand route, or custom domain path
+- [x] Build renderer logic that turns `store_config` into a working storefront
+- [x] Reuse component library templates instead of generating raw pages ad hoc
+- [x] Generate product listings, hero, CTA, checkout hooks, and email capture wiring
+- [x] Decide where generated stores live: `openbazaar.ai/store/{slug}` (hosted path is the beta model)
+- [x] Store renderer produces live checkout buttons that call `POST /api/checkout/store-product`
+- [x] Product IDs injected into rendered HTML on save (re-render after product persistence)
 
 ### Persistence and publish
 
-- [ ] Save generated store records to Supabase `stores`
-- [ ] Save generated products to the right product tables
-- [ ] Wire subscriber capture to the subscribers/email tables
-- [ ] Implement preview mode before publish
-- [ ] Implement publish mode with a stable URL and rollback path
+- [x] Save generated store records to `stores` table
+- [x] Save generated products to `store_products` table with UUID IDs
+- [x] Wire subscriber capture to the `store_subscribers` table
+- [x] Implement preview mode before publish
+- [x] Implement publish mode with a stable URL (`/store/{slug}`)
+- [ ] Rollback path (unpublish works, but no version history yet)
 
 ### Editing loop
 
-- [ ] Support natural-language update requests for store copy and product changes
+- [x] Support natural-language update requests for store copy and product changes (`PATCH /stores/:id/edit`)
 - [ ] Support enabling course mode or funnel mode after initial generation
 - [ ] Store both the latest config and the edit history
+- [ ] Inline product editing (price, description, type) without full regeneration
 
 ### Validation
 
@@ -245,10 +252,12 @@ This is the bridge between the public OpenBazaar product roadmap and the orchest
 
 ## Next Build Sequence
 
-1. Finish Phase 0 production stability.
-2. Define and validate `store_config`.
-3. Prove one internal store build from prompt to publish.
-4. Add status tracking and delivery artifacts.
-5. Dogfood 3 builds.
-6. Publish case studies and the first external offer.
-7. Only then decide whether self-serve platform work is justified.
+1. ~~Finish Phase 0 production stability.~~ (test suite green, 40/40 suites)
+2. ~~Define and validate `store_config`.~~ (schema exists, renderer works)
+3. ~~Prove one internal store build from prompt to publish.~~ (creator dashboard → generate → save → publish → `/store/{slug}` with live checkout)
+4. **Prove store product checkout with real Stripe payment on production.**
+5. **Add inline product editing to creator dashboard.**
+6. **Prove funnel email sequence delivery end-to-end.**
+7. Dogfood 3 builds with real payments.
+8. Publish case studies and the first external offer.
+9. Only then decide whether broader self-serve platform work is justified.
