@@ -202,6 +202,67 @@ router.get('/stores/:id/products', requireAuth, async (req, res) => {
   }
 });
 
+// PATCH /api/store-builder/stores/:id/products/:productId
+// Update a single product's name, price, description, or type. Re-renders store HTML.
+router.patch('/stores/:id/products/:productId', requireAuth, async (req, res) => {
+  const userId = req.session.userId || req.session.user_id || null;
+  try {
+    const store = await db.get(
+      'SELECT * FROM stores WHERE id = ? AND user_id = ?',
+      [req.params.id, userId]
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+
+    const product = await db.get(
+      'SELECT * FROM store_products WHERE id = ? AND store_id = ?',
+      [req.params.productId, req.params.id]
+    );
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+
+    const updates = [];
+    const params = [];
+    if (req.body.name !== undefined) { updates.push('name = ?'); params.push(req.body.name); }
+    if (req.body.price !== undefined) { updates.push('price = ?'); params.push(Number(req.body.price)); }
+    if (req.body.description !== undefined) { updates.push('description = ?'); params.push(req.body.description); }
+    if (req.body.type !== undefined) { updates.push('type = ?'); params.push(req.body.type); }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    params.push(req.params.productId);
+    await db.run(`UPDATE store_products SET ${updates.join(', ')} WHERE id = ?`, params);
+
+    // Re-render store HTML with updated products
+    let config;
+    try {
+      config = typeof store.config === 'string' ? JSON.parse(store.config) : store.config;
+    } catch (_) {
+      return res.status(500).json({ error: 'Store config is corrupted' });
+    }
+
+    const allProducts = await db.all(
+      'SELECT * FROM store_products WHERE store_id = ? ORDER BY created_at ASC',
+      [req.params.id]
+    );
+    if (config.commerce) {
+      config.commerce.products = allProducts.map(sp => ({
+        id: sp.id, name: sp.name, price: sp.price,
+        description: sp.description, type: sp.type,
+      }));
+    }
+    const html = renderStorePage(config);
+    await db.run(
+      'UPDATE stores SET config = ?, html = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [JSON.stringify(config), html, req.params.id]
+    );
+
+    res.json({ success: true, product: allProducts.find(p => p.id === req.params.productId) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ──────────────────────────────────────────────────
 // Subscriber capture (public — no auth required)
 // ──────────────────────────────────────────────────

@@ -99,6 +99,23 @@
         .status-msg { margin-top: 0.5rem; font-size: 0.8125rem; }
         .status-msg.error { color: #dc2626; }
         .status-msg.success { color: #059669; }
+        .sub-items { margin-top: 0.5rem; padding-left: 1rem; }
+        .sub-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 0; border-bottom: 1px dashed var(--border); font-size: 0.8125rem;
+        }
+        .sub-item:last-child { border-bottom: none; }
+        .sub-item-label { color: var(--text-muted); }
+        .product-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .product-row input {
+            border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem;
+            font-size: 0.8125rem; font-family: inherit;
+        }
+        .product-row input.name-input { flex: 2; min-width: 120px; }
+        .product-row input.price-input { width: 70px; }
+        .product-row input.desc-input { flex: 3; min-width: 150px; }
+        .toggle-link { cursor: pointer; color: var(--accent); font-size: 0.75rem; text-decoration: underline; }
+        .subscriber-row { font-size: 0.8125rem; color: var(--text-muted); padding: 0.25rem 0; }
     </style>
 </head>
 <body>
@@ -217,18 +234,24 @@
                     return;
                 }
                 body.innerHTML = stores.map(s => `
-                    <div class="item-row">
-                        <div>
-                            <div class="item-title">${escHtml(s.slug)}</div>
-                            <div class="item-meta">Created ${formatDate(s.created_at)} <span class="badge badge-${s.status === 'published' ? 'published' : 'draft'}">${escHtml(s.status)}</span></div>
+                    <div style="border-bottom:1px solid var(--border);padding:0.75rem 0;">
+                        <div class="item-row" style="border-bottom:none;padding:0;">
+                            <div>
+                                <div class="item-title">${escHtml(s.slug)}</div>
+                                <div class="item-meta">Created ${formatDate(s.created_at)} <span class="badge badge-${s.status === 'published' ? 'published' : 'draft'}">${escHtml(s.status)}</span></div>
+                            </div>
+                            <div class="item-actions">
+                                <span class="toggle-link" onclick="toggleProducts('${s.id}')">Products</span>
+                                <span class="toggle-link" onclick="toggleSubscribers('${s.id}')">Subscribers</span>
+                                <a href="/api/store-builder/stores/${encodeURIComponent(s.id)}/preview" target="_blank" class="btn-sm">Preview</a>
+                                ${s.status === 'published'
+                                    ? `<button class="btn-sm" onclick="togglePublish('${s.id}', false)">Unpublish</button>`
+                                    : `<button class="btn-sm primary" onclick="togglePublish('${s.id}', true)">Publish</button>`
+                                }
+                            </div>
                         </div>
-                        <div class="item-actions">
-                            <a href="/api/store-builder/stores/${encodeURIComponent(s.id)}/preview" target="_blank" class="btn-sm">Preview</a>
-                            ${s.status === 'published'
-                                ? `<button class="btn-sm" onclick="togglePublish('${s.id}', false)">Unpublish</button>`
-                                : `<button class="btn-sm primary" onclick="togglePublish('${s.id}', true)">Publish</button>`
-                            }
-                        </div>
+                        <div id="products-${s.id}" class="sub-items" style="display:none;"></div>
+                        <div id="subscribers-${s.id}" class="sub-items" style="display:none;"></div>
                     </div>
                 `).join('');
             } catch (err) {
@@ -242,6 +265,67 @@
                 await fetch(`/api/store-builder/stores/${storeId}/${endpoint}`, { method: 'POST' });
                 await loadStores();
             } catch (_) {}
+        }
+
+        async function toggleProducts(storeId) {
+            var el = document.getElementById('products-' + storeId);
+            if (el.style.display !== 'none') { el.style.display = 'none'; return; }
+            el.innerHTML = '<div class="sub-item-label">Loading products...</div>';
+            el.style.display = 'block';
+            try {
+                var resp = await fetch('/api/store-builder/stores/' + encodeURIComponent(storeId) + '/products');
+                var data = await resp.json();
+                var products = data.products || [];
+                if (!products.length) { el.innerHTML = '<div class="sub-item-label">No products.</div>'; return; }
+                el.innerHTML = products.map(function(p) {
+                    return '<div class="product-row" id="prod-' + p.id + '">' +
+                        '<input class="name-input" value="' + escHtml(p.name) + '" data-field="name">' +
+                        '<input class="price-input" type="number" step="0.01" value="' + p.price + '" data-field="price">' +
+                        '<input class="desc-input" value="' + escHtml(p.description || '') + '" data-field="description" placeholder="Description">' +
+                        '<button class="btn-sm primary" onclick="saveProduct(\'' + storeId + '\',\'' + p.id + '\')">Save</button>' +
+                        '</div>';
+                }).join('');
+            } catch (err) {
+                el.innerHTML = '<div class="sub-item-label">Failed to load products.</div>';
+            }
+        }
+
+        async function saveProduct(storeId, productId) {
+            var row = document.getElementById('prod-' + productId);
+            if (!row) return;
+            var inputs = row.querySelectorAll('input');
+            var body = {};
+            inputs.forEach(function(inp) { body[inp.dataset.field] = inp.dataset.field === 'price' ? Number(inp.value) : inp.value; });
+            try {
+                var resp = await fetch('/api/store-builder/stores/' + storeId + '/products/' + productId, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (!resp.ok) { var d = await resp.json(); alert(d.error || 'Save failed'); return; }
+                var btn = row.querySelector('.btn-sm');
+                btn.textContent = 'Saved!';
+                setTimeout(function() { btn.textContent = 'Save'; }, 1500);
+            } catch (_) { alert('Failed to save product.'); }
+        }
+
+        async function toggleSubscribers(storeId) {
+            var el = document.getElementById('subscribers-' + storeId);
+            if (el.style.display !== 'none') { el.style.display = 'none'; return; }
+            el.innerHTML = '<div class="sub-item-label">Loading subscribers...</div>';
+            el.style.display = 'block';
+            try {
+                var resp = await fetch('/api/store-builder/stores/' + encodeURIComponent(storeId) + '/subscribers');
+                var data = await resp.json();
+                var subs = data.subscribers || [];
+                if (!subs.length) { el.innerHTML = '<div class="sub-item-label">No subscribers yet.</div>'; return; }
+                el.innerHTML = '<div class="sub-item-label" style="font-weight:600;margin-bottom:0.25rem;">' + subs.length + ' subscriber' + (subs.length === 1 ? '' : 's') + '</div>' +
+                    subs.map(function(s) {
+                        return '<div class="subscriber-row">' + escHtml(s.email) + (s.name ? ' (' + escHtml(s.name) + ')' : '') + ' — ' + formatDate(s.created_at) + '</div>';
+                    }).join('');
+            } catch (err) {
+                el.innerHTML = '<div class="sub-item-label">Failed to load subscribers.</div>';
+            }
         }
 
         async function createStore() {

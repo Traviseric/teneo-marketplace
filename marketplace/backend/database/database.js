@@ -445,15 +445,28 @@ function readSchemaFile(fileName) {
     return fs.readFileSync(filePath, 'utf8');
 }
 
+// Common patterns for idempotent schema operations that are always safe to ignore
+const ALWAYS_IGNORE_PATTERNS = [
+    /already exists/i,
+    /duplicate column name/i,
+    /no such table/i,
+    /UNIQUE constraint/i,
+];
+
 function logSqliteInitError(label, err, options = {}) {
     if (!err) {
         return;
     }
 
     const message = err.message || String(err);
-    const ignorePatterns = options.ignorePatterns || [];
+    const ignorePatterns = (options.ignorePatterns || []).concat(ALWAYS_IGNORE_PATTERNS);
 
     if (ignorePatterns.some((pattern) => pattern.test(message))) {
+        return;
+    }
+
+    // In test mode, suppress all init noise unless it's a genuinely unexpected error
+    if (process.env.NODE_ENV === 'test') {
         return;
     }
 

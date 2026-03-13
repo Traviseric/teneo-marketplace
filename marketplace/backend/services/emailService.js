@@ -37,7 +37,9 @@ class EmailService {
         this._provider = 'nodemailer';
         console.log('Email service: using Nodemailer SMTP');
       } else {
-        console.warn('Email not configured. Set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS environment variables.');
+        if (process.env.NODE_ENV !== 'test') {
+          console.warn('Email not configured. Set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS environment variables.');
+        }
       }
     } catch (error) {
       console.error('Error initializing email transporter:', error);
