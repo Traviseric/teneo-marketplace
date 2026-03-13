@@ -13,6 +13,51 @@
 
 const schema = require('../schemas/store-config.schema.json');
 
+/**
+ * Validate and coerce a store config returned by the AI.
+ * Throws a descriptive error if required fields are missing.
+ * Invalid enum values are coerced to safe defaults.
+ */
+function validateStoreConfig(config) {
+  const required = ['name', 'tagline', 'commerce'];
+  for (const field of required) {
+    if (!config[field]) throw new Error(`Generated config missing required field: ${field}`);
+  }
+  const { commerce } = config;
+  const validFulfillment = ['digital', 'pod', 'service'];
+  if (commerce.fulfillment_type && !validFulfillment.includes(commerce.fulfillment_type)) {
+    commerce.fulfillment_type = 'digital';
+  }
+  const validProvider = ['stripe', 'arxmint', 'both'];
+  if (commerce.payment_provider && !validProvider.includes(commerce.payment_provider)) {
+    commerce.payment_provider = 'stripe';
+  }
+  if (Array.isArray(commerce.products)) {
+    const validTypes = ['ebook', 'course', 'service', 'physical'];
+    commerce.products = commerce.products.filter(p => p && p.name && p.price != null);
+    commerce.products.forEach(p => {
+      if (p.type && !validTypes.includes(p.type)) p.type = 'ebook';
+      p.price = Number(p.price);
+      if (isNaN(p.price) || p.price < 0) p.price = 0;
+    });
+  }
+  return config;
+}
+
+const SCHEMA_TOP_KEYS = new Set(['name', 'tagline', 'palette', 'fonts', 'commerce', 'modules']);
+
+/**
+ * Filter a patch object to only include known top-level schema keys.
+ * Removes any hallucinated or unknown keys from the AI response.
+ */
+function filterPatch(patch) {
+  const filtered = {};
+  for (const key of Object.keys(patch)) {
+    if (SCHEMA_TOP_KEYS.has(key)) filtered[key] = patch[key];
+  }
+  return filtered;
+}
+
 async function buildStoreFromBrief(brief) {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error('ANTHROPIC_API_KEY is not set. Add it to your .env file to use the AI Store Builder.');
@@ -43,7 +88,7 @@ Be creative with palette and content. Make the store feel professional and on-br
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('No JSON found in AI response');
 
-  return JSON.parse(jsonMatch[0]);
+  return validateStoreConfig(JSON.parse(jsonMatch[0]));
 }
 
 /**
@@ -103,7 +148,7 @@ Return ONLY valid JSON containing the changed fields (partial patch). No markdow
   const text = message.content[0].text;
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('No JSON patch found in AI response');
-  return JSON.parse(jsonMatch[0]);
+  return filterPatch(JSON.parse(jsonMatch[0]));
 }
 
-module.exports = { buildStoreFromBrief, parseEditIntent, deepMerge };
+module.exports = { buildStoreFromBrief, parseEditIntent, deepMerge, validateStoreConfig, filterPatch };

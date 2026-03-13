@@ -201,6 +201,78 @@ describe('POST /api/store-builder/intake', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tests — PATCH /api/store-builder/stores/:id/products/:productId
+// ---------------------------------------------------------------------------
+
+describe('PATCH /api/store-builder/stores/:id/products/:productId', () => {
+  let app;
+  let db;
+
+  beforeEach(() => {
+    app = buildApp();
+    db = require('../database/database');
+    // Reset mocks: store found, product found
+    db.get
+      .mockResolvedValueOnce({ id: 'store-1', config: JSON.stringify({ commerce: { products: [] } }) })
+      .mockResolvedValueOnce({ id: 'prod-1', store_id: 'store-1', name: 'Old Name', price: 10 });
+    db.all.mockResolvedValue([]);
+  });
+
+  test('returns 400 when price is non-numeric string', async () => {
+    const res = await request(app)
+      .patch('/api/store-builder/stores/store-1/products/prod-1')
+      .send({ price: 'free' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/non-negative number/i);
+  });
+
+  test('returns 400 when price is negative', async () => {
+    const res = await request(app)
+      .patch('/api/store-builder/stores/store-1/products/prod-1')
+      .send({ price: -5 });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/non-negative number/i);
+  });
+
+  test('returns 400 when type is invalid', async () => {
+    const res = await request(app)
+      .patch('/api/store-builder/stores/store-1/products/prod-1')
+      .send({ type: 'widget' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/ebook/);
+  });
+
+  test('returns 400 when name is empty string', async () => {
+    const res = await request(app)
+      .patch('/api/store-builder/stores/store-1/products/prod-1')
+      .send({ name: '' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/non-empty string/i);
+  });
+
+  test('returns 400 when name is whitespace only', async () => {
+    const res = await request(app)
+      .patch('/api/store-builder/stores/store-1/products/prod-1')
+      .send({ name: '   ' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/non-empty string/i);
+  });
+
+  test('accepts valid product type values', async () => {
+    for (const type of ['ebook', 'course', 'service', 'physical']) {
+      db.get
+        .mockResolvedValueOnce({ id: 'store-1', config: JSON.stringify({ commerce: { products: [] } }) })
+        .mockResolvedValueOnce({ id: 'prod-1', store_id: 'store-1' });
+      db.all.mockResolvedValue([]);
+      const res = await request(app)
+        .patch('/api/store-builder/stores/store-1/products/prod-1')
+        .send({ type });
+      expect(res.status).toBe(200);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Tests — GET /api/store-builder/builds/:id
 // ---------------------------------------------------------------------------
 

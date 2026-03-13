@@ -219,9 +219,31 @@ router.patch('/stores/:id/products/:productId', requireAuth, async (req, res) =>
     );
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
+    // Validate inputs before update
+    const VALID_PRODUCT_TYPES = ['ebook', 'course', 'service', 'physical'];
+
+    if (req.body.name !== undefined) {
+      if (typeof req.body.name !== 'string' || req.body.name.trim() === '') {
+        return res.status(400).json({ error: 'name must be a non-empty string' });
+      }
+    }
+
+    if (req.body.price !== undefined) {
+      const price = Number(req.body.price);
+      if (isNaN(price) || price < 0) {
+        return res.status(400).json({ error: 'price must be a non-negative number' });
+      }
+    }
+
+    if (req.body.type !== undefined) {
+      if (!VALID_PRODUCT_TYPES.includes(req.body.type)) {
+        return res.status(400).json({ error: `type must be one of: ${VALID_PRODUCT_TYPES.join(', ')}` });
+      }
+    }
+
     const updates = [];
     const params = [];
-    if (req.body.name !== undefined) { updates.push('name = ?'); params.push(req.body.name); }
+    if (req.body.name !== undefined) { updates.push('name = ?'); params.push(req.body.name.trim()); }
     if (req.body.price !== undefined) { updates.push('price = ?'); params.push(Number(req.body.price)); }
     if (req.body.description !== undefined) { updates.push('description = ?'); params.push(req.body.description); }
     if (req.body.type !== undefined) { updates.push('type = ?'); params.push(req.body.type); }
