@@ -418,3 +418,71 @@ Still requiring repo work, not just doc work:
 - [AI builder checklist](./development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
 - [Self-serve store + funnel beta checklist](./development/SELF_SERVE_STORE_FUNNEL_BETA_CHECKLIST.md)
 - [Changelog](../CHANGELOG.md)
+
+---
+
+## Sovereign Stack Integration (SPINE Items)
+
+> **Source:** [SOVEREIGN_STACK_ROADMAP.md](../../.claude/guides/reference/SOVEREIGN_STACK_ROADMAP.md) — maps TE Code to a 7-layer sovereign institutional stack. OpenBazaar-AI is **Layer 4: Market Interfaces** — how buyers and sellers find each other without platform captivity.
+
+### SPINE-OBZ-01: General Marketplace Listings [P1]
+
+**Status:** planned
+**Depends on:** SPINE-AUTH-01 (seller orgs from teneo-auth)
+**Unlocks:** Local business marketplace, creator economy, service exchange
+
+Expand listing schema beyond books to support all commerce types:
+- [ ] Polymorphic listing model with types: `product`, `service`, `digital`, `course`, `subscription`
+- [ ] Shared fields: title, description, price, media[], category, seller_org_id, availability, fulfillment_method
+- [ ] Product-specific: inventory, shipping, variants
+- [ ] Service-specific: duration, booking_url (→ WorkforceOS), availability
+- [ ] Digital-specific: file delivery (existing download token system)
+- [ ] Course-specific: already built — generalize from current course module
+- [ ] Creator dashboard supports all listing types
+
+**Why:** The marketplace layer cannot serve the sovereign stack if it only sells books. Local businesses need to list services. Creators need to sell courses and digital products. The spine positions OpenBazaar-AI as the discovery/trade layer for the entire ecosystem.
+
+### SPINE-OBZ-02: Order Lifecycle [P1]
+
+**Status:** planned
+**Depends on:** SPINE-OBZ-01, SPINE-ARX-02 (escrow from arxmint)
+**Unlocks:** Full marketplace transactions, service marketplace, local commerce
+
+Full transaction flow for non-book listings:
+- [ ] Order states: `quote` → `order` → `payment` → `fulfillment` → `delivery` → `review`
+- [ ] Payment routing: arxmint (BTC/Lightning/Cashu) or Stripe (fiat) — buyer chooses
+- [ ] Fulfillment routing by type:
+  - Digital: instant download (existing system)
+  - Physical: shipping tracking
+  - Service: creates WorkforceOS booking
+- [ ] Delivery confirmation trigger
+- [ ] Post-completion review/rating (→ aibridge reputation)
+- [ ] Order event webhooks (→ FinForensics for bookkeeping)
+
+**Why:** Books are download-and-done. Services and physical goods need a multi-step transaction lifecycle. This is the "order" primitive from the spine's Layer 4.
+
+### SPINE-OBZ-03: Wire Reputation [P2]
+
+**Status:** planned
+**Depends on:** SPINE-OBZ-02 (need transactions to score)
+**Unlocks:** Portable trust, decentralized marketplace credibility
+
+Display and feed aibridge reputation scores:
+- [ ] Fetch seller reputation from aibridge `/api/reputation/:agentId` on listing render
+- [ ] Fetch buyer reputation for sellers to see
+- [ ] Post-transaction webhook to aibridge reputation ledger for score update
+- [ ] Display trust score badge on storefronts and listings
+- [ ] Dispute outcomes feed negative reputation signals
+
+**Why:** "Reputation without platform captivity." Reputation lives in aibridge (portable across the ecosystem), displayed in OpenBazaar (contextual), not locked to one platform. This is what makes decentralized trade trustworthy.
+
+### Sovereign Stack Cross-References
+
+| Layer | System | How OpenBazaar-AI Connects |
+|-------|--------|----------------------------|
+| L1 Identity | teneo-auth | Org = storefront owner, SSO login |
+| L2 Value | arxmint | Payment rails (Lightning/Cashu/escrow), invoices |
+| L3 Coordination | WorkforceOS | Service fulfillment via booking API |
+| L4 Market | **OpenBazaar-AI** | Owns listings, orders, storefronts, discovery, federation |
+| L5 Intelligence | conversos | Marketplace messaging mission |
+| L5 Intelligence | aibridge | Reputation scores, transaction facts → context broker |
