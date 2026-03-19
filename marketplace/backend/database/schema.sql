@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS store_builds (
   payment_session_id TEXT,
   operator_notes TEXT,
   error_message TEXT,
+  rendered_config TEXT,
+  delivery_url TEXT,
+  qa_results TEXT,
+  artifact_summary TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now')),
   delivered_at TEXT

@@ -699,6 +699,18 @@ router.get('/builds/:id', async (req, res) => {
   }
 });
 
+// GET /api/store-builder/builds/:id/detail
+// Admin-only: full build record including delivery artifacts and QA evidence.
+router.get('/builds/:id/detail', authenticateAdmin, async (req, res) => {
+  try {
+    const build = await storeBuildService.getBuild(req.params.id);
+    if (!build) return res.status(404).json({ error: 'Build not found' });
+    res.json({ success: true, build });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PATCH /api/store-builder/builds/:id/status
 // Update build status. Admin only.
 // Body: { status: '...', notes: '...' }

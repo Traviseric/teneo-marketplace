@@ -818,6 +818,12 @@ ALTER TABLE orders ADD COLUMN IF NOT EXISTS abandonment_email_stage INTEGER DEFA
 -- Stores: NIP-05 Nostr identity column (merchant's hex pubkey for NIP-05 DNS verification)
 ALTER TABLE stores ADD COLUMN IF NOT EXISTS nostr_pubkey TEXT;
 
+-- Store builds: delivery artifacts and QA evidence columns
+ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS rendered_config JSONB;
+ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS delivery_url TEXT;
+ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS qa_results JSONB;
+ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS artifact_summary JSONB;
+
 -- =====================================================
 -- DONE. 44 tables + migrations. "profiles" = app users.
 -- =====================================================
