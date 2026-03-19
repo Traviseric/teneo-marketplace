@@ -58,7 +58,35 @@ function filterPatch(patch) {
   return filtered;
 }
 
-async function buildStoreFromBrief(brief) {
+/**
+ * Robust JSON extraction — handles raw JSON objects and ```json code blocks.
+ * Tries code-block format first (more specific), then falls back to raw brace scan.
+ */
+function extractJson(text) {
+  // Try 1: code block extraction (```json {...} ```)
+  const codeBlockMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+  if (codeBlockMatch) {
+    try { return JSON.parse(codeBlockMatch[1]); } catch (_) {}
+  }
+  // Try 2: raw match of top-level JSON object
+  const rawMatch = text.match(/\{[\s\S]*\}/);
+  if (rawMatch) {
+    try { return JSON.parse(rawMatch[0]); } catch (_) {}
+  }
+  throw new Error('No JSON patch found in AI response');
+}
+
+/**
+ * Build the system prompt for the edit intent parser.
+ * On retry attempts the prompt is more explicit about output format.
+ */
+function buildEditSystemPrompt(attempt) {
+  const base = 'You are a store configuration editor. Output ONLY a JSON object with the fields to change. No prose, no explanation, no code blocks — just the raw JSON object.';
+  if (attempt === 0) return base;
+  return `${base}\n\nIMPORTANT: Your previous response could not be parsed. Output ONLY valid JSON. Start your response with { and end with }. No other text.`;
+}
+
+async function buildStoreFromBrief(brief, { maxRetries = 2, retryDelay = 200 } = {}) {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error('ANTHROPIC_API_KEY is not set. Add it to your .env file to use the AI Store Builder.');
   }
@@ -67,12 +95,15 @@ async function buildStoreFromBrief(brief) {
   const Anthropic = require('@anthropic-ai/sdk');
   const client = new Anthropic();
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    messages: [{
-      role: 'user',
-      content: `You are an expert e-commerce store designer. Given this business brief, generate a complete store configuration as valid JSON matching the schema provided.
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const message = await client.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2048,
+        messages: [{
+          role: 'user',
+          content: `You are an expert e-commerce store designer. Given this business brief, generate a complete store configuration as valid JSON matching the schema provided.
 
 BUSINESS BRIEF:
 ${brief}
@@ -81,14 +112,19 @@ OUTPUT: Return ONLY valid JSON matching this schema (no markdown, no explanation
 ${JSON.stringify(schema, null, 2)}
 
 Be creative with palette and content. Make the store feel professional and on-brand.`
-    }]
-  });
+        }]
+      });
 
-  const text = message.content[0].text;
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('No JSON found in AI response');
-
-  return validateStoreConfig(JSON.parse(jsonMatch[0]));
+      const text = message.content[0].text;
+      return validateStoreConfig(extractJson(text));
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay * (attempt + 1)));
+      }
+    }
+  }
+  throw new Error(`buildStoreFromBrief failed after ${maxRetries + 1} attempts: ${lastError.message}`);
 }
 
 /**
@@ -116,12 +152,16 @@ function deepMerge(target, patch) {
 /**
  * Parse a natural-language edit instruction against an existing store config.
  * Returns a partial patch object (only changed fields).
+ * Retries up to maxRetries times with escalating system prompt constraints.
  *
  * @param {string} instruction - e.g. "change hero text to 'Handmade with love'"
  * @param {object} existingConfig - current StoreConfig JSON
+ * @param {object} [options]
+ * @param {number} [options.maxRetries=2] - number of retry attempts after first failure
+ * @param {number} [options.retryDelay=200] - base delay in ms between retries (multiplied by attempt)
  * @returns {object} partial config patch
  */
-async function parseEditIntent(instruction, existingConfig) {
+async function parseEditIntent(instruction, existingConfig, { maxRetries = 2, retryDelay = 200 } = {}) {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error('ANTHROPIC_API_KEY is not set. AI editing requires the API key.');
   }
@@ -129,12 +169,16 @@ async function parseEditIntent(instruction, existingConfig) {
   const Anthropic = require('@anthropic-ai/sdk');
   const client = new Anthropic();
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 1024,
-    messages: [{
-      role: 'user',
-      content: `You are editing a store configuration JSON. Return ONLY the fields that need to change as a JSON object — do NOT return the full config.
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const message = await client.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        system: buildEditSystemPrompt(attempt),
+        messages: [{
+          role: 'user',
+          content: `You are editing a store configuration JSON. Return ONLY the fields that need to change as a JSON object — do NOT return the full config.
 
 CURRENT CONFIG:
 ${JSON.stringify(existingConfig, null, 2)}
@@ -142,13 +186,27 @@ ${JSON.stringify(existingConfig, null, 2)}
 EDIT INSTRUCTION: "${instruction}"
 
 Return ONLY valid JSON containing the changed fields (partial patch). No markdown, no explanation.`
-    }]
-  });
+        }]
+      });
 
-  const text = message.content[0].text;
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('No JSON patch found in AI response');
-  return filterPatch(JSON.parse(jsonMatch[0]));
+      const text = message.content[0].text;
+      return filterPatch(extractJson(text));
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay * (attempt + 1)));
+      }
+    }
+  }
+  throw new Error(`parseEditIntent failed after ${maxRetries + 1} attempts: ${lastError.message}`);
 }
 
-module.exports = { buildStoreFromBrief, parseEditIntent, deepMerge, validateStoreConfig, filterPatch };
+module.exports = {
+  buildStoreFromBrief,
+  parseEditIntent,
+  deepMerge,
+  validateStoreConfig,
+  filterPatch,
+  extractJson,
+  buildEditSystemPrompt,
+};

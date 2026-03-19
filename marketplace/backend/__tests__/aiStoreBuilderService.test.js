@@ -168,7 +168,8 @@ describe('buildStoreFromBrief', () => {
 
   test('throws when AI returns no JSON', async () => {
     mockCreate.mockResolvedValue({ content: [{ text: 'Sorry, I cannot help.' }] });
-    await expect(buildStoreFromBrief('test brief')).rejects.toThrow('No JSON found');
+    // With retry logic the error is wrapped; check for the inner cause substring
+    await expect(buildStoreFromBrief('test brief', { maxRetries: 0 })).rejects.toThrow('No JSON patch found');
   });
 
   test('throws when required field is missing', async () => {

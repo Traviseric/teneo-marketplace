@@ -363,7 +363,17 @@ router.patch('/stores/:id/edit', requireAuth, async (req, res) => {
       return res.status(500).json({ error: 'Store config is corrupted' });
     }
 
-    const patch = await parseEditIntent(instruction, existingConfig);
+    let patch;
+    try {
+      patch = await parseEditIntent(instruction, existingConfig);
+    } catch (editErr) {
+      return res.status(422).json({
+        success: false,
+        error: 'Could not understand your edit — try rephrasing',
+        details: editErr.message,
+      });
+    }
+
     const updatedConfig = deepMerge(existingConfig, patch);
     const html = renderStorePage(updatedConfig);
 
