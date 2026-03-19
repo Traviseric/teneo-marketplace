@@ -1148,6 +1148,33 @@ Questions about your order? Reply to this email or visit our support page.
       return { success: false, error: error.message };
     }
   }
+
+  async sendDisputeAlert({ orderId, reason, email }) {
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_FROM;
+    if (!adminEmail || !this._isConfigured()) {
+      console.warn('[emailService] sendDisputeAlert: no admin email or service not configured');
+      return { success: false, error: 'Email service not configured' };
+    }
+    try {
+      const html = `
+<h2>⚠️ Dispute Filed</h2>
+<p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+<p><strong>Customer Email:</strong> ${escapeHtml(email)}</p>
+<p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
+<p>Please review this order and contact the customer within 24 hours.</p>
+      `.trim();
+      const result = await this._send({
+        to: adminEmail,
+        subject: `Dispute Filed: Order ${orderId}`,
+        html,
+        text: `Dispute Filed\n\nOrder ID: ${orderId}\nCustomer: ${email}\nReason: ${reason}\n\nPlease review and respond within 24 hours.`
+      });
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Error sending dispute alert:', error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 module.exports = new EmailService();

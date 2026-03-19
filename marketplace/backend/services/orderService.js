@@ -7,13 +7,15 @@ const ORDER_STATES = Object.freeze({
     COMPLETED:  'completed',
     FAILED:     'failed',
     REFUNDED:   'refunded',
+    DISPUTED:   'disputed',
 });
 
 // Valid state transitions — enforces lifecycle rules.
 const VALID_TRANSITIONS = Object.freeze({
     pending:    new Set(['processing', 'failed']),
     processing: new Set(['completed', 'failed']),
-    completed:  new Set(['refunded']),
+    completed:  new Set(['refunded', 'disputed']),
+    disputed:   new Set(['refunded', 'completed']),
     failed:     new Set(),
     refunded:   new Set(),
 });

@@ -232,46 +232,80 @@ router.get('/orders', authenticateAdmin, async (req, res) => {
 router.post('/orders/:orderId/refund', authenticateAdmin, async (req, res) => {
     try {
         const { orderId } = req.params;
-        const { reason } = req.body;
-        
+        const { reason = 'Customer request' } = req.body;
+
         // Get order details
         const order = await orderService.getOrder(orderId);
         if (!order) {
             return res.status(404).json({ success: false, error: 'Order not found' });
         }
-        
-        // Process refund through Stripe
-        const stripe = await getStripe();
-        
+        if (order.payment_status === 'refunded') {
+            return res.status(409).json({ success: false, error: 'Order already refunded' });
+        }
+
+        let refundId = null;
+        let refundAmount = order.price || 0;
+
         if (order.stripe_payment_intent_id) {
+            // Card payment — issue Stripe refund
+            const stripe = await getStripe();
             const refund = await stripe.refunds.create({
                 payment_intent: order.stripe_payment_intent_id,
-                reason: reason || 'requested_by_customer'
+                reason: 'requested_by_customer'
             });
-            
-            // Update order status
-            await orderService.updateOrderStatus(orderId, {
-                payment_status: 'refunded',
-                refund_id: refund.id,
-                refund_amount: refund.amount / 100,
-                refund_reason: reason
-            });
-            
-            // Log financial action
-            await auditService.logFinancialAction(req, 'REFUND', refund.amount / 100, {
+            refundId = refund.id;
+            refundAmount = refund.amount / 100;
+
+            await auditService.logFinancialAction(req, 'REFUND', refundAmount, {
                 orderId,
-                refundId: refund.id,
-                reason: reason || 'requested_by_customer'
-            });
-            
-            res.json({ 
-                success: true, 
-                refundId: refund.id,
-                amount: refund.amount / 100
+                refundId,
+                reason
             });
         } else {
-            res.status(400).json({ success: false, error: 'No payment intent found' });
+            // Crypto / manual order — log the refund request; admin handles payment externally
+            console.log(`[admin/refund] Crypto refund requested for order ${orderId} — manual action required`);
+            await auditService.logFinancialAction(req, 'REFUND_MANUAL', refundAmount, {
+                orderId,
+                reason,
+                note: 'Crypto order — refund must be processed manually'
+            });
         }
+
+        // Update order columns
+        await orderService.updateOrderStatus(orderId, {
+            payment_status: 'refunded',
+            ...(refundId ? { refund_id: refundId } : {}),
+            refund_amount: refundAmount,
+            refund_reason: reason
+        });
+
+        // Advance state machine (best-effort — skip if already terminal)
+        try {
+            await orderService.updateOrderState(orderId, 'refunded', { reason, refunded_at: new Date().toISOString() });
+        } catch (stateErr) {
+            console.warn(`[admin/refund] State transition skipped for ${orderId}: ${stateErr.message}`);
+        }
+
+        // Notify customer
+        try {
+            await emailService.sendRefundConfirmationEmail({
+                userEmail: order.customer_email,
+                bookTitle: order.book_title || orderId,
+                orderId,
+                refundAmount,
+                currency: order.currency || 'USD'
+            });
+        } catch (emailErr) {
+            console.warn(`[admin/refund] Failed to send refund email for ${orderId}:`, emailErr.message);
+        }
+
+        res.json({
+            success: true,
+            orderId,
+            refundId,
+            amount: refundAmount,
+            status: 'refunded'
+        });
     } catch (error) {
         console.error('Refund error:', error);
         res.status(500).json({ success: false, error: 'Failed to process refund' });

@@ -114,6 +114,7 @@ const licenseRoutes = require('./routes/licenseRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const hostingRoutes = require('./routes/hostingRoutes');
 const wellKnownRoutes = require('./routes/wellKnownRoutes');
+const ordersRoutes = require('./routes/ordersRoutes');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -273,6 +274,7 @@ app.use('/api/censorship', censorshipTrackerRoutes);
 // app.use('/api/nft', nftRoutes); // NOT IMPLEMENTED — removed from roadmap
 
 app.use('/api/auth', authRoutes);
+app.use('/api/orders', ordersRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/license', licenseRoutes);
 app.use('/api/referral', require('./routes/referralRoutes'));
