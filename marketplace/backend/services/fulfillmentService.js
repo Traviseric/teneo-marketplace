@@ -2,12 +2,14 @@
 
 const printfulProvider = require('./printfulFulfillmentProvider');
 const luluProvider = require('./luluFulfillmentProvider');
+const manualProvider = require('./manualFulfillmentProvider');
 
 class FulfillmentService {
   constructor() {
     this.providers = new Map();
     this.register(printfulProvider);
     this.register(luluProvider);
+    this.register(manualProvider);
   }
 
   register(provider) {

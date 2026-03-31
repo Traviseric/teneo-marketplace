@@ -115,6 +115,7 @@ const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const hostingRoutes = require('./routes/hostingRoutes');
 const wellKnownRoutes = require('./routes/wellKnownRoutes');
 const ordersRoutes = require('./routes/ordersRoutes');
+const merchantFulfillmentRoutes = require('./routes/merchantFulfillment');
 
 // Funnel builder routes
 const funnelRoutes = require('../../funnel-module/backend/routes/funnels');
@@ -342,6 +343,7 @@ app.use('/api/storefront', storefrontRoutes);
 // ArxMint dedicated webhook alias — same handler as /api/storefront/fulfill
 app.post('/api/arxmint/webhook', express.raw({ type: 'application/json' }), handleArxMintWebhook);
 app.use('/api/webhooks', printfulWebhookRoutes);
+app.use('/api/merchant/fulfillment', merchantFulfillmentRoutes);
 
 // Public certificate verification (separate mount so it doesn't need /api/courses prefix)
 const { getCertificate } = require('./services/certificateService');

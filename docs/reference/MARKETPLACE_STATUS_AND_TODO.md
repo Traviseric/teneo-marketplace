@@ -26,6 +26,62 @@ Current verification baseline:
 
 That means the immediate priority is production proof and cleanup, not pretending the remaining validation work is optional.
 
+**Authentication:** ✅ **Complete (backend)**
+- ✅ Auth abstraction layer (`auth/AuthProvider.js`)
+- ✅ Local auth provider (SQLite + magic links)
+- ✅ TENEO Auth provider (OAuth 2.0 SSO)
+- ✅ Auth routes (`routes/auth.js`)
+- ✅ User management, sessions, tokens
+- ✅ Audit logging
+
+**Email Services:**
+- ✅ Order confirmations
+- ✅ Download links
+- ✅ Magic link authentication
+- ✅ SMTP + Resend support
+
+**Admin Features:**
+- ✅ Book management
+- ✅ Brand management
+- ✅ Order management
+- ✅ Lulu print-on-demand integration
+- ✅ **Multi-tenant Printful fulfillment** — merchants connect own Printful store, auto-sync products, per-merchant webhooks, encrypted credentials, dashboard UI
+- ✅ Manual fulfillment provider — self-shipped products with tracking from dashboard
+- ✅ Shipping rate estimator endpoint for checkout integration
+- ✅ Audit logging
+- ✅ Rate limiting
+
+**Amazon Integration:**
+- ✅ Published books tracking
+- ✅ Analytics and ranking history
+- ✅ Publisher profiles
+- ✅ Milestone rewards
+- ✅ Leaderboards
+- ✅ Performance alerts
+- ✅ Daily digests
+
+**Network/Federation:**
+- ✅ Network registry system with RSA-signed communications
+- ✅ Cross-node search and catalog aggregation
+- ✅ Node discovery and health checks
+- ✅ Revenue sharing logic
+- ✅ Network explorer UI (`network.html`) with stats, search, store connections
+- ✅ AI discovery service (semantic search, reading paths, knowledge graph)
+- ✅ Database schema for embeddings, citations, and reading paths
+- ✅ Frontend network client with caching (`network-client.js`)
+
+**API Routes:**
+- ✅ `/api/brands` - Multi-brand catalog
+- ✅ `/api/checkout` - Stripe payments
+- ✅ `/api/crypto` - Crypto payments
+- ✅ `/api/catalog` - Book catalog
+- ✅ `/api/download` - Secure downloads
+- ✅ `/api/admin` - Admin dashboard
+- ✅ `/api/network` - Federation
+- ✅ `/api/published` - Amazon books
+- ✅ `/api/publishers` - Publisher profiles
+- ✅ `/api/auth` - Authentication
+
 ---
 
 ## What's COMPLETE

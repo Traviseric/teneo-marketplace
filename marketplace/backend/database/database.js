@@ -689,6 +689,59 @@ function initializeSqliteDatabase(db) {
         logSqliteInitError('Error creating coupons/order_bumps tables:', err);
     });
 
+    // Merchant fulfillment provider tables (multi-tenant Printful / Printify / etc.)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS merchant_fulfillment_providers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id TEXT NOT NULL,
+            provider TEXT NOT NULL,
+            credentials_encrypted TEXT NOT NULL,
+            is_active BOOLEAN DEFAULT 1,
+            connected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            last_sync_at DATETIME,
+            product_count INTEGER DEFAULT 0
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_mfp_merchant_provider
+            ON merchant_fulfillment_providers(merchant_id, provider);
+
+        CREATE TABLE IF NOT EXISTS fulfillment_products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id TEXT NOT NULL,
+            provider TEXT NOT NULL,
+            external_product_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            thumbnail_url TEXT,
+            retail_price DECIMAL(10,2),
+            retail_price_sats INTEGER,
+            is_active BOOLEAN DEFAULT 1,
+            synced_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            variants TEXT NOT NULL DEFAULT '[]'
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_fp_merchant_provider_ext
+            ON fulfillment_products(merchant_id, provider, external_product_id);
+
+        CREATE TABLE IF NOT EXISTS fulfillment_orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id TEXT NOT NULL,
+            provider TEXT NOT NULL,
+            order_id TEXT NOT NULL,
+            external_order_id TEXT,
+            status TEXT DEFAULT 'pending',
+            tracking_number TEXT,
+            tracking_url TEXT,
+            carrier TEXT,
+            recipient TEXT NOT NULL,
+            items TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_fo_merchant ON fulfillment_orders(merchant_id);
+        CREATE INDEX IF NOT EXISTS idx_fo_order_id ON fulfillment_orders(order_id);
+        CREATE INDEX IF NOT EXISTS idx_fo_external_order_id ON fulfillment_orders(external_order_id);
+    `, (err) => {
+        logSqliteInitError('Error creating fulfillment tables:', err);
+    });
+
     // Agent App Store schema (schema-appstore.sql)
     if (appStoreSql) {
         db.exec(appStoreSql, (err) => {

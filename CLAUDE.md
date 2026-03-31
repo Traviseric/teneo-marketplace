@@ -21,6 +21,10 @@ Open-source marketplace for creators, freelancers, and AI agents. Three pillars:
 | Setup Wizard | setup-wizard/index.html | wizard, configure, setup |
 | Payments | routes/checkout.js, routes/cryptoCheckout.js | stripe, bitcoin, lightning, monero |
 | Storefront API | routes/storefront.js | catalog, product, fulfill, checkout, ArxMint |
+| Fulfillment System | routes/merchantFulfillment.js, services/printfulFulfillmentProvider.js, services/manualFulfillmentProvider.js | multi-tenant, Printful, connect, sync, webhook, merchant, shipping rates |
+| Fulfillment Dashboard | marketplace/frontend/merchant-fulfillment.html | connect Printful, products, orders, tracking, price editing |
+| Fulfillment DB | database/schema.sql (merchant_fulfillment_providers, fulfillment_products, fulfillment_orders) | credentials_encrypted, merchant_id, provider, sync |
+| Credential Encryption | services/credentialEncryption.js | AES-256-GCM, FULFILLMENT_ENCRYPTION_KEY, encrypt, decrypt |
 | Payment Providers | services/paymentProvider.js, services/arxmintProvider.js | PaymentProvider, ArxMint, createCheckout, webhook |
 | Bazaar Strategy | te-btc/internal/arxmint-internal/BAZAAR_STRATEGY.md | bazaar, flywheel, merch, flagship |
 | Federation | routes/network.js, network-registry.json | node, peer, discovery, revenue share |
@@ -42,7 +46,7 @@ Open-source marketplace for creators, freelancers, and AI agents. Three pillars:
 - Auth: Magic links, OAuth SSO, Nostr NIP-07
 - Frontend: Vanilla HTML/CSS/JS (no framework)
 - Email: Nodemailer
-- Print: Lulu API
+- Print/POD: Lulu API + Printful (multi-tenant)
 - Deploy: Docker, Vercel (frontend), Render (backend)
 
 ## Commands

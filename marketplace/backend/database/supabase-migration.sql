@@ -799,6 +799,63 @@ CREATE INDEX IF NOT EXISTS idx_product_versions_product ON product_versions(prod
 CREATE INDEX IF NOT EXISTS idx_product_versions_created ON product_versions(created_at DESC);
 
 -- =====================================================
+-- MERCHANT FULFILLMENT (multi-tenant Printful etc.)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS merchant_fulfillment_providers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    merchant_id TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    credentials_encrypted JSONB NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    connected_at TIMESTAMPTZ DEFAULT NOW(),
+    last_sync_at TIMESTAMPTZ,
+    product_count INT DEFAULT 0,
+    UNIQUE(merchant_id, provider)
+);
+
+CREATE INDEX IF NOT EXISTS idx_mfp_merchant_provider
+    ON merchant_fulfillment_providers(merchant_id, provider);
+
+CREATE TABLE IF NOT EXISTS fulfillment_products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    merchant_id TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    external_product_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    thumbnail_url TEXT,
+    retail_price DECIMAL(10,2),
+    retail_price_sats INT,
+    is_active BOOLEAN DEFAULT TRUE,
+    synced_at TIMESTAMPTZ DEFAULT NOW(),
+    variants JSONB NOT NULL DEFAULT '[]',
+    UNIQUE(merchant_id, provider, external_product_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_fp_merchant
+    ON fulfillment_products(merchant_id);
+
+CREATE TABLE IF NOT EXISTS fulfillment_orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    merchant_id TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    order_id TEXT NOT NULL,
+    external_order_id TEXT,
+    status TEXT DEFAULT 'pending',
+    tracking_number TEXT,
+    tracking_url TEXT,
+    carrier TEXT,
+    recipient JSONB NOT NULL,
+    items JSONB NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_fo_merchant ON fulfillment_orders(merchant_id);
+CREATE INDEX IF NOT EXISTS idx_fo_order_id ON fulfillment_orders(order_id);
+CREATE INDEX IF NOT EXISTS idx_fo_external_order_id ON fulfillment_orders(external_order_id);
+
+-- =====================================================
 -- 10. SCHEMA MIGRATIONS (idempotent column additions)
 -- Run these after initial table creation to sync with
 -- columns added to the SQLite schema since first deploy.
@@ -825,5 +882,5 @@ ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS qa_results JSONB;
 ALTER TABLE store_builds ADD COLUMN IF NOT EXISTS artifact_summary JSONB;
 
 -- =====================================================
--- DONE. 44 tables + migrations. "profiles" = app users.
+-- DONE. 47 tables + migrations. "profiles" = app users.
 -- =====================================================

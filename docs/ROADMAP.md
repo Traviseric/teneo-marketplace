@@ -1,6 +1,6 @@
 # OpenBazaar AI - Roadmap
 
-**Updated:** 2026-03-13
+**Updated:** 2026-03-31
 **Informed by:** Gemini Deep Research outputs 1-9, current implementation audit, current test and route inventory
 **Supersedes:** `IMPLEMENTATION_PLAN.md`, `REVOLUTIONARY_FEATURES_ROADMAP.md`, `IMPLEMENTATION_MAP.md`
 **Execution companion:** [development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md](development/AI_STORE_BUILDER_IMPLEMENTATION_CHECKLIST.md)
@@ -54,11 +54,11 @@ A roadmap item should move forward only when supported by one or more of:
 | Component | Technology | Status |
 |-----------|-----------|--------|
 | Runtime | Node.js 18+ / Express.js | Working |
-| Database | SQLite + Supabase/Postgres runtime adapter | Partial - adapter shipped, full production proof still needed |
-| Payments | Stripe + ArxMint-oriented crypto paths | Partial - Stripe working, ArxMint deeper flow still partial |
-| Auth | Magic links + OAuth SSO + Nostr backend surfaces | Partial - backend strong, frontend journey incomplete |
-| Email | Nodemailer (SMTP + Resend) | Partial - code present, production delivery still needs proof |
-| Print/POD | Lulu API + Printful API | Partial - provider surfaces present, live production validation still needed |
+| Database | SQLite + Supabase/Postgres runtime adapter | Runtime adapter shipped (`DATABASE_URL` / `SUPABASE_DB_URL`), full production proof still needed |
+| Payments | Stripe + ArxMint-oriented crypto paths | Stripe working, ArxMint deeper flow still partial |
+| Auth | Magic links + OAuth SSO + Nostr backend surfaces | Backend strong, frontend journey incomplete |
+| Email | Nodemailer (SMTP + Resend) | Working |
+| Print/POD | Lulu API + Printful API | Lulu working; Printful multi-tenant fulfillment provider shipped (connect, sync, order, webhook, dashboard) |
 | Frontend | Vanilla HTML/CSS/JS | Working |
 | Deploy | Vercel + container/self-host options | Partial - deployment exists, key flows still need live proof |
 | File storage | Supabase Storage | Planned |
@@ -68,6 +68,7 @@ A roadmap item should move forward only when supported by one or more of:
 - **Project:** `ncddvxglmnnfagyyupeu`
 - **Dashboard:** https://supabase.com/dashboard/project/ncddvxglmnnfagyyupeu
 - **API URL:** `https://ncddvxglmnnfagyyupeu.supabase.co`
+- **Schema:** 46+ tables — profiles, orders, courses, email marketing, funnels, analytics, print jobs, webhooks, merchant fulfillment (3 tables), store builds, coupons, subscriptions
 - **Migration file:** `marketplace/backend/database/supabase-migration.sql`
 - **Runtime note:** backend adapter supports SQLite fallback plus `DATABASE_URL` / `SUPABASE_DB_URL`
 - **Note:** app users table is `profiles`, not `users`
@@ -106,22 +107,35 @@ Implication:
 
 ## What's Built (Inventory)
 
-### Working
+### Working (37+ routes, 30+ services, 18 test suites passing)
 
-- [x] Express backend with security middleware, CSRF/session handling, health endpoints
-- [x] Stripe payment integration (checkout, mixed checkout, webhooks, refunds)
-- [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero manual flow)
-- [x] Auth abstraction layer (magic links, Teneo Auth OAuth 2.0 + PKCE, Nostr backend surfaces)
-- [x] Email service code (SMTP + Resend support)
-- [x] Admin dashboard and audit logging surfaces
-- [x] Multi-brand catalog and theming pattern
-- [x] Course backend routes and quiz routes
-- [x] Funnel module
-- [x] AI discovery engine
-- [x] Publisher analytics features
+- [x] Express.js backend with SQLite fallback + Postgres/Supabase runtime adapter
+- [x] Stripe payment integration (checkout, production checkout, mixed checkout, webhooks, refunds)
+- [x] Crypto checkout endpoints (Bitcoin/Lightning/Monero — manual verification)
+- [x] Auth abstraction layer (local magic links + Teneo Auth OAuth 2.0 + PKCE + Nostr backend)
+- [x] Email service (SMTP + Resend, order confirmations, magic links)
+- [x] Email marketing (sequences, segmentation, engagement tracking, cart recovery emails)
+- [x] Admin dashboard (orders, analytics, refunds, audit logging)
+- [x] Multi-brand catalog and theming (9 brands configured)
+- [x] Course platform (CRUD, enrollment, quizzes, certificates, progress tracking)
+- [x] Funnel builder module (4 templates, save/load/deploy)
+- [x] AI discovery engine (semantic search via OpenAI + keyword fallback)
+- [x] Print-on-demand (Lulu + Printful provider integration wired into storefront fulfillment)
+- [x] **Multi-tenant Printful fulfillment** — any merchant connects their own Printful store from dashboard:
+  - Merchant self-service: connect, disconnect, sync products, set pricing (USD + sats), toggle active
+  - Per-merchant webhook routing (`/api/webhooks/printful/:merchantId`) with auto-registration on connect
+  - AES-256-GCM encrypted credential storage per merchant
+  - Manual fulfillment provider for self-shipped products (mark shipped + tracking from dashboard)
+  - Shipping rate estimator endpoint for checkout integration
+  - Dashboard UI: `marketplace/frontend/merchant-fulfillment.html`
+  - 12 API endpoints under `/api/merchant/fulfillment/*`
+  - DB: `merchant_fulfillment_providers`, `fulfillment_products`, `fulfillment_orders` tables
+- [x] Publisher features (Amazon book tracking, leaderboards, badges, digests)
+- [x] Component library (12/50 — heroes, CTAs, base system)
+- [x] Network/federation registry and cross-node search (RSA-signed)
 - [x] Secure download system with token validation and rate limiting
 - [x] Storefront API (`/api/storefront/catalog`, `/api/storefront/checkout`, `/api/storefront/fulfill`)
-- [x] Printful webhook endpoint with signature verification and idempotent event logging
+- [x] Printful webhook endpoints (`/api/webhooks/printful` legacy + `/api/webhooks/printful/:merchantId` per-tenant) with signature verification and idempotent event logging
 - [x] AI store-builder route surface (`generate`, `render`, `save`, `preview`, `publish`, `intake`, build tracking)
 - [x] Store product checkout endpoint (`POST /api/checkout/store-product`) with server-side price lookup
 - [x] Creator dashboard (`/creator-dashboard.html`) — create/manage stores, courses, funnels from one UI
@@ -132,16 +146,19 @@ Implication:
 - [x] Hosting tier billing routes
 - [x] Machine-payable endpoints
 - [x] Agent-facing catalog, quote, purchase, and order-status endpoints
+- [x] Payment provider interface + ArxMint provider (redirect to arxmint.com/pay)
+- [x] Landing page with Persian bazaar design system (Cinzel, gold/teal/lapis palette)
+- [x] Vercel deployment config (landing page + store + API routing)
 
 ### Partial / Needs Validation
 
 - [ ] Supabase production validation across checkout, auth, subscriptions, and fulfillment
 - [ ] Frontend auth/account flow unification
 - [ ] Course checkout flow fully proven
-- [ ] Email delivery in production
-- [ ] Printful live production order validation
-- [ ] Lulu live production order validation
-- [ ] Unified design system across the broader HTML surface
+- [ ] Email delivery in production (code done, needs SMTP credentials on Vercel)
+- [ ] Printful production wiring — multi-tenant backend shipped; needs: set `FULFILLMENT_ENCRYPTION_KEY` + `PUBLIC_URL` on Vercel, have first merchant connect their Printful store, validate end-to-end order flow
+- [ ] Lulu production wiring (set `LULU_*` env vars, verify webhook signature config, validate first live print order)
+- [ ] Unified design system across 33 HTML pages (each has different styling)
 - [ ] AI store-builder managed delivery proof loop
 - [ ] ArxMint deeper Lightning/Cashu/L402 validation
 - [ ] Referral payout economics proven in live checkout, not just wired in code
@@ -149,6 +166,7 @@ Implication:
 - [ ] Creator dashboard end-to-end proof on production (store/course/funnel create → publish → purchase)
 - [ ] Store product checkout proven with real Stripe payment on a published AI-generated store
 - [ ] Email sequence delivery proven after funnel generate-and-save
+- [ ] Federation revenue sharing (schema exists, not wired to checkout flow)
 
 ### Planned / Not Built Yet
 
@@ -177,15 +195,16 @@ Nothing else matters if the production site is broken or the verification baseli
 
 - [x] Fix the failing Jest suites and re-run `npm test -- --runInBand` until green
 - [x] Resolve Jest `axios` compatibility and stale test-reference issues
+- [x] **Build Supabase/Postgres database adapter** — runtime now supports `DATABASE_URL` / `SUPABASE_DB_URL` with SQLite fallback and shared `run/get/all/exec` interface
 - [ ] Reduce noisy database initialization and schema-migration logging during tests
-- [ ] Review whether database bootstrapping should be quieter or more isolated in test mode
-- [ ] Validate landing page and API on production
-- [ ] Validate the Postgres/Supabase runtime path end-to-end
-- [ ] Prove one real Stripe digital purchase on the deployed stack
-- [ ] Prove one real POD purchase on the deployed stack
-- [ ] Finish the public auth/account flow
+- [ ] **Add Supabase env vars to Vercel** — `DATABASE_URL` (or `SUPABASE_DB_URL`), plus `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [ ] **Verify landing page loads** at openbazaar.ai/
+- [ ] **Verify API responds** at openbazaar.ai/api/storefront/catalog
+- [ ] **Wire login flow** — login.html and account-dashboard.html work with auth backend
+- [ ] **Test purchase flow** — Stripe test checkout → order created in Supabase → download delivered
+- [ ] **Test POD purchase flow** — merchant connects Printful via dashboard → checkout → `POST /api/merchant/fulfillment/order` → Printful order created → per-merchant webhook updates order status/tracking
+- [ ] **Unify nav links** — landing page CTAs ("Start Selling", "Browse Marketplace") go to working pages
 - [ ] Verify production email delivery
-- [ ] Unify main nav links so they point only to supported flows
 
 ### Success Criteria
 
@@ -259,6 +278,57 @@ Nothing else matters if the production site is broken or the verification baseli
 - [ ] capture delivery artifacts and QA evidence for every run
 - [ ] create case studies from successful builds
 - [ ] keep managed delivery ahead of self-serve ambition
+
+### 2.2 Funnel Builder That Works
+
+- [ ] Wire funnel builder to Supabase (save/load funnels)
+- [ ] Landing page → email capture → email sequence → sale pipeline
+- [ ] Funnel analytics (views, conversions, revenue per funnel)
+- [ ] AI funnel builder integration ("build me a webinar funnel for my course")
+
+### 2.3 Email Marketing That Works
+
+Email marketing backend is built (sequences, segmentation, broadcasts, engagement tracking). Needs production wiring.
+
+- [ ] Wire email marketing routes to Supabase
+- [ ] Configure SMTP for production (Resend or SendGrid on Vercel)
+- [ ] Email sequence builder UI (create/edit sequences, preview emails)
+- [ ] Broadcast sending UI (select segment, compose, schedule, send)
+- [ ] Analytics dashboard (open rates, click rates, engagement scores)
+
+### 2.4 Course Platform That Works
+
+Course backend is built (CRUD, enrollment, quizzes, certificates, progress tracking). Needs checkout integration.
+
+- [ ] Wire course routes to Supabase
+- [ ] Course → Stripe checkout → enrollment flow
+- [ ] Course player UI improvements (the player exists but needs polish)
+- [ ] AI course builder ("create a 5-module course on candle making")
+
+### 2.5 Checkout Conversion Stack
+
+These features don't exist yet. Research #3 says they BLOCK switching — creators doing $10k/mo won't move without them.
+
+- [ ] **Coupons** — percentage/fixed discounts, expiry dates, usage limits, analytics
+- [ ] **Order bumps** — "add this for $X" on checkout page, per-product config
+- [ ] **Post-purchase upsells** — one-click purchase after payment, upsell sequences
+- [ ] **Cart abandonment recovery** — track abandoned carts, automated email sequences (1h, 24h, 72h)
+
+### 2.6 Content Protection
+
+- [ ] PDF stamping (buyer email/name watermarked on download)
+- [ ] License key generation and validation
+- [ ] File versioning (update products, buyers get latest)
+
+### 2.7 Physical & POD Operations
+
+- [x] Printful catalog/variant sync — merchants connect Printful, products + variants auto-imported to `fulfillment_products`
+- [x] Shipping rate estimation — `POST /api/merchant/fulfillment/shipping-rates` calls Printful with merchant credentials
+- [x] Merchant UI for managing fulfillment — `merchant-fulfillment.html` (connect, product list, price editing, active toggles)
+- [x] Fulfillment status dashboard — order list with status badges (pending, submitted, in_production, shipped, failed, canceled), tracking links
+- [x] Manual fulfillment provider — for self-shipped products, mark shipped with tracking from dashboard
+- [ ] Integrate shipping rate estimator into checkout page UI (backend endpoint ready)
+- [ ] Auto-trigger Printful order creation on successful checkout payment for POD products
 
 ### Success Criteria
 
